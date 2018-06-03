@@ -1,0 +1,327 @@
+@font-face {
+    font-family: "Gotham Bold";
+    src: url(Fonts/Gotham-Bold.ttf);
+}
+*{
+    padding: 0; 
+    margin: 0;
+    font-family: "Roboto";
+    -webkit-transition: all .6s;
+    -moz-transition: all .6s;
+    -o-transition: all .6s;
+    transition: all .6s;
+    font-size: 14px;
+}
+.header { 
+    grid-area: header; 
+    background-image:url("../images/bg_header.png");
+    display: grid;
+    grid-template-areas: 'left center center center right';
+    grid-template-rows: 100px auto;
+}
+.header_left {
+    grid-area: left;
+    place-self: center left;
+    padding: 0 0 0 30px;
+} 
+.header_left a, .header_right {
+    color:#FFF;
+    text-decoration: none;
+    padding: 0 50px 0 0;
+}
+.header_right {
+    grid-area: right;
+    place-self: center right;
+} 
+.menu { 
+    grid-area: menu; 
+    background-color: #000f25;
+    padding: 10px 0;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+.block_ava {
+    display: grid;
+    grid-template-areas: 'img info info';
+    color: #FFF;
+    padding: 20px 0 30px 20px;
+    grid-template-columns: 42px auto;
+}
+.block_ava a {
+    grid-area: img;
+    place-self: center;
+}
+.block_ava p {
+    grid-area: info;
+    display: block;
+    color: #0d8490;
+    font-size: 16pt;
+    place-self: center;
+    text-align: left;
+}
+.block_ava p span {
+    display: block;
+}
+.item5 { grid-area: footer; }
+
+.grid-container {
+      display: grid;
+      grid-template-areas:
+        'menu header header header header header'
+        'menu main main main main main';
+    grid-template-columns: 224px auto;
+    grid-template-rows: 100px auto;
+    grid-gap: 0;
+    background-color: #FFF;
+    padding: 0;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+.grid-container.hidden_menu {
+    grid-template-columns: 0 auto;
+}
+.grid-container.hidden_menu .menu {
+    display: none;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s ;
+    -o-transition: all 1s ;
+    transition: all 1s ;
+}
+.grid-container > div {
+  text-align: center;
+  font-size: 16px;
+}
+.main_menu {
+    display: grid;
+    color: #fff;
+    padding: 0 0 110px 0;
+}
+.menu_item {
+    padding: 10px 20px;
+    grid-template-columns: 50px auto;
+    text-align: center;
+}
+.menu_item .icon {
+    grid-area: img;
+}
+.menu_item .info {
+    grid-area: info;
+    font-size: 16px;
+    place-self: center left;
+    border: 1px solid #CCC;
+    padding: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.menu_item .info:hover,
+.menu_item.active .info{
+    background:#AF0C5A;
+    color: #FFF;
+}
+.isd_main {
+    min-height: 100vh;
+    grid-area: main;
+    background: #006666;
+    display: grid;
+    grid-template-areas: 
+        '. center  .'
+        '. left right';
+    grid-template-columns: auto minmax(max-content, 980px);
+/*    grid-template-rows: 60px auto;*/
+    grid-gap: 20px;
+/*    padding: 20px 0;*/
+}
+.main_title {
+    grid-area: center;
+    background: #FFF;
+    grid-row: 1/2;
+    grid-column: 2 / span 1;
+    border-radius: 30px;
+    display: grid;
+    grid-template-areas: 'left right';
+    justify-content: stretch;
+    margin: 0 ;
+}
+.main_title .balance {
+    grid-area: left;
+    place-self: center;
+    display: grid;
+    grid-template-areas: "left right";
+    align-content: stretch;
+    grid-gap: 50px;
+    justify-content: center;
+}
+.main_title .paypal {
+    grid-area: right;
+    place-self: center;
+    background: #66cc99;
+    line-height: 44px;
+    padding: 0 20px;
+    border-radius: 20px;
+    color: #FFF;
+}
+.header_center {
+    color: #FFF;
+    grid-area: center;
+    justify-content: center;
+    place-self: center;
+}
+.balance span {
+    color: #009999;
+    font-size: 26px;
+    place-self: center;
+}
+.block_ava img {
+    width: 50px;
+    border-radius: 100%;
+}
+.balance label {
+    color: #000033;
+    font-size: 22px;
+    place-self: center;
+}
+.main_content {
+    grid-area: left;
+    display: grid;
+    grid-column: 2 / span 1;
+    grid-gap: 20px;
+}
+.filter_time {
+   grid-area: full;
+}
+.hidden {
+    display: none!important;
+}
+#dt {
+    text-indent: -500px;
+    height: 25px;
+    width: 200px;
+  }
+.filter_time > div {
+    display: inline-block;
+    margin: 0 5px;
+}
+.main_content h2 {
+    color:#000033;
+    font-size: 18px;
+    padding: 20px 0 14px 0;
+}
+#isd_app .main_content_left {
+  background: none;
+}
+.main_content_left {
+  background: #FFF;
+  border-radius: 20px;
+  /*
+    background: #FFF;
+    border-radius: 40px;
+    padding: 0 10px 30px 10px;
+*/
+}
+.action_filter{
+    background: #66cc99;
+    color: #FFF;
+    border-radius: 20px;
+    line-height: 30px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+.action_filter.active, .action_filter:hover {
+    background:#AF0C5A;
+    color: #FFF;
+}
+.main_content_right {
+    background: #FFF;
+    border-radius: 40px;
+    padding: 0 10px 30px 10px;
+}
+.control {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-areas: 
+        'full full full'
+        '1fr 1fr 1fr';
+}
+.list_info {
+    display: grid;
+    grid-template-areas: 'left right';
+    grid-template-columns: auto 301px;
+    padding: 0 0 32px 0;
+}
+.list_infos {
+/*
+    overflow-y: scroll;
+    padding: 0 30px 0 0;
+    margin: 32px 0 0 0;
+*/
+}
+.list_info img {
+    grid-area: left;
+    place-self: center left;
+}
+.header_left {
+    color: #FFF;
+}
+.control input {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    font-size: 14px;
+}
+.item_info {
+    display: grid;
+    grid-template-areas: 'title logo title2 right';
+    background: url(bg_item.png) no-repeat;
+    font-size: 14px;
+    grid-auto-columns: 120px 30px 120px 30px;
+    justify-content: stretch;
+    grid-template-rows: 62px;
+}
+.item_info h4{
+    grid-area: title;
+    color:#fff;
+    place-self: center;
+}
+.item_info h4 span, .item_info h3 span {
+    display: block;
+}
+.item_info h3{
+    grid-area: title2;
+    color:#fff;
+    place-self: center;
+}
+.item_info img {
+    grid-area: logo;
+    place-self: center;
+}
+.item_info button {
+    grid-area: right;
+    place-self: center;
+}
+.footer {
+    padding: 40px 24px;
+}
+.menu_footer a {
+    color: #FFF;
+    display: block;
+    text-align: left;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 40px;
+}
+.bangkehoach > div {
+    display: grid;
+    grid-template-columns: 25% 7% 7% 7% 7% 7% 7% 7% 7% 7% 7%;
+    padding: 10px;
+    border-bottom: 1px solid #CCC;
+}
+.ke_tuan {
+    border-left: 1px solid #CCC;
+}
+.bangdonvitinh > div {
+    grid-template-columns: 25% 15% 15% 15%;
+}

@@ -1,0 +1,1 @@
+alert('public/lotusapp_custom.js');
