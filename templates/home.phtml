@@ -8,6 +8,9 @@
   <body>
     <h1>View</h1>
 		<?php var_dump($data) ?>
+		<script>
+      window.ISD_BASE_URL = '<?php echo $data['base_url'] ?>/';
+    </script>
 		<script src="<?php echo $data['base_url'] ?>/js/jquery.min.js"></script>
 		<script src="<?php echo $data['base_url'] ?>/js/lotusapp_custom.js"></script>
   </body>
