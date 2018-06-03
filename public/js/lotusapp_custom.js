@@ -1,6 +1,6 @@
 var lotusapp = jQuery.noConflict();
 lotusapp(document).ready(function($){
-    fetch('/home', {
+    fetch(ISD_BASE_URL+'uplo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

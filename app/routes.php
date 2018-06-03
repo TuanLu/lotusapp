@@ -23,3 +23,4 @@ use \Psr\Http\Message\ResponseInterface as Response;
 // });
 
 $app->get('/', 'HomeController:index');
+$app->post('/uplo', 'HomeController:uplo');

@@ -6,8 +6,30 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
-    <h1>View</h1>
-		<?php var_dump($data) ?>
+  <div class="grid-container">
+    <div class="header">
+      <div class="header_left">
+        <div>Menu</div>
+      </div>
+      <div class="header_center">
+        <h2>Quản Lý Kho Hàng</h2>
+      </div>
+      <div class="header_right">Liên Kết</div>
+    </div>
+    <div class="menu menu_active">
+			<a href="https://tueduc.net/quanlykho/"><img width="120" src="../images/logo.png" /></a>
+      <div class="block_ava">
+        <a href="#"><img src="../images/ava_hue.jpg" /></a>
+        <p>Xin chào,<span>Ms. Huệ!</span></p>
+          </div>
+         
+    </div>
+    <div class="isd_main">
+      <div class="main_content">
+            DYNAMIC
+      </div>
+	  </div>  
+  </div>
 		<script>
       window.ISD_BASE_URL = '<?php echo $data['base_url'] ?>/';
     </script>

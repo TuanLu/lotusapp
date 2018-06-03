@@ -11,4 +11,10 @@ class HomeController extends BaseController {
     ];
     return $this->view->render($response, 'home.phtml', $data);
   }
+  public function uplo($request, $response) {
+    $param = $request->getParams();
+    var_dump($param);
+    $data = $this->db->insert("lohang", $param);
+    echo $data->rowCount();
+  }
 }
