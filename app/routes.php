@@ -23,4 +23,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 // });
 
 $app->get('/', 'HomeController:index');
-$app->post('/uplo', 'HomeController:uplo');
+//Npp router
+$app->get('/fetchNpp', 'NppController:fetchNpp');
+$app->post('/updateNpp', 'NppController:updateNpp');
+$app->get('/deleteNpp/{id}', 'NppController:deleteNpp');
+

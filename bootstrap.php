@@ -27,6 +27,9 @@ $container['view'] = function ($c) {
 $container['HomeController'] = function ($c) {
   return new \App\Controllers\HomeController($c);
 };
+$container['NppController'] = function ($c) {
+  return new \App\Controllers\NppController($c);
+};
 
 // Get an instance of Slim.
 $app = new \Slim\App($container);
