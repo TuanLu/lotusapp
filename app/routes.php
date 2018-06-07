@@ -35,4 +35,8 @@ $app->get('/deleteKho/{id}', 'KhoController:deleteKho');
 $app->get('/fetchNpp', 'NppController:fetchNpp');
 $app->post('/updateNpp', 'NppController:updateNpp');
 $app->get('/deleteNpp/{id}', 'NppController:deleteNpp');
+//Khach hàng router
+$app->get('/fetchKh', 'KhController:fetchKh');
+$app->post('/updateKh', 'KhController:updateKh');
+$app->get('/deleteKh/{id}', 'KhController:deleteKh');
 
