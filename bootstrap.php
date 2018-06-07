@@ -18,12 +18,18 @@ $settings = require 'config/app.php';
 
 
 $container = new \Slim\Container($settings);
+//Access to token
+$container["jwt"] = function ($container) {
+  return new StdClass;
+};
 // view renderer
 $container['view'] = function ($c) {
   $settings = $c->get('settings')['renderer'];
   return new PhpRenderer($settings['template_path']);
 };
-
+$container['UserController'] = function ($c) {
+  return new \App\Controllers\UserController($c);
+};
 $container['HomeController'] = function ($c) {
   return new \App\Controllers\HomeController($c);
 };

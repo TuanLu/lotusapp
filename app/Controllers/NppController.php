@@ -7,8 +7,6 @@ use \Monolog\Logger;
 class NppController extends BaseController
 {
 	private $tableName = 'nha_phan_phoi';
-	const ERROR_STATUS = 'error';
-	const SUCCESS_STATUS = 'success';
  
 	public function fetchNpp($request){
 		//$this->logger->addInfo('Request Npp path');
@@ -74,18 +72,19 @@ class NppController extends BaseController
 			$result = $this->db->insert($this->tableName, $itemData);
 			$selectColumns = ['id', 'ma_npp'];
 			$where = ['ma_npp' => $itemData['ma_npp']];
+			//Kiểm tra nhà phân phối đã tồn tại chưa 
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã nhà phân phối [". $itemData['ma_npp'] ."] đã tồn tại: ";
+				echo json_encode($rsData);exit;
+			}
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm nhà phân phối mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data;
+				$rsData['data'] = $data[0];
 			} else {
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				if(!empty($data)) {
-					$rsData['message'] = "Mã nhà phân phối [". $itemData['ma_npp'] ."] đã tồn tại: ";
-				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
-				}
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
 			//update data base on $id

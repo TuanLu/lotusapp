@@ -21,8 +21,15 @@ use \Psr\Http\Message\ResponseInterface as Response;
 //   ]);
 //   $this->renderer->render($response, "home.phtml", $data);
 // });
+//User router
+$app->get('/login', 'UserController:index');
+$app->post('/token', 'UserController:token');
+$app->get('/fetchRoles', 'UserController:fetchRoles');
 
-$app->get('/', 'HomeController:index');
+$app->get('/fetchUsers', 'UserController:fetchUsers');
+$app->post('/updateUser', 'UserController:updateUser');
+$app->get('/deleteUser/{id}', 'UserController:deleteUser');
+$app->get('/dashboard', 'HomeController:index');
 //Npp router
 $app->get('/fetchNpp', 'NppController:fetchNpp');
 $app->post('/updateNpp', 'NppController:updateNpp');

@@ -6,7 +6,8 @@
         "catfan/Medoo": "^1.4",
         "ramsey/uuid": "^3.7",
         "slim/php-view": "^2.2",
-        "phpoffice/phpspreadsheet": "^1.2"
+        "phpoffice/phpspreadsheet": "^1.2",
+        "tuupola/slim-jwt-auth": "^2.4"
     },
     "autoload": {
         "psr-4": {

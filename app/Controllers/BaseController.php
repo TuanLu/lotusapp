@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 class BaseController {
+  const ERROR_STATUS = 'error';
+	const SUCCESS_STATUS = 'success';
   protected $container;
   public function __construct($container) {
     $this->container = $container;
