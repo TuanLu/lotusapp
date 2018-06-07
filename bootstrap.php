@@ -30,6 +30,12 @@ $container['HomeController'] = function ($c) {
 $container['NppController'] = function ($c) {
   return new \App\Controllers\NppController($c);
 };
+$container['KhoController'] = function ($c) {
+  return new \App\Controllers\KhoController($c);
+};
+$container['CateController'] = function ($c) {
+  return new \App\Controllers\CateController($c);
+};
 
 // Get an instance of Slim.
 $app = new \Slim\App($container);
