@@ -128,7 +128,7 @@ class UserController extends BaseController {
 				'id',
 				'name',
         'username',
-        'hash',
+        //'hash',
 				'email',
         'status',
         'roles'
@@ -222,12 +222,15 @@ class UserController extends BaseController {
 			$itemData = [
 				'username' => $username,
 				'name' => $name,
-				'hash' => password_hash($hash, PASSWORD_DEFAULT),
+				//'hash' => password_hash($hash, PASSWORD_DEFAULT),
 				'status' => $status,
         'email' => $email,
         'roles' => $roles,
 				'update_on' => $date->format('Y-m-d H:i:s'),
-			];
+      ];
+      if($hash != "") {
+        $itemData["hash"] = password_hash($hash, PASSWORD_DEFAULT);
+      }
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
         $this->superLog('Update User', 0, $itemData);
@@ -237,7 +240,7 @@ class UserController extends BaseController {
           'email',
           'status',
           'roles',
-          'hash',
+          //'hash',
           'name'
         ], 
         ['id' => $id]);
