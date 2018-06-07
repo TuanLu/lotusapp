@@ -17,65 +17,102 @@ class UserController extends BaseController {
     return $this->view->render($response, 'login.phtml', $data);
   }
   private function validateRequest($params) {
-    if(password_verify($params['password'], '$2y$10$Hhc.zxNnCoffplakjPT3k.l0NPenh86r/uIKiYei5ltXr.prHJOVG')) {
-      return true;
-    } else {
-      return false;
-    }
+    $user = $this->db->select($this->tableName, ['id', 'status', 'hash'], [
+      "OR" => [
+        "username" => $params['userName'],
+        "email" => $params['userName'],
+      ]
+    ]);
+
+
+    if(!empty($user)) {
+      $isCorrectPass = password_verify($params['password'], $user[0]['hash']);
+      if($isCorrectPass) {
+        return $user[0]['id'];
+      }
+    }    
+    return false;
   }
   public function token($request, $response) {
     $params = $request->getParsedBody() ?: [];
     $rsData = [
       "status" => "error",
-      "message" => "Invalid",
+      "message" => "Tên đăng nhập hoặc mật khẩu không đúng!",
     ];
-    $isChecked = $this->validateRequest($params);
-    if(!$isChecked) {
+    $userId = $this->validateRequest($params);
+    if(!$userId) {
+      echo json_encode($rsData);exit;
+    }
+    $userRoles = $this->getUserRoles($userId);
+    if(empty($userRoles)) {
+      $rsData['message'] = 'User hiện tại chưa được phân quyền hoặc chưa kích hoạt. Liên hệ admin để cập nhật!';
       echo json_encode($rsData);exit;
     }
     $now = time();//new \DateTime();
     //$future = new \DateTime("now +2 hours");
-    $server = $request->getServerParams();
+    //$server = $request->getServerParams();
     //$jti = random_bytes(16);
     $payload = [
         "iat" => $now,
         //"exp" => $now + (60),
         //"jti" => $jti,
         //"sub" => $server["PHP_AUTH_USER"],
-        "scope" => ['npp','qlsx']
+        //"scopes" => $userRoles,
+        "id" => $userId
     ];
     $secret = ISD_APP_KEY;
     $token = JWT::encode($payload, $secret, "HS256");
     if($token != "") {
       $data["token"] = $token;
-      //$data["expires"] = $payload['exp'];
+      $data["scopes"] = $payload['scopes'];
+      $data["userId"] = $userId;
       return $response->withStatus(201)
           ->withHeader("Content-Type", "application/json")
           ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
     echo json_encode($rsData);
   }
+  private function getUserRoles($userId) {
+    $roles = [];
+    if($userId) {
+      $roleData = $this->db->select($this->tableName, ['roles'], [
+        'id' => $userId,
+        'status' => 1
+      ]);
+      if(isset($roleData[0]['roles']) && $roleData[0]['roles'] != '') {
+        $roles = explode(',',$roleData[0]['roles']);
+      }
+      if(!empty($roles)) {
+        $allScopes = Roles::getRoles();
+        $userRoles = [];
+        foreach($roles as $role) {
+          if(in_array($role, array_keys($allScopes))) {
+           $userRoles[] = $allScopes[$role];
+          }
+        }
+        if(!empty($userRoles)) {
+          return $userRoles;
+        }
+      }
+    }
+    return $roles;
+  }
   public function fetchRoles($request, $response) {
     $rsData = [
       "status" => "error",
-      "message" => "This user have no role",
+      "message" => "Bạn hãy đăng nhập lại!",
     ];
-    $scopes = $this->jwt->scope ? : ['qluser', 'npp','qlsx'];
-    
-    if(!empty($scopes)) {
-      $allScopes = Roles::getRoles();
-      $userRoles = [];
-      foreach($scopes as $role) {
-        if(in_array($role, array_keys($allScopes))) {
-         $userRoles[] = $allScopes[$role];
-        }
-      }
+    $userId = $this->jwt->id ? : '';
+    if($userId) {
+      $userRoles = $this->getUserRoles($userId);
       if(!empty($userRoles)) {
-        $rsData['status'] = 'success';
-        $rsData['message'] = 'Load roles successfully!'; 
-        $rsData['data'] = $userRoles;
+        $rsData['userId'] = $userId;
+        $rsData['scopes'] = $userRoles;
+      } else {
+        $rsData['message'] = 'User chưa được phân quyền hoặc chưa được kích hoạt. Liên hệ admin để cập nhật!';
       }
     }
+    
     echo json_encode($rsData);
   }
   public function fetchUsers($request, $response){
