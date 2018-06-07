@@ -60,7 +60,7 @@ class UserController extends BaseController {
       "status" => "error",
       "message" => "This user have no role",
     ];
-    $scopes = $this->jwt->scope ? : [];
+    $scopes = $this->jwt->scope ? : ['qluser', 'npp','qlsx'];
     
     if(!empty($scopes)) {
       $allScopes = Roles::getRoles();

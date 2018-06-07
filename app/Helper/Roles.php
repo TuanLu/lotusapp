@@ -12,7 +12,12 @@ class Roles {
       'qluser' => [
         'label' => 'Quản lý Users', 
         'icon' => 'user',
-        'value' => 'qluser'
+        'path' => 'qluser'
+      ],
+      'qlsx' => [
+        'label' => 'Quản lý SX', 
+        'icon' => 'inbox',
+        'path' => 'qlsx'
       ],
     ];
   }

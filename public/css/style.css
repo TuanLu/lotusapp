@@ -62,3 +62,37 @@ td:hover .editable-cell-icon {
   font-size: 20px;
   font-weight: 700;
 }
+.login-wrapper {
+  width: 330px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(#d84bc7, #301a3a);
+  padding: 10px 23px;
+  border-radius: 10px;
+  -webkit-box-shadow: 3px 4px 3px 0px rgba(158, 154, 158, 0.82);
+  -moz-box-shadow: 3px 4px 3px 0px rgba(158, 154, 158, 0.82);
+  box-shadow: 3px 4px 3px 0px rgba(158, 154, 158, 0.82);
+}
+.login-form button.login-form-button {
+  background: #fff;
+  color: #8a1a5bfc;
+  border: none;
+  font-weight: 700;
+}
+.login-form .ant-form-item {
+  margin-bottom: 10px;
+}
+.login-form .ant-form-item-control {
+  text-align: center;
+}
+.login-logo {
+  text-align: center;
+  width: 100px;
+  margin: 10px auto;
+}
+.login-logo img {
+  display: block;
+  width: 100%;
+}
