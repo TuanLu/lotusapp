@@ -118,7 +118,7 @@ class NppController extends BaseController
 		// Get params and validate them here.
 		$id = isset(	$args['id']) ? $args['id'] : '';
 		if($id != "") {
-			$result = $this->db->update($this->tableName,['status' => 0], ['id' => $id]);
+			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
 			if($result->rowCount()) {
 				$this->superLog('Delete NPP', 0, $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
