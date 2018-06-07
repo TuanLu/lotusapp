@@ -64,7 +64,7 @@ class UserController extends BaseController {
     $token = JWT::encode($payload, $secret, "HS256");
     if($token != "") {
       $data["token"] = $token;
-      $data["scopes"] = $payload['scopes'];
+      $data["scopes"] = $userRoles;
       $data["userId"] = $userId;
       return $response->withStatus(201)
           ->withHeader("Content-Type", "application/json")
@@ -128,7 +128,8 @@ class UserController extends BaseController {
         'username',
         'hash',
 				'email',
-				'status'
+        'status',
+        'roles'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
@@ -155,6 +156,10 @@ class UserController extends BaseController {
 		$hash = $request->getParam('hash');
     $status = $request->getParam('status');
     $email = $request->getParam('email');
+    $roles = $request->getParam('roles');
+    if(is_array($roles)) {
+      $roles = implode(',', $roles);
+    }
 		if(!$id) {
 			//Insert new data to db
 			if(!$username) {
@@ -177,7 +182,8 @@ class UserController extends BaseController {
 				'name' => $name,
 				'hash' => password_hash($hash, PASSWORD_DEFAULT),
 				'status' => $status,
-				'email' => $email,
+        'email' => $email,
+        'roles' => $roles,
 				'create_on' => $date->format('Y-m-d H:i:s'),
       ];
       //Valid email format
@@ -216,12 +222,24 @@ class UserController extends BaseController {
 				'name' => $name,
 				'hash' => password_hash($hash, PASSWORD_DEFAULT),
 				'status' => $status,
-				'email' => $email,
+        'email' => $email,
+        'roles' => $roles,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update User', 0, $itemData);
+        $this->superLog('Update User', 0, $itemData);
+        $data = $this->db->select($this->tableName, 
+        [
+          'username',
+          'email',
+          'status',
+          'roles',
+          'hash',
+          'name'
+        ], 
+        ['id' => $id]);
+				$rsData['data'] = $data[0];
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
