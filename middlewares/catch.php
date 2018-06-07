@@ -17,7 +17,6 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
         $container["jwt"] = $arguments["decoded"];
     },
     "error" => function ($request, $response, $arguments) {
-        die('Error fire');
         $data["status"] = "error";
         $data["show_login"] = true;
         $data["message"] = "Bạn không có quyền để thực hiện tác vụ này";//$arguments["message"];
