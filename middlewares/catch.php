@@ -3,7 +3,7 @@
 $app->add(new \Slim\Middleware\JwtAuthentication([
     "rules" => [
         new \Slim\Middleware\JwtAuthentication\RequestPathRule([
-            "path" => ['/fetchRoles', '/updateNpp'],
+            "path" => PROTECTED_PATHS,
             "passthrough" => ["/login", "/token"]
         ]),
         new \Slim\Middleware\JwtAuthentication\RequestMethodRule([
@@ -17,6 +17,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
         $container["jwt"] = $arguments["decoded"];
     },
     "error" => function ($request, $response, $arguments) {
+        die('Error fire');
         $data["status"] = "error";
         $data["show_login"] = true;
         $data["message"] = "Bạn không có quyền để thực hiện tác vụ này";//$arguments["message"];

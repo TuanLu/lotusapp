@@ -17,10 +17,11 @@ class BaseController {
     $dir = __DIR__;
     return str_replace('app/Controllers', '', $dir);
   }
-  protected function superLog($action_name = '', $user_id = '', $description, $logText = true) {
+  protected function superLog($action_name = '', $description, $logText = true) {
     $date = new \DateTime();
+    $userId = $this->jwt->id ? : '';
     $insertItem = [
-      'user_id' => $user_id,
+      'user_id' => $userId,
       'action_name' => $action_name,
       'create_on' => $date->format('Y-m-d H:i:s')
     ];
@@ -32,7 +33,7 @@ class BaseController {
     $this->db->insert('app_logger', $insertItem);
     if($logText) {
       $description = (is_array($description) ? $description : [$description]);
-      $this->logger->addInfo($action_name, $description);
+      $this->logger->addInfo($action_name, $insertItem);
     }
   }
 }

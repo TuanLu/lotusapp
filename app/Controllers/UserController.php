@@ -233,7 +233,7 @@ class UserController extends BaseController {
       }
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-        $this->superLog('Update User', 0, $itemData);
+        $this->superLog('Update User', $itemData);
         $data = $this->db->select($this->tableName, 
         [
           'username',
@@ -264,7 +264,7 @@ class UserController extends BaseController {
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete User', 0, $id);
+				$this->superLog('Delete User', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá user khỏi hệ thống!';
 				$rsData['data'] = $id;

@@ -69,15 +69,16 @@ class NppController extends BaseController
 				'ranking' => $ranking,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			$result = $this->db->insert($this->tableName, $itemData);
+			//Kiểm tra nhà phân phối đã tồn tại chưa 
 			$selectColumns = ['id', 'ma_npp'];
 			$where = ['ma_npp' => $itemData['ma_npp']];
-			//Kiểm tra nhà phân phối đã tồn tại chưa 
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
 				$rsData['message'] = "Mã nhà phân phối [". $itemData['ma_npp'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
+			$result = $this->db->insert($this->tableName, $itemData);
+			
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm nhà phân phối mới thành công!';
@@ -99,11 +100,11 @@ class NppController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update NPP', 0, $itemData);
+				$this->superLog('Update NPP', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng mã nhà phân phối!';
 			}
 			
 		}
@@ -120,7 +121,7 @@ class NppController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete NPP', 0, $id);
+				$this->superLog('Delete NPP', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá nhà phân phối khỏi hệ thống!';
 				$rsData['data'] = $id;
