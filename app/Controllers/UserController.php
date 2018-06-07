@@ -17,18 +17,16 @@ class UserController extends BaseController {
     return $this->view->render($response, 'login.phtml', $data);
   }
   private function validateRequest($params) {
-    $user = $this->db->select($this->tableName, ['id', 'status', 'hash'], [
+    $user = $this->db->select($this->tableName, ['id','name','username', 'email', 'status', 'hash'], [
       "OR" => [
         "username" => $params['userName'],
         "email" => $params['userName'],
       ]
     ]);
-
-
     if(!empty($user)) {
       $isCorrectPass = password_verify($params['password'], $user[0]['hash']);
       if($isCorrectPass) {
-        return $user[0]['id'];
+        return $user[0];
       }
     }    
     return false;
@@ -39,10 +37,11 @@ class UserController extends BaseController {
       "status" => "error",
       "message" => "Tên đăng nhập hoặc mật khẩu không đúng!",
     ];
-    $userId = $this->validateRequest($params);
-    if(!$userId) {
+    $user = $this->validateRequest($params);
+    if(empty($user)) {
       echo json_encode($rsData);exit;
     }
+    $userId = $user['id'];
     $userRoles = $this->getUserRoles($userId);
     if(empty($userRoles)) {
       $rsData['message'] = 'User hiện tại chưa được phân quyền hoặc chưa kích hoạt. Liên hệ admin để cập nhật!';
@@ -64,8 +63,9 @@ class UserController extends BaseController {
     $token = JWT::encode($payload, $secret, "HS256");
     if($token != "") {
       $data["token"] = $token;
-      $data["scopes"] = $userRoles;
-      $data["userId"] = $userId;
+      $data["scopes"] = $userRoles['roles'];
+      $data["userInfo"] = $userRoles['userInfo'];;
+      
       return $response->withStatus(201)
           ->withHeader("Content-Type", "application/json")
           ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
@@ -75,7 +75,7 @@ class UserController extends BaseController {
   private function getUserRoles($userId) {
     $roles = [];
     if($userId) {
-      $roleData = $this->db->select($this->tableName, ['roles'], [
+      $roleData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
         'id' => $userId,
         'status' => 1
       ]);
@@ -91,11 +91,13 @@ class UserController extends BaseController {
           }
         }
         if(!empty($userRoles)) {
-          return $userRoles;
+          return [
+            'roles' => $userRoles,
+            'userInfo' => $roleData[0]
+          ];
         }
       }
     }
-    return $roles;
   }
   public function fetchRoles($request, $response) {
     $rsData = [
@@ -106,8 +108,8 @@ class UserController extends BaseController {
     if($userId) {
       $userRoles = $this->getUserRoles($userId);
       if(!empty($userRoles)) {
-        $rsData['userId'] = $userId;
-        $rsData['scopes'] = $userRoles;
+        $rsData['userInfo'] = $userRoles['userInfo'];
+        $rsData['scopes'] = $userRoles['roles'];
       } else {
         $rsData['message'] = 'User chưa được phân quyền hoặc chưa được kích hoạt. Liên hệ admin để cập nhật!';
       }

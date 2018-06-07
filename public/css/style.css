@@ -96,3 +96,13 @@ td:hover .editable-cell-icon {
   display: block;
   width: 100%;
 }
+.admin-user-info {
+  float: right;
+  margin-right: 16px;
+}
+.admin-user-info span {
+  padding: 0 16px;
+}
+#isd_app .ant-layout-has-sider {
+  min-height: 100vh;
+}
