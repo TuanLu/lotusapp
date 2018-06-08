@@ -117,7 +117,7 @@ class KhoController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 0], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete NPP', 0, $id);
+				$this->superLog('Delete Kho', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá nhà phân phối khỏi hệ thống!';
 				$rsData['data'] = $id;

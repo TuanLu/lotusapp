@@ -41,9 +41,9 @@ $app->get('/fetchCate', 'CateController:fetchCate');
 $app->post('/updateCate', 'CateController:updateCate');
 $app->get('/deleteCate/{id}', 'CateController:deleteCate');
 //Kho router
-$app->get('/fetchKho', 'KhoController:fetchKho');
-$app->post('/updateKho', 'KhoController:updateKho');
-$app->get('/deleteKho/{id}', 'KhoController:deleteKho');
+$app->get('/qlkho/fetchKho', 'KhoController:fetchKho');
+$app->post('/qlkho/updateKho', 'KhoController:updateKho');
+$app->get('/qlkho/deleteKho/{id}', 'KhoController:deleteKho');
 //Khach hàng router
 $app->get('/qlkh/fetchKh', 'KhController:fetchKh');
 $app->post('/qlkh/updateKh', 'KhController:updateKh');
