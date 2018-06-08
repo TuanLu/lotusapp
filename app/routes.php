@@ -45,7 +45,7 @@ $app->get('/fetchKho', 'KhoController:fetchKho');
 $app->post('/updateKho', 'KhoController:updateKho');
 $app->get('/deleteKho/{id}', 'KhoController:deleteKho');
 //Khach hàng router
-$app->get('/fetchKh', 'KhController:fetchKh');
-$app->post('/updateKh', 'KhController:updateKh');
-$app->get('/deleteKh/{id}', 'KhController:deleteKh');
+$app->get('/qlkh/fetchKh', 'KhController:fetchKh');
+$app->post('/qlkh/updateKh', 'KhController:updateKh');
+$app->get('/qlkh/deleteKh/{id}', 'KhController:deleteKh');
 

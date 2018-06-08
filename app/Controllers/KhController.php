@@ -112,7 +112,7 @@ class KhController extends BaseController
 		echo json_encode($rsData);
 	}
 
-	public function deleteKho($request, $response, $args){
+	public function deleteKh($request, $response, $args){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Dữ liệu chưa được xoá thành công!'
@@ -122,7 +122,7 @@ class KhController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 0], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete KH', 0, $id);
+				$this->superLog('Delete KH', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá khách hàng khỏi hệ thống!';
 				$rsData['data'] = $id;
