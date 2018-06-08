@@ -34,4 +34,17 @@ $app->get('/dashboard', 'HomeController:index');
 $app->get('/npp/fetchNpp', 'NppController:fetchNpp');
 $app->post('/npp/updateNpp', 'NppController:updateNpp');
 $app->get('/npp/deleteNpp/{id}', 'NppController:deleteNpp');
+$app->get('/', 'HomeController:index');
+//Cate router
+$app->get('/fetchCate', 'CateController:fetchCate');
+$app->post('/updateCate', 'CateController:updateCate');
+$app->get('/deleteCate/{id}', 'CateController:deleteCate');
+//Kho router
+$app->get('/fetchKho', 'KhoController:fetchKho');
+$app->post('/updateKho', 'KhoController:updateKho');
+$app->get('/deleteKho/{id}', 'KhoController:deleteKho');
+//Khach hàng router
+$app->get('/fetchKh', 'KhController:fetchKh');
+$app->post('/updateKh', 'KhController:updateKh');
+$app->get('/deleteKh/{id}', 'KhController:deleteKh');
 

@@ -3,3 +3,4 @@ logs/
 composer.lock
 config/
 resource/
+npm-debug.log
