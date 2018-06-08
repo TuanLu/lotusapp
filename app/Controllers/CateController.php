@@ -78,7 +78,7 @@ class CateController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update Cate', 0, $itemData);
+				$this->superLog('Update Cate', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
@@ -99,7 +99,7 @@ class CateController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 0], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete Cate', 0, $id);
+				$this->superLog('Delete Cate', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá danh mục khỏi hệ thống!';
 				$rsData['data'] = $id;
