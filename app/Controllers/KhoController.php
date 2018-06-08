@@ -45,12 +45,12 @@ class KhoController extends BaseController
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
 		//die($id);
-		$maNpp = $request->getParam('ma_kho');
+		$maKho = $request->getParam('ma_kho');
 		$name = $request->getParam('name');
 		$address = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
-			if(!$maNpp) {
+			if(!$maKho) {
 				$rsData['message'] = 'Mã kho không được để trống!';
 				echo json_encode($rsData);
 				die;
@@ -62,44 +62,45 @@ class KhoController extends BaseController
 			}
 			$date = new \DateTime();
 			$itemData = [
-				'ma_kho' => $maNpp,
+				'ma_kho' => $maKho,
 				'name' => $name,
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			
-			$result = $this->db->insert($this->tableName, $itemData);
 			$selectColumns = ['id', 'ma_kho'];
 			$where = ['ma_kho' => $itemData['ma_kho']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã kho [". $itemData['ma_kho'] ."] đã tồn tại: ";
+				echo json_encode(	$rsData);die;
+			}
+
+			$result = $this->db->insert($this->tableName, $itemData);
+			
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm kho mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data;
+				$rsData['data'] = $data[0];
 			} else {
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				if(!empty($data)) {
-					$rsData['message'] = "Mã kho [". $itemData['ma_kho'] ."] đã tồn tại: ";
-				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
-				}
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
 			}
 		} else {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
-				'ma_kho' => $maNpp,
+				'ma_kho' => $maKho,
 				'name' => $name,
 				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update NPP', 0, $itemData);
+				$this->superLog('Update Kho', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
 			}
 			
 		}
