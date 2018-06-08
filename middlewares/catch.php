@@ -1,9 +1,17 @@
 <?php
 
+$ISD_KEY = '';
+$PROTECTED_PATHS = '';
+if(defined('ISD_APP_KEY')) {
+  $ISD_KEY = ISD_APP_KEY;
+}
+if(defined('PROTECTED_PATHS')) {
+  $PROTECTED_PATHS = PROTECTED_PATHS;
+}
 $app->add(new \Slim\Middleware\JwtAuthentication([
     "rules" => [
         new \Slim\Middleware\JwtAuthentication\RequestPathRule([
-            "path" => PROTECTED_PATHS,
+            "path" => $PROTECTED_PATHS,
             "passthrough" => ["/login", "/token"]
         ]),
         new \Slim\Middleware\JwtAuthentication\RequestMethodRule([
@@ -12,7 +20,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     ],
     "secure" => true,//Should use HTTPS request
     "relaxed" => ["localhost", "127.0.0.1"],
-    "secret" => ISD_APP_KEY,
+    "secret" => $ISD_KEY,
     "callback" => function ($request, $response, $arguments) use ($container) {
         $container["jwt"] = $arguments["decoded"];
     },

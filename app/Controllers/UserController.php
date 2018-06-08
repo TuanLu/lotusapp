@@ -59,7 +59,10 @@ class UserController extends BaseController {
         //"scopes" => $userRoles,
         "id" => $userId
     ];
-    $secret = ISD_APP_KEY;
+    $secret = '';
+    if(defined('ISD_APP_KEY')) {
+      $secret = ISD_APP_KEY;
+    }
     $token = JWT::encode($payload, $secret, "HS256");
     if($token != "") {
       $data["token"] = $token;
