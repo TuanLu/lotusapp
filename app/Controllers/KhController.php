@@ -72,22 +72,21 @@ class KhController extends BaseController
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			
-			$result = $this->db->insert($this->tableName, $itemData);
 			$selectColumns = ['id', 'ma_kh'];
 			$where = ['ma_kh' => $itemData['ma_kh']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã khách hàng [". $itemData['ma_kh'] ."] đã tồn tại: ";
+				echo json_encode($rsData);exit;
+			}
+			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm khách hàng mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data;
+				$rsData['data'] = $data[0];
 			} else {
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				if(!empty($data)) {
-					$rsData['message'] = "Mã khách hàng [". $itemData['ma_kh'] ."] đã tồn tại: ";
-				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
-				}
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
 			}
 		} else {
 			//update data base on $id
@@ -102,11 +101,11 @@ class KhController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update NPP', 0, $itemData);
+				$this->superLog('Update KH', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
 			}
 			
 		}
