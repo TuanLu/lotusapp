@@ -19,7 +19,7 @@ class BaseController {
   }
   protected function superLog($action_name = '', $description, $logText = true) {
     $date = new \DateTime();
-    $userId = $this->jwt->id ? : '';
+    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
     $insertItem = [
       'user_id' => $userId,
       'action_name' => $action_name,
