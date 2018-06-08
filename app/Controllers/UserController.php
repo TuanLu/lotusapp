@@ -273,5 +273,26 @@ class UserController extends BaseController {
 			$rsData['message'] = 'ID trống, nên không xoá được dữ liệu!';
 		}
 		echo json_encode($rsData);
-	}
+  }
+  public function fetchAllRoles() {
+    $rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa load được chức năng nào!'
+    );
+    $allRoles = Roles::getRoles();
+    $roleList = [];
+    foreach ($allRoles as $key => $value) {
+      $roleList[] = [
+        'label' => $value['label'],
+        'value' => $value['path'],
+        'key' => $value['path'],
+      ];
+    }
+    if(!empty($roleList)) {
+      $rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Các chức năng đã load thành công!';
+      $rsData['data'] = $roleList;
+    }
+    echo json_encode($rsData);
+  }
 }

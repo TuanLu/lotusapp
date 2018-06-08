@@ -19,6 +19,21 @@ class Roles {
         'icon' => 'inbox',
         'path' => 'qlsx'
       ],
+      'qlkho' => [
+        'label' => 'Quản lý Kho', 
+        'icon' => 'home',
+        'path' => 'qlkho'
+      ],
+      'qlcate' => [
+        'label' => 'Quản lý Danh mục SP', 
+        'icon' => 'table',
+        'path' => 'qlcate'
+      ],
+      'qlkh' => [
+        'label' => 'Quản lý Khách Hàng', 
+        'icon' => 'team',
+        'path' => 'qlkh'
+      ],
     ];
   }
 }
