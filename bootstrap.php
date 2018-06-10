@@ -45,6 +45,9 @@ $container['CateController'] = function ($c) {
 $container['KhController'] = function ($c) {
   return new \App\Controllers\KhController($c);
 };
+$container['ProductController'] = function ($c) {
+  return new \App\Controllers\ProductController($c);
+};
 
 // Get an instance of Slim.
 $app = new \Slim\App($container);

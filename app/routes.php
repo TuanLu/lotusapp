@@ -48,4 +48,8 @@ $app->get('/qlkho/deleteKho/{id}', 'KhoController:deleteKho');
 $app->get('/qlkh/fetchKh', 'KhController:fetchKh');
 $app->post('/qlkh/updateKh', 'KhController:updateKh');
 $app->get('/qlkh/deleteKh/{id}', 'KhController:deleteKh');
+//Product router
+$app->get('/product/fetch', 'ProductController:fetch');
+$app->post('/product/update', 'ProductController:update');
+$app->get('/product/delete/{id}', 'ProductController:delete');
 

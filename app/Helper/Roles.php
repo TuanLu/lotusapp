@@ -29,6 +29,11 @@ class Roles {
         'icon' => 'table',
         'path' => 'qlcate'
       ],
+      'product' => [
+        'label' => 'Quản lý Sản phẩm', 
+        'icon' => 'pushpin-o',
+        'path' => 'product'
+      ],
       'qlkh' => [
         'label' => 'Quản lý Khách Hàng', 
         'icon' => 'team',
