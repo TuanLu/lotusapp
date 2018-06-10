@@ -23,10 +23,9 @@ class ProductController extends BaseController
 				'price',
 				'unit',
 				'min',
-				'max'
+				'max',
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["id" => "DESC"],
 			"status" => 1
 		]);
 		if(!empty($collection)) {
@@ -36,7 +35,7 @@ class ProductController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-	public function updateNpp($request, $response)
+	public function update($request, $response)
 	{
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -45,45 +44,49 @@ class ProductController extends BaseController
 		// Get params and validate them here.
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
-		$maNpp = $request->getParam('category_id');
+		$maSP = $request->getParam('product_id');
+		$cateId = $request->getParam('category_id');
 		$name = $request->getParam('name');
-		$address = $request->getParam('address');
-		$phone = $request->getParam('phone');
-		$ranking = $request->getParam('ranking');
+		$price = $request->getParam('price');
+		$unit = $request->getParam('unit');
+		$min = $request->getParam('min');
+		$max = $request->getParam('max');
 		if(!$id) {
 			//Insert new data to db
-			if(!$maNpp) {
-				$rsData['message'] = 'Mã nhà phân phối không được để trống!';
+			if(!$maSP) {
+				$rsData['message'] = 'Mã sản phẩm không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên nhà phân phối không được để trống!';
+				$rsData['message'] = 'Tên sản phẩm không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			$date = new \DateTime();
 			$itemData = [
-				'category_id' => $maNpp,
+				'product_id' => $maSP,
+				'category_id' => $cateId,
 				'name' => $name,
-				'address' => $address,
-				'phone' => $phone,
-				'ranking' => $ranking,
+				'price' => $price,
+				'unit' => $unit,
+				'min' => $min,
+				'max' => $max,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			//Kiểm tra nhà phân phối đã tồn tại chưa 
-			$selectColumns = ['id', 'category_id'];
-			$where = ['category_id' => $itemData['category_id']];
+			//Kiểm tra sản phẩm đã tồn tại chưa 
+			$selectColumns = ['id', 'product_id'];
+			$where = ['product_id' => $itemData['product_id']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã nhà phân phối [". $itemData['category_id'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã sản phẩm [". $itemData['product_id'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm nhà phân phối mới thành công!';
+				$rsData['message'] = 'Đã thêm sản phẩm mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
@@ -93,27 +96,29 @@ class ProductController extends BaseController
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
-				'category_id' => $maNpp,
+				'product_id' => $maSP,
+				'category_id' => $cateId,
 				'name' => $name,
-				'address' => $address,
-				'phone' => $phone,
-				'ranking' => $ranking,
+				'price' => $price,
+				'unit' => $unit,
+				'min' => $min,
+				'max' => $max,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update NPP', $itemData);
+				//$this->superLog('Update NPP', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng mã nhà phân phối!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã sản phẩm!';
 			}
 			
 		}
 		echo json_encode($rsData);
 	}
 
-	public function deleteNpp($request, $response, $args){
+	public function delete($request, $response, $args){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Dữ liệu chưa được xoá thành công!'
@@ -123,9 +128,9 @@ class ProductController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete NPP', $id);
+				//$this->superLog('Delete NPP', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá nhà phân phối khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá sản phẩm khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

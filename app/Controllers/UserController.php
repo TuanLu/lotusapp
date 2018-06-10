@@ -213,7 +213,7 @@ class UserController extends BaseController {
 			$where = ['email' => $itemData['email']];
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm nhà phân phối mới thành công!';
+				$rsData['message'] = 'Đã thêm người dùng mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
