@@ -20,7 +20,7 @@ class ProductController extends BaseController
 				'product_id',
 				'category_id',
 				'name',
-				'price',
+				//'price',
 				'unit',
 				'min',
 				'max',
@@ -47,7 +47,7 @@ class ProductController extends BaseController
 		$maSP = $request->getParam('product_id');
 		$cateId = $request->getParam('category_id');
 		$name = $request->getParam('name');
-		$price = $request->getParam('price');
+		//$price = $request->getParam('price');
 		$unit = $request->getParam('unit');
 		$min = $request->getParam('min');
 		$max = $request->getParam('max');
@@ -68,7 +68,7 @@ class ProductController extends BaseController
 				'product_id' => $maSP,
 				'category_id' => $cateId,
 				'name' => $name,
-				'price' => $price,
+				//'price' => $price,
 				'unit' => $unit,
 				'min' => $min,
 				'max' => $max,
@@ -99,7 +99,7 @@ class ProductController extends BaseController
 				'product_id' => $maSP,
 				'category_id' => $cateId,
 				'name' => $name,
-				'price' => $price,
+				//'price' => $price,
 				'unit' => $unit,
 				'min' => $min,
 				'max' => $max,
@@ -126,12 +126,18 @@ class ProductController extends BaseController
 		// Get params and validate them here.
 		$id = isset(	$args['id']) ? $args['id'] : '';
 		if($id != "") {
-			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
-			if($result->rowCount()) {
-				//$this->superLog('Delete NPP', $id);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá sản phẩm khỏi hệ thống!';
-				$rsData['data'] = $id;
+			$data = $this->db->select($this->tableName, ['id', 'product_id'], ['id' => $id]);
+			if(!empty($data)) {
+				$result = $this->db->update($this->tableName,[
+					'status' => 2,
+					'product_id' => $data[0]['product_id'] . '_' . microtime()
+				], ['id' => $id]);
+				if($result->rowCount()) {
+					$this->superLog('Delete NPP', $id);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Đã xoá sản phẩm khỏi hệ thống!';
+					$rsData['data'] = $id;
+				}
 			}
 		} else {
 			$rsData['message'] = 'ID trống, nên không xoá được dữ liệu!';
