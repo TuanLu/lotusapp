@@ -33,7 +33,9 @@ class ProductController extends BaseController
 			$rsData['message'] = 'Dữ liệu đã được load!';
 			$rsData['data'] = $collection;
 		}
-		echo json_encode($rsData);
+		header("Content-Type: application/json");
+        echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
+        exit;
 	}
 	public function update($request, $response)
 	{
