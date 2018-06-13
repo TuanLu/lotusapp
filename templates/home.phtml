@@ -5,6 +5,7 @@ switch($serverName) {
  case 'localhost':
  case 'erpapp':
  case 'annhien':
+ case 'lotus':
  case '127.0.0.1':
    //If webpack server is running, then reference all files from there
    $devServerContent = @file_get_contents('http://localhost:8080/public/lotus.min.js');
