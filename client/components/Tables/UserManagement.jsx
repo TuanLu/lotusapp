@@ -315,7 +315,7 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu nhà phân phối!', 3);
+      message.error('Có lỗi khi tải dữ liệu !', 3);
       console.log(error);
     }); 
   }

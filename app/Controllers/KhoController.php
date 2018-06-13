@@ -119,7 +119,7 @@ class KhoController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Kho', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá nhà phân phối khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá kho khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

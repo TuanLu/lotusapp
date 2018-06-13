@@ -246,7 +246,7 @@ class EditableTable extends React.Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá nhà phân phối!', 3);
+          message.error('Có lỗi xảy ra khi xoá nhà cung cấp!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -254,7 +254,7 @@ class EditableTable extends React.Component {
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá nhà phân phối!', 3);
+        message.error('Có lỗi xảy ra khi xoá nhà cung cấp!', 3);
         console.log(error);
       });
     } else {
@@ -285,7 +285,7 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu nhà phân phối!', 3);
+      message.error('Có lỗi khi tải dữ liệu nhà cung cấp!', 3);
       console.log(error);
     }); 
   }
@@ -339,7 +339,7 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý nhà phân phối</h2>
+              <h2 className="head-title">Quản lý nhà cung cấp</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
