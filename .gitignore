@@ -60,3 +60,5 @@ public/bundle.js.map
 .DS_Store
 .vscode
 bash.exe.stackdump
+.env
+deploy_shell
