@@ -18,7 +18,7 @@ import QuanlySanpham from './Tables/QuanlySanpham'
 
 class MainComponent extends React.Component {
   state = {
-    collapsed: true,
+    collapsed: false,
     logged: false,
     loading: true
   };

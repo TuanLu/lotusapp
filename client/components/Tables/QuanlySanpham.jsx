@@ -4,7 +4,7 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 
 const FormItem = Form.Item;
@@ -96,7 +96,8 @@ class EditableTable extends React.Component {
     super(props);
     this.state = { 
       data: [], 
-      editingKey: '' 
+      editingKey: '',
+      categoryList: {}
     };
     this.columns = [
       {
@@ -105,6 +106,13 @@ class EditableTable extends React.Component {
         //width: '10%',
         editable: true,
         required: true,
+        render: (text, record) => {
+          let label = text;
+          if(this.state.categoryList && this.state.categoryList[text]) {
+            label = this.state.categoryList[text]['name'];
+          }
+          return <span>{label}</span>
+        }
       },
       {
         title: 'Mã SP',
@@ -297,9 +305,15 @@ class EditableTable extends React.Component {
     .then((resopnse) => resopnse.json())
     .then((json) => {
       if(json.data) {
-        this.props.dispatch(updateStateData({
-          categories: json.data
-        }));
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            categories: json.data
+          }));
+          this.setState({
+            categoryList: convertArrayObjectToObject(json.data)
+          });
+          
+        }
       } else {
         message.error(json.message);
       }
