@@ -1,0 +1,51 @@
+{
+  "name": "lotus_clients",
+  "version": "1.0.0",
+  "description": "Make life more simpler",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/webpack-dev-server --inline",
+    "devChart": "./node_modules/.bin/webpack-dev-server --inline --config ./webpack.chart.config.js",
+    "deploy": "webpack -p --config ./webpack.production.config.js & cp -a public/js/. ../lotusapp/public/js/",
+    "deployChart": "webpack -p --config ./webpack.chart.production.config.js & cp -a public/js/. ../lotusapp/public/js/"
+  },
+  "author": "Tuan Lu",
+  "license": "MIT",
+  "dependencies": {
+    "antd": "^3.6.1",
+    "chart.js": "^2.7.2",
+    "lodash": "^4.17.10",
+    "react": "^16.3.0",
+    "react-chartjs-2": "^2.7.2",
+    "react-dom": "^16.3.0",
+    "react-redux": "^5.0.7",
+    "react-table": "^6.8.5",
+    "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-undo": "^1.0.0-beta9-9-7",
+    "semantic-ui-react": "^0.79.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.16.0",
+    "babel-loader": "^7.1.4",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "babel-plugin-lodash": "^3.3.2",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.25.0",
+    "script-loader": "^0.7.0",
+    "style-loader": "^0.13.2",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "webpack": "^4.4.1",
+    "webpack-bundle-analyzer": "^2.11.1",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-dev-server": "^3.1.1",
+    "webpack-merge": "^4.1.2"
+  }
+}

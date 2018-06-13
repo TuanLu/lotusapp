@@ -1,0 +1,14 @@
+{
+  "presets": [
+    "react",
+    [
+      "env",
+      {
+        "modules": false,
+        "targets": { "node": 6 }
+      }
+    ],
+    "stage-0"
+  ],
+  "plugins": ["lodash"]
+}
