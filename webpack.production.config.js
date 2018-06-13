@@ -4,7 +4,7 @@ var path = require('path');
 var webpack = require('webpack');
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 module.exports = merge(common, {
   entry: {
     lotus: ['./client/app.production.jsx']
@@ -30,7 +30,7 @@ module.exports = merge(common, {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new BundleAnalyzerPlugin()
+    //new BundleAnalyzerPlugin()
   ],
   optimization: {
     splitChunks: {
