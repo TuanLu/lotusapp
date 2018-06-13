@@ -51,12 +51,12 @@ class NppController extends BaseController
 		if(!$id) {
 			//Insert new data to db
 			if(!$maNpp) {
-				$rsData['message'] = 'Mã nhà phân phối không được để trống!';
+				$rsData['message'] = 'Mã nhà cung cấp không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên nhà phân phối không được để trống!';
+				$rsData['message'] = 'Tên nhà cung cấp không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
@@ -69,19 +69,19 @@ class NppController extends BaseController
 				'ranking' => $ranking,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			//Kiểm tra nhà phân phối đã tồn tại chưa 
+			//Kiểm tra nhà cung cấp đã tồn tại chưa 
 			$selectColumns = ['id', 'ma_npp'];
 			$where = ['ma_npp' => $itemData['ma_npp']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã nhà phân phối [". $itemData['ma_npp'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã nhà cung cấp [". $itemData['ma_npp'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm nhà phân phối mới thành công!';
+				$rsData['message'] = 'Đã thêm nhà cung cấp mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
@@ -104,7 +104,7 @@ class NppController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng mã nhà phân phối!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng mã nhà cung cấp!';
 			}
 			
 		}
@@ -123,7 +123,7 @@ class NppController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete NPP', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá nhà phân phối khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá nhà cung cấp khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

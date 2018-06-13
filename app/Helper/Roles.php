@@ -5,7 +5,7 @@ class Roles {
   static function getRoles() {
     return [
       'npp' => [
-        'label' => 'Quản lý NPP', 
+        'label' => 'Quản lý NCC', 
         'icon' => 'solution',
         'path' => 'npp'
       ],
