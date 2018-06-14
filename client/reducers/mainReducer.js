@@ -6,7 +6,9 @@ let _designDefault = {
     showLogin: true,
     defaultRouter: '',
     userRoles: [],
-    categories: []
+    categories: [],
+    kho: [],
+    products: []
   },
   cloneState;
 

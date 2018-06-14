@@ -24,6 +24,11 @@ class Roles {
         'icon' => 'home',
         'path' => 'qlkho'
       ],
+      'qlphieunhap' => [
+        'label' => 'Quản lý Phiếu Nhập', 
+        'icon' => 'pushpin-o',
+        'path' => 'qlphieunhap'
+      ],
       'qlcate' => [
         'label' => 'Quản lý Danh mục SP', 
         'icon' => 'table',
