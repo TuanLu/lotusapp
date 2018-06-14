@@ -103,8 +103,6 @@ class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      data: [], 
-      editingKey: '',
       productList: {}
     };
     this.columns = [
@@ -116,7 +114,7 @@ class EditableTable extends React.Component {
         required: true,
       },
       {
-        title: 'Mã SP',
+        title: 'Sản phẩm',
         dataIndex: 'product_id',
         //width: '10%',
         editable: true,
@@ -209,15 +207,20 @@ class EditableTable extends React.Component {
     ];
   }
   addNewRow() {
+    let {products, editingKey} = this.props.mainState.phieunhap;
+    if(editingKey != '') return false;
     let rowItem = this.getDefaultFields();
     rowItem = {
       ...rowItem,
-      key: this.state.data.length + 1
+      key: products.length + 1
     };
-    this.setState({
-      data: [rowItem, ...this.state.data],
-      editingKey: rowItem.key
-    })
+    this.props.dispatch(updateStateData({
+      phieunhap: {
+        ...this.props.mainState.phieunhap,
+        products: [rowItem, ...products],
+        editingKey: rowItem.key
+      }
+    }))
   }
   getDefaultFields() {
     return {
@@ -231,17 +234,22 @@ class EditableTable extends React.Component {
     };
   }
   isEditing = (record) => {
-    return record.key === this.state.editingKey;
+    return record.key === this.props.mainState.phieunhap.editingKey;
   };
   edit(key) {
-    this.setState({ editingKey: key });
+    this.props.dispatch(updateStateData({
+      phieunhap: {
+        ...this.props.mainState.phieunhap,
+        editingKey: key
+      }
+    }));
   }
   save(form, key) {
     form.validateFields((error, row) => {
       if (error) {
         return;
       }
-      const newData = [...this.state.data];
+      const newData = [...this.props.mainState.phieunhap.products];
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -255,8 +263,14 @@ class EditableTable extends React.Component {
           newData.splice(index, 1, {
             ...newItemData
           });
-          this.setState({ data: newData, editingKey: '' });
-          return this.props.onSaveItem(newData);
+          this.props.dispatch(updateStateData({
+            phieunhap: {
+              ...this.props.mainState.phieunhap,
+              editingKey: '',
+              products: newData
+            }
+          }));
+          return false;
         }
         fetch(ISD_BASE_URL + fetchConfig.update, {
           method: 'POST',
@@ -292,7 +306,12 @@ class EditableTable extends React.Component {
     });
   }
   cancel = () => {
-    this.setState({ editingKey: '' });
+    this.props.dispatch(updateStateData({
+      phieunhap: {
+        ...this.props.mainState.phieunhap,
+        editingKey: ''
+      }
+    }));
   }
   delete = (record) => {
     if(record.id) {
@@ -315,10 +334,13 @@ class EditableTable extends React.Component {
       });
     } else {
       if(record.key) {
-        let newData = this.state.data.filter((item) => item.key != record.key);
-        this.setState({
-          data: newData
-        })
+        let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.key);
+        this.props.dispatch(updateStateData({
+          phieunhap: {
+            ...this.props.mainState.phieunhap,
+            products: newData
+          }
+        }));
       }  
     }
   }
@@ -377,7 +399,7 @@ class EditableTable extends React.Component {
         }),
       };
     });
-
+    let selectedProducts = this.props.mainState.phieunhap.products;
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -397,7 +419,7 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
-          dataSource={this.props.data}
+          dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
         />

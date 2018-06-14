@@ -82,7 +82,7 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
-      addNewItem: false,
+      addNewItem: true,
     };
     this.columns = [
       {

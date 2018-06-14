@@ -2,7 +2,6 @@ import React from 'react'
 import { Form, Select, Input, Button, Row, Col,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader} from 'ISD_API'
-import FormSanpham from './FormSanpham'
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -11,7 +10,7 @@ const formInfo = {
   person: 'Người giao hàng'
 }
 
-class App extends React.Component {
+class FormThongtin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,20 +19,26 @@ class App extends React.Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        if(!this.state.products.length) {
-          message.error('Chưa có sản phẩm trong phiếu nhập này!');
-          return false;
-        }
-        let finalInfo = {
-          ...values,
-          products: this.props.products
-        };
-        console.log(finalInfo);
-      }
-    });
+    let isValid = this.validBeforeSave();
+    if(isValid) {
+
+    }
+  }
+  validBeforeSave() {
+    let {phieunhap} = this.props.mainState;
+    if(!phieunhap.ma_kho) {
+      message.error('Mã kho không được để trống');
+      return false;
+    }
+    if(!phieunhap.nguoi_giao_dich) {
+      message.error('Thiếu thông tin người giao dịch');
+      return false;
+    }
+    if(!phieunhap.products.length) {
+      message.error('Chưa có sản phẩm nào trong phiếu này.');
+      return false;
+    }
+    return true;
   }
   fetchData() {
     fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
@@ -63,9 +68,14 @@ class App extends React.Component {
     }
   }
   render() {
-    const { getFieldDecorator } = this.props.form;
+    let {phieunhap} = this.props.mainState;
+    let options = '';
+    let {kho} = this.props.mainState;
+    if(kho.length) {
+      options = kho.map((kho) => <Option key={kho.id} value={kho.id}>{kho.name}</Option>);
+    }
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form>
         <div className="table-operations">
           <Row>
             <Col span={12}>
@@ -74,8 +84,9 @@ class App extends React.Component {
             <Col span={12}>
               <div className="action-btns">
                 <Button 
+                  onClick={this.handleSubmit}
                   type="primary"
-                  htmlType="submit" 
+                  htmlType="button" 
                   icon="save">Lưu phiếu nhập</Button>
                 <Popconfirm
                   title="Bạn thật sự muốn huỷ?"
@@ -94,77 +105,76 @@ class App extends React.Component {
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
-          {getFieldDecorator('ho_ten', {
-            rules: [{ required: true, 'message': 'Hãy nhập tên người giao hàng'}],
-          })(
-            <Input />
-          )}
+         <Input 
+            onChange={(e) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  nguoi_giao_dich: e.target.value
+                }
+              }));
+            }}
+            value={phieunhap.nguoi_giao_dich} />
         </FormItem>
         <FormItem
           label="Tại Kho"
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
-          {getFieldDecorator('kho_id', {
-            rules: [{ required: true, message: 'Chọn kho!' }],
-          })(
-            (() => {
-              let options = '';
-              let {kho} = this.props.mainState;
-              if(kho.length) {
-                options = kho.map((kho) => <Option key={kho.id} value={kho.id}>{kho.name}</Option>);
-              }
-              return (
-                <Select
-                  placeholder="Chọn kho"
-                >
-                  {options}
-                </Select>
-              )
-            })()
-            
-          )}
+          <Select 
+            onChange={(ma_kho) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  ma_kho
+                }
+              }));
+            }}
+            defaultValue={phieunhap.ma_kho} placeholder="Chọn kho">
+            {options}
+          </Select>
         </FormItem>
         <FormItem
           label="Mô tả"
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
-          {getFieldDecorator('note', {
-            rules: [{ required: false}],
-          })(
-            <Input />
-          )}
+          <Input.TextArea 
+            autosize={{ minRows: 2, maxRows: 6 }}
+            onChange={(e) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  note: e.target.value
+                }
+              }));
+            }}
+            value={phieunhap.note} />
         </FormItem>
         <FormItem
           label="Địa điểm"
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
-          {getFieldDecorator('address', {
-            rules: [{ required: false}],
-          })(
-            <Input />
-          )}
+          <Input.TextArea 
+            autosize={{ minRows: 2, maxRows: 6 }}
+            onChange={(e) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  address: e.target.value
+                }
+              }));
+            }}
+            value={phieunhap.address} />
         </FormItem>
         <FormItem
           wrapperCol={{ span: 12, offset: 5 }}
         >
         </FormItem>
-        <FormSanpham 
-          onSaveItem={(data) => {
-            this.setState({data});
-          }}
-          onDeleteItem={(id) => {
-            
-          }}
-          dispatch={this.props.dispatch} 
-          mainState={this.props.mainState}/>
       </Form>
     );
   }
 }
 
-const WrappedApp = Form.create()(App);
-
-export default WrappedApp;
+export default FormThongtin;

@@ -1,5 +1,7 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import FormThongTin from './FormThongtin'
+import FormSanpham from './FormSanpham'
 
 class FormPhieunhap extends React.Component {
 
@@ -7,7 +9,9 @@ class FormPhieunhap extends React.Component {
     return (
       <div>
         <FormThongTin 
-          onCancel={this.props.onCancel}
+          dispatch={this.props.dispatch} 
+          mainState={this.props.mainState}/>
+        <FormSanpham
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
       </div>
@@ -16,4 +20,8 @@ class FormPhieunhap extends React.Component {
   }
 }
 
-export default FormPhieunhap
+export default connect((state) => {
+  return {  
+    mainState: state.main.present
+  }
+})(FormPhieunhap)

@@ -8,7 +8,15 @@ let _designDefault = {
     userRoles: [],
     categories: [],
     kho: [],
-    products: []
+    products: [],
+    phieunhap: {
+      nguoi_giao_dich: '',
+      ma_kho: '',
+      note: '',
+      address: '',
+      products: [],
+      editingKey: ''
+    }
   },
   cloneState;
 
