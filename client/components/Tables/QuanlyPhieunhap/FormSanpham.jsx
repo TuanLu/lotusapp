@@ -272,7 +272,7 @@ class EditableTable extends React.Component {
           ...row,
           ma_phieu: maPhieu
         };
-        //If not exists ID, then update to store state 
+        //Chua co ma phieu va ID la trong
         if(!newData.id && !maPhieu) {
           newData.splice(index, 1, {
             ...newItemData
@@ -309,7 +309,16 @@ class EditableTable extends React.Component {
                   ...newItemData,
                   ...json.data
                 });
-                this.setState({ data: newData, editingKey: '' });
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    products: newData
+                  },
+                  phieuAction: {
+                    ...this.props.mainState.phieuAction,
+                    editingKey: '',
+                  }
+                }));
                 message.success(json.message);
               }
             }).catch((ex) => {

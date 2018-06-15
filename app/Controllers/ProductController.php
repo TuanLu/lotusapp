@@ -109,7 +109,7 @@ class ProductController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				//$this->superLog('Update NPP', $itemData);
+				$this->superLog('Update Sản phẩm', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {

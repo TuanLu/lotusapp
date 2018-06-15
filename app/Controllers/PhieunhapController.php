@@ -107,12 +107,13 @@ class PhieunhapController extends BaseController
 			$uuid1 = Uuid::uuid1();
 			$maPhieu = $uuid1->toString();
 			$date = new \DateTime();
+			$createOn = $date->format('Y-m-d H:i:s');
 			//Tao phieu 
 			$duLieuPhieu = array(
 				'ma_phieu' => $maPhieu,
 				'ma_kho' => $maKho,
 				'type' => 1, // 1 => Nhập
-				'create_on' => $date->format('Y-m-d H:i:s'),
+				'create_on' => $createOn,
 				'create_by' => $userId,
 				'nguoi_giao_dich' => $nguoiGiaoDich,
 				'note' => isset($params['note']) ? $params['note'] : '',
@@ -133,6 +134,7 @@ class PhieunhapController extends BaseController
 						'sl_chungtu' => $product['sl_chungtu'],
 						'sl_thucnhap' => $product['sl_thucnhap'],
 						'price' => $product['price'],
+						'create_on' => $createOn
 					);
 				}
 				$productsNum = $this->db->insert('san_pham_theo_phieu', $validProducts);
@@ -162,13 +164,89 @@ class PhieunhapController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				//$this->superLog('Update NPP', $itemData);
+				$this->superLog('Update phiếu nhập', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã sản phẩm!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
 			}
 			
+		}
+		echo json_encode($rsData);
+	}
+	public function updateProduct($request, $response)
+	{
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		$id = $request->getParam('id');
+		$params = $request->getParams();
+		$maLo = isset($params['ma_lo']) ? $params['ma_lo'] : '';
+		$maSp = isset($params['product_id']) ? $params['product_id'] : '';
+		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';		
+		//Some validation 
+		if(!$maPhieu) {
+			$rsData['message'] = 'Mã phiếu không được để trống!';
+				echo json_encode($rsData);
+				die;
+		}
+		if(!$maLo) {
+			$rsData['message'] = 'Mã lô không được để trống!';
+				echo json_encode($rsData);
+				die;
+		}
+		if(!$maSp) {
+			$rsData['message'] = 'Mã sản phẩm không được để trống!';
+				echo json_encode($rsData);
+				die;
+		}
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$date = new \DateTime();
+		$createOn = $date->format('Y-m-d H:i:s');
+		if(!$id) {
+			$itemData = array(
+				'ma_phieu' => $maPhieu,
+				'ma_lo' => $maLo,
+				'product_id' => $maSp,
+				'label' => isset($params['label']) ? $params['label'] : '',
+				'unit' => isset($params['unit']) ? $params['unit'] : '',
+				'sl_chungtu' => isset($params['sl_chungtu']) ? $params['sl_chungtu'] : '',
+				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
+				'price' => isset($params['price']) ? $params['price'] : '',
+				'create_on' => $createOn
+			);
+			$result = $this->db->insert('san_pham_theo_phieu', $itemData);
+			if($result->rowCount()) {
+				$rsData['status'] = 'success';
+				$id = $this->db->id();
+				$rsData['data'] = array('id' => $id);
+				$rsData['message'] = 'Đã thêm sản phẩm vào phiếu nhập thành công!';
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+			}
+		} else {
+			//update data base on $id
+			$itemData = [
+				'ma_phieu' => $maPhieu,
+				'ma_lo' => $maLo,
+				'product_id' => $maSp,
+				'label' => isset($params['label']) ? $params['label'] : '',
+				'unit' => isset($params['unit']) ? $params['unit'] : '',
+				'sl_chungtu' => isset($params['sl_chungtu']) ? $params['sl_chungtu'] : '',
+				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
+				'price' => isset($params['price']) ? $params['price'] : '',
+				'update_on' =>$createOn,
+			];
+			$result = $this->db->update('san_pham_theo_phieu', $itemData, ['id' => $id]);
+			if($result->rowCount()) {
+				$this->superLog('Update SP theo phiếu', $itemData);
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			}
 		}
 		echo json_encode($rsData);
 	}
