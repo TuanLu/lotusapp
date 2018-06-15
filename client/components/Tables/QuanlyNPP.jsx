@@ -176,7 +176,7 @@ class EditableTable extends React.Component {
     })
     this.state.newitem = 1
     }else{
-      message.error('Bạn đang thêm mới NPP rồi ...')
+      message.error('Bạn đang thêm mới NCC rồi ...')
     }
   }
   getDefaultFields() {
