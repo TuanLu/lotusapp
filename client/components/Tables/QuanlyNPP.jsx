@@ -79,11 +79,12 @@ class EditableTable extends React.Component {
     super(props);
     this.state = { 
       data: [], 
-      editingKey: '' 
+      editingKey: '',
+      newitem: 0
     };
     this.columns = [
       {
-        title: 'Mã NPP',
+        title: 'Mã NCC',
         dataIndex: 'ma_npp',
         width: '10%',
         editable: true,
@@ -137,7 +138,7 @@ class EditableTable extends React.Component {
                   </EditableContext.Consumer>
                   <Popconfirm
                     title="Bạn thật sự muốn huỷ?"
-                    onConfirm={() => this.cancel(record.key)}
+                    onConfirm={() => this.cancel(record)}
                   >
                     <a href="javascript:;">Huỷ</a>
                   </Popconfirm>
@@ -163,7 +164,8 @@ class EditableTable extends React.Component {
     ];
   }
   addNewRow() {
-    let rowItem = this.getDefaultFields();
+    if(this.state.newitem == 0){
+      let rowItem = this.getDefaultFields();
     rowItem = {
       ...rowItem,
       key: this.state.data.length + 1
@@ -172,6 +174,10 @@ class EditableTable extends React.Component {
       data: [rowItem, ...this.state.data],
       editingKey: rowItem.key
     })
+    this.state.newitem = 1
+    }else{
+      message.error('Bạn đang thêm mới NCC rồi ...')
+    }
   }
   getDefaultFields() {
     return {
@@ -223,6 +229,7 @@ class EditableTable extends React.Component {
             });
             this.setState({ data: newData, editingKey: '' });
             message.success(json.message);
+            this.state.newitem = 0;
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
@@ -235,8 +242,12 @@ class EditableTable extends React.Component {
       }
     });
   }
-  cancel = () => {
+  cancel = (record) => {
     this.setState({ editingKey: '' });
+    if(this.state.newitem == 1){
+      this.state.newitem = 0;
+      this.delete(record);
+    }
   }
   delete = (record) => {
     if(record.id) {
@@ -251,6 +262,7 @@ class EditableTable extends React.Component {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
           message.success(json.message);
+          this.state.newitem = 0;
         }
       })
       .catch((error) => {
@@ -345,7 +357,7 @@ class EditableTable extends React.Component {
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm mới NPP</Button>
+                  type="primary" icon="plus">Thêm mới NCC</Button>
               </div>
             </Col>
           </Row>
