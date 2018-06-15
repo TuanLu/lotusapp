@@ -18,6 +18,14 @@ $settings = require 'config/app.php';
 
 
 $container = new \Slim\Container($settings);
+//Sometime dont know the issue, just add this hanlde for app working anyway
+$container['errorHandler'] = function ($c) {
+  return function ($request, $response, $exception) use ($c) {
+      return $container['response']->withStatus(500)
+                           ->withHeader('Content-Type', 'text/html')
+                           ->write('Something went wrong!');
+  };
+};
 //Access to token
 $container["jwt"] = function ($container) {
   return new StdClass;
@@ -55,3 +63,6 @@ $container['PhieunhapController'] = function ($c) {
 
 // Get an instance of Slim.
 $app = new \Slim\App($container);
+//Might turn off all exception
+//unset($app->getContainer()['errorHandler']);
+//unset($app->getContainer()['phpErrorHandler']);
