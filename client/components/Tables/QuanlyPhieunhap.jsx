@@ -168,6 +168,7 @@ class EditableTable extends React.Component {
       note: '',
       address: '',
       products: [],
+      tinh_trang: '2',//Chờ phê duyệt
     }
   }
   addNewRow() {
