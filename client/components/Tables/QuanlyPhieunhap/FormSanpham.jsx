@@ -334,10 +334,10 @@ class EditableTable extends React.Component {
       }
     });
   }
-  cancel = () => {
+  cancel = (key) => {
     this.props.dispatch(updateStateData({
-      phieunhap: {
-        ...this.props.mainState.phieunhap,
+      phieuAction: {
+        ...this.props.mainState.phieuAction,
         editingKey: ''
       }
     }));
