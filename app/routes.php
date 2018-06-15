@@ -56,5 +56,7 @@ $app->get('/product/delete/{id}', 'ProductController:delete');
 $app->get('/phieunhap/fetch', 'PhieunhapController:fetch');
 $app->get('/phieunhap/fetchSelectedProduct/{ma_phieu}', 'PhieunhapController:fetchSelectedProduct');
 $app->post('/phieunhap/update', 'PhieunhapController:update');
+$app->post('/phieunhap/updateProduct', 'PhieunhapController:updateProduct');
 $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
+$app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
 

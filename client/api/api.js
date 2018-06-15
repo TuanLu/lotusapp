@@ -72,3 +72,16 @@ export const statusOptions = [
   {value: '0', text: 'Ngừng kích hoạt'},
   {value: '1', text: 'Kích hoạt'},
 ];
+
+export const trangThaiPhieu = [
+  {
+    id: '1',
+    value: '1',
+    text: 'Đã phê duyệt'
+  },
+  {
+    id: '2',
+    value: '2',
+    text: 'Chờ phê duyệt'
+  },
+];

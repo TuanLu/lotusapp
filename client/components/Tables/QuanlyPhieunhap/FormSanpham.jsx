@@ -23,8 +23,8 @@ const tableConfig = {
 
 const fetchConfig = {
   fetch: 'phieunhap/fetch',
-  update: 'phieunhap/update',
-  delete: 'phieunhap/delete/'
+  update: 'phieunhap/updateProduct',
+  delete: 'phieunhap/deleteProduct/'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -211,7 +211,7 @@ class EditableTable extends React.Component {
   addNewRow() {
     let {products} = this.props.mainState.phieunhap;
     let {editingKey} = this.props.mainState.phieuAction;
-    if(editingKey !== '') return false;
+    if(editingKey !== undefined && editingKey !== '') return false;
     let rowItem = this.getDefaultFields();
     rowItem = {
       ...rowItem,
@@ -262,6 +262,7 @@ class EditableTable extends React.Component {
         return;
       }
       const newData = [...this.props.mainState.phieunhap.products];
+      let maPhieu = this.props.mainState.phieunhap.ma_phieu || '';
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -269,9 +270,10 @@ class EditableTable extends React.Component {
         let newItemData = {
           ...item,
           ...row,
+          ma_phieu: maPhieu
         };
-        //If not exists ID, then update to parent state 
-        if(!newData.id) {
+        //If not exists ID, then update to store state 
+        if(!newData.id && !maPhieu) {
           newData.splice(index, 1, {
             ...newItemData
           });
@@ -286,34 +288,37 @@ class EditableTable extends React.Component {
             }
           }));
           return false;
-        }
-        fetch(ISD_BASE_URL + fetchConfig.update, {
-          method: 'POST',
-          headers: getTokenHeader(),
-          body: JSON.stringify(newItemData)
-        })
-        .then((response) => {
-          return response.json()
-        }).then((json) => {
-          if(json.status == 'error') {
-            message.error(json.message, 3);
-            if(json.show_login) {
-              this.props.dispatch(updateStateData({showLogin: true}));
-            }
-          } else {
-            //udate table state
-            newData.splice(index, 1, {
-              ...newItemData,
-              ...json.data
+        } else {
+          if(maPhieu) {
+            fetch(ISD_BASE_URL + fetchConfig.update, {
+              method: 'POST',
+              headers: getTokenHeader(),
+              body: JSON.stringify(newItemData)
+            })
+            .then((response) => {
+              return response.json()
+            }).then((json) => {
+              if(json.status == 'error') {
+                message.error(json.message, 3);
+                if(json.show_login) {
+                  this.props.dispatch(updateStateData({showLogin: true}));
+                }
+              } else {
+                //udate table state
+                newData.splice(index, 1, {
+                  ...newItemData,
+                  ...json.data
+                });
+                this.setState({ data: newData, editingKey: '' });
+                message.success(json.message);
+              }
+            }).catch((ex) => {
+              console.log('parsing failed', ex)
+              message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
             });
-            this.setState({ data: newData, editingKey: '' });
-            message.success(json.message);
           }
-        }).catch((ex) => {
-          console.log('parsing failed', ex)
-          message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
-        });
-        //End up data to server
+        }
+        
       } else {
         newData.push(data);
         this.setState({ data: newData, editingKey: '' });
@@ -338,8 +343,13 @@ class EditableTable extends React.Component {
         if(json.status == 'error') {
           message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         } else {
-          let newData = this.state.data.filter((item) => item.id != json.data);
-          this.setState({data: newData});
+          let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.id);
+          this.props.dispatch(updateStateData({
+            phieunhap: {
+              ...this.props.mainState.phieunhap,
+              products: newData
+            }
+          }));
           message.success(json.message);
         }
       })

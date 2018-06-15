@@ -1,10 +1,9 @@
 import React from 'react'
 import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 
 const formInfo = {
   person: 'Người giao hàng'
@@ -57,7 +56,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
          <Input 
-            disabled={readOnly}
+            readOnly={readOnly}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
                 phieunhap: {
@@ -93,7 +92,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
           <Input.TextArea 
-            disabled={readOnly}
+            readOnly={readOnly}
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
@@ -111,7 +110,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
           <Input.TextArea 
-            disabled={readOnly}
+            readOnly={readOnly}
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
@@ -124,8 +123,25 @@ class FormThongtin extends React.Component {
             value={phieunhap.address} />
         </FormItem>
         <FormItem
-          wrapperCol={{ span: 12, offset: 5 }}
+          label="Trạng Thái"
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}
         >
+          <Select 
+            disabled={readOnly}
+            onChange={(tinh_trang) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  tinh_trang
+                }
+              }));
+            }}
+            defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
+            {trangThaiPhieu.map((status) =>{
+              return <Option value={status.value} key={status.value}>{status.text}</Option>
+            })}
+          </Select>
         </FormItem>
       </Form>
     );
