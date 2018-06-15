@@ -52,4 +52,9 @@ $app->get('/qlkh/deleteKh/{id}', 'KhController:deleteKh');
 $app->get('/product/fetch', 'ProductController:fetch');
 $app->post('/product/update', 'ProductController:update');
 $app->get('/product/delete/{id}', 'ProductController:delete');
+//Phieu nhap router
+$app->get('/phieunhap/fetch', 'PhieunhapController:fetch');
+$app->get('/phieunhap/fetchSelectedProduct/{ma_phieu}', 'PhieunhapController:fetchSelectedProduct');
+$app->post('/phieunhap/update', 'PhieunhapController:update');
+$app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 

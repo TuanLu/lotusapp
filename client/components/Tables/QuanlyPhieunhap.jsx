@@ -23,9 +23,8 @@ const tableConfig = {
 };
 
 const fetchConfig = {
-  fetch: 'product/fetch',
-  update: 'product/update',
-  delete: 'product/delete/'
+  fetch: 'phieunhap/fetch',
+  delete: 'phieunhap/delete/'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -81,29 +80,32 @@ class EditableTable extends React.Component {
     super(props);
     this.state = { 
       data: [], 
-      editingKey: '',
-      addNewItem: true,
+      addNewItem: false,
     };
     this.columns = [
       {
-        title: 'ID',
-        dataIndex: 'id',
-        width: '10%',
-        editable: true,
-        required: true,
+        title: 'Mã Kho',
+        dataIndex: 'ma_kho',
+        //width: '15%',
+        editable: false,
       },
       {
-        title: 'Mã phiếu',
-        dataIndex: 'ma_phieu',
-        //width: '15%',
-        editable: true,
-        required: true
+        title: 'Người giao hàng',
+        dataIndex: 'nguoi_giao_dich',
+        //width: '40%',
+        editable: false,
       },
       {
         title: 'Mô tả',
         dataIndex: 'note',
         //width: '40%',
-        editable: true,
+        editable: false,
+      },
+      {
+        title: 'Tình trạng',
+        dataIndex: 'tinh_trang',
+        //width: '40%',
+        editable: false,
       },
       {
         title: 'Actions',
@@ -134,7 +136,7 @@ class EditableTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
+                  <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a>  
                   {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn xoá?"
@@ -152,32 +154,78 @@ class EditableTable extends React.Component {
       },
     ];
   }
-  addNewRow() {
-    this.setState({
-      addNewItem: true
-    })
-  }
   getDefaultFields() {
     return {
-      product_id: "",
-      category_id: "",
-      name: "",
-      unit: "",
-      min: "0",
-      max: "0",
-    };
+      id: '',
+      ma_kho: '',
+      ma_phieu: '',
+      nguoi_giao_dich: '',
+      note: '',
+      address: '',
+      products: [],
+    }
+  }
+  addNewRow() {
+    this.props.dispatch(updateStateData({
+      phieuAction: {
+        ...this.props.mainState.phieuAction,
+        addNewItem: true,
+        action: 'edit',
+        editingKey: '',
+      },
+      phieunhap: this.getDefaultFields()
+    }));
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
-  edit(key) {
-    this.setState({ editingKey: key });
+  view(phieu) {
+    let {phieunhap, phieuAction} = this.props.mainState;
+    if(phieu && phieu.ma_phieu && phieu.id) {
+      this.props.dispatch(updateStateData({
+        phieunhap: {
+          ...phieunhap,
+          ...phieu
+        },
+        phieuAction: {
+          ...phieuAction,
+          addNewItem: true,
+          action: 'view'
+        }
+      }));
+    }
   }
-  save() {
-    
-  }
-  cancel = () => {
-    this.setState({ editingKey: '' });
+  fetchData() {
+    fetch(ISD_BASE_URL + fetchConfig.fetch, {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          //Add key prop for table
+          let data = json.data.map((item, index) => ({...item, key: index}) );
+          this.setState({
+            data,
+            dataUpToDate: true
+          });
+          //Stop after fetching data
+          this.props.dispatch(updateStateData({
+            phieunhap: {
+              refresh: false
+            }
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu sản phẩm!', 3);
+      console.log(error);
+    }); 
   }
   delete = (record) => {
     if(record.id) {
@@ -207,7 +255,25 @@ class EditableTable extends React.Component {
       }  
     }
   }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let {refresh} = nextProps.mainState.phieunhap;
+    if(refresh) {
+      return {
+        dataUpToDate: null
+      }
+    }
+    return null;
+  }
+  componentDidUpdate() {
+    if(this.state.dataUpToDate === null) {
+      this.fetchData();
+    }
+  }
+  componentDidMount() {
+    this.fetchData();
+  }
   render() {
+    let {mainState} = this.props;
     const components = {
       body: {
         row: EditableFormRow,
@@ -234,12 +300,9 @@ class EditableTable extends React.Component {
 
     return (
       <React.Fragment>
-        {this.state.addNewItem ? 
+        {mainState.phieuAction.addNewItem ? 
           <FormPhieunhap
             dispatch={this.props.dispatch}
-            onCancel={() => {
-              this.setState({addNewItem: false})
-            }}
             mainState={this.props.mainState}
           />
           : 

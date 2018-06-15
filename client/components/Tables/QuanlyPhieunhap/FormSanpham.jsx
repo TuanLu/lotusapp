@@ -163,6 +163,8 @@ class EditableTable extends React.Component {
         title: 'Actions',
         dataIndex: 'operation',
         render: (text, record) => {
+          let isReadOnly = this.isReadOnly();
+          if(isReadOnly) return '';
           const editable = this.isEditing(record);
           return (
             <div style={{minWidth: 100}}>
@@ -207,23 +209,29 @@ class EditableTable extends React.Component {
     ];
   }
   addNewRow() {
-    let {products, editingKey} = this.props.mainState.phieunhap;
-    if(editingKey != '') return false;
+    let {products} = this.props.mainState.phieunhap;
+    let {editingKey} = this.props.mainState.phieuAction;
+    if(editingKey !== '') return false;
     let rowItem = this.getDefaultFields();
     rowItem = {
       ...rowItem,
       key: products.length + 1
     };
+    
     this.props.dispatch(updateStateData({
       phieunhap: {
         ...this.props.mainState.phieunhap,
         products: [rowItem, ...products],
+      },
+      phieuAction: {
+        ...this.props.mainState.phieuAction,
         editingKey: rowItem.key
       }
     }))
   }
   getDefaultFields() {
     return {
+      ma_phieu: "",
       ma_lo: "",
       product_id: "",
       label: "",
@@ -234,12 +242,16 @@ class EditableTable extends React.Component {
     };
   }
   isEditing = (record) => {
-    return record.key === this.props.mainState.phieunhap.editingKey;
+    return record.key === this.props.mainState.phieuAction.editingKey;
   };
+  isReadOnly() {
+    let {phieuAction} = this.props.mainState;
+    return phieuAction && phieuAction.action == 'view' ? true : false;
+  }
   edit(key) {
     this.props.dispatch(updateStateData({
-      phieunhap: {
-        ...this.props.mainState.phieunhap,
+      phieuAction: {
+        ...this.props.mainState.phieuAction,
         editingKey: key
       }
     }));
@@ -266,8 +278,11 @@ class EditableTable extends React.Component {
           this.props.dispatch(updateStateData({
             phieunhap: {
               ...this.props.mainState.phieunhap,
-              editingKey: '',
               products: newData
+            },
+            phieuAction: {
+              ...this.props.mainState.phieuAction,
+              editingKey: '',
             }
           }));
           return false;
@@ -368,10 +383,38 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
+  fetchSelectedProduct() {
+    let {phieunhap} = this.props.mainState;
+    let maPhieu = phieunhap.ma_phieu;
+    fetch(ISD_BASE_URL + `phieunhap/fetchSelectedProduct/${maPhieu}`, {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            phieunhap: {
+              ...this.props.mainState.phieunhap,
+              products: json.data
+            }
+          }));          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
-    let {products} = this.props.mainState;
+    let {products, phieunhap} = this.props.mainState;
     if(!products.length) {
       this.fetchProduct();
+    }
+    if(phieunhap.ma_phieu) {
+      this.fetchSelectedProduct();
     }
   }
   render() {
@@ -381,7 +424,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-   let products = this.props.mainState.products;
+    let products = this.props.mainState.products;
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -395,11 +438,11 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: this.isEditing(record),
           required: col.required,
-          products
+          products,
         }),
       };
     });
-    let selectedProducts = this.props.mainState.phieunhap.products;
+    let selectedProducts = this.props.mainState.phieunhap.products || [];
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -409,9 +452,10 @@ class EditableTable extends React.Component {
             </Col>
             <Col span={12}>
               <div className="action-btns">
-                <Button 
+                {!this.isReadOnly() ? 
+                  <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button> : null}
               </div>
             </Col>
           </Row>

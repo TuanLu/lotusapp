@@ -48,6 +48,9 @@ $container['KhController'] = function ($c) {
 $container['ProductController'] = function ($c) {
   return new \App\Controllers\ProductController($c);
 };
+$container['PhieunhapController'] = function ($c) {
+  return new \App\Controllers\PhieunhapController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

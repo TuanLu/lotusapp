@@ -15,7 +15,11 @@ let _designDefault = {
       note: '',
       address: '',
       products: [],
-      editingKey: ''
+      editingKey: '',
+    },
+    phieuAction: {
+      addNewItem: false,
+      action: 'view',//view, edit, cancel
     }
   },
   cloneState;

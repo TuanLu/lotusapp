@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Select, Input, Button, Row, Col,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader} from 'ISD_API'
 const FormItem = Form.Item;
@@ -13,32 +13,6 @@ const formInfo = {
 class FormThongtin extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      products: []
-    }
-  }
-  handleSubmit = (e) => {
-    e.preventDefault();
-    let isValid = this.validBeforeSave();
-    if(isValid) {
-
-    }
-  }
-  validBeforeSave() {
-    let {phieunhap} = this.props.mainState;
-    if(!phieunhap.ma_kho) {
-      message.error('Mã kho không được để trống');
-      return false;
-    }
-    if(!phieunhap.nguoi_giao_dich) {
-      message.error('Thiếu thông tin người giao dịch');
-      return false;
-    }
-    if(!phieunhap.products.length) {
-      message.error('Chưa có sản phẩm nào trong phiếu này.');
-      return false;
-    }
-    return true;
   }
   fetchData() {
     fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
@@ -68,7 +42,8 @@ class FormThongtin extends React.Component {
     }
   }
   render() {
-    let {phieunhap} = this.props.mainState;
+    let {phieunhap, phieuAction} = this.props.mainState;
+    let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
     let options = '';
     let {kho} = this.props.mainState;
     if(kho.length) {
@@ -76,36 +51,13 @@ class FormThongtin extends React.Component {
     }
     return (
       <Form>
-        <div className="table-operations">
-          <Row>
-            <Col span={12}>
-              <h2 className="head-title">Thông tin phiếu nhập</h2>
-            </Col>
-            <Col span={12}>
-              <div className="action-btns">
-                <Button 
-                  onClick={this.handleSubmit}
-                  type="primary"
-                  htmlType="button" 
-                  icon="save">Lưu phiếu nhập</Button>
-                <Popconfirm
-                  title="Bạn thật sự muốn huỷ?"
-                  onConfirm={() => this.props.onCancel()}
-                >
-                  <Button 
-                    type="danger">Huỷ</Button>
-                </Popconfirm>
-                
-              </div>
-            </Col>
-          </Row>
-        </div>
         <FormItem
           label={formInfo.person}
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
          <Input 
+            disabled={readOnly}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
                 phieunhap: {
@@ -122,6 +74,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
           <Select 
+            disabled={readOnly}
             onChange={(ma_kho) => {
               this.props.dispatch(updateStateData({
                 phieunhap: {
@@ -140,6 +93,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
           <Input.TextArea 
+            disabled={readOnly}
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
@@ -157,6 +111,7 @@ class FormThongtin extends React.Component {
           wrapperCol={{ span: 12 }}
         >
           <Input.TextArea 
+            disabled={readOnly}
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
