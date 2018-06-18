@@ -40,12 +40,12 @@ class EditableCell extends React.Component {
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
-            placeholder="Chọn sản phẩm">
+            placeholder="Nhập mã sản phẩm">
            {products.map((product) => {
               return <Select.Option 
-              key={product.id} 
-              value={product.id}>
-                {product.name}
+              key={product.product_id} 
+              value={product.product_id}>
+                {product.product_id}
               </Select.Option>
            })}
           </Select>
@@ -114,18 +114,18 @@ class EditableTable extends React.Component {
         required: true,
       },
       {
-        title: 'Sản phẩm',
+        title: 'Mã Sản phẩm',
         dataIndex: 'product_id',
         //width: '10%',
         editable: true,
         required: true,
-        render: (text, record) => {
-          let label = text;
-          if(this.state.productList && this.state.productList[text]) {
-            label = this.state.productList[text]['name'];
-          }
-          return <span>{label}</span>
-        }
+        // render: (text, record) => {
+        //   let label = text;
+        //   if(this.state.productList && this.state.productList[text]) {
+        //     label = this.state.productList[text]['name'];
+        //   }
+        //   return <span>{label}</span>
+        // }
       },
       {
         title: 'Tên, Nhãn, Quy cách',
