@@ -40,11 +40,7 @@ class EditableCell extends React.Component {
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
-<<<<<<< HEAD
             placeholder="Chọn VT">
-=======
-            placeholder="Nhập mã sản phẩm">
->>>>>>> f2e4e3dd8f67da0d3f7f63001dfc764fa0ccf690
            {products.map((product) => {
               return <Select.Option 
               key={product.product_id} 
