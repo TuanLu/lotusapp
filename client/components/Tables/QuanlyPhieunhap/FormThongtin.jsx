@@ -1,5 +1,5 @@
 import React from 'react'
-//import moment from 'moment';
+import moment from 'moment';
 import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
@@ -177,7 +177,7 @@ class FormThongtin extends React.Component {
               //   }
               // }));
             }}
-            value={phieunhap.create_on} />
+            value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
         </FormItem>
       </Form>
     );
