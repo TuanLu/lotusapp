@@ -40,12 +40,16 @@ class EditableCell extends React.Component {
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
+<<<<<<< HEAD
             placeholder="Chọn VT">
+=======
+            placeholder="Nhập mã sản phẩm">
+>>>>>>> f2e4e3dd8f67da0d3f7f63001dfc764fa0ccf690
            {products.map((product) => {
               return <Select.Option 
-              key={product.id} 
-              value={product.id}>
-                {product.name}
+              key={product.product_id} 
+              value={product.product_id}>
+                {product.product_id}
               </Select.Option>
            })}
           </Select>
@@ -119,13 +123,13 @@ class EditableTable extends React.Component {
         //width: '10%',
         editable: true,
         required: true,
-        render: (text, record) => {
-          let label = text;
-          if(this.state.productList && this.state.productList[text]) {
-            label = this.state.productList[text]['name'];
-          }
-          return <span>{label}</span>
-        }
+        // render: (text, record) => {
+        //   let label = text;
+        //   if(this.state.productList && this.state.productList[text]) {
+        //     label = this.state.productList[text]['name'];
+        //   }
+        //   return <span>{label}</span>
+        // }
       },
       {
         title: 'Tên, Nhãn, Quy cách',
