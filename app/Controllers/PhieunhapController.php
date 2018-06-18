@@ -8,15 +8,20 @@ class PhieunhapController extends BaseController
 {
 	private $tableName = 'phieu_nhap_xuat_kho';
 
-	const TABLE_FIELDS = [
-		'id',
-		'ma_phieu',
-		'ma_kho',
-		'note',
-		'nguoi_giao_dich',
-		'address',
-		'tinh_trang'
-	];
+	private function getColumns() {
+		$columns = [
+			'id',
+			'ma_phieu',
+			'ma_kho',
+			'note',
+			'nguoi_giao_dich',
+			'address',
+			'tinh_trang',
+			'so_chung_tu',
+			'create_on' => Medoo::raw("DATE_FORMAT( create_on, '%d/%m/%Y' )")
+		];
+		return $columns;
+	}
  
 	public function fetch($request){
 		//$this->logger->addInfo('Request Npp path');
@@ -25,11 +30,12 @@ class PhieunhapController extends BaseController
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
 		// Columns to select.
-		$columns = self::TABLE_FIELDS;
+		$columns = $this->getColumns();
 		//echo "<pre>";
 		//print_r($columns);die;
 		$collection = $this->db->select($this->tableName, $columns, [
-			"status" => 1
+			"status" => 1,
+			"ORDER" => ["id" => "DESC"],
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -118,6 +124,7 @@ class PhieunhapController extends BaseController
 				'nguoi_giao_dich' => $nguoiGiaoDich,
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
+				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '', // 2 => Chờ phê duyệt
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
@@ -140,7 +147,8 @@ class PhieunhapController extends BaseController
 				$productsNum = $this->db->insert('san_pham_theo_phieu', $validProducts);
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
-					$data = $this->db->select('phieu_nhap_xuat_kho', self::TABLE_FIELDS, ['ma_phieu' => $maPhieu]);
+					$columns = $this->getColumns();
+					$data = $this->db->select('phieu_nhap_xuat_kho', $columns, ['ma_phieu' => $maPhieu]);
 					$rsData['data'] = $data[0];
 					$rsData['message'] = 'Đã thêm phiếu nhập thành công!';
 				} else {
@@ -160,6 +168,7 @@ class PhieunhapController extends BaseController
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
 				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '',
+				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);

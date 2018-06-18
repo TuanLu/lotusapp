@@ -104,6 +104,12 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
+        title: 'Ngày Tạo',
+        dataIndex: 'create_on',
+        //width: '40%',
+        editable: false,
+      },
+      {
         title: 'Tình trạng',
         dataIndex: 'tinh_trang',
         //width: '40%',
@@ -165,6 +171,7 @@ class EditableTable extends React.Component {
       ma_kho: '',
       ma_phieu: '',
       nguoi_giao_dich: '',
+      so_chung_tu: '',
       note: '',
       address: '',
       products: [],

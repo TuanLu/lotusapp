@@ -1,9 +1,11 @@
 import React from 'react'
+//import moment from 'moment';
 import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
 const Option = Select.Option;
+const dateFormat = 'YYYY/MM/DD';
 
 const formInfo = {
   person: 'Người giao hàng'
@@ -50,6 +52,23 @@ class FormThongtin extends React.Component {
     }
     return (
       <Form>
+        <FormItem
+          label={'Số chứng từ'}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}
+        >
+         <Input 
+            readOnly={readOnly}
+            onChange={(e) => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  so_chung_tu: e.target.value
+                }
+              }));
+            }}
+            value={phieunhap.so_chung_tu} />
+        </FormItem>
         <FormItem
           label={formInfo.person}
           labelCol={{ span: 5 }}
@@ -122,7 +141,7 @@ class FormThongtin extends React.Component {
             }}
             value={phieunhap.address} />
         </FormItem>
-        <FormItem
+        {/* <FormItem
           label="Trạng Thái"
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
@@ -142,6 +161,23 @@ class FormThongtin extends React.Component {
               return <Option value={status.value} key={status.value}>{status.text}</Option>
             })}
           </Select>
+        </FormItem> */}
+        <FormItem
+          label={'Ngày tạo'}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}
+        >
+          <Input 
+            readOnly={true}
+            onChange={(e) => {
+              // this.props.dispatch(updateStateData({
+              //   phieunhap: {
+              //     ...this.props.mainState.phieunhap,
+              //     nguoi_giao_dich: e.target.value
+              //   }
+              // }));
+            }}
+            value={phieunhap.create_on} />
         </FormItem>
       </Form>
     );
