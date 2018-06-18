@@ -17,8 +17,8 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const tableConfig = {
-  headTitle: 'Sản phẩm của phiếu nhập',
-  addNewTitle: 'Thêm sản phẩm vào phiếu nhập'
+  headTitle: 'Vật tư của phiếu nhập',
+  addNewTitle: 'Thêm vật tư vào phiếu nhập'
 };
 
 const fetchConfig = {
@@ -40,7 +40,7 @@ class EditableCell extends React.Component {
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
-            placeholder="Chọn sản phẩm">
+            placeholder="Chọn VT">
            {products.map((product) => {
               return <Select.Option 
               key={product.id} 
@@ -114,7 +114,7 @@ class EditableTable extends React.Component {
         required: true,
       },
       {
-        title: 'Sản phẩm',
+        title: 'Mã VT',
         dataIndex: 'product_id',
         //width: '10%',
         editable: true,

@@ -81,7 +81,7 @@ class ProductController extends BaseController
 			$where = ['product_id' => $itemData['product_id']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã sản phẩm [". $itemData['product_id'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã VT [". $itemData['product_id'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);

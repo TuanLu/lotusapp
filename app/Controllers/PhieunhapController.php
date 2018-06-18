@@ -198,7 +198,7 @@ class PhieunhapController extends BaseController
 				die;
 		}
 		if(!$maSp) {
-			$rsData['message'] = 'Mã sản phẩm không được để trống!';
+			$rsData['message'] = 'Mã VT không được để trống!';
 				echo json_encode($rsData);
 				die;
 		}

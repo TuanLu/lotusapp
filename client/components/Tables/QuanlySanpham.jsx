@@ -36,7 +36,7 @@ class EditableCell extends React.Component {
         let categories = this.props.categories;
         return (
           <Select 
-            style={{ width: 150 }}
+            style={{ width: 250 }}
             placeholder="Chọn danh mục">
            {categories.map((category) => {
               return <Select.Option 
@@ -104,7 +104,7 @@ class EditableTable extends React.Component {
       {
         title: 'Mã Danh mục',
         dataIndex: 'category_id',
-        //width: '10%',
+        width: '15%',
         editable: true,
         required: true,
         render: (text, record) => {
@@ -116,9 +116,9 @@ class EditableTable extends React.Component {
         }
       },
       {
-        title: 'Mã SP',
+        title: 'Mã VT',
         dataIndex: 'product_id',
-        width: '10%',
+        width: '15%',
         editable: true,
         required: true,
       },
@@ -136,13 +136,13 @@ class EditableTable extends React.Component {
         editable: true,
       },
       {
-        title: 'Min trong kho',
+        title: 'Min',
         dataIndex: 'min',
         //width: '40%',
         editable: true,
       },
       {
-        title: 'Max trong kho',
+        title: 'Max',
         dataIndex: 'max',
         //width: '40%',
         editable: true,
