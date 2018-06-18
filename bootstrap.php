@@ -64,5 +64,5 @@ $container['PhieunhapController'] = function ($c) {
 // Get an instance of Slim.
 $app = new \Slim\App($container);
 //Might turn off all exception
-//unset($app->getContainer()['errorHandler']);
-//unset($app->getContainer()['phpErrorHandler']);
+unset($app->getContainer()['errorHandler']);
+unset($app->getContainer()['phpErrorHandler']);
