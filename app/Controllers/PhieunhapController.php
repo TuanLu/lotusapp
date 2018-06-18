@@ -295,4 +295,36 @@ class PhieunhapController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
+	public function fetchProductDetailsList($request){
+		//$this->logger->addInfo('Request Npp path');
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+		);
+		// Columns to select.
+		$columns = [
+				'products.id',
+				'products.product_id',
+				'products.category_id',
+				'products.name',
+				//'price',
+				'products.unit',
+				'products.min',
+				'products.max',
+				'lotus_cats.name(category_name)'
+		];
+		$collection = $this->db->select('products', [
+			"[>]lotus_cats" => ["category_id" => "id"],
+		], $columns, [
+			"products.status" => 1
+		]);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $collection;
+		}
+		header("Content-Type: application/json");
+        echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
+        exit;
+	}
 }

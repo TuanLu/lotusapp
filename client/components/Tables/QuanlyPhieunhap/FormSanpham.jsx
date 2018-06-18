@@ -45,7 +45,7 @@ class EditableCell extends React.Component {
               return <Select.Option 
               key={product.product_id} 
               value={product.product_id}>
-                {product.product_id}
+                {`${product.product_id} - ${product.category_name} - ${product.name} - ${product.unit} `}
               </Select.Option>
            })}
           </Select>
@@ -379,7 +379,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchProduct() {
-    fetch(ISD_BASE_URL + 'product/fetch', {
+    fetch(ISD_BASE_URL + 'phieunhap/fetchProductDetailsList', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())

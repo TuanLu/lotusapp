@@ -111,3 +111,6 @@ td:hover .editable-cell-icon {
   width: 250px!important;
   max-width: 250px!important;
 } */
+.ant-select-dropdown {
+  width: initial!important;
+}
