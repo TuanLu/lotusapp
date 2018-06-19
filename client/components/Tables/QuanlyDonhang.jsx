@@ -21,16 +21,6 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'ranking':
-        return (
-          <Select placeholder="Chọn xếp hạng">
-            <Select.Option value="A">A</Select.Option>
-            <Select.Option value="B">B</Select.Option>
-            <Select.Option value="C">C</Select.Option>
-            <Select.Option value="D">D</Select.Option>
-          </Select>
-        );
-        break;
       default:
         return <Input />;
         break;
@@ -111,7 +101,7 @@ class EditableTable extends React.Component {
         editable: true,
       },
       {
-        title: 'Tên hàng đặt',
+        title: 'Mã sản phẩm',
         dataIndex: 'product_id',
         //width: '40%',
         editable: true,
@@ -325,23 +315,7 @@ class EditableTable extends React.Component {
       },
     };
 
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
+    
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
