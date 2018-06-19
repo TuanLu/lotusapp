@@ -6,7 +6,7 @@ use \Monolog\Logger;
 
 class OrderController extends BaseController
 {
-	private $tableName = 'lotus_order';
+	private $tableName = 'lotus_orders';
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
  
@@ -18,11 +18,15 @@ class OrderController extends BaseController
 		// Columns to select.
 		$columns = [
 				'id',
-				'ma_dh',
+				'ma_order',
 				'name',
 				'phone',
-				'adress',
-				'description'
+				'address',
+				'product_id',
+				'qty',
+				'date_delive',
+				'status',
+				'create_on'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
@@ -46,14 +50,15 @@ class OrderController extends BaseController
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
 		//die($id);
-		$maKh = $request->getParam('ma_dh');
+		$maDh = $request->getParam('ma_order');
 		$name = $request->getParam('name');
 		$phone = $request->getParam('phone');
-		$adress = $request->getParam('adress');
-		$address = $request->getParam('description');
+		$pid = $request->getParam('product_id');
+		$address = $request->getParam('address');
+		$qty = $request->getParam('qty');
 		if(!$id) {
 			//Insert new data to db
-			if(!$maKh) {
+			if(!$maDh) {
 				$rsData['message'] = 'Mã đơn hàng không được để trống!';
 				echo json_encode($rsData);
 				die;
@@ -65,18 +70,21 @@ class OrderController extends BaseController
 			}
 			$date = new \DateTime();
 			$itemData = [
-				'ma_dh' => $maKh,
+				'ma_order' => $maDh,
+				'product_id' => $pid,
+				'qty' => $qty,
+				'date_delive' => $date->format('Y-m-d H:i:s'),
+				'status' => 1,
 				'name' => $name,
 				'phone' => $phone,
-				'adress' => $adress,
-				'description' => $address,
+				'address' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			$selectColumns = ['id', 'ma_dh'];
-			$where = ['ma_dh' => $itemData['ma_dh']];
+			$selectColumns = ['id', 'ma_order'];
+			$where = ['ma_order' => $itemData['ma_order']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã đơn hàng [". $itemData['ma_dh'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã đơn hàng [". $itemData['ma_order'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
@@ -86,26 +94,29 @@ class OrderController extends BaseController
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã DH: ' . $maDh;
 			}
 		} else {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
-				'ma_dh' => $maKh,
+				'ma_order' => $maDh,
+				'product_id' => $pid,
+				'qty' => $qty,
+				'date_delive' => $date->format('Y-m-d H:i:s'),
+				'status' => 1,
 				'name' => $name,
 				'phone' => $phone,
-				'adress' => $adress,
-				'description' => $address,
-				'update_on' => $date->format('Y-m-d H:i:s'),
+				'address' => $address,
+				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update KH', $itemData);
+				$this->superLog('Update DH', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã DH: ' . $maDh;
 			}
 			
 		}

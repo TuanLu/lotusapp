@@ -85,7 +85,7 @@ class EditableTable extends React.Component {
     this.columns = [
       {
         title: 'Mã Đơn Hàng',
-        dataIndex: 'ma_donhang',
+        dataIndex: 'ma_order',
         width: '10%',
         editable: true,
         required: true,
@@ -126,12 +126,7 @@ class EditableTable extends React.Component {
         title: 'Ngày nhận hàng',
         dataIndex: 'date_delive',
         //width: '40%',
-        //editable: true,
-        render: (text, record) => {
-          return (
-            <DatePicker onChange={onChange} />
-          )
-        }
+        editable: true,
       },
       {
         title: 'Actions',
@@ -198,11 +193,12 @@ class EditableTable extends React.Component {
   }
   getDefaultFields() {
     return {
-      ma_donhang: "",
+      ma_order: "",
       name: "",
-      address: "",
       phone: "",
-      ranking: "A",
+      product_id: "",
+      qty: "",
+      date_delive: ""
     };
   }
   isEditing = (record) => {
