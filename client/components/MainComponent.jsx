@@ -74,7 +74,7 @@ class MainComponent extends React.Component {
     let {dispatch, mainState} = this.props;
     switch (router) {
       case 'qldh':
-        return <QuanlyDh dispatch={dispatch} mainState={mainState}/>
+        return <QuanlyDonhang dispatch={dispatch} mainState={mainState}/>
         break;
       case 'npp':
         return <QuanlyNPP dispatch={dispatch} mainState={mainState}/>

@@ -4,7 +4,7 @@ use \Medoo\Medoo;
 use \Monolog\Logger;
 //use \Ramsey\Uuid\Uuid;
 
-class DhController extends BaseController
+class OrderController extends BaseController
 {
 	private $tableName = 'lotus_order';
 	const ERROR_STATUS = 'error';
@@ -54,12 +54,12 @@ class DhController extends BaseController
 		if(!$id) {
 			//Insert new data to db
 			if(!$maKh) {
-				$rsData['message'] = 'Mã khách hàng không được để trống!';
+				$rsData['message'] = 'Mã đơn hàng không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên khách hàng không được để trống!';
+				$rsData['message'] = 'Tên đơn hàng không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
@@ -76,13 +76,13 @@ class DhController extends BaseController
 			$where = ['ma_dh' => $itemData['ma_dh']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã khách hàng [". $itemData['ma_dh'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã đơn hàng [". $itemData['ma_dh'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm khách hàng mới thành công!';
+				$rsData['message'] = 'Đã thêm đơn hàng mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
@@ -124,7 +124,7 @@ class DhController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete KH', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá khách hàng khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá đơn hàng khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {
