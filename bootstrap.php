@@ -59,6 +59,9 @@ $container['ProductController'] = function ($c) {
 $container['PhieunhapController'] = function ($c) {
   return new \App\Controllers\PhieunhapController($c);
 };
+$container['DonhangController'] = function ($c) {
+  return new \App\Controllers\DonhangController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

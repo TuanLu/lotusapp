@@ -16,6 +16,7 @@ import QuanlyCat from './Tables/QuanlyCate'
 import QuanlyKh from './Tables/QuanlyKh'
 import QuanlySanpham from './Tables/QuanlySanpham'
 import QuanlyPhieunhap from './Tables/QuanlyPhieunhap'
+import QuanlyDonhang from './Tables/QuanlyDonhang'
 
 class MainComponent extends React.Component {
   state = {
@@ -72,6 +73,9 @@ class MainComponent extends React.Component {
   renderContent(router) {
     let {dispatch, mainState} = this.props;
     switch (router) {
+      case 'qldh':
+        return <QuanlyDh dispatch={dispatch} mainState={mainState}/>
+        break;
       case 'npp':
         return <QuanlyNPP dispatch={dispatch} mainState={mainState}/>
         break;

@@ -13,14 +13,14 @@ class UserInfo extends React.Component {
     
     return (
       <div className="admin-user-info">
-        <span>Xin chao, <b>{this.showUserName()}</b></span>
+        <span>Xin chào, <b>{this.showUserName()}</b></span>
         <Button 
           onClick={()=> {
             this.props.dispatch(updateStateData({
               showLogin: true
             }));
           }}
-          type="primary" ghost>Logout</Button>
+          type="primary" ghost>Đăng xuất</Button>
       </div>
     );
   }

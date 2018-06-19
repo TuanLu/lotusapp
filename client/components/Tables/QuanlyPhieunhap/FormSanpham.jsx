@@ -128,7 +128,7 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Tên, Nhãn, Quy cách',
+        title: 'Quy cách',
         dataIndex: 'label',
         //width: '15%',
         editable: true,

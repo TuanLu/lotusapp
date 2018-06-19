@@ -48,6 +48,10 @@ $app->get('/qlkho/deleteKho/{id}', 'KhoController:deleteKho');
 $app->get('/qlkh/fetchKh', 'KhController:fetchKh');
 $app->post('/qlkh/updateKh', 'KhController:updateKh');
 $app->get('/qlkh/deleteKh/{id}', 'KhController:deleteKh');
+//Đơn hàng router
+$app->get('/order/fetch', 'OrderController:fetch');
+$app->post('/order/update', 'OrderController:update');
+$app->get('/order/delete/{id}', 'OrderController:delete');
 //Product router
 $app->get('/product/fetch', 'ProductController:fetch');
 $app->post('/product/update', 'ProductController:update');

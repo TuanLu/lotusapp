@@ -4,6 +4,11 @@ namespace App\Helper;
 class Roles {
   static function getRoles() {
     return [
+      'qldh' => [
+        'label' => 'Quản lý Đơn hàng', 
+        'icon' => 'shopping-cart',
+        'path' => 'qldh'
+      ],
       'npp' => [
         'label' => 'Quản lý NCC', 
         'icon' => 'solution',
