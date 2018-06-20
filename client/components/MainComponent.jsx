@@ -12,10 +12,12 @@ import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 import Loading from './Loading'
 import QuanlyKho from './Tables/QuanlyKho'
+import QuanlyVtkho from './Tables/QuanlyVtkho'
 import QuanlyCat from './Tables/QuanlyCate'
 import QuanlyKh from './Tables/QuanlyKh'
 import QuanlySanpham from './Tables/QuanlySanpham'
 import QuanlyPhieunhap from './Tables/QuanlyPhieunhap'
+import QuanlyDonhang from './Tables/QuanlyDonhang'
 
 class MainComponent extends React.Component {
   state = {
@@ -72,6 +74,9 @@ class MainComponent extends React.Component {
   renderContent(router) {
     let {dispatch, mainState} = this.props;
     switch (router) {
+      case 'qldh':
+        return <QuanlyDonhang dispatch={dispatch} mainState={mainState}/>
+        break;
       case 'npp':
         return <QuanlyNPP dispatch={dispatch} mainState={mainState}/>
         break;
@@ -80,6 +85,9 @@ class MainComponent extends React.Component {
         break;
       case 'qlkho':
         return <QuanlyKho dispatch={dispatch}/>
+        break;
+      case 'qlvtkho':
+        return <QuanlyVtkho mainState={mainState} dispatch={dispatch}/>
         break;
       case 'qlcate':
         return <QuanlyCat dispatch={dispatch}/>
