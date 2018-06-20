@@ -180,7 +180,7 @@ class EditableTable extends React.Component {
         title: 'QC Duyệt',
         dataIndex: 'qc_check',
         editable: false,
-        width: 150,
+        width: 200,
         show: false,
         render: (text, record) => {
           return this.showCheckStatus(text);
