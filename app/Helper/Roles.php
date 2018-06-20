@@ -44,6 +44,18 @@ class Roles {
         'icon' => 'team',
         'path' => 'qlkh'
       ],
+      'nhomqa' => [
+        'label' => 'Nhóm QA', 
+        'icon' => 'team',
+        'path' => 'nhomqa',
+        'include_in_menu' => false
+      ],
+      'nhomqc' => [
+        'label' => 'Nhóm QC', 
+        'icon' => 'team',
+        'path' => 'nhomqc',
+        'include_in_menu' => false
+      ],
     ];
   }
 }

@@ -8,7 +8,8 @@ class SidebarMenu extends React.Component {
   renderMenuItem() {
     let {mainState} = this.props;
     let {defaultRouter} = mainState;
-    let menuItems = mainState.userRoles.map((role, index) => {
+    let menuItems = mainState.userRoles.filter((role) => role.include_in_menu !== false);
+    menuItems = menuItems.map((role, index) => {
       return (
         <Menu.Item
           onClick={() => {

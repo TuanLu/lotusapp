@@ -539,6 +539,53 @@ class EditableTable extends React.Component {
     );
     return menu;
   }
+  isQC() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhomqc') return true;
+    }
+    return false;
+  }
+  isQA() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhomqa') return true;
+    }
+    return false;
+  }
+  getActionsByRoles() {
+    let {selectedRowKeys, loading} = this.state;
+    const hasSelected = selectedRowKeys.length > 0;
+    return (
+      <div style={{ marginBottom: 16 }}>
+        {this.isQC()? 
+        <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
+          <Button
+            type="primary"
+            //onClick={this.start}
+            loading={loading}
+          >
+            QC Phê duyệt
+          </Button>
+        </Dropdown>
+        : null}
+        {this.isQA()? 
+          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
+           <Button
+             type="primary"
+             //onClick={this.start}
+             loading={loading}
+           >
+             QA Phê duyệt
+           </Button>
+          </Dropdown>
+        : null} 
+        <span style={{ marginLeft: 8 }}>
+          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
+        </span>
+      </div>
+    );
+  }
   componentDidMount() {
     let {products, phieunhap} = this.props.mainState;
     if(!products.length) {
@@ -575,13 +622,10 @@ class EditableTable extends React.Component {
     });
     //columns = columns.filter((column) => column.show !== false)
     let selectedProducts = this.props.mainState.phieunhap.products || [];
-    const { loading, selectedRowKeys } = this.state;
     const rowSelection = {
-      selectedRowKeys,
+      selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
     };
-    const hasSelected = selectedRowKeys.length > 0;
-   
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -599,30 +643,7 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-            <Button
-              type="primary"
-              //onClick={this.start}
-              loading={loading}
-            >
-              QC Phê duyệt
-            </Button>
-          </Dropdown>
-          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-            <Button
-              type="primary"
-              //onClick={this.start}
-              loading={loading}
-            >
-              QA Phê duyệt
-            </Button>
-          </Dropdown>
-          
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-          </span>
-        </div>
+        {this.getActionsByRoles()}
         <Table
           rowSelection={rowSelection}
           components={components}
