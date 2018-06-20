@@ -19,9 +19,7 @@ class OrderController extends BaseController
 		$columns = [
 				'id',
 				'ma_order',
-				'name',
-				'phone',
-				'address',
+				'ma_kh',
 				'product_id',
 				'qty',
 				'date_delive',
@@ -51,10 +49,8 @@ class OrderController extends BaseController
 		$id = $request->getParam('id');
 		//die($id);
 		$maDh = $request->getParam('ma_order');
-		$name = $request->getParam('name');
-		$phone = $request->getParam('phone');
+		$maKh = $request->getParam('ma_kh');
 		$pid = $request->getParam('product_id');
-		$address = $request->getParam('address');
 		$qty = $request->getParam('qty');
 		if(!$id) {
 			//Insert new data to db
@@ -63,8 +59,8 @@ class OrderController extends BaseController
 				echo json_encode($rsData);
 				die;
 			}
-			if(!$name) {
-				$rsData['message'] = 'Tên đơn hàng không được để trống!';
+			if(!$maKh) {
+				$rsData['message'] = 'Mã khách hàng không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
@@ -75,9 +71,7 @@ class OrderController extends BaseController
 				'qty' => $qty,
 				'date_delive' => $date->format('Y-m-d H:i:s'),
 				'status' => 1,
-				'name' => $name,
-				'phone' => $phone,
-				'address' => $address,
+				'ma_kh' => $maKh,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$selectColumns = ['id', 'ma_order'];
@@ -105,9 +99,7 @@ class OrderController extends BaseController
 				'qty' => $qty,
 				'date_delive' => $date->format('Y-m-d H:i:s'),
 				'status' => 1,
-				'name' => $name,
-				'phone' => $phone,
-				'address' => $address,
+				'ma_kh' => $maKh,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);

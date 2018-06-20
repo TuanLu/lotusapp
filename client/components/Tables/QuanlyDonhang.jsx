@@ -21,11 +21,45 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
+      case 'ma_kh':
+        let khachhang = this.props.khachhang;
+        return (
+          <Select 
+            style={{ width: 250 }}
+            placeholder="Chọn khách hàng">
+           {khachhang.map((khachhang) => {
+              return <Select.Option 
+              key={khachhang.id} 
+              value={khachhang.name}>
+                {`${khachhang.id} - ${khachhang.name}`}
+              </Select.Option>
+           })}
+          </Select>
+        );
+        break;
+      case 'product_id':
+        let products = this.props.products;
+        return (
+          <Select 
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            style={{ width: 200 }}
+            placeholder="Chọn VT">
+           {products.map((product) => {
+              return <Select.Option 
+              key={product.id} 
+              value={product.product_id}> 
+                {`${product.product_id} - ${product.name} - ${product.unit} `}
+              </Select.Option>
+           })}
+          </Select>
+        );
+        break;
       default:
         return <Input />;
         break;
     }
-    
   };
   render() {
     const {
@@ -81,24 +115,11 @@ class EditableTable extends React.Component {
         required: true,
       },
       {
-        title: 'Tên Khách hàng',
-        dataIndex: 'name',
+        title: 'Mã Khách hàng',
+        dataIndex: 'ma_kh',
         //width: '15%',
         editable: true,
         required: true
-      },
-      {
-        title: 'Địa chỉ',
-        dataIndex: 'address',
-        //width: '40%',
-        editable: true,
-        required: true
-      },
-      {
-        title: 'Điện thoại',
-        dataIndex: 'phone',
-        //width: '40%',
-        editable: true,
       },
       {
         title: 'Mã sản phẩm',
@@ -304,7 +325,57 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  fetchKhachhang() {
+    fetch(ISD_BASE_URL + 'qlkh/fetchKh', {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            khachhang: json.data
+          }));
+          this.setState({
+            khachhangList: convertArrayObjectToObject(json.data)
+          });
+          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  fetchProduct() {
+    fetch(ISD_BASE_URL + 'product/fetch', {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            products: json.data
+          }));
+          this.setState({
+            productList: convertArrayObjectToObject(json.data)
+          });
+          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
+    this.fetchKhachhang();
+    this.fetchProduct();
     this.fetchData();
   }
   render() {
@@ -315,6 +386,8 @@ class EditableTable extends React.Component {
       },
     };
 
+    let products = this.props.mainState.products;
+    let khachhang = this.props.mainState.khachhang;
     
     const columns = this.columns.map((col) => {
       if (!col.editable) {
@@ -328,7 +401,9 @@ class EditableTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          required: col.required
+          required: col.required,
+          products,
+          khachhang
         }),
       };
     });

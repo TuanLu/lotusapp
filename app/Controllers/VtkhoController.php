@@ -22,7 +22,6 @@ class VtkhoController extends BaseController
 				'ma_kho',
 				'name',
 				'description',
-				'create_on',
 				'status'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
@@ -49,7 +48,7 @@ class VtkhoController extends BaseController
 		//die($id);
 		$maKho = $request->getParam('ma_kho');
 		$name = $request->getParam('name');
-		$description = $request->getParam('description');
+		$address = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
 			if(!$maKho) {
@@ -66,32 +65,45 @@ class VtkhoController extends BaseController
 			$itemData = [
 				'ma_kho' => $maKho,
 				'name' => $name,
-				'description' => $description,
+				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 				'status' => 1
 			];
+			$selectColumns = ['id', 'ma_kho' , 'name'];
+			$where = ['ma_kho' => $itemData['ma_kho'], 'name' => $itemData['name'] ];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) { //echo count($data); 
+				$rsData['message'] = "Vị trí [". $itemData['name'] ."] đã tồn tại trong kho ";
+				echo json_encode(	$rsData);die;
+			}
 
 			$result = $this->db->insert($this->tableName, $itemData);
 			
-				if($result->rowCount()) {
-					$rsData['status'] = 'success';
-					$rsData['message'] = 'Đã thêm vị trí kho mới thành công!';
-					$data = $this->db->select($this->tableName, $selectColumns, $where);
-					$rsData['data'] = $data[0];
-				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
-				}
-
+			if($result->rowCount()) {
+				$rsData['status'] = 'success';
+				$rsData['message'] = 'Đã thêm vị trí kho mới thành công!';
+				$data = $this->db->select($this->tableName, $selectColumns, $where);
+				$rsData['data'] = $data[0];
 			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
+			}
+		} else {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
 				'id' => $id,
 				'ma_kho' => $maKho,
 				'name' => $name,
-				'description' => $description,
+				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
+			$selectColumns = ['id', 'ma_kho' , 'name'];
+			$where = ['ma_kho' => $itemData['ma_kho'], 'name' => $itemData['name'] ];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) { //echo count($data); 
+				$rsData['message'] = "Vị trí [". $itemData['name'] ."] đã tồn tại trong kho ";
+				echo json_encode(	$rsData);die;
+			}
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
 				$this->superLog('Update vị trí Kho', $itemData);
