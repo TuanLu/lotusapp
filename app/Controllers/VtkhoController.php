@@ -49,7 +49,7 @@ class VtkhoController extends BaseController
 		//die($id);
 		$maKho = $request->getParam('ma_kho');
 		$name = $request->getParam('name');
-		$address = $request->getParam('description');
+		$description = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
 			if(!$maKho) {
@@ -66,36 +66,30 @@ class VtkhoController extends BaseController
 			$itemData = [
 				'ma_kho' => $maKho,
 				'name' => $name,
-				'description' => $address,
+				'description' => $description,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 				'status' => 1
 			];
-			// $selectColumns = ['id', 'ma_kho'];
-			// $where = ['ma_kho' => $itemData['ma_kho']];
-			// $data = $this->db->select($this->tableName, $selectColumns, $where);
-			// if(!empty($data)) {
-			// 	$rsData['message'] = "Mã kho [". $itemData['ma_kho'] ."] đã tồn tại: ";
-			// 	echo json_encode(	$rsData);die;
-			// }
 
 			$result = $this->db->insert($this->tableName, $itemData);
 			
-			if($result->rowCount()) {
-				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm vị trí kho mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data[0];
+				if($result->rowCount()) {
+					$rsData['status'] = 'success';
+					$rsData['message'] = 'Đã thêm vị trí kho mới thành công!';
+					$data = $this->db->select($this->tableName, $selectColumns, $where);
+					$rsData['data'] = $data[0];
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
+				}
+
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
-			}
-		} else {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
 				'id' => $id,
 				'ma_kho' => $maKho,
 				'name' => $name,
-				'description' => $address,
+				'description' => $description,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
