@@ -4,7 +4,8 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import { getTokenHeader } from 'ISD_API';
+import { getTokenHeader, convertArrayObjectToObject} from 'ISD_API';
+import {updateStateData} from 'actions'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -20,6 +21,22 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
+      case 'ma_kho':
+        let categories = this.props.categories;
+        return (
+          <Select 
+            style={{ width: 250 }}
+            placeholder="Chọn kho">
+           {categories.map((category) => {
+              return <Select.Option 
+              key={category.id} 
+              value={category.id}>
+                {category.name}
+              </Select.Option>
+           })}
+          </Select>
+        );
+        break;
       default:
         return <Input />;
         break;
@@ -75,9 +92,16 @@ class EditableTable extends React.Component {
       {
         title: 'Mã Kho',
         dataIndex: 'ma_kho',
-        width: '10%',
+        width: '15%',
         editable: true,
         required: true,
+        render: (text, record) => {
+          let label = text;
+          if(this.state.categoryList && this.state.categoryList[text]) {
+            label = this.state.categoryList[text]['name'];
+          }
+          return <span>{label}</span>
+        }
       },
       {
         title: 'Tên vị trí',
@@ -250,6 +274,30 @@ class EditableTable extends React.Component {
       }  
     }
   }
+  fetchCategories() {
+    fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            categories: json.data
+          }));
+          this.setState({
+            categoryList: convertArrayObjectToObject(json.data)
+          });
+          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   fetchData() {
     fetch(ISD_BASE_URL + 'qlvtkho/fetchVtkho', {
       headers: getTokenHeader()
@@ -274,6 +322,7 @@ class EditableTable extends React.Component {
     }); 
   }
   componentDidMount() {
+    this.fetchCategories();
     this.fetchData();
   }
   render() {
@@ -284,23 +333,7 @@ class EditableTable extends React.Component {
       },
     };
 
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
+    let categories = this.props.mainState.categories;
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -313,7 +346,8 @@ class EditableTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          required: col.required
+          required: col.required,
+          categories
         }),
       };
     });
@@ -323,13 +357,13 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý kho</h2>
+              <h2 className="head-title">Quản lý vị trí trong kho</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm kho mới</Button>
+                  type="primary" icon="plus">Thêm vị trí kho mới</Button>
               </div>
             </Col>
           </Row>

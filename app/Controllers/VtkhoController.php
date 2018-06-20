@@ -70,13 +70,13 @@ class VtkhoController extends BaseController
 				'create_on' => $date->format('Y-m-d H:i:s'),
 				'status' => 1
 			];
-			$selectColumns = ['id', 'ma_kho'];
-			$where = ['ma_kho' => $itemData['ma_kho']];
-			$data = $this->db->select($this->tableName, $selectColumns, $where);
-			if(!empty($data)) {
-				$rsData['message'] = "Mã kho [". $itemData['ma_kho'] ."] đã tồn tại: ";
-				echo json_encode(	$rsData);die;
-			}
+			// $selectColumns = ['id', 'ma_kho'];
+			// $where = ['ma_kho' => $itemData['ma_kho']];
+			// $data = $this->db->select($this->tableName, $selectColumns, $where);
+			// if(!empty($data)) {
+			// 	$rsData['message'] = "Mã kho [". $itemData['ma_kho'] ."] đã tồn tại: ";
+			// 	echo json_encode(	$rsData);die;
+			// }
 
 			$result = $this->db->insert($this->tableName, $itemData);
 			
@@ -92,6 +92,7 @@ class VtkhoController extends BaseController
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
+				'id' => $id,
 				'ma_kho' => $maKho,
 				'name' => $name,
 				'description' => $address,

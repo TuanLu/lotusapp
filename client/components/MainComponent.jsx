@@ -87,7 +87,7 @@ class MainComponent extends React.Component {
         return <QuanlyKho dispatch={dispatch}/>
         break;
       case 'qlvtkho':
-        return <QuanlyVtkho dispatch={dispatch}/>
+        return <QuanlyVtkho mainState={mainState} dispatch={dispatch}/>
         break;
       case 'qlcate':
         return <QuanlyCat dispatch={dispatch}/>
