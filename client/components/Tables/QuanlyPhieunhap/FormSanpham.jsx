@@ -2,10 +2,13 @@ import React from 'react'
 import { 
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Alert,
+  Menu, Dropdown, Icon
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
+
+const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -24,7 +27,8 @@ const tableConfig = {
 const fetchConfig = {
   fetch: 'phieunhap/fetch',
   update: 'phieunhap/updateProduct',
-  delete: 'phieunhap/deleteProduct/'
+  delete: 'phieunhap/deleteProduct/',
+  changeStatus: 'phieunhap/changeStatus'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -38,6 +42,14 @@ class EditableCell extends React.Component {
           <Select 
             showSearch
             optionFilterProp="children"
+            onChange={(value, option) => {
+              let unit = option.props.children.split('-');
+              if(unit && unit[3]) {
+                unit = unit[3].trim();
+              }
+              console.log(unit, this.props);
+              return false;
+            }}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
             placeholder="Chọn VT">
@@ -103,20 +115,24 @@ class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      productList: {}
+      productList: {},
+      selectedRowKeys: [], 
+      loading: false,
     };
     this.columns = [
       {
         title: 'Mã Lô',
         dataIndex: 'ma_lo',
-        width: '10%',
+        width: 100,
+        //fixed: 'left',
         editable: true,
         required: true,
       },
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
-        //width: '10%',
+        //fixed: 'left',
+        width: 150,
         editable: true,
         required: true,
         // render: (text, record) => {
@@ -128,9 +144,9 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Tên, Nhãn, Quy cách',
+        title: 'Quy cách',
         dataIndex: 'label',
-        //width: '15%',
+        width: 200,
         editable: true,
         required: true
       },
@@ -160,8 +176,30 @@ class EditableTable extends React.Component {
         required: true
       },
       {
+        title: 'QC Duyệt',
+        dataIndex: 'qc_check',
+        editable: false,
+        width: 150,
+        show: false,
+        render: (text, record) => {
+          return this.showCheckStatus(text);
+        }
+      },
+      {
+        title: 'QA Duyệt',
+        dataIndex: 'qa_check',
+        editable: false,
+        width: 150,
+        show: false,
+        render: (text, record) => {
+          return this.showCheckStatus(text);
+        }
+      },
+      {
         title: 'Actions',
         dataIndex: 'operation',
+        //fixed: 'right',
+        width: 100,
         render: (text, record) => {
           let isReadOnly = this.isReadOnly();
           if(isReadOnly) return '';
@@ -208,6 +246,59 @@ class EditableTable extends React.Component {
       },
     ];
   }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
+  changeStatus = (status, type) => {
+    this.setState({ loading: true });
+    // ajax request after empty completing
+    let statusData = {
+      ids: this.state.selectedRowKeys,
+      type,
+      status
+    };
+    fetch(ISD_BASE_URL + fetchConfig.changeStatus, {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(statusData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+      }
+      this.setState({
+        selectedRowKeys: [],
+        loading: false,
+      });
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
+    });
+  }
+  showCheckStatus(text) {
+    if(text) {
+      let type = "info";
+      if(text == "2") type = "error";
+      if(text == "1") type = "success";
+      return (
+        <Alert 
+            message={checkStatusOptions[text]['text']} 
+            type={type}
+            showIcon />
+      );
+    }
+    return <Alert 
+            message={checkStatusOptions[0]['text']} 
+            type={"info"}
+            showIcon />
+  }
   addNewRow() {
     let {products} = this.props.mainState.phieunhap;
     let {editingKey} = this.props.mainState.phieuAction;
@@ -235,10 +326,12 @@ class EditableTable extends React.Component {
       ma_lo: "",
       product_id: "",
       label: "",
-      unit: "",
+      unit: "kg",
       sl_chungtu: "1",
       sl_thucnhap: "1",
-      price: ""
+      price: 0,
+      qc_check: "1",
+      qa_check: "1"
     };
   }
   isEditing = (record) => {
@@ -266,7 +359,7 @@ class EditableTable extends React.Component {
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
-        //console.log(item, row);//update to server here
+        console.log(item, row);//update to server here
         let newItemData = {
           ...item,
           ...row,
@@ -427,6 +520,25 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
+  getStatusMenu(type) {
+    const menuItems = qcQAStatus.map((item) => {
+      return (
+        <Menu.Item key={item.id}>
+          <a 
+            onClick={() => {
+              this.changeStatus(item.id, type);
+            }}
+            rel="noopener noreferrer">{item.text}</a>
+        </Menu.Item>
+      );
+    });
+    const menu = (
+      <Menu>
+       {menuItems}
+      </Menu>
+    );
+    return menu;
+  }
   componentDidMount() {
     let {products, phieunhap} = this.props.mainState;
     if(!products.length) {
@@ -444,7 +556,7 @@ class EditableTable extends React.Component {
       },
     };
     let products = this.props.mainState.products;
-    const columns = this.columns.map((col) => {
+    let columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
       }
@@ -461,7 +573,15 @@ class EditableTable extends React.Component {
         }),
       };
     });
+    //columns = columns.filter((column) => column.show !== false)
     let selectedProducts = this.props.mainState.phieunhap.products || [];
+    const { loading, selectedRowKeys } = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
+   
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -479,12 +599,38 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
+        <div style={{ marginBottom: 16 }}>
+          <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
+            <Button
+              type="primary"
+              //onClick={this.start}
+              loading={loading}
+            >
+              QC Phê duyệt
+            </Button>
+          </Dropdown>
+          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
+            <Button
+              type="primary"
+              //onClick={this.start}
+              loading={loading}
+            >
+              QA Phê duyệt
+            </Button>
+          </Dropdown>
+          
+          <span style={{ marginLeft: 8 }}>
+            {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
+          </span>
+        </div>
         <Table
+          rowSelection={rowSelection}
           components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
+          //scroll={{ x: 1500 }}
         />
       </React.Fragment>
     );

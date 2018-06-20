@@ -58,6 +58,7 @@ $app->get('/phieunhap/fetchProductDetailsList', 'PhieunhapController:fetchProduc
 $app->get('/phieunhap/fetchSelectedProduct/{ma_phieu}', 'PhieunhapController:fetchSelectedProduct');
 $app->post('/phieunhap/update', 'PhieunhapController:update');
 $app->post('/phieunhap/updateProduct', 'PhieunhapController:updateProduct');
+$app->post('/phieunhap/changeStatus', 'PhieunhapController:changeStatus');
 $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
 

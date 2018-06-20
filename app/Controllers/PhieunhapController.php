@@ -64,7 +64,9 @@ class PhieunhapController extends BaseController
 			'unit',
 			'price',
 			'sl_chungtu',
-			'sl_thucnhap'
+			'sl_thucnhap',
+			'qc_check',
+			'qa_check'
 		];
 		$collection = $this->db->select('san_pham_theo_phieu', $columns, [
 			"status" => 1,
@@ -251,6 +253,42 @@ class PhieunhapController extends BaseController
 			$result = $this->db->update('san_pham_theo_phieu', $itemData, ['id' => $id]);
 			if($result->rowCount()) {
 				$this->superLog('Update SP theo phiếu', $itemData);
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			}
+		}
+		echo json_encode($rsData);
+	}
+	public function changeStatus($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		$params = $request->getParams();
+		if(isset($params['ids'])
+			&& isset($params['type'])
+			&& isset($params['status'])) {
+
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$date = new \DateTime();
+			$createOn = $date->format('Y-m-d H:i:s');
+			$updateData = [
+				'update_on' => $createOn,
+			];
+			if($params['type'] == 'qc_check') {
+				$updateData['qc_check'] = $params['status'];
+				$updateData['qc_id'] = $userId;
+			} else {
+				$updateData['qa_check'] = $params['status'];
+				$updateData['qa_id'] = $userId;
+			}
+			
+			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['ids']]);
+			if($result->rowCount()) {
+				$this->superLog('Update SP theo phiếu', $updateData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
