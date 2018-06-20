@@ -26,7 +26,7 @@ class Roles {
       ],
       'qlphieunhap' => [
         'label' => 'Quản lý Phiếu Nhập', 
-        'icon' => 'pushpin-o',
+        'icon' => 'home',
         'path' => 'qlphieunhap'
       ],
       'qlcate' => [
