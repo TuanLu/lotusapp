@@ -332,8 +332,8 @@ class EditableTable extends React.Component {
       sl_chungtu: "1",
       sl_thucnhap: "1",
       price: 0,
-      qc_check: "1",
-      qa_check: "1"
+      qc_check: "0",
+      qa_check: "0"
     };
   }
   isEditing = (record) => {
