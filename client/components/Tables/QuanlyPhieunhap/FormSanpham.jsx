@@ -144,13 +144,13 @@ class EditableTable extends React.Component {
         editable: true,
       },
       {
-        title: 'Số lượng chứng từ',
+        title: 'SL theo chứng từ',
         dataIndex: 'sl_chungtu',
         //width: '40%',
         editable: true,
       },
       {
-        title: 'Số lượng thực nhập',
+        title: 'SL thực nhập',
         dataIndex: 'sl_thucnhap',
         //width: '40%',
         editable: true,

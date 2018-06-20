@@ -12,6 +12,7 @@ import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 import Loading from './Loading'
 import QuanlyKho from './Tables/QuanlyKho'
+import QuanlyVtkho from './Tables/QuanlyVtkho'
 import QuanlyCat from './Tables/QuanlyCate'
 import QuanlyKh from './Tables/QuanlyKh'
 import QuanlySanpham from './Tables/QuanlySanpham'
@@ -84,6 +85,9 @@ class MainComponent extends React.Component {
         break;
       case 'qlkho':
         return <QuanlyKho dispatch={dispatch}/>
+        break;
+      case 'qlvtkho':
+        return <QuanlyVtkho dispatch={dispatch}/>
         break;
       case 'qlcate':
         return <QuanlyCat dispatch={dispatch}/>

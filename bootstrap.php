@@ -47,6 +47,9 @@ $container['NppController'] = function ($c) {
 $container['KhoController'] = function ($c) {
   return new \App\Controllers\KhoController($c);
 };
+$container['VtkhoController'] = function ($c) {
+  return new \App\Controllers\VtkhoController($c);
+};
 $container['CateController'] = function ($c) {
   return new \App\Controllers\CateController($c);
 };

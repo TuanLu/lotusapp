@@ -29,6 +29,11 @@ class Roles {
         'icon' => 'home',
         'path' => 'qlkho'
       ],
+      'qlvtkho' => [
+        'label' => 'Quản lý Vị trí Kho', 
+        'icon' => 'home',
+        'path' => 'qlvtkho'
+      ],
       'qlphieunhap' => [
         'label' => 'Quản lý Phiếu Nhập', 
         'icon' => 'pushpin-o',
