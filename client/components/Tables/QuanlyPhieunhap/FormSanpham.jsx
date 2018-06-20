@@ -118,6 +118,7 @@ class EditableTable extends React.Component {
       productList: {},
       selectedRowKeys: [], 
       loading: false,
+      loadProduct: false
     };
     this.columns = [
       {
@@ -271,6 +272,7 @@ class EditableTable extends React.Component {
           this.props.dispatch(updateStateData({showLogin: true}));
         }
       } else {
+        this.fetchSelectedProduct();
         message.success(json.message);
       }
       this.setState({
@@ -498,6 +500,7 @@ class EditableTable extends React.Component {
   fetchSelectedProduct() {
     let {phieunhap} = this.props.mainState;
     let maPhieu = phieunhap.ma_phieu;
+    this.setState({loadProduct: true});
     fetch(ISD_BASE_URL + `phieunhap/fetchSelectedProduct/${maPhieu}`, {
       headers: getTokenHeader()
     })
@@ -515,6 +518,7 @@ class EditableTable extends React.Component {
       } else {
         message.error(json.message);
       }
+      this.setState({loadProduct: false});
     })
     .catch((error) => {
       console.log(error);
@@ -620,7 +624,16 @@ class EditableTable extends React.Component {
         }),
       };
     });
-    //columns = columns.filter((column) => column.show !== false)
+    //Show and hide some columns by roles
+    columns = columns.filter((column) => {
+      if(this.isQA() || this.isQC()) {
+        if(column.dataIndex == 'operation') return false;
+        if(this.isQC()) {
+          if(column.dataIndex == 'qa_check') return false;
+        }
+      }
+      return true;
+    })
     let selectedProducts = this.props.mainState.phieunhap.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -651,6 +664,7 @@ class EditableTable extends React.Component {
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
+          loading={this.state.loadProduct}
           //scroll={{ x: 1500 }}
         />
       </React.Fragment>
