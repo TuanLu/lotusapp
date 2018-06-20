@@ -93,18 +93,20 @@ class FormPhieunhap extends React.Component {
                 </React.Fragment>
                 :
                 <React.Fragment>
-                <Button 
-                  onClick={() => {
-                    this.props.dispatch(updateStateData({
-                      phieuAction: {
-                        ...this.props.mainState.phieuAction,
-                        action: 'edit'
-                      }
-                    }));
-                  }}
-                  type="primary"
-                  htmlType="button" 
-                  icon="edit">Sửa phiếu nhập</Button>
+                  {(!this.props.isQA && !this.props.isQC)? 
+                    <Button 
+                    onClick={() => {
+                      this.props.dispatch(updateStateData({
+                        phieuAction: {
+                          ...this.props.mainState.phieuAction,
+                          action: 'edit'
+                        }
+                      }));
+                    }}
+                    type="primary"
+                    htmlType="button" 
+                    icon="edit">Sửa phiếu nhập</Button>
+                    : null}
                 <Button 
                     onClick={() => this.cancel()}
                     style={{marginLeft: 10}}
@@ -122,6 +124,8 @@ class FormPhieunhap extends React.Component {
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham
+          isQA={this.props.isQA}
+          isQC={this.props.isQC}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
       </div>

@@ -147,15 +147,19 @@ class EditableTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a>  
-                  {" | "}
-                  <Popconfirm
-                    title="Bạn thật sự muốn xoá?"
-                    okType="danger"
-                    onConfirm={() => this.delete(record)}
-                  >
-                    <a href="javascript:;">Xoá</a>  
-                  </Popconfirm>
+                  <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
+                  {(!this.isQA() && !this.isQC()) ? 
+                    <React.Fragment>
+                      {" | "}
+                      <Popconfirm
+                        title="Bạn thật sự muốn xoá?"
+                        okType="danger"
+                        onConfirm={() => this.delete(record)}
+                      >
+                        <a href="javascript:;">Xoá</a>  
+                      </Popconfirm>
+                    </React.Fragment>
+                    : null} 
                 </React.Fragment>
                 
               )}
@@ -188,6 +192,20 @@ class EditableTable extends React.Component {
       },
       phieunhap: this.getDefaultFields()
     }));
+  }
+  isQC() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhomqc') return true;
+    }
+    return false;
+  }
+  isQA() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhomqa') return true;
+    }
+    return false;
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
@@ -315,6 +333,8 @@ class EditableTable extends React.Component {
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
           <FormPhieunhap
+            isQA={this.isQA()}
+            isQC={this.isQC()}
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />
@@ -328,9 +348,11 @@ class EditableTable extends React.Component {
                 </Col>
                 <Col span={12}>
                   <div className="action-btns">
-                    <Button 
-                      onClick={() => this.addNewRow()}
-                      type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                   {(!this.isQA() && !this.isQC())? 
+                     <Button 
+                     onClick={() => this.addNewRow()}
+                     type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                      : null}
                   </div>
                 </Col>
               </Row>

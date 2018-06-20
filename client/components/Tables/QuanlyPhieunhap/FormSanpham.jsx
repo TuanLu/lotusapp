@@ -543,26 +543,12 @@ class EditableTable extends React.Component {
     );
     return menu;
   }
-  isQC() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqc') return true;
-    }
-    return false;
-  }
-  isQA() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqa') return true;
-    }
-    return false;
-  }
   getActionsByRoles() {
     let {selectedRowKeys, loading} = this.state;
     const hasSelected = selectedRowKeys.length > 0;
     return (
       <div style={{ marginBottom: 16 }}>
-        {this.isQC()? 
+        {this.props.isQC? 
         <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
           <Button
             type="primary"
@@ -573,7 +559,7 @@ class EditableTable extends React.Component {
           </Button>
         </Dropdown>
         : null}
-        {this.isQA()? 
+        {this.props.isQA? 
           <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
            <Button
              type="primary"
@@ -626,9 +612,9 @@ class EditableTable extends React.Component {
     });
     //Show and hide some columns by roles
     columns = columns.filter((column) => {
-      if(this.isQA() || this.isQC()) {
+      if(this.props.isQA || this.props.isQC) {
         if(column.dataIndex == 'operation') return false;
-        if(this.isQC()) {
+        if(this.props.isQC) {
           if(column.dataIndex == 'qa_check') return false;
         }
       }
