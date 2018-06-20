@@ -4,7 +4,7 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 
 const FormItem = Form.Item;
