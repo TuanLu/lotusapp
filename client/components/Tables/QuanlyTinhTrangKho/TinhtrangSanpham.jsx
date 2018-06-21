@@ -119,7 +119,10 @@ class EditableTable extends React.Component {
       selectedRowKeys: [], 
       loading: false,
       loadProduct: false,
-      filteredInfo: null
+      filteredInfo: null,
+      filterDropdownVisible: false,
+      searchText: '',
+      filtered: false,
     };
     this.columns = [
       {
@@ -204,6 +207,34 @@ class EditableTable extends React.Component {
         }
       }
     ];
+  }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value });
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+      // data: data.map((record) => {
+      //   const match = record.product_id.match(reg);
+      //   if (!match) {
+      //     return null;
+      //   }
+      //   return {
+      //     ...record,
+      //     product_id: (
+      //       <span>
+      //         {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
+      //           text.toLowerCase() === searchText.toLowerCase() ?
+      //             <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
+      //         ))}
+      //       </span>
+      //     ),
+      //   };
+      // }).filter(record => !!record),
+    });
   }
   handleChange = (pagination, filters, sorter) => {
     //console.log('Various parameters', pagination, filters, sorter);
@@ -405,7 +436,7 @@ class EditableTable extends React.Component {
       return true;
     });
     //Add filter 
-    let {filteredInfo} = this.state;
+    let {filteredInfo, searchText} = this.state;
     filteredInfo = filteredInfo || {};
     columns = columns.map((col) => {
       if(col.filterable) {
@@ -430,9 +461,55 @@ class EditableTable extends React.Component {
             break;
         }
       }
+      //Search by product ID
+      if(col.dataIndex == 'product_id') {
+        return {
+          ...col,
+          filterDropdown: (
+            <div className="custom-filter-dropdown">
+              <Input
+                ref={ele => this.searchInput = ele}
+                placeholder="Nhập mã vật tư"
+                value={this.state.searchText}
+                onChange={this.onInputChange}
+                onPressEnter={this.onSearch}
+              />
+              <Button type="primary" onClick={this.onSearch}>Tìm</Button>
+            </div>
+          ),
+          filterIcon: <Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />,
+          filterDropdownVisible: this.state.filterDropdownVisible,
+          onFilterDropdownVisibleChange: (visible) => {
+            this.setState({
+              filterDropdownVisible: visible,
+            }, () => this.searchInput && this.searchInput.focus());
+          },
+        }
+      }
       return col;
     });
     let selectedProducts = this.props.mainState.phieunhap.products || [];
+    //Apply search if exists 
+    const reg = new RegExp(searchText, 'gi');
+    if(searchText) {
+      selectedProducts = selectedProducts.map((record) => {
+        const match = record.product_id.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+          product_id: (
+            <span>
+              {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
+                text.toLowerCase() === searchText.toLowerCase() ?
+                  <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
+              ))}
+            </span>
+          ),
+        };
+      }).filter(record => !!record)
+    }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
