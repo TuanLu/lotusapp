@@ -179,26 +179,26 @@ class EditableTable extends React.Component {
         editable: true,
         required: true
       },
-      {
-        title: 'QC Duyệt',
-        dataIndex: 'qc_check',
-        editable: false,
-        width: 170,
-        show: false,
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      },
-      {
-        title: 'QA Duyệt',
-        dataIndex: 'qa_check',
-        editable: false,
-        width: 170,
-        show: false,
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      },
+      // {
+      //   title: 'QC Duyệt',
+      //   dataIndex: 'qc_check',
+      //   editable: false,
+      //   width: 170,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return this.showCheckStatus(text);
+      //   }
+      // },
+      // {
+      //   title: 'QA Duyệt',
+      //   dataIndex: 'qa_check',
+      //   editable: false,
+      //   width: 170,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return this.showCheckStatus(text);
+      //   }
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
