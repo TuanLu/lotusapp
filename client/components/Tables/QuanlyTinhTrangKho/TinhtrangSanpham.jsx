@@ -2,8 +2,8 @@ import React from 'react'
 import { 
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message, Alert,
-  Menu, Dropdown, Icon
+  Col, Button, message,
+  Menu, Dropdown, Icon, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -180,7 +180,7 @@ class EditableTable extends React.Component {
         title: 'QC Duyệt',
         dataIndex: 'qc_check',
         editable: false,
-        width: 170,
+        width: 130,
         fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
@@ -190,7 +190,7 @@ class EditableTable extends React.Component {
         title: 'QA Duyệt',
         dataIndex: 'qa_check',
         editable: false,
-        width: 170,
+        width: 130,
         fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
@@ -237,20 +237,18 @@ class EditableTable extends React.Component {
   }
   showCheckStatus(text) {
     if(text) {
-      let type = "info";
+      let type = "processing";
       if(text == "2") type = "error";
       if(text == "1") type = "success";
       return (
-        <Alert 
-            message={checkStatusOptions[text]['text']} 
-            type={type}
-            showIcon />
+        <Badge 
+            text={checkStatusOptions[text]['text']} 
+            status={type}/>
       );
     }
-    return <Alert 
-            message={checkStatusOptions[0]['text']} 
-            type={"info"}
-            showIcon />
+    return <Badge 
+            text={checkStatusOptions[0]['text']} 
+            status={"processing"}/>
   }
   getDefaultFields() {
     return {
