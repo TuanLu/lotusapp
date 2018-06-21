@@ -54,6 +54,9 @@ td:hover .editable-cell-icon {
 .table-operations {
   margin-bottom: 10px;
 }
+.table-operations.no-margin {
+  margin-bottom: 0px;
+}
 .table-operations .action-btns {
   text-align: right;
 }

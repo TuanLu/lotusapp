@@ -18,6 +18,7 @@ import QuanlyKh from './Tables/QuanlyKh'
 import QuanlySanpham from './Tables/QuanlySanpham'
 import QuanlyPhieunhap from './Tables/QuanlyPhieunhap'
 import QuanlyDonhang from './Tables/QuanlyDonhang'
+import QuanlyTinhTrangKho from './Tables/QuanlyTinhTrangKho';
 
 class MainComponent extends React.Component {
   state = {
@@ -100,6 +101,9 @@ class MainComponent extends React.Component {
         break;
       case 'qlphieunhap':
         return <QuanlyPhieunhap dispatch={dispatch} mainState={mainState}/>
+        break;
+      case 'tinhtrangkho':
+        return <QuanlyTinhTrangKho dispatch={dispatch} mainState={mainState}/>
         break;
       default:
         break;

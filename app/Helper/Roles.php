@@ -66,6 +66,11 @@ class Roles {
         'path' => 'nhomqc',
         'include_in_menu' => false
       ],
+      'tinhtrangkho' => [
+        'label' => 'Tình trạng kho', 
+        'icon' => 'home',
+        'path' => 'tinhtrangkho',
+      ],
     ];
   }
 }

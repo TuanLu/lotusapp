@@ -62,6 +62,9 @@ $container['ProductController'] = function ($c) {
 $container['PhieunhapController'] = function ($c) {
   return new \App\Controllers\PhieunhapController($c);
 };
+$container['TinhtrangkhoController'] = function ($c) {
+  return new \App\Controllers\TinhtrangkhoController($c);
+};
 $container['OrderController'] = function ($c) {
   return new \App\Controllers\OrderController($c);
 };
