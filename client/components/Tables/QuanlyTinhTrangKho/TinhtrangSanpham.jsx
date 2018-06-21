@@ -118,7 +118,8 @@ class EditableTable extends React.Component {
       productList: {},
       selectedRowKeys: [], 
       loading: false,
-      loadProduct: false
+      loadProduct: false,
+      filteredInfo: null
     };
     this.columns = [
       {
@@ -180,6 +181,9 @@ class EditableTable extends React.Component {
         title: 'QC Duyệt',
         dataIndex: 'qc_check',
         editable: false,
+        filterable: true,
+        filters: qcQAStatus,
+        filterMultiple: false,
         width: 130,
         fixed: 'right',
         render: (text, record) => {
@@ -190,6 +194,9 @@ class EditableTable extends React.Component {
         title: 'QA Duyệt',
         dataIndex: 'qa_check',
         editable: false,
+        filterable: true,
+        filters: qcQAStatus,
+        filterMultiple: false,
         width: 130,
         fixed: 'right',
         render: (text, record) => {
@@ -197,6 +204,15 @@ class EditableTable extends React.Component {
         }
       }
     ];
+  }
+  handleChange = (pagination, filters, sorter) => {
+    //console.log('Various parameters', pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters,
+    });
+  }
+  clearFilters = () => {
+    this.setState({ filteredInfo: null });
   }
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -387,7 +403,35 @@ class EditableTable extends React.Component {
         }
       }
       return true;
-    })
+    });
+    //Add filter 
+    let {filteredInfo} = this.state;
+    filteredInfo = filteredInfo || {};
+    columns = columns.map((col) => {
+      if(col.filterable) {
+        switch (col.dataIndex) {
+          case 'qc_check':
+            return {
+              ...col,
+              filteredValue: filteredInfo.qc_check || null,
+              onFilter: (value, record) => {
+                return record.qc_check.includes(value)
+              },
+            }
+            break;
+          case 'qa_check':
+            return {
+              ...col,
+              filteredValue: filteredInfo.qa_check || null,
+              onFilter: (value, record) => {
+                return record.qa_check.includes(value)
+              },
+            }
+            break;
+        }
+      }
+      return col;
+    });
     let selectedProducts = this.props.mainState.phieunhap.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -415,6 +459,7 @@ class EditableTable extends React.Component {
           rowClassName="editable-row"
           loading={this.state.loadProduct}
           scroll={{ x: 1300 }}
+          onChange={this.handleChange}
         />
       </React.Fragment>
     );
