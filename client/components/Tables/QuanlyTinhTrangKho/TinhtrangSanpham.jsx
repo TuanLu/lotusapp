@@ -26,9 +26,6 @@ const tableConfig = {
 };
 
 const fetchConfig = {
-  fetch: 'phieunhap/fetch',
-  update: 'phieunhap/updateProduct',
-  delete: 'phieunhap/deleteProduct/',
   changeStatus: 'phieunhap/changeStatus'
 }
 
@@ -271,7 +268,7 @@ class EditableTable extends React.Component {
           this.props.dispatch(updateStateData({showLogin: true}));
         }
       } else {
-        this.fetchSelectedProduct();
+        this.fetchAllProduct();
         message.success(json.message);
       }
       this.setState({
@@ -319,7 +316,7 @@ class EditableTable extends React.Component {
     let {phieuAction} = this.props.mainState;
     return phieuAction && phieuAction.action == 'view' ? true : false;
   }
-  fetchSelectedProduct() {
+  fetchAllProduct() {
     this.setState({loadProduct: true});
     fetch(ISD_BASE_URL + `tinhtrangkho/fetchAllProduct`, {
       headers: getTokenHeader()
@@ -399,7 +396,7 @@ class EditableTable extends React.Component {
   }
   componentDidMount() {
     //let {products, phieunhap} = this.props.mainState;
-    this.fetchSelectedProduct();
+    this.fetchAllProduct();
   }
   render() {
     const components = {
@@ -537,10 +534,15 @@ class EditableTable extends React.Component {
           rowClassName="editable-row"
           loading={this.state.loadProduct}
           //scroll={{ x: 1300 }}
+          //expandRowByClick={true}
           onChange={this.handleChange}
           expandedRowRender={record => {
             return (
-              <FormChuyenViTri/>
+              <FormChuyenViTri
+                mainState={this.props.mainState}
+                dispatch={this.props.dispatch}
+                record={record}
+              />
             );
           }}
         />

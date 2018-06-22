@@ -143,3 +143,6 @@ td:hover .editable-cell-icon {
 .highlight {
   color: #f50;
 }
+.form-cap-nhat-vi-tri .ant-form-item {
+  margin-bottom: 0;
+}

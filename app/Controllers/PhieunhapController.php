@@ -305,6 +305,35 @@ class PhieunhapController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
+	public function changePosition($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		$params = $request->getParams();
+		if(isset($params['id'])
+			&& isset($params['vi_tri_kho'])) {
+
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$date = new \DateTime();
+			$createOn = $date->format('Y-m-d H:i:s');
+			$updateData = [
+				'vi_tri_kho' => $params['vi_tri_kho'],
+				'update_on' => $createOn,
+			];
+			
+			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);
+			if($result->rowCount()) {
+				$this->superLog('Update SP theo phiếu', $updateData);
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			}
+		}
+		echo json_encode($rsData);
+	}
 
 	public function delete($request, $response, $args){
 		$rsData = array(
