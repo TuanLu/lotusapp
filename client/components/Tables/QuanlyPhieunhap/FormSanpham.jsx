@@ -71,7 +71,7 @@ class EditableCell extends React.Component {
         break;
       case 'ngay_san_xuat':
       case 'ngay_het_han':
-        return <DatePicker format="DD/MM/YYYY"/>
+        return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>
         break;
       default:
         return <Input />;
