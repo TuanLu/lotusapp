@@ -66,7 +66,9 @@ class PhieunhapController extends BaseController
 			'sl_chungtu',
 			'sl_thucnhap',
 			'qc_check',
-			'qa_check'
+			'qa_check',
+			'ngay_san_xuat',
+			'ngay_het_han'
 		];
 		$collection = $this->db->select('san_pham_theo_phieu', $columns, [
 			"status" => 1,
@@ -143,7 +145,9 @@ class PhieunhapController extends BaseController
 						'sl_chungtu' => $product['sl_chungtu'],
 						'sl_thucnhap' => $product['sl_thucnhap'],
 						'price' => $product['price'],
-						'create_on' => $createOn
+						'create_on' => $createOn,
+						'ngay_san_xuat' => $product['ngay_san_xuat'],
+						'ngay_het_han' => $product['ngay_het_han'],
 					);
 				}
 				$productsNum = $this->db->insert('san_pham_theo_phieu', $validProducts);
@@ -226,7 +230,9 @@ class PhieunhapController extends BaseController
 				'sl_chungtu' => isset($params['sl_chungtu']) ? $params['sl_chungtu'] : '',
 				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
 				'price' => isset($params['price']) ? $params['price'] : '',
-				'create_on' => $createOn
+				'create_on' => $createOn,
+				'ngay_san_xuat' => isset($params['ngay_san_xuat']) ? $params['ngay_san_xuat'] : '',
+				'ngay_het_han' => isset($params['ngay_het_han']) ? $params['ngay_het_han'] : '',
 			);
 			$result = $this->db->insert('san_pham_theo_phieu', $itemData);
 			if($result->rowCount()) {
@@ -249,6 +255,8 @@ class PhieunhapController extends BaseController
 				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
 				'price' => isset($params['price']) ? $params['price'] : '',
 				'update_on' =>$createOn,
+				'ngay_san_xuat' => isset($params['ngay_san_xuat']) ? $params['ngay_san_xuat'] : '',
+				'ngay_het_han' => isset($params['ngay_het_han']) ? $params['ngay_het_han'] : '',
 			];
 			$result = $this->db->update('san_pham_theo_phieu', $itemData, ['id' => $id]);
 			if($result->rowCount()) {

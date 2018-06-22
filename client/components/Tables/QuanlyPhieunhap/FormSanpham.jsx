@@ -1,9 +1,10 @@
 import React from 'react'
+import moment from 'moment'
 import { 
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
   Col, Button, message, Alert,
-  Menu, Dropdown, Icon
+  Menu, Dropdown, Icon, DatePicker
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -68,6 +69,10 @@ class EditableCell extends React.Component {
       case 'price':
         return <InputNumber/>
         break;
+      case 'ngay_san_xuat':
+      case 'ngay_het_han':
+        return <DatePicker format="DD/MM/YYYY"/>
+        break;
       default:
         return <Input />;
         break;
@@ -92,6 +97,16 @@ class EditableCell extends React.Component {
       <EditableContext.Consumer>
         {(form) => {
           const { getFieldDecorator } = form;
+          let value;
+          if(record) {
+            value = record[dataIndex];
+            if(dataIndex == 'ngay_san_xuat' || dataIndex == 'ngay_het_han') {
+              value = moment(value);
+              if(!value.isValid()) {
+                value = null;// Might 	0000-00-00
+              }
+            }
+          }
           return (
             <td {...restProps}>
               {editing ? (
@@ -101,7 +116,7 @@ class EditableCell extends React.Component {
                       required: required,
                       message: `Hãy nhập dữ liệu ô ${title}!`,
                     }],
-                    initialValue: record[dataIndex],
+                    initialValue: value,
                     
                   })(this.getInput())}
                 </FormItem>
@@ -178,6 +193,24 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: true
+      },
+      {
+        title: 'Ngày SX',
+        dataIndex: 'ngay_san_xuat',
+        width: '200px',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
+      },
+      {
+        title: 'Ngày Hết Hạn',
+        dataIndex: 'ngay_het_han',
+        width: '200px',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
       // {
       //   title: 'QC Duyệt',
@@ -364,11 +397,13 @@ class EditableTable extends React.Component {
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
-        console.log(item, row);//update to server here
+        //console.log(item, row);//update to server here
         let newItemData = {
           ...item,
           ...row,
-          ma_phieu: maPhieu
+          ma_phieu: maPhieu,
+          ngay_san_xuat: row['ngay_san_xuat'].format('YYYY-MM-DD'),
+          ngay_het_han: row['ngay_het_han'].format('YYYY-MM-DD'),
         };
         //Chua co ma phieu va ID la trong
         if(!newData.id && !maPhieu) {
@@ -654,7 +689,7 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          //scroll={{ x: 1500 }}
+          scroll={{ x: 1500 }}
         />
       </React.Fragment>
     );
