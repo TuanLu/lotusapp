@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
+import FormChuyenViTri from './FormChuyenViTri'
 
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
@@ -128,7 +129,7 @@ class EditableTable extends React.Component {
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
-        fixed: 'left',
+        //fixed: 'left',
         width: 150,
         editable: true,
         required: true,
@@ -155,18 +156,18 @@ class EditableTable extends React.Component {
         editable: true,
         required: true
       },
-      {
-        title: 'Đơn vị tính',
-        dataIndex: 'unit',
-        //width: '40%',
-        editable: true,
-      },
-      {
-        title: 'SL theo chứng từ',
-        dataIndex: 'sl_chungtu',
-        //width: '40%',
-        editable: true,
-      },
+      // {
+      //   title: 'Đơn vị tính',
+      //   dataIndex: 'unit',
+      //   //width: '40%',
+      //   editable: true,
+      // },
+      // {
+      //   title: 'SL theo chứng từ',
+      //   dataIndex: 'sl_chungtu',
+      //   //width: '40%',
+      //   editable: true,
+      // },
       {
         title: 'SL thực nhập',
         dataIndex: 'sl_thucnhap',
@@ -188,7 +189,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        fixed: 'right',
+        //fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
@@ -201,7 +202,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        fixed: 'right',
+        //fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
@@ -535,8 +536,13 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          scroll={{ x: 1300 }}
+          //scroll={{ x: 1300 }}
           onChange={this.handleChange}
+          expandedRowRender={record => {
+            return (
+              <FormChuyenViTri/>
+            );
+          }}
         />
       </React.Fragment>
     );
