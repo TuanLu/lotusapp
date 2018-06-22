@@ -172,7 +172,7 @@ class EditableTable extends React.Component {
       {
         title: 'Đơn vị tính',
         dataIndex: 'unit',
-        //width: '40%',
+        width: 100,
         editable: true,
       },
       {
@@ -369,7 +369,9 @@ class EditableTable extends React.Component {
       sl_thucnhap: "1",
       price: 0,
       qc_check: "0",
-      qa_check: "0"
+      qa_check: "0",
+      ngay_het_han: "",
+      ngay_san_xuat: ""
     };
   }
   isEditing = (record) => {
