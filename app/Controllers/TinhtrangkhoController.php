@@ -14,23 +14,32 @@ class TinhtrangkhoController extends BaseController {
 		);
 		// Columns to select.
 		$columns = [
-			'id',
-			'id(key)',//For unique react item
-			'ma_phieu',
-			'product_id',
-			'ma_lo',
-			'label',
-			'unit',
-			'price',
-			'sl_chungtu',
-			'sl_thucnhap',
-			'qc_check',
-			'qa_check'
+			'san_pham_theo_phieu.id',
+			'san_pham_theo_phieu.id(key)',//For unique react item
+			'san_pham_theo_phieu.ma_phieu',
+			'san_pham_theo_phieu.product_id',
+			'san_pham_theo_phieu.ma_lo',
+			'san_pham_theo_phieu.label',
+			'san_pham_theo_phieu.unit',
+			'san_pham_theo_phieu.price',
+			'san_pham_theo_phieu.sl_chungtu',
+			'san_pham_theo_phieu.sl_thucnhap',
+			'san_pham_theo_phieu.qc_check',
+			'san_pham_theo_phieu.qa_check',
+			'san_pham_theo_phieu.vi_tri_kho',
+			'san_pham_theo_phieu.ngay_san_xuat',
+			'san_pham_theo_phieu.ngay_het_han',
+			'phieu_nhap_xuat_kho.ma_kho'
 		];
-		$collection = $this->db->select('san_pham_theo_phieu', $columns, [
-			"status" => 1,
+		$collection = $this->db->select('san_pham_theo_phieu', 
+			[
+				'[>]phieu_nhap_xuat_kho' => ['ma_phieu' => 'ma_phieu']
+			], 
+			$columns, [
+			"san_pham_theo_phieu.status" => 1,
+			"phieu_nhap_xuat_kho.status" => 1,
 			"ORDER" => [
-				"id" => "DESC"
+				"san_pham_theo_phieu.id" => "DESC"
 			]
 		]);
 		if(!empty($collection)) {

@@ -67,6 +67,7 @@ $app->get('/phieunhap/fetchSelectedProduct/{ma_phieu}', 'PhieunhapController:fet
 $app->post('/phieunhap/update', 'PhieunhapController:update');
 $app->post('/phieunhap/updateProduct', 'PhieunhapController:updateProduct');
 $app->post('/phieunhap/changeStatus', 'PhieunhapController:changeStatus');
+$app->post('/phieunhap/changePosition', 'PhieunhapController:changePosition');
 $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
 //Tinh trang kho router
