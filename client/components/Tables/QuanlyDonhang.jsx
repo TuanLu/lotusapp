@@ -1,8 +1,9 @@
 import React from 'react'
+import moment from 'moment'
 import { 
   Table, Input, Select, 
-  Popconfirm, Form, Row, 
-  Col, Button, message
+  Popconfirm, Form, Row,
+  Col, Button, message, DatePicker
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -21,7 +22,7 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'ma_kh':
+      case 'ma_kh2':
         let khachhang = this.props.khachhang;
         return (
           <Select 
@@ -56,6 +57,9 @@ class EditableCell extends React.Component {
           </Select>
         );
         break;
+      case 'date_delive':
+        return <DatePicker format="DD/MM/YYYY"/>;
+      break;
       default:
         return <Input />;
         break;
@@ -76,6 +80,16 @@ class EditableCell extends React.Component {
       <EditableContext.Consumer>
         {(form) => {
           const { getFieldDecorator } = form;
+          let value;
+          if(record) {
+            value = record[dataIndex];
+            if(dataIndex == 'date_delive') {
+              value = moment(value);
+              if(!value.isValid()) {
+                value = null;// Might 	0000-00-00
+              }
+            }
+          }
           return (
             <td {...restProps}>
               {editing ? (
@@ -138,6 +152,7 @@ class EditableTable extends React.Component {
         dataIndex: 'date_delive',
         //width: '40%',
         editable: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
       {
         title: 'Actions',
@@ -231,6 +246,7 @@ class EditableTable extends React.Component {
         let newItemData = {
           ...item,
           ...row,
+          date_delive: row['date_delive'].format('YYYY-MM-DD'),
         };
         fetch(ISD_BASE_URL + 'order/updateDh', {
           method: 'POST',
