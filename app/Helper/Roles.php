@@ -39,6 +39,11 @@ class Roles {
         'icon' => 'home',
         'path' => 'qlphieunhap'
       ],
+      'qlphieuxuat' => [
+        'label' => 'Quản lý Phiếu Xuất', 
+        'icon' => 'home',
+        'path' => 'qlphieuxuat'
+      ],
       'qlcate' => [
         'label' => 'Quản lý Danh mục SP', 
         'icon' => 'table',

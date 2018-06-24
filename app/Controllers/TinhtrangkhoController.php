@@ -37,6 +37,7 @@ class TinhtrangkhoController extends BaseController {
 			], 
 			$columns, [
 			"san_pham_theo_phieu.status" => 1,
+			"phieu_nhap_xuat_kho.type" => 1,
 			"phieu_nhap_xuat_kho.status" => 1,
 			"ORDER" => [
 				"san_pham_theo_phieu.id" => "DESC"

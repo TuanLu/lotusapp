@@ -58,7 +58,7 @@ class EditableCell extends React.Component {
         );
         break;
       case 'date_delive':
-        return <DatePicker format="DD/MM/YYYY"/>;
+        return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>;
       break;
       default:
         return <Input />;
@@ -99,7 +99,7 @@ class EditableCell extends React.Component {
                       required: required,
                       message: `Hãy nhập dữ liệu ô ${title}!`,
                     }],
-                    initialValue: record[dataIndex],
+                    initialValue: value,
                     
                   })(this.getInput())}
                 </FormItem>
