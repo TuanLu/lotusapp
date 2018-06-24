@@ -29,11 +29,13 @@ class TinhtrangkhoController extends BaseController {
 			'san_pham_theo_phieu.vi_tri_kho',
 			'san_pham_theo_phieu.ngay_san_xuat',
 			'san_pham_theo_phieu.ngay_het_han',
-			'phieu_nhap_xuat_kho.ma_kho'
+			'phieu_nhap_xuat_kho.ma_kho(kho_id)',
+			'lotus_kho.ma_kho',
 		];
 		$collection = $this->db->select('san_pham_theo_phieu', 
 			[
-				'[>]phieu_nhap_xuat_kho' => ['ma_phieu' => 'ma_phieu']
+				'[>]phieu_nhap_xuat_kho' => ['ma_phieu' => 'ma_phieu'],
+				'[>]lotus_kho' => ['phieu_nhap_xuat_kho.ma_kho' => 'id'],
 			], 
 			$columns, [
 			"san_pham_theo_phieu.status" => 1,
