@@ -107,18 +107,21 @@ class EditableTable extends React.Component {
         title: 'Tên đăng nhập',
         dataIndex: 'username',
         editable: true,
+        width: '12%',
         required: true
       },
       {
         title: 'Email',
-        dataIndex: 'email',
+        dataIndex: 'email', 
         editable: true,
+        width: '15%',
         required: true
       },
       {
         title: 'Mật khẩu',
         dataIndex: 'hash',
         editable: true,
+        width: '10%',
         required: false, //edit mode dont required
         render: (text, record) => {
           return 'Đã mã hoá';
@@ -128,11 +131,13 @@ class EditableTable extends React.Component {
         title: 'Họ và tên',
         dataIndex: 'name',
         editable: true,
+        width: '15%',
         required: false
       },
       {
         title: 'Quyền',
         dataIndex: 'roles',
+        width: '25%',
         editable: true,
         required: false
       },
