@@ -5,57 +5,57 @@ class Roles {
   static function getRoles() {
     return [
       'qldh' => [
-        'label' => 'Quản lý Đơn hàng', 
+        'label' => 'QL Đơn hàng', 
         'icon' => 'shopping-cart',
         'path' => 'qldh'
       ],
       'npp' => [
-        'label' => 'Quản lý NCC', 
+        'label' => 'QL NCC', 
         'icon' => 'solution',
         'path' => 'npp'
       ],
       'qluser' => [
-        'label' => 'Quản lý Users', 
+        'label' => 'QL Users', 
         'icon' => 'user',
         'path' => 'qluser'
       ],
       'qlsx' => [
-        'label' => 'Quản lý SX', 
+        'label' => 'QL SX', 
         'icon' => 'inbox',
         'path' => 'qlsx'
       ],
       'qlkho' => [
-        'label' => 'Quản lý Kho', 
+        'label' => 'QL Kho', 
         'icon' => 'home',
         'path' => 'qlkho'
       ],
       'qlvtkho' => [
-        'label' => 'Quản lý Vị trí Kho', 
+        'label' => 'QL Vị trí Kho', 
         'icon' => 'home',
         'path' => 'qlvtkho'
       ],
       'qlphieunhap' => [
-        'label' => 'Quản lý Phiếu Nhập', 
+        'label' => 'QL Phiếu Nhập', 
         'icon' => 'home',
         'path' => 'qlphieunhap'
       ],
       'qlphieuxuat' => [
-        'label' => 'Quản lý Phiếu Xuất', 
+        'label' => 'QL Phiếu Xuất', 
         'icon' => 'home',
         'path' => 'qlphieuxuat'
       ],
       'qlcate' => [
-        'label' => 'Quản lý Danh mục SP', 
+        'label' => 'QL Danh mục SP', 
         'icon' => 'table',
         'path' => 'qlcate'
       ],
       'product' => [
-        'label' => 'Quản lý Sản phẩm', 
+        'label' => 'QL Sản phẩm', 
         'icon' => 'pushpin-o',
         'path' => 'product'
       ],
       'qlkh' => [
-        'label' => 'Quản lý Khách Hàng', 
+        'label' => 'QL Khách Hàng', 
         'icon' => 'team',
         'path' => 'qlkh'
       ],
