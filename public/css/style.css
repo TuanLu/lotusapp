@@ -146,3 +146,10 @@ td:hover .editable-cell-icon {
 .form-cap-nhat-vi-tri .ant-form-item {
   margin-bottom: 0;
 }
+.isd-advanced-search-form .ant-form-item {
+  padding: 0 10px;
+  margin-bottom: 0px;
+}
+.isd-advanced-search-form .ant-form-item-label {
+  line-height: 20px;
+}

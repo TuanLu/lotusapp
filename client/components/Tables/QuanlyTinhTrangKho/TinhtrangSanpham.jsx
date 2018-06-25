@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import { 
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
@@ -8,6 +9,7 @@ import {
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormChuyenViTri from './FormChuyenViTri'
+import Timkiem from './Timkiem'
 
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
@@ -174,7 +176,7 @@ class EditableTable extends React.Component {
       //   editable: true,
       // },
       {
-        title: 'Số lượng',
+        title: 'SL',
         dataIndex: 'sl_thucnhap',
         //width: '40%',
         editable: true,
@@ -185,6 +187,24 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: true
+      },
+      {
+        title: 'Ngày SX',
+        dataIndex: 'ngay_san_xuat',
+        width: '200px',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
+      },
+      {
+        title: 'Ngày hết hạn',
+        dataIndex: 'ngay_het_han',
+        width: '200px',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
       {
         title: 'QC Duyệt',
@@ -544,6 +564,11 @@ class EditableTable extends React.Component {
           //scroll={{ x: 1300 }}
           //expandRowByClick={true}
           onChange={this.handleChange}
+          title={() => {
+            return (
+              <Timkiem/>
+            );
+          }}
           expandedRowRender={record => {
             return (
               <FormChuyenViTri
