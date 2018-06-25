@@ -561,7 +561,7 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          //scroll={{ x: 1300 }}
+          scroll={{ x: 1500 }}
           //expandRowByClick={true}
           onChange={this.handleChange}
           title={() => {

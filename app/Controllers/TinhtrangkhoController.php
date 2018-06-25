@@ -7,43 +7,7 @@ use \Ramsey\Uuid\Uuid;
 class TinhtrangkhoController extends BaseController {
 
 	public function fetchAllProduct($request, $response, $args) {
-		//$this->logger->addInfo('Request Npp path');
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Chưa load được sản phẩm của phiếu!'
-		);
-		// Columns to select.
-		$columns = [
-			'san_pham_theo_phieu.id',
-			'san_pham_theo_phieu.id(key)',//For unique react item
-			'san_pham_theo_phieu.ma_phieu',
-			'san_pham_theo_phieu.product_id',
-			'san_pham_theo_phieu.ma_lo',
-			'san_pham_theo_phieu.label',
-			'san_pham_theo_phieu.unit',
-			'san_pham_theo_phieu.price',
-			'san_pham_theo_phieu.sl_chungtu',
-			'san_pham_theo_phieu.sl_thucnhap',
-			'san_pham_theo_phieu.qc_check',
-			'san_pham_theo_phieu.qa_check',
-			'san_pham_theo_phieu.vi_tri_kho',
-			'san_pham_theo_phieu.ngay_san_xuat',
-			'san_pham_theo_phieu.ngay_het_han',
-			'phieu_nhap_xuat_kho.ma_kho(kho_id)',
-			'lotus_kho.ma_kho',
-		];
-		$collection = $this->db->select('san_pham_theo_phieu', 
-			[
-				'[>]phieu_nhap_xuat_kho' => ['ma_phieu' => 'ma_phieu'],
-				'[>]lotus_kho' => ['phieu_nhap_xuat_kho.ma_kho' => 'id'],
-			], 
-			$columns, [
-			"san_pham_theo_phieu.status" => 1,
-			"phieu_nhap_xuat_kho.status" => 1,
-			"ORDER" => [
-				"san_pham_theo_phieu.id" => "DESC"
-			]
-		]);
+		$collection = $this->findProduct([]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';
@@ -187,5 +151,50 @@ class TinhtrangkhoController extends BaseController {
 			$rsData['message'] = 'ID trống, nên không xoá được dữ liệu!';
 		}
 		echo json_encode($rsData);
+	}
+	private function findProduct($filters) {
+		//echo "<pre>";
+		//print_r($filters);
+		$where = "";
+		//Tim theo ma kho
+		if(isset($filters['ma_kho']) && !empty($filters['ma_kho'])) {
+			$filters['ma_kho'] = array_map('strval', $filters['ma_kho']);
+			$where .= " AND `lotus_kho`.`ma_kho` IN ('" . implode("', '", $filters['ma_kho']) . "')";
+		}
+		//Tim theo ma vat tu
+
+		$sql = "SELECT `san_pham_theo_phieu`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,`san_pham_theo_phieu`.`ma_lo`,`san_pham_theo_phieu`.`label`,`san_pham_theo_phieu`.`unit`,`san_pham_theo_phieu`.`price`,`san_pham_theo_phieu`.`sl_chungtu`,`san_pham_theo_phieu`.`sl_thucnhap`,`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`phieu_nhap_xuat_kho`.`ma_kho` AS `kho_id`,`lotus_kho`.`ma_kho` FROM `san_pham_theo_phieu` LEFT JOIN `phieu_nhap_xuat_kho` ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` LEFT JOIN `lotus_kho` ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`id` WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 ". $where ." ORDER BY `san_pham_theo_phieu`.`id` DESC";
+		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+		return $collection;
+	}
+	public function search($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Không tìm thấy vật tư nào theo điều kiện tìm kiếm!'
+		);
+		$params = $request->getParams();
+		$collection = $this->findProduct($params);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['data'] = $collection;
+			$rsData['message'] = "Tìm thấy " . count($collection) . " vật tư trong kho!";
+		}
+		echo json_encode($rsData);
+	}
+	public function fetchProductInInventory($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+		);
+		$sql = "SELECT DISTINCT products.product_id, products.name FROM products INNER JOIN san_pham_theo_phieu ON products.product_id = san_pham_theo_phieu.product_id ORDER BY products.name";
+    $collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $collection;
+		}
+		header("Content-Type: application/json");
+		echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
+		exit;
 	}
 }

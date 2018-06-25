@@ -1,16 +1,104 @@
 import React from 'react'
-import { Form, Row, Col, Input, Button, Icon } from 'antd';
+import { Form, Row, Col, Input, Button, 
+  Icon, message, Select
+} from 'antd';
+import {getTokenHeader} from 'ISD_API'
+import {updateStateData} from 'actions'
 const FormItem = Form.Item;
+const Option = Select.Option;
+import {connect} from 'react-redux'
 
 class AdvancedSearchForm extends React.Component {
   state = {
-    expand: false,
+    loading: false
   };
 
   handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
+      console.log(this.props);
       console.log('Received values of form: ', values);
+      this.search(values);
+    });
+  }
+  fetchProductInInventory() {
+    fetch(ISD_BASE_URL + 'tinhtrangkho/fetchProductInInventory', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            productInInventory: json.data
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      console.log(error);
+    });
+  }
+  fetchKho() {
+    fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            kho: json.data
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      console.log(error);
+    }); 
+  }
+  search(searchData) {
+    this.setState({
+      loading: true
+    });
+    fetch(ISD_BASE_URL + 'tinhtrangkho/search', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(searchData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          phieunhap: {
+            ...this.props.mainState.phieunhap,
+            products: json.data
+          }
+        }));
+      }
+      this.setState({
+        loading: false,
+      });
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình tìm kiếm!');
+      this.setState({
+        loading: false,
+      });
     });
   }
 
@@ -20,7 +108,9 @@ class AdvancedSearchForm extends React.Component {
 
   // To generate mock Form.Item
   getFields() {
-    const count = this.state.expand ? 10 : 6;
+    let {mainState} = this.props;
+    let kho = mainState.kho || [];
+    let productInInventory = mainState.productInInventory || [];
     const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
@@ -31,7 +121,12 @@ class AdvancedSearchForm extends React.Component {
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập mã kho" />
+              <Select 
+                showSearch
+                mode="multiple"
+                placeholder="Nhập mã kho">
+                {kho.map((kho) =><Option value={kho.ma_kho} key={kho.ma_kho}>{kho.name}</Option>)}
+              </Select>
             )}
           </FormItem>
         </Col>
@@ -42,7 +137,12 @@ class AdvancedSearchForm extends React.Component {
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập mã vật tư" />
+              <Select 
+                showSearch
+                mode="multiple"
+                placeholder="Nhập mã vật tư">
+                {productInInventory.map((vattu) =><Option value={vattu.product_id} key={vattu.product_id}>{vattu.product_id} {"-"} {vattu.name}</Option>)}
+              </Select>
             )}
           </FormItem>
         </Col>
@@ -93,6 +193,17 @@ class AdvancedSearchForm extends React.Component {
       </React.Fragment>
     );
   }
+  componentDidMount() {
+    let {mainState} = this.props;
+    let kho = mainState.kho || [];
+    let productInInventory = mainState.productInInventory || [];
+    if(!kho.length) {
+      this.fetchKho();
+    }
+    if(!productInInventory.length) {
+      this.fetchProductInInventory();
+    }
+  }
 
   render() {
     return (
@@ -103,7 +214,7 @@ class AdvancedSearchForm extends React.Component {
         <Row gutter={24}>{this.getFields()}</Row>
         <Row>
           <Col span={24} style={{ textAlign: 'center', marginTop: 10 }}>
-            <Button type="primary" htmlType="submit">Tìm kiếm</Button>
+            <Button loading={this.state.loading} type="primary" htmlType="submit">Tìm kiếm</Button>
             <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
               Reset bộ lọc
             </Button>
@@ -115,4 +226,8 @@ class AdvancedSearchForm extends React.Component {
 }
 
 const WrappedAdvancedSearchForm = Form.create()(AdvancedSearchForm);
-export default WrappedAdvancedSearchForm
+export default connect((state) => {
+  return {
+    mainState: state.main.present
+  }
+})(WrappedAdvancedSearchForm)

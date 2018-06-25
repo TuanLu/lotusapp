@@ -72,4 +72,6 @@ $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
 //Tinh trang kho router
 $app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct');
+$app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
+$app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetchProductInInventory');
 
