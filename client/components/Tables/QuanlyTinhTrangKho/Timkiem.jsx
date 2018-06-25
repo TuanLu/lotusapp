@@ -1,7 +1,8 @@
 import React from 'react'
 import { Form, Row, Col, Input, Button, 
-  Icon, message, Select
+  Icon, message, Select, DatePicker
 } from 'antd';
+const {RangePicker} = DatePicker;
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 const FormItem = Form.Item;
@@ -16,9 +17,19 @@ class AdvancedSearchForm extends React.Component {
   handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(this.props);
-      console.log('Received values of form: ', values);
-      this.search(values);
+      let filters = {...values};
+      if(filters['ngay_san_xuat'] && filters['ngay_san_xuat'].length) {
+        let rangeValue = filters['ngay_san_xuat'];
+        filters['ngay_san_xuat'] = [rangeValue[0].format('YYYY-MM-DD'), rangeValue[1].format('YYYY-MM-DD')];
+       
+      }
+      if(filters['ngay_het_han'] && filters['ngay_het_han'].length) {
+        let rangeValue = filters['ngay_het_han'];
+        filters['ngay_het_han'] = [rangeValue[0].format('YYYY-MM-DD'), rangeValue[1].format('YYYY-MM-DD')];
+       
+      }
+      //console.log('Received values of form: ', filters);
+      this.search(filters);
     });
   }
   fetchProductInInventory() {
@@ -71,6 +82,7 @@ class AdvancedSearchForm extends React.Component {
     this.setState({
       loading: true
     });
+    this.props.loading(true);
     fetch(ISD_BASE_URL + 'tinhtrangkho/search', {
       method: 'POST',
       headers: getTokenHeader(),
@@ -82,7 +94,7 @@ class AdvancedSearchForm extends React.Component {
       if(json.status == 'error') {
         message.error(json.message, 3);
       } else {
-        message.success(json.message);
+        //message.success(json.message);
         this.props.dispatch(updateStateData({
           phieunhap: {
             ...this.props.mainState.phieunhap,
@@ -93,17 +105,20 @@ class AdvancedSearchForm extends React.Component {
       this.setState({
         loading: false,
       });
+      this.props.loading(false);
     }).catch((ex) => {
       console.log('parsing failed', ex)
       message.error('Có lỗi xảy ra trong quá trình tìm kiếm!');
       this.setState({
         loading: false,
       });
+      this.props.loading(false);
     });
   }
 
   handleReset = () => {
     this.props.form.resetFields();
+    this.search();
   }
 
   // To generate mock Form.Item
@@ -164,7 +179,9 @@ class AdvancedSearchForm extends React.Component {
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập ngày sản xuất" />
+              <RangePicker 
+                placeholder={['Từ Ngày', 'Đến Ngày']}
+                format="DD/MM/YYYY" />
             )}
           </FormItem>
         </Col>
@@ -175,7 +192,9 @@ class AdvancedSearchForm extends React.Component {
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập ngày hết hạn" />
+              <RangePicker 
+                placeholder={['Từ Ngày', 'Đến Ngày']}
+                format="DD/MM/YYYY" />
             )}
           </FormItem>
         </Col>

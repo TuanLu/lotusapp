@@ -566,7 +566,9 @@ class EditableTable extends React.Component {
           onChange={this.handleChange}
           title={() => {
             return (
-              <Timkiem/>
+              <Timkiem loading={(loading) => {
+                this.setState({loadProduct: loading});
+              }}/>
             );
           }}
           expandedRowRender={record => {
