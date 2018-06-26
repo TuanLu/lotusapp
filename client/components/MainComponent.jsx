@@ -17,6 +17,7 @@ import QuanlyCat from './Tables/QuanlyCate'
 import QuanlyKh from './Tables/QuanlyKh'
 import QuanlySanpham from './Tables/QuanlySanpham'
 import QuanlyPhieunhap from './Tables/QuanlyPhieunhap'
+import QuanlyPhieuxuat from './Tables/QuanlyPhieuxuat'
 import QuanlyDonhang from './Tables/QuanlyDonhang'
 import QuanlyTinhTrangKho from './Tables/QuanlyTinhTrangKho';
 
@@ -101,6 +102,9 @@ class MainComponent extends React.Component {
         break;
       case 'qlphieunhap':
         return <QuanlyPhieunhap dispatch={dispatch} mainState={mainState}/>
+        break;
+      case 'qlphieuxuat':
+        return <QuanlyPhieuxuat dispatch={dispatch} mainState={mainState}/>
         break;
       case 'tinhtrangkho':
         return <QuanlyTinhTrangKho dispatch={dispatch} mainState={mainState}/>

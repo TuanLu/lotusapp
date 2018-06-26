@@ -4,7 +4,7 @@ use \Medoo\Medoo;
 use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
 
-class PhieunhapController extends BaseController
+class PhieuxuatController extends BaseController
 {
 	private $tableName = 'phieu_nhap_xuat_kho';
 
@@ -14,6 +14,7 @@ class PhieunhapController extends BaseController
 			'ma_phieu',
 			'ma_kho',
 			'note',
+			'type',
 			'nguoi_giao_dich',
 			'address',
 			'tinh_trang',
@@ -35,7 +36,7 @@ class PhieunhapController extends BaseController
 		//print_r($columns);die;
 		$collection = $this->db->select($this->tableName, $columns, [
 			"status" => 1,
-			'type' => 1,
+			'type' => 2,
 			"ORDER" => ["id" => "DESC"],
 		]);
 		if(!empty($collection)) {
@@ -99,7 +100,7 @@ class PhieunhapController extends BaseController
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
 		//Some validation 
 		if(empty($products)) {
-			$rsData['message'] = 'Không có sản phẩm nào trong phiếu nhập!';
+			$rsData['message'] = 'Không có sản phẩm nào trong phiếu xuất!';
 				echo json_encode($rsData);
 				die;
 		}
@@ -123,7 +124,7 @@ class PhieunhapController extends BaseController
 			$duLieuPhieu = array(
 				'ma_phieu' => $maPhieu,
 				'ma_kho' => $maKho,
-				'type' => 1, // 1 => Nhập
+				'type' => 2, // 1 => Nhập // 2 => Xuất
 				'create_on' => $createOn,
 				'create_by' => $userId,
 				'nguoi_giao_dich' => $nguoiGiaoDich,
@@ -157,7 +158,7 @@ class PhieunhapController extends BaseController
 					$columns = $this->getColumns();
 					$data = $this->db->select('phieu_nhap_xuat_kho', $columns, ['ma_phieu' => $maPhieu]);
 					$rsData['data'] = $data[0];
-					$rsData['message'] = 'Đã thêm phiếu nhập thành công!';
+					$rsData['message'] = 'Đã thêm phiếu xuất thành công!';
 				} else {
 					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 				}
@@ -168,7 +169,7 @@ class PhieunhapController extends BaseController
 			$itemData = [
 				'ma_phieu' => $maPhieu,
 				'ma_kho' => $maKho,
-				'type' => 1, // 1 => Nhập
+				'type' => 2, // 1 => Nhập 2 => Xuất
 				'create_on' => $date->format('Y-m-d H:i:s'),
 				'create_by' => $userId,
 				'nguoi_giao_dich' => $nguoiGiaoDich,
@@ -180,7 +181,7 @@ class PhieunhapController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update phiếu nhập', $itemData);
+				$this->superLog('Update phiếu xuất', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
@@ -240,7 +241,7 @@ class PhieunhapController extends BaseController
 				$rsData['status'] = 'success';
 				$id = $this->db->id();
 				$rsData['data'] = array('id' => $id);
-				$rsData['message'] = 'Đã thêm sản phẩm vào phiếu nhập thành công!';
+				$rsData['message'] = 'Đã thêm sản phẩm vào phiếu xuất thành công!';
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
@@ -287,13 +288,6 @@ class PhieunhapController extends BaseController
 			$updateData = [
 				'update_on' => $createOn,
 			];
-			if($params['type'] == 'qc_check') {
-				$updateData['qc_check'] = $params['status'];
-				$updateData['qc_id'] = $userId;
-			} else {
-				$updateData['qa_check'] = $params['status'];
-				$updateData['qa_id'] = $userId;
-			}
 			
 			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['ids']]);
 			if($result->rowCount()) {
@@ -372,7 +366,7 @@ class PhieunhapController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Sản Phẩm Theo Phiếu', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá sản phẩm khỏi phiếu nhập!';
+				$rsData['message'] = 'Đã xoá sản phẩm khỏi phiếu xuất!';
 				$rsData['data'] = $id;
 			}
 		} else {

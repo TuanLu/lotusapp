@@ -70,6 +70,16 @@ $app->post('/phieunhap/changeStatus', 'PhieunhapController:changeStatus');
 $app->post('/phieunhap/changePosition', 'PhieunhapController:changePosition');
 $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
+//Phieu xuat router
+$app->get('/phieuxuat/fetch', 'PhieuxuatController:fetch');
+$app->get('/phieuxuat/fetchProductDetailsList', 'PhieuxuatController:fetchProductDetailsList');
+$app->get('/phieuxuat/fetchSelectedProduct/{ma_phieu}', 'PhieuxuatController:fetchSelectedProduct');
+$app->post('/phieuxuat/update', 'PhieuxuatController:update');
+$app->post('/phieuxuat/updateProduct', 'PhieuxuatController:updateProduct');
+$app->post('/phieuxuat/changeStatus', 'PhieuxuatController:changeStatus');
+$app->post('/phieuxuat/changePosition', 'PhieuxuatController:changePosition');
+$app->get('/phieuxuat/delete/{id}', 'PhieuxuatController:delete');
+$app->get('/phieuxuat/deleteProduct/{id}', 'PhieuxuatController:deleteProduct');
 //Tinh trang kho router
 $app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct');
 $app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
