@@ -313,24 +313,39 @@ class PhieunhapController extends BaseController
 		);
 		// Get params and validate them here.
 		$params = $request->getParams();
+		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';
+		$maKho = isset($params['ma_kho']) ? $params['ma_kho'] : '';
+		if(!$maKho || !$maPhieu) {
+			$rsData['message'] = 'Thiếu mã kho hoặc mã phiếu';
+			echo json_encode($rsData);
+			die;
+		}
 		if(isset($params['id'])
 			&& isset($params['vi_tri_kho'])) {
 
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
-			$updateData = [
-				'vi_tri_kho' => $params['vi_tri_kho'],
+			//Update kho 
+			$updateKhoData = [
+				'update_by' => $userId,
+				'ma_kho' => $maKho,
 				'update_on' => $createOn,
 			];
-			
-			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);
+			$result = $this->db->update('phieu_nhap_xuat_kho', $updateKhoData, ['ma_phieu' => $maPhieu]);
 			if($result->rowCount()) {
-				$this->superLog('Update SP theo phiếu', $updateData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				$updateData = [
+					'vi_tri_kho' => $params['vi_tri_kho'],
+					'update_on' => $createOn,
+				];
+				$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);
+				if($result->rowCount()) {
+					$this->superLog('Update SP theo phiếu', $updateData);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				}
 			}
 		}
 		echo json_encode($rsData);

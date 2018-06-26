@@ -10,8 +10,18 @@ class TimeRelatedForm extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      expandedRowRender: true
+      expandedRowRender: true,
+      ma_kho: this.props.record.kho_id,//Using kho_id instead of ma_kho
+      vi_tri_kho: this.props.record.vi_tri_kho
     };
+    this.changeInventory = this.changeInventory.bind(this);
+  }
+  changeInventory(value) {
+    this.setState({
+      ma_kho: value,
+      vi_tri_kho: ''//Reset position
+    });
+    this.props.form.resetFields(['vi_tri_kho']);
   }
   handleSubmit = (e) => {
     e.preventDefault();
@@ -23,10 +33,12 @@ class TimeRelatedForm extends React.Component {
       //console.log('Received values of form: ', row, this.props.record);
       let positionData = {
         id: this.props.record.id,
-        //ma_kho: this.props.record.ma_kho,
+        ma_phieu: this.props.record.ma_phieu,
+        ma_kho: this.state.ma_kho,
         vi_tri_kho: row.vi_tri_kho.join(','),
         //product_id: this.props.record.product_id
       };
+      //console.log(positionData);
       this.changeProductPosition(positionData);
     });
   }
@@ -126,17 +138,17 @@ class TimeRelatedForm extends React.Component {
     let viTriKho = mainState.vi_tri_kho || [];
     if(viTriKho.length) {
       //Filter with selected inventory
-      let {record} = this.props;
-      viTriKho = viTriKho.filter((vitri) => vitri.ma_kho == record.ma_kho);
+      //console.log(viTriKho, this.state);
+      viTriKho = viTriKho.filter((vitri) => vitri.ma_kho == this.state.ma_kho);
       return viTriKho.map((vitri) => <Option key={vitri.id} value={vitri.id}>{vitri.name}</Option>);
     }
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-    let {record} = this.props;
+    let {ma_kho, vi_tri_kho} = this.state;
     let selectedPosition = [];
-    if(record.vi_tri_kho) {
-      selectedPosition = record.vi_tri_kho.split(',');
+    if(vi_tri_kho != "") {
+      selectedPosition = vi_tri_kho.split(',');
     }
     const config = {
       rules: [{ required: true, message: 'Hãy chọn vị trí kho' }],
@@ -146,14 +158,12 @@ class TimeRelatedForm extends React.Component {
         <FormItem
           label="Tại kho"
         >
-          {getFieldDecorator('kho', {required: true, initialValue: record.ma_kho})(
+          {getFieldDecorator('ma_kho', {
+            required: true, 
+            initialValue: ma_kho,
+          })(
             <Select
-              disabled 
-              onChange={(value) => {
-                this.setState({
-                  selectedInventory: value
-                });
-              }}
+              onChange={this.changeInventory}
               placeholder="Kho hàng">
               {this.khoOptions()}
             </Select>
@@ -162,8 +172,11 @@ class TimeRelatedForm extends React.Component {
         <FormItem
           label="Chọn vị trí trong kho"
         >
-          {getFieldDecorator('vi_tri_kho', {...config, initialValue: selectedPosition})(
-            <Select mode="multiple" placeholder="Chọn vị trí kho">
+          {getFieldDecorator('vi_tri_kho', {...config, 
+            initialValue: selectedPosition})(
+            <Select 
+              mode="multiple" 
+              placeholder="Chọn vị trí kho">
              {this.viTriKhoOptions()}
             </Select>
           )}
