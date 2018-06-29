@@ -84,4 +84,7 @@ $app->get('/phieuxuat/deleteProduct/{id}', 'PhieuxuatController:deleteProduct');
 $app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct');
 $app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
 $app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetchProductInInventory');
-
+//Nhân sự router
+$app->get('/qlns/fetchNs', 'NhansuController:fetchNs');
+$app->post('/qlns/updateNs', 'NhansuController:updateNs');
+$app->get('/qlns/deleteNs/{id}', 'NhansuController:deleteNs');

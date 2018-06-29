@@ -19,7 +19,8 @@ import QuanlySanpham from './Tables/QuanlySanpham'
 import QuanlyPhieunhap from './Tables/QuanlyPhieunhap'
 import QuanlyPhieuxuat from './Tables/QuanlyPhieuxuat'
 import QuanlyDonhang from './Tables/QuanlyDonhang'
-import QuanlyTinhTrangKho from './Tables/QuanlyTinhTrangKho';
+import QuanlyTinhTrangKho from './Tables/QuanlyTinhTrangKho'
+import QuanlyNhansu from './Tables/QuanlyNhansu';
 
 class MainComponent extends React.Component {
   state = {
@@ -107,7 +108,10 @@ class MainComponent extends React.Component {
         return <QuanlyPhieuxuat dispatch={dispatch} mainState={mainState}/>
         break;
       case 'tinhtrangkho':
-        return <QuanlyTinhTrangKho dispatch={dispatch} mainState={mainState}/>
+          return <QuanlyTinhTrangKho dispatch={dispatch} mainState={mainState}/>
+          break;
+      case 'qlns':
+        return <QuanlyNhansu dispatch={dispatch} mainState={mainState}/>
         break;
       default:
         break;

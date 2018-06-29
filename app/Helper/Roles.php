@@ -76,6 +76,11 @@ class Roles {
         'icon' => 'home',
         'path' => 'tinhtrangkho',
       ],
+      'qlns' => [
+        'label' => 'QL Nhân sự', 
+        'icon' => 'team',
+        'path' => 'qlns'
+      ],
     ];
   }
 }
