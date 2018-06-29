@@ -81,6 +81,11 @@ class Roles {
         'icon' => 'team',
         'path' => 'qlns'
       ],
+      'qljobs' => [
+        'label' => 'QL Công việc', 
+        'icon' => 'solution',
+        'path' => 'qljobs'
+      ],
     ];
   }
 }

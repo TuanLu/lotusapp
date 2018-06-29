@@ -88,3 +88,7 @@ $app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetch
 $app->get('/qlns/fetchNs', 'NhansuController:fetchNs');
 $app->post('/qlns/updateNs', 'NhansuController:updateNs');
 $app->get('/qlns/deleteNs/{id}', 'NhansuController:deleteNs');
+//Công việc router
+$app->get('/qljobs/fetchJob', 'JobsController:fetchJob');
+$app->post('/qljobs/updateJob', 'JobsController:updateJob');
+$app->get('/qljobs/deleteJob/{id}', 'JobsController:deleteJob');
