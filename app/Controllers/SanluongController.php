@@ -80,7 +80,7 @@ class SanluongController extends BaseController
 				'timestart' => $timestart,
 				'timestop' => $timestop,
 				'address' => $address,
-				'workday' => $date->format('Y-m-d H:m:s'),
+				'workday' => $workday,
 				'status' => 1,
 				'create_on' => $date->format('Y-m-d H:m:s'),
 			];
@@ -108,10 +108,10 @@ class SanluongController extends BaseController
 				'ma_sl' => $ma_sl,
 				'ma_ns' => $ma_ns,
 				'ca' => $ca,
-				'timestart' => $date->format('Y-m-d H:m:s'),
-				'timestop' => $date->format('Y-m-d H:m:s'),
+				'timestart' => $timestart,
+				'timestop' => $timestop,
 				'address' => $address,
-				'workday' => $date->format('Y-m-d H:m:s'),
+				'workday' => $workday,
 				'status' => 1,
 				'create_on' => $date->format('Y-m-d H:m:s'),
 			];

@@ -54,12 +54,12 @@ class NhansuController extends BaseController
 		if(!$id) {
 			//Insert new data to db
 			if(!$maNs) {
-				$rsData['message'] = 'Mã khách hàng không được để trống!';
+				$rsData['message'] = 'Mã nhân sự không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên khách hàng không được để trống!';
+				$rsData['message'] = 'Tên nhân sự không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
@@ -76,17 +76,17 @@ class NhansuController extends BaseController
 			$where = ['ma_ns' => $itemData['ma_ns']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã khách hàng [". $itemData['ma_ns'] ."] đã tồn tại: ";
-				echo json_encode($rsData);exit;
+				$rsData['message'] = "Mã nhân sự [". $itemData['ma_ns'] ."] đã tồn tại: ";
+				echo json_encode($rsData); exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm khách hàng mới thành công!';
+				$rsData['message'] = 'Đã thêm nhân sự mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã NS: ' . $maNs;
 			}
 		} else {
 			//update data base on $id
@@ -105,7 +105,7 @@ class NhansuController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã NS: ' . $maNs;
 			}
 			
 		}
@@ -124,7 +124,7 @@ class NhansuController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete KH', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá khách hàng khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá nhân sự khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

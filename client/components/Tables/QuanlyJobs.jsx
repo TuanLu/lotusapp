@@ -168,6 +168,7 @@ class EditableTable extends React.Component {
       ma_cv: "",
       diengiai: "",
       heso: "",
+      adress: "",
       description: ""
     };
   }
