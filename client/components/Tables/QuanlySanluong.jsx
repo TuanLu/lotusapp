@@ -62,7 +62,7 @@ class EditableCell extends React.Component {
       break;
       case 'timestart':
       case 'timestop':
-        return <TimePicker placeholder="Chọn giờ" format="HH:mm:ss"/>;
+        return <TimePicker placeholder="Chọn giờ" format="HH:mm"/>;
       break;  
       default:
         return <Input />;
@@ -95,7 +95,7 @@ class EditableCell extends React.Component {
             }else{
               if(dataIndex == 'timestart' || dataIndex == 'timestop') {
                 //defaultValue={}
-                value = moment(value, 'HH:mm:ss')
+                value = moment(value, 'HH:mm')
                 if(!value.isValid()) {
                   value = null;// Might 	0000-00-00
                 }
@@ -159,14 +159,14 @@ class EditableTable extends React.Component {
         dataIndex: 'timestart',
         //width: '40%',
         editable: true,
-        render: (text, record) => moment(text, "HH:mm:ss").format("HH:mm:ss")//moment(text).format('HH:mm:ss')
+        render: (text, record) => moment(text, "HH:mm").format("HH:mm")//moment(text).format('HH:mm:ss')
       },
       {
         title: 'Giờ kết thúc',
         dataIndex: 'timestop',
         //width: '40%',
         editable: true,
-        render: (text, record) => moment(text, "HH:mm:ss").format("HH:mm:ss")
+        render: (text, record) => moment(text, "HH:mm").format("HH:mm")
       },
       {
         title: 'Actions',
@@ -264,8 +264,8 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
           workday: row['workday'].format('DD/MM/YYYY'),
-          timestart: row['timestart'].format('HH:mm:ss'),
-          timestop: row['timestop'].format('HH:mm:ss'),
+          timestart: row['timestart'].format('HH:mm'),
+          timestop: row['timestop'].format('HH:mm'),
         };
         fetch(ISD_BASE_URL + 'qlsl/updateSl', {
           method: 'POST',
