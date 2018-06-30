@@ -3,7 +3,7 @@ import moment from 'moment'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row,
-  Col, Button, message, DatePicker
+  Col, Button, message, DatePicker, TimePicker
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -62,7 +62,7 @@ class EditableCell extends React.Component {
       break;
       case 'timestart':
       case 'timestop':
-        return <DatePicker showTime placeholder="Chọn giờ" format="HH:mm:ss"/>;
+        return <TimePicker placeholder="Chọn giờ" format="HH:mm:ss"/>;
       break;  
       default:
         return <Input />;
@@ -94,7 +94,8 @@ class EditableCell extends React.Component {
               }
             }else{
               if(dataIndex == 'timestart' || dataIndex == 'timestop') {
-                value = moment(value);
+                //defaultValue={}
+                value = moment(value, 'HH:mm:ss')
                 if(!value.isValid()) {
                   value = null;// Might 	0000-00-00
                 }
@@ -158,14 +159,14 @@ class EditableTable extends React.Component {
         dataIndex: 'timestart',
         //width: '40%',
         editable: true,
-        render: (text, record) => moment(text).format('HH:mm:ss')
+        render: (text, record) => moment(text, "HH:mm:ss").format("HH:mm:ss")//moment(text).format('HH:mm:ss')
       },
       {
         title: 'Giờ kết thúc',
         dataIndex: 'timestop',
         //width: '40%',
         editable: true,
-        render: (text, record) => moment(text).format('HH:mm:ss')
+        render: (text, record) => moment(text, "HH:mm:ss").format("HH:mm:ss")
       },
       {
         title: 'Actions',
