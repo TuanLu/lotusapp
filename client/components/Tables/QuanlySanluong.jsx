@@ -94,7 +94,7 @@ class EditableCell extends React.Component {
               }
             }else{
               if(dataIndex == 'timestart' || dataIndex == 'timestop') {
-                value = moment(value);
+                value = moment(value,'HH:mm:ss');
                 if(!value.isValid()) {
                   value = null;// Might 	0000-00-00
                 }

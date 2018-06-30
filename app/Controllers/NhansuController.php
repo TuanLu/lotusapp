@@ -54,12 +54,12 @@ class NhansuController extends BaseController
 		if(!$id) {
 			//Insert new data to db
 			if(!$maNs) {
-				$rsData['message'] = 'Mã khách hàng không được để trống!';
+				$rsData['message'] = 'Mã nhân sự không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên khách hàng không được để trống!';
+				$rsData['message'] = 'Tên nhân sự không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
@@ -73,17 +73,12 @@ class NhansuController extends BaseController
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$selectColumns = ['id', 'ma_ns'];
-			$where = ['ma_ns' => $itemData['ma_ns']];
-			$data = $this->db->select($this->tableName, $selectColumns, $where);
-			if(!empty($data)) {
-				$rsData['message'] = "Mã khách hàng [". $itemData['ma_ns'] ."] đã tồn tại: ";
-				echo json_encode($rsData);exit;
-			}
+			
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm khách hàng mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
+				$rsData['message'] = 'Đã thêm nhân sự mới thành công!';
+				$data = $this->db->select($this->tableName, $selectColumns);
 				$rsData['data'] = $data[0];
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
@@ -124,7 +119,7 @@ class NhansuController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete KH', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá khách hàng khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá nhân sự khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

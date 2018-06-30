@@ -73,17 +73,11 @@ class JobsController extends BaseController
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$selectColumns = ['id', 'ma_cv'];
-			$where = ['ma_cv' => $itemData['ma_cv']];
-			$data = $this->db->select($this->tableName, $selectColumns, $where);
-			if(!empty($data)) {
-				$rsData['message'] = "Mã công việc [". $itemData['ma_cv'] ."] đã tồn tại: ";
-				echo json_encode($rsData);exit;
-			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm công việc mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
+				$data = $this->db->select($this->tableName, $selectColumns);
 				$rsData['data'] = $data[0];
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
