@@ -22,7 +22,7 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'ma_kh':
+      case 'ma_ns':
         let khachhang = this.props.khachhang || [];
         return (
           <Select 
@@ -31,8 +31,24 @@ class EditableCell extends React.Component {
            {khachhang.map((khachhang) => {
               return <Select.Option 
               key={khachhang.id} 
-              value={khachhang.name}>
-                {`${khachhang.id} - ${khachhang.name}`}
+              value={khachhang.id}>
+                {`${khachhang.ma_ns} - ${khachhang.name}`}
+              </Select.Option>
+           })}
+          </Select>
+        );
+        break;
+      case 'ma_cv':
+        let jobs = this.props.jobs || [];
+        return (
+          <Select 
+            style={{ width: 250 }}
+            placeholder="Chọn khách hàng">
+           {jobs.map((job) => {
+              return <Select.Option 
+              key={job.id} 
+              value={job.id}>
+                {`${job.ma_cv} - ${job.diengiai}  - ${job.heso}`}
               </Select.Option>
            })}
           </Select>
@@ -58,7 +74,7 @@ class EditableCell extends React.Component {
         );
         break;
       case 'workday':
-        return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>;
+        return <DatePicker placeholder="Chọn ngày" format="DD-MM-YYYY"/>;
       break;
       case 'timestart':
       case 'timestop':
@@ -88,7 +104,7 @@ class EditableCell extends React.Component {
           if(record) {
             value = record[dataIndex];
             if(dataIndex == 'workday') {
-              value = moment(value);
+              value = moment(value); 
               if(!value.isValid()) {
                 value = null;// Might 	0000-00-00
               }
@@ -139,7 +155,7 @@ class EditableTable extends React.Component {
         width: '15%',
         editable: true,
         required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
+        render: (text, record) => moment(text, 'DD-MM-YYYY').format('DD-MM-YYYY'),
       },
       {
         title: 'Mã nhân viên',
@@ -263,7 +279,7 @@ class EditableTable extends React.Component {
         let newItemData = {
           ...item,
           ...row,
-          workday: row['workday'].format('DD/MM/YYYY'),
+          workday: row['workday'].format('DD-MM-YYYY'),
           timestart: row['timestart'].format('HH:mm'),
           timestop: row['timestop'].format('HH:mm'),
         };
@@ -360,8 +376,8 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
-  fetchKhachhang() {
-    fetch(ISD_BASE_URL + 'qlkh/fetchKh', {
+  fetchNhanvien() {
+    fetch(ISD_BASE_URL + 'qlns/fetchNs', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -384,8 +400,8 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
-  fetchProduct() {
-    fetch(ISD_BASE_URL + 'product/fetch', {
+  fetchJobs() {
+    fetch(ISD_BASE_URL + 'qljobs/fetchJob', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -393,7 +409,7 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            products: json.data
+            jobs: json.data
           }));
           this.setState({
             productList: convertArrayObjectToObject(json.data)
@@ -409,8 +425,8 @@ class EditableTable extends React.Component {
     });
   }
   componentDidMount() {
-    this.fetchKhachhang();
-    this.fetchProduct();
+    this.fetchNhanvien();
+    this.fetchJobs();
     this.fetchData();
   }
   render() {
@@ -421,7 +437,7 @@ class EditableTable extends React.Component {
       },
     };
 
-    let products = this.props.mainState.products;
+    let jobs = this.props.mainState.jobs;
     let khachhang = this.props.mainState.khachhang;
     
     const columns = this.columns.map((col) => {
@@ -437,7 +453,7 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: this.isEditing(record),
           required: col.required,
-          products,
+          jobs,
           khachhang
         }),
       };

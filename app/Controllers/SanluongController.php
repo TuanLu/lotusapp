@@ -2,8 +2,8 @@
 namespace App\Controllers;
 use \Medoo\Medoo;
 use \Monolog\Logger;
+use \App\Helper\Data;
 //use \Ramsey\Uuid\Uuid;
-
 class SanluongController extends BaseController
 {
 	private $tableName = 'lotus_sanluong';
@@ -51,6 +51,7 @@ class SanluongController extends BaseController
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
 		//die($id);
+		$helper = new Data();
 		$ma_sl = $request->getParam('ma_sl');
 		$ma_ns = $request->getParam('ma_ns');
 		$ma_cv = $request->getParam('ma_cv');
@@ -59,6 +60,7 @@ class SanluongController extends BaseController
 		$timestop = $request->getParam('timestop');
 		$address = $request->getParam('address');
 		$workday = $request->getParam('workday');
+		$workday = $helper->convertStringToDate('d-m-Y', $workday);
 		if(!$id) {
 			//Insert new data to db
 			if(!$ma_cv) {
