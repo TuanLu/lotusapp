@@ -38,7 +38,8 @@ class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
       case 'product_id':
-        let products = this.props.products;
+        let productininventory = this.props.productininventory;
+
         return (
           <Select 
             showSearch
@@ -54,7 +55,7 @@ class EditableCell extends React.Component {
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             style={{ width: 200 }}
             placeholder="Chọn VT">
-           {products.map((product) => {
+           {productininventory.map((product) => {
               return <Select.Option 
               key={product.product_id} 
               value={product.product_id}> 
@@ -514,7 +515,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchProduct() {
-    fetch(ISD_BASE_URL + 'phieunhap/fetchProductDetailsList', {
+    fetch(ISD_BASE_URL + 'tinhtrangkho/fetchProductInInventory', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -522,7 +523,7 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            products: json.data
+            productininventory: json.data
           }));
           this.setState({
             productList: convertArrayObjectToObject(json.data)
@@ -617,8 +618,9 @@ class EditableTable extends React.Component {
     );
   }
   componentDidMount() {
-    let {products, phieunhap} = this.props.mainState;
-    if(!products.length) {
+    let {productininventory, phieunhap} = this.props.mainState;
+    productininventory = productininventory || [];
+    if(!productininventory.length) {
       this.fetchProduct();
     }
     if(phieunhap.ma_phieu) {
@@ -632,7 +634,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-    let products = this.props.mainState.products;
+    let productininventory = this.props.mainState.productininventory;
     let columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -646,7 +648,7 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: this.isEditing(record),
           required: col.required,
-          products,
+          productininventory,
         }),
       };
     });

@@ -92,3 +92,7 @@ $app->get('/qlns/deleteNs/{id}', 'NhansuController:deleteNs');
 $app->get('/qljobs/fetchJob', 'JobsController:fetchJob');
 $app->post('/qljobs/updateJob', 'JobsController:updateJob');
 $app->get('/qljobs/deleteJob/{id}', 'JobsController:deleteJob');
+//Sản lượng router
+$app->get('/qlsl/fetchSl', 'SanluongController:fetchSl');
+$app->post('/qlsl/updateSl', 'SanluongController:updateSl');
+$app->get('/qlsl/deleteSl/{id}', 'SanluongController:deleteSl');

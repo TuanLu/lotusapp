@@ -21,7 +21,7 @@ class NhansuController extends BaseController
 				'ma_ns',
 				'name',
 				'phone',
-				'adress',
+				'group',
 				'description'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
@@ -49,7 +49,7 @@ class NhansuController extends BaseController
 		$maNs = $request->getParam('ma_ns');
 		$name = $request->getParam('name');
 		$phone = $request->getParam('phone');
-		$adress = $request->getParam('adress');
+		$group = $request->getParam('group');
 		$address = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
@@ -68,7 +68,7 @@ class NhansuController extends BaseController
 				'ma_ns' => $maNs,
 				'name' => $name,
 				'phone' => $phone,
-				'adress' => $adress,
+				'group' => $group,
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
@@ -95,7 +95,7 @@ class NhansuController extends BaseController
 				'ma_ns' => $maNs,
 				'name' => $name,
 				'phone' => $phone,
-				'adress' => $adress,
+				'group' => $group,
 				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];

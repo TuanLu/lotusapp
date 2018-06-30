@@ -77,6 +77,9 @@ $container['NhansuController'] = function ($c) {
 $container['JobsController'] = function ($c) {
   return new \App\Controllers\JobsController($c);
 };
+$container['SanluongController'] = function ($c) {
+  return new \App\Controllers\SanluongController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

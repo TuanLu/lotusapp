@@ -16,7 +16,7 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const EditableFormRow = Form.create()(EditableRow);
-
+//dkjfskdfsjdf kljslkfjlskjf lksjl fksdjlkfjldsdsjkdsjkllsdfljsldfj
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
@@ -94,8 +94,8 @@ class EditableTable extends React.Component {
         required: true
       },
       {
-        title: 'Địa chỉ',
-        dataIndex: 'adress',
+        title: 'Tổ',
+        dataIndex: 'group',
         //width: '15%',
         editable: true,
         required: true

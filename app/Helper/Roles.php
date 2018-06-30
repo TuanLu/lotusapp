@@ -86,6 +86,11 @@ class Roles {
         'icon' => 'solution',
         'path' => 'qljobs'
       ],
+      'qlsl' => [
+        'label' => 'QL Sản Lượng', 
+        'icon' => 'solution',
+        'path' => 'qlsl'
+      ],
     ];
   }
 }
