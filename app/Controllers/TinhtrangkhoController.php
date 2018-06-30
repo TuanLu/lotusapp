@@ -206,7 +206,7 @@ class TinhtrangkhoController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
-		$sql = "SELECT DISTINCT products.product_id, products.name FROM products INNER JOIN san_pham_theo_phieu ON products.product_id = san_pham_theo_phieu.product_id ORDER BY products.name";
+		$sql = "SELECT DISTINCT products.product_id, products.name, products.unit FROM products INNER JOIN san_pham_theo_phieu ON products.product_id = san_pham_theo_phieu.product_id ORDER BY products.name";
     $collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;

@@ -76,6 +76,21 @@ class Roles {
         'path' => 'nhomqc',
         'include_in_menu' => false
       ],
+      'qlns' => [
+        'label' => 'QL Nhân sự', 
+        'icon' => 'team',
+        'path' => 'qlns'
+      ],
+      'qljobs' => [
+        'label' => 'QL Công việc', 
+        'icon' => 'solution',
+        'path' => 'qljobs'
+      ],
+      'qlsl' => [
+        'label' => 'QL Sản Lượng', 
+        'icon' => 'solution',
+        'path' => 'qlsl'
+      ],
     ];
   }
 }

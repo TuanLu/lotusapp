@@ -84,4 +84,15 @@ $app->get('/phieuxuat/deleteProduct/{id}', 'PhieuxuatController:deleteProduct');
 $app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct');
 $app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
 $app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetchProductInInventory');
-
+//Nhân sự router
+$app->get('/qlns/fetchNs', 'NhansuController:fetchNs');
+$app->post('/qlns/updateNs', 'NhansuController:updateNs');
+$app->get('/qlns/deleteNs/{id}', 'NhansuController:deleteNs');
+//Công việc router
+$app->get('/qljobs/fetchJob', 'JobsController:fetchJob');
+$app->post('/qljobs/updateJob', 'JobsController:updateJob');
+$app->get('/qljobs/deleteJob/{id}', 'JobsController:deleteJob');
+//Sản lượng router
+$app->get('/qlsl/fetchSl', 'SanluongController:fetchSl');
+$app->post('/qlsl/updateSl', 'SanluongController:updateSl');
+$app->get('/qlsl/deleteSl/{id}', 'SanluongController:deleteSl');

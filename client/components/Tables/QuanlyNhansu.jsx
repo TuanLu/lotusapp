@@ -1,12 +1,10 @@
 import React from 'react'
-import moment from 'moment'
 import { 
   Table, Input, Select, 
-  Popconfirm, Form, Row,
-  Col, Button, message, DatePicker
+  Popconfirm, Form, Row, 
+  Col, Button, message
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
-import {updateStateData} from 'actions'
+import { getTokenHeader } from 'ISD_API';
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -18,52 +16,15 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const EditableFormRow = Form.create()(EditableRow);
-
+//dkjfskdfsjdf kljslkfjlskjf lksjl fksdjlkfjldsdsjkdsjkllsdfljsldfj
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'ma_kh':
-        let khachhang = this.props.khachhang || [];
-        return (
-          <Select 
-            style={{ width: 250 }}
-            placeholder="Chọn khách hàng">
-           {khachhang.map((khachhang) => {
-              return <Select.Option 
-              key={khachhang.id} 
-              value={khachhang.name}>
-                {`${khachhang.id} - ${khachhang.name}`}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'date_delive':
-        return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>;
-      break;
       default:
         return <Input />;
         break;
     }
+    
   };
   render() {
     const {
@@ -80,16 +41,6 @@ class EditableCell extends React.Component {
       <EditableContext.Consumer>
         {(form) => {
           const { getFieldDecorator } = form;
-          let value;
-          if(record) {
-            value = record[dataIndex];
-            if(dataIndex == 'date_delive') {
-              value = moment(value);
-              if(!value.isValid()) {
-                value = null;// Might 	0000-00-00
-              }
-            }
-          }
           return (
             <td {...restProps}>
               {editing ? (
@@ -99,7 +50,7 @@ class EditableCell extends React.Component {
                       required: required,
                       message: `Hãy nhập dữ liệu ô ${title}!`,
                     }],
-                    initialValue: value,
+                    initialValue: record[dataIndex],
                     
                   })(this.getInput())}
                 </FormItem>
@@ -122,37 +73,39 @@ class EditableTable extends React.Component {
     };
     this.columns = [
       {
-        title: 'Mã Đơn Hàng',
-        dataIndex: 'ma_order',
+        title: 'Mã Nhân viên',
+        dataIndex: 'ma_ns',
         width: '10%',
         editable: true,
         required: true,
       },
       {
-        title: 'Mã Khách hàng',
-        dataIndex: 'ma_kh',
+        title: 'Tên',
+        dataIndex: 'name',
         //width: '15%',
         editable: true,
         required: true
       },
       {
-        title: 'Mã sản phẩm',
-        dataIndex: 'product_id',
-        //width: '40%',
+        title: 'Số điện thoại',
+        dataIndex: 'phone',
+        //width: '15%',
         editable: true,
+        required: true
       },
       {
-        title: 'Số lượng',
-        dataIndex: 'qty',
-        //width: '40%',
+        title: 'Tổ',
+        dataIndex: 'group',
+        //width: '15%',
         editable: true,
+        required: true
       },
       {
-        title: 'Ngày nhận hàng',
-        dataIndex: 'date_delive',
+        title: 'Thông tin',
+        dataIndex: 'description',
         //width: '40%',
         editable: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
+        required: false
       },
       {
         title: 'Actions',
@@ -204,27 +157,24 @@ class EditableTable extends React.Component {
   addNewRow() {
     if(this.state.newitem == 0){
       let rowItem = this.getDefaultFields();
-    rowItem = {
-      ...rowItem,
-      key: this.state.data.length + 1
-    };
-    this.setState({
-      data: [rowItem, ...this.state.data],
-      editingKey: rowItem.key
-    })
-    this.state.newitem = 1
+      rowItem = {
+        ...rowItem,
+        key: this.state.data.length + 1
+      };
+      this.setState({
+        data: [rowItem, ...this.state.data],
+        editingKey: rowItem.key
+      })
+      this.state.newitem  = 1 ;
     }else{
-      message.error('Bạn đang thêm mới đơn hàng rồi ...')
+      message.error('Bạn đang thêm mới nhân viên rồi ...');
     }
   }
   getDefaultFields() {
     return {
-      ma_order: "",
+      ma_ns: "",
       name: "",
-      phone: "",
-      product_id: "",
-      qty: "",
-      date_delive: ""
+      description: ""
     };
   }
   isEditing = (record) => {
@@ -246,9 +196,8 @@ class EditableTable extends React.Component {
         let newItemData = {
           ...item,
           ...row,
-          date_delive: row['date_delive'].format('YYYY-MM-DD'),
         };
-        fetch(ISD_BASE_URL + 'order/updateDh', {
+        fetch(ISD_BASE_URL + 'qlns/updateNs', {
           method: 'POST',
           headers: getTokenHeader(),
           body: JSON.stringify(newItemData)
@@ -258,9 +207,6 @@ class EditableTable extends React.Component {
         }).then((json) => {
           if(json.status == 'error') {
             message.error(json.message, 3);
-            if(json.show_login) {
-              this.props.dispatch(updateStateData({showLogin: true}));
-            }
           } else {
             //udate table state
             newData.splice(index, 1, {
@@ -291,13 +237,13 @@ class EditableTable extends React.Component {
   }
   delete = (record) => {
     if(record.id) {
-      fetch(ISD_BASE_URL + 'order/deleteDh/' + record.id, {
+      fetch(ISD_BASE_URL + 'qlns/deleteNs/' + record.id, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá đơn hàng!', 3);
+          message.error('Có lỗi xảy ra khi xoá dữ liệu nhân viên!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -306,7 +252,7 @@ class EditableTable extends React.Component {
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá đơn hàng!', 3);
+        message.error('Có lỗi xảy ra khi xoá dữ liệu nhân viên!', 3);
         console.log(error);
       });
     } else {
@@ -319,7 +265,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
-    fetch(ISD_BASE_URL + 'order/fetchDh', {
+    fetch(ISD_BASE_URL + 'qlns/fetchNs', {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -337,61 +283,11 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu đơn hàng!', 3);
+      message.error('Có lỗi khi tải dữ liệu dữ liệu nhân viên!', 3);
       console.log(error);
     }); 
   }
-  fetchKhachhang() {
-    fetch(ISD_BASE_URL + 'qlkh/fetchKh', {
-      headers: getTokenHeader()
-    })
-    .then((resopnse) => resopnse.json())
-    .then((json) => {
-      if(json.data) {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            khachhang: json.data
-          }));
-          this.setState({
-            khachhangList: convertArrayObjectToObject(json.data)
-          });
-          
-        }
-      } else {
-        message.error(json.message);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  fetchProduct() {
-    fetch(ISD_BASE_URL + 'product/fetch', {
-      headers: getTokenHeader()
-    })
-    .then((resopnse) => resopnse.json())
-    .then((json) => {
-      if(json.data) {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            products: json.data
-          }));
-          this.setState({
-            productList: convertArrayObjectToObject(json.data)
-          });
-          
-        }
-      } else {
-        message.error(json.message);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
   componentDidMount() {
-    this.fetchKhachhang();
-    this.fetchProduct();
     this.fetchData();
   }
   render() {
@@ -402,9 +298,23 @@ class EditableTable extends React.Component {
       },
     };
 
-    let products = this.props.mainState.products;
-    let khachhang = this.props.mainState.khachhang;
-    
+    /**
+      title?: React.ReactNode;
+      key?: string;
+      dataIndex?: string;
+      render?: (text: any, record: T, index: number) => React.ReactNode;
+      filters?: { text: string; value: string }[];
+      onFilter?: (value: any, record: T) => boolean;
+      filterMultiple?: boolean;
+      filterDropdown?: React.ReactNode;
+      sorter?: boolean | ((a: any, b: any) => number);
+      colSpan?: number;
+      width?: string | number;
+      className?: string;
+      fixed?: boolean | ('left' | 'right');
+      filteredValue?: any[];
+      sortOrder?: boolean | ('ascend' | 'descend');
+    */
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -417,9 +327,7 @@ class EditableTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          required: col.required,
-          products,
-          khachhang
+          required: col.required
         }),
       };
     });
@@ -429,13 +337,13 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý đơn hàng</h2>
+              <h2 className="head-title">Quản lý nhân viên</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm mới đơn hàng</Button>
+                  type="primary" icon="plus">Thêm nhân viên mới</Button>
               </div>
             </Col>
           </Row>
