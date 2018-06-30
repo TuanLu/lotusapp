@@ -73,14 +73,20 @@ class JobsController extends BaseController
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$selectColumns = ['id', 'ma_cv'];
+			$where = ['ma_cv' => $itemData['ma_cv']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã công việc [". $itemData['ma_cv'] ."] đã tồn tại: ";
+				echo json_encode($rsData);exit;
+			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm công việc mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns);
+				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã CV: ' . $maNs;
 			}
 		} else {
 			//update data base on $id
@@ -95,11 +101,11 @@ class JobsController extends BaseController
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update KH', $itemData);
+				$this->superLog('Update NS', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã CV: ' . $maNs;
 			}
 			
 		}
@@ -116,7 +122,7 @@ class JobsController extends BaseController
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 0], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete KH', $id);
+				$this->superLog('Delete NS', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá công việc khỏi hệ thống!';
 				$rsData['data'] = $id;

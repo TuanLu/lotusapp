@@ -73,15 +73,20 @@ class NhansuController extends BaseController
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$selectColumns = ['id', 'ma_ns'];
-			
+			$where = ['ma_ns' => $itemData['ma_ns']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã nhân sự [". $itemData['ma_ns'] ."] đã tồn tại: ";
+				echo json_encode($rsData); exit;
+			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm nhân sự mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns);
+				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã NS: ' . $maNs;
 			}
 		} else {
 			//update data base on $id
@@ -100,7 +105,7 @@ class NhansuController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maNs;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã NS: ' . $maNs;
 			}
 			
 		}
