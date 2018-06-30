@@ -35,6 +35,26 @@ class SidebarMenu extends React.Component {
           theme="dark"
         >
          {this.renderMenuItem()}
+         {/* <Menu.Item
+            onClick={() => {
+              this.props.dispatch(updateStateData({
+                defaultRouter: 'tinhtrangkho'
+              }));
+            }} 
+            key={"tinhtrangkho"}>
+            <Icon type="home" />
+            <span>Tình trạng kho</span>
+        </Menu.Item>
+         <SubMenu key="user_group" title={<span><Icon type="team" /><span>QL Users</span></span>}>
+            <Menu.Item key="5">Option 5</Menu.Item>
+          </SubMenu>
+          <SubMenu key="setting_group" title={<span><Icon type="setting" /><span>Cài đặt</span></span>}>
+            <Menu.Item key="6">Option 6</Menu.Item>
+            <Menu.Item key="7">Option 7</Menu.Item>
+          </SubMenu>
+          <SubMenu key="qlsx_group" title={<span><Icon type="trademark" /><span>QL SX</span></span>}>
+            <Menu.Item key="8">Option 8</Menu.Item>
+          </SubMenu> */}
         </Menu>
       </div>
     );
