@@ -146,7 +146,9 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
-      newitem: 0
+      newitem: 0,
+      jobsList: {},
+      khachhangList: {}
     };
     this.columns = [
       {
@@ -162,13 +164,30 @@ class EditableTable extends React.Component {
         dataIndex: 'ma_ns',
         //width: '15%',
         editable: true,
-        required: true
+        required: true,
+        render: (text, record) => {
+          let label = text, ma_ns = '';
+          if(this.state.khachhangList && this.state.khachhangList[text]) {
+            label = this.state.khachhangList[text]['name'];
+            ma_ns = this.state.khachhangList[text]['ma_ns'];
+          }
+          return <span>{ma_ns} - {label}</span>
+        }
       },
       {
         title: 'Mã công việc',
         dataIndex: 'ma_cv',
         //width: '40%',
         editable: true,
+        render: (text, record) => {
+          let label = text, ma_cv = '', heso = '';
+          if(this.state.jobsList && this.state.jobsList[text]) {
+            label = this.state.jobsList[text]['diengiai'];
+            ma_cv = this.state.jobsList[text]['ma_cv'];
+            heso = this.state.jobsList[text]['heso'];
+          }
+          return <span>{ma_cv} - {label} - {heso}</span>
+        }
       },
       {
         title: 'Giờ bắt đầu',
@@ -412,7 +431,7 @@ class EditableTable extends React.Component {
             jobs: json.data
           }));
           this.setState({
-            productList: convertArrayObjectToObject(json.data)
+            jobsList: convertArrayObjectToObject(json.data)
           });
           
         }
