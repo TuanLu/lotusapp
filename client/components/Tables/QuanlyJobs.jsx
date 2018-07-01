@@ -75,7 +75,7 @@ class EditableTable extends React.Component {
       {
         title: 'Mã Công Việc',
         dataIndex: 'ma_cv',
-        width: '10%',
+        width: '15%',
         editable: true,
         required: true,
       },
@@ -89,7 +89,7 @@ class EditableTable extends React.Component {
       {
         title: 'Công hệ số',
         dataIndex: 'heso',
-        //width: '15%',
+        width: '15%',
         editable: true,
         required: true
       },

@@ -154,7 +154,7 @@ class EditableTable extends React.Component {
       {
         title: 'Ngày tạo',
         dataIndex: 'workday',
-        width: '15%',
+        width: '18%',
         editable: true,
         required: true,
         render: (text, record) => moment(text, 'DD-MM-YYYY').format('DD-MM-YYYY'),

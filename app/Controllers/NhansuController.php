@@ -96,6 +96,7 @@ class NhansuController extends BaseController
 				'name' => $name,
 				'phone' => $phone,
 				'group' => $group,
+				'address' => '',
 				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
