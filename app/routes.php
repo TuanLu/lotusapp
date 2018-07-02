@@ -96,3 +96,4 @@ $app->get('/qljobs/deleteJob/{id}', 'JobsController:deleteJob');
 $app->get('/qlsl/fetchSl', 'SanluongController:fetchSl');
 $app->post('/qlsl/updateSl', 'SanluongController:updateSl');
 $app->get('/qlsl/deleteSl/{id}', 'SanluongController:deleteSl');
+$app->post('/qlsl/search', 'SanluongController:search');

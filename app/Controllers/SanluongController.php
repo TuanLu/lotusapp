@@ -18,6 +18,7 @@ class SanluongController extends BaseController
 		// Columns to select.
 		$columns = [
 				'id',
+				'id(key)',
 				'ma_sl',
 				'ma_ns',
 				'ca',
@@ -129,7 +130,61 @@ class SanluongController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-
+	private function findSanluong($filters) {
+		//echo "<pre>";
+		//print_r($filters);
+		$where = "";
+		//Tim theo mã nhân sự
+		if(isset($filters['ma_ns']) && !empty($filters['ma_ns'])) {
+			$where .= " AND `lotus_nhansu`.`ma_ns` IN ('" . implode("', '", $filters['ma_ns']) . "')";
+		}
+		//Tim theo mã công việc
+		if(isset($filters['ma_cv']) && !empty($filters['ma_cv'])) {
+			$where .= " AND `lotus_congviec`.`ma_cv` IN ('" . implode("', '", $filters['ma_cv']) . "')";
+		}
+		//Tim theo ma vat tu
+		if(isset($filters['product_id']) && !empty($filters['product_id'])) {
+			$where .= " AND `san_pham_theo_phieu`.`product_id` IN ('" . implode("', '", $filters['product_id']) . "')";
+		}
+		//Tim theo ma lo
+		if(isset($filters['ma_lo']) && !empty($filters['ma_lo'])) {
+			$where .= " AND `san_pham_theo_phieu`.`ma_lo` = '" . $filters['ma_lo'] . "'";
+		}
+		//Tim theo ngay san xuat
+		if(isset($filters['ngay_san_xuat']) && !empty($filters['ngay_san_xuat'])) {
+			$where .= " AND `san_pham_theo_phieu`.`ngay_san_xuat` BETWEEN '{$filters['ngay_san_xuat'][0]}' AND '{$filters['ngay_san_xuat'][1]}'";
+		}
+		//Tim theo ngay het han
+		if(isset($filters['ngay_het_han']) && !empty($filters['ngay_het_han'])) {
+			$where .= " AND `san_pham_theo_phieu`.`ngay_het_han` BETWEEN '{$filters['ngay_het_han'][0]}' AND '{$filters['ngay_het_han'][1]}'";
+		}
+		//Tim theo ngay sap het han
+		if(isset($filters['sap_het_han']) && !empty($filters['sap_het_han'])) {
+		$where .= " AND (SELECT DATEDIFF(san_pham_theo_phieu.ngay_het_han, CURRENT_DATE()) AS days) <= {$filters['sap_het_han']}";
+		}
+		$where .= " AND `status` = 1";
+		//$sql = "SELECT `lotus_sanluong`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,`san_pham_theo_phieu`.`ma_lo`,`san_pham_theo_phieu`.`label`,`san_pham_theo_phieu`.`unit`,`san_pham_theo_phieu`.`price`,`san_pham_theo_phieu`.`sl_chungtu`,`san_pham_theo_phieu`.`sl_thucnhap`,`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`phieu_nhap_xuat_kho`.`ma_kho` AS `kho_id`,`lotus_kho`.`ma_kho` FROM `san_pham_theo_phieu` LEFT JOIN `phieu_nhap_xuat_kho` ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` LEFT JOIN `lotus_kho` ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`id` WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 ". $where ." ORDER BY `san_pham_theo_phieu`.`id` DESC";
+		$sql = "SECECT * ,`lotus_sanluong`.`id` AS `key` FROM `lotus_sanluong` WHERE = $where ORDER BY id";
+		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+		return $collection;
+	}
+	public function search($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Không tìm thấy vật tư nào theo điều kiện tìm kiếm!'
+		);
+		$params = $request->getParams();
+		$collection = $this->findSanluong($params);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['data'] = $collection;
+			$rsData['message'] = "Tìm thấy " . count($collection) . " dữ liệu sản lượng!";
+		} else {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['data'] = [];
+		}
+		echo json_encode($rsData);
+	}
 	public function deleteSl($request, $response, $args){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,

@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
+import TimkiemSL from './QuanlySanluong/TimkiemSL'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -27,7 +28,7 @@ class EditableCell extends React.Component {
         return (
           <Select 
             style={{ width: 250 }}
-            placeholder="Chọn khách hàng">
+            placeholder="Chọn nhân viên">
            {khachhang.map((khachhang) => {
               return <Select.Option 
               key={khachhang.id} 
@@ -43,7 +44,7 @@ class EditableCell extends React.Component {
         return (
           <Select 
             style={{ width: 250 }}
-            placeholder="Chọn khách hàng">
+            placeholder="Chọn công việc">
            {jobs.map((job) => {
               return <Select.Option 
               key={job.id} 
@@ -179,6 +180,7 @@ class EditableTable extends React.Component {
         dataIndex: 'ma_cv',
         //width: '40%',
         editable: true,
+        required: true,
         render: (text, record) => {
           let label = text, ma_cv = '', heso = '';
           if(this.state.jobsList && this.state.jobsList[text]) {
@@ -385,8 +387,11 @@ class EditableTable extends React.Component {
       } else {
         if(json.data) {
           //Add key prop for table
-          let data = json.data.map((item, index) => ({...item, key: index}) );
-          this.setState({data});
+          // let data = json.data.map((item, index) => ({...item, key: index}) );
+          // this.setState({data});
+          this.props.dispatch(updateStateData({
+            sanluong: json.data
+          }));
         }
       }
     })
@@ -458,6 +463,7 @@ class EditableTable extends React.Component {
 
     let jobs = this.props.mainState.jobs;
     let khachhang = this.props.mainState.khachhang;
+    let sanluong = this.props.mainState.sanluong || [];
     
     const columns = this.columns.map((col) => {
       if (!col.editable) {
@@ -477,7 +483,11 @@ class EditableTable extends React.Component {
         }),
       };
     });
-
+    // Chọn ids để làm gì đó 
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -495,12 +505,40 @@ class EditableTable extends React.Component {
           </Row>
         </div>
         <Table
+          rowSelection={rowSelection}
+          components={components}
+          bordered
+          columns={columns}
+          dataSource={sanluong}
+          rowClassName="editable-row"
+          loading={this.state.loadProduct}
+          scroll={{ x: 1500 }}
+          //expandRowByClick={true}
+          onChange={this.handleChange}
+          title={() => {
+            return (
+              <TimkiemSL loading={(loading) => {
+                this.setState({loadProduct: loading});
+              }}/>
+            );
+          }}
+          // expandedRowRender={record => {
+          //   return (
+          //     <FormChuyenViTri
+          //       mainState={this.props.mainState}
+          //       dispatch={this.props.dispatch}
+          //       record={record}
+          //     />
+          //   );
+          // }}
+        />
+        {/* <Table
           components={components}
           bordered
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
-        />
+        /> */}
       </React.Fragment>
     );
   }
