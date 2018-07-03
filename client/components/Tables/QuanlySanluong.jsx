@@ -27,7 +27,7 @@ class EditableCell extends React.Component {
         let khachhang = this.props.khachhang || [];
         return (
           <Select 
-            style={{ width: 250 }}
+            //style={{ width: 250 }}
             placeholder="Chọn nhân viên">
            {khachhang.map((khachhang) => {
               return <Select.Option 
@@ -43,7 +43,7 @@ class EditableCell extends React.Component {
         let jobs = this.props.jobs || [];
         return (
           <Select 
-            style={{ width: 250 }}
+            //style={{ width: 250 }}
             placeholder="Chọn công việc">
            {jobs.map((job) => {
               return <Select.Option 
@@ -62,7 +62,7 @@ class EditableCell extends React.Component {
             showSearch
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
+            //style={{ width: 200 }}
             placeholder="Chọn VT">
            {products.map((product) => {
               return <Select.Option 
@@ -149,7 +149,8 @@ class EditableTable extends React.Component {
       editingKey: '',
       newitem: 0,
       jobsList: {},
-      khachhangList: {}
+      khachhangList: {},
+      loading: false
     };
     this.columns = [
       {
@@ -382,6 +383,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
+    this.setState({loading: true});
     fetch(ISD_BASE_URL + 'qlsl/fetchSl', {
       headers: getTokenHeader()
     })
@@ -401,10 +403,12 @@ class EditableTable extends React.Component {
           // }));
         }
       }
+      this.setState({loading: false});
     })
     .catch((error) => {
       message.error('Có lỗi khi tải dữ liệu sản lượng!', 3);
       console.log(error);
+      this.setState({loading: false});
     }); 
   }
   fetchNhanvien() {
@@ -516,7 +520,19 @@ class EditableTable extends React.Component {
           bordered
           dataSource={this.state.data}
           columns={columns}
+          loading={this.state.loading}
           rowClassName="editable-row"
+          title={() => {
+            return (
+              <TimkiemSL 
+                onResult={(data) => {
+                  this.setState({data});
+                }}
+                loading={(loading) => {
+                this.setState({loading: loading});
+              }}/>
+            );
+          }}
         /> }
       </React.Fragment>
     );
