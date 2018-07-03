@@ -32,7 +32,7 @@ class EditableCell extends React.Component {
            {khachhang.map((khachhang) => {
               return <Select.Option 
               key={khachhang.id} 
-              value={khachhang.id}>
+              value={khachhang.ma_ns}>
                 {`${khachhang.ma_ns} - ${khachhang.name}`}
               </Select.Option>
            })}
@@ -48,27 +48,8 @@ class EditableCell extends React.Component {
            {jobs.map((job) => {
               return <Select.Option 
               key={job.id} 
-              value={job.id}>
+              value={job.ma_cv}>
                 {`${job.ma_cv} - ${job.diengiai}  - ${job.heso}`}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            //style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
               </Select.Option>
            })}
           </Select>
@@ -423,7 +404,7 @@ class EditableTable extends React.Component {
             khachhang: json.data
           }));
           this.setState({
-            khachhangList: convertArrayObjectToObject(json.data)
+            khachhangList: convertArrayObjectToObject(json.data, 'ma_ns')
           });
           
         }
@@ -447,7 +428,7 @@ class EditableTable extends React.Component {
             jobs: json.data
           }));
           this.setState({
-            jobsList: convertArrayObjectToObject(json.data)
+            jobsList: convertArrayObjectToObject(json.data, 'ma_cv')
           });
           
         }

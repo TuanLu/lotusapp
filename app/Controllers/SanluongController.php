@@ -24,7 +24,7 @@ class SanluongController extends BaseController
 				'ca',
 				'timestart',
 				'timestop',
-				'address',
+				'sanluong',
 				'ma_cv',
 				'workday',
 				'status',
@@ -59,7 +59,7 @@ class SanluongController extends BaseController
 		$ca = $request->getParam('ca');
 		$timestart = $request->getParam('timestart');
 		$timestop = $request->getParam('timestop');
-		$address = $request->getParam('address');
+		$sanluong = $request->getParam('sanluong');
 		$workday = $request->getParam('workday');
 		$workday = $helper->convertStringToDate('d-m-Y', $workday);
 		if(!$id) {
@@ -82,7 +82,7 @@ class SanluongController extends BaseController
 				'ca' => $ca,
 				'timestart' => $timestart,
 				'timestop' => $timestop,
-				'address' => $address,
+				'sanluong' => $sanluong,
 				'workday' => $workday,
 				'status' => 1,
 				'create_on' => $date->format('Y-m-d H:m:s'),
@@ -113,7 +113,7 @@ class SanluongController extends BaseController
 				'ca' => $ca,
 				'timestart' => $timestart,
 				'timestop' => $timestop,
-				'address' => $address,
+				'sanluong' => $sanluong,
 				'workday' => $workday,
 				'status' => 1,
 				'create_on' => $date->format('Y-m-d H:m:s'),
@@ -134,17 +134,17 @@ class SanluongController extends BaseController
 		$where = "status = 1";
 		//Tim theo mã nhân sự
 		if(isset($filters['ma_ns']) && !empty($filters['ma_ns'])) {
-			$where .= " AND `lotus_nhansu`.`ma_ns` IN ('" . implode("', '", $filters['ma_ns']) . "')";
+			$where .= " AND `lotus_sanluong`.`ma_ns` IN ('" . implode("', '", $filters['ma_ns']) . "')";
 		}
 		//Tim theo mã công việc
 		if(isset($filters['ma_cv']) && !empty($filters['ma_cv'])) {
-			$where .= " AND `lotus_congviec`.`ma_cv` IN ('" . implode("', '", $filters['ma_cv']) . "')";
+			$where .= " AND `lotus_sanluong`.`ma_cv` IN ('" . implode("', '", $filters['ma_cv']) . "')";
 		}
 		//Tim theo ngay tao
 		if(isset($filters['workday']) && !empty($filters['workday'])) {
 			$where .= " AND workday BETWEEN '{$filters['workday'][0]}' AND '{$filters['workday'][1]}'";
 		}
-		$sql = "SELECT * ,`lotus_sanluong`.`id` AS `key` FROM `lotus_sanluong` WHERE $where ORDER BY id";
+		$sql = "SELECT * ,`lotus_sanluong`.`id` AS `key` FROM `lotus_sanluong` WHERE $where ORDER BY id DESC";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		return $collection;
 	}
