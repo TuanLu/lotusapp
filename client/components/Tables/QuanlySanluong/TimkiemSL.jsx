@@ -88,12 +88,8 @@ class AdvancedSearchForm extends React.Component {
       if(json.status == 'error') {
         message.error(json.message, 3);
       } else {
-        //console.info(json.data);
-        //message.success(json.message);
+        //Truyền dữ liệu lại bảng sản lượng sau khi tìm kiếm xong
         this.props.onResult(json.data);
-        // this.props.dispatch(updateStateData({
-        //   listSanluong: json.data
-        // }));
       }
       this.setState({
         loading: false,

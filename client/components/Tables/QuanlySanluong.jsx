@@ -526,6 +526,7 @@ class EditableTable extends React.Component {
           title={() => {
             return (
               <TimkiemSL 
+                //Cap nhat du lieu sau khi tim kiem
                 onResult={(data) => {
                   this.setState({data});
                 }}
