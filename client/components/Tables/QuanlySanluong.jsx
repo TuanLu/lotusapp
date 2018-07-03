@@ -522,6 +522,7 @@ class EditableTable extends React.Component {
           columns={columns}
           loading={this.state.loading}
           rowClassName="editable-row"
+          pagination={{ pageSize: 20 }}
           title={() => {
             return (
               <TimkiemSL 
