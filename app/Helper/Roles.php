@@ -91,6 +91,11 @@ class Roles {
         'icon' => 'solution',
         'path' => 'qlsl'
       ],
+      'cdc' => [
+        'label' => 'Chuyển đổi công', 
+        'icon' => 'solution',
+        'path' => 'cdc'
+      ],
     ];
   }
 }

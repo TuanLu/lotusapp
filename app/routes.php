@@ -97,3 +97,5 @@ $app->get('/qlsl/fetchSl', 'SanluongController:fetchSl');
 $app->post('/qlsl/updateSl', 'SanluongController:updateSl');
 $app->get('/qlsl/deleteSl/{id}', 'SanluongController:deleteSl');
 $app->post('/qlsl/search', 'SanluongController:search');
+//Chuyển đổi công router
+$app->get('/cdc/fetchCdc', 'CdcController:fetchCdc');
