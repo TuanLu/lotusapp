@@ -158,7 +158,7 @@ class EditableTable extends React.Component {
         width: '18%',
         editable: true,
         required: true,
-        render: (text, record) => moment(text, 'DD-MM-YYYY').format('DD-MM-YYYY'),
+        render: (text, record) => moment(text).format('DD-MM-YYYY'),
       },
       {
         title: 'Mã nhân viên',
@@ -204,6 +204,12 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         render: (text, record) => moment(text, "HH:mm").format("HH:mm")
+      },
+      {
+        title: 'Kết quả / sản lượng',
+        dataIndex: 'sanluong',
+        width: '20%',
+        editable: true,
       },
       {
         title: 'Actions',
@@ -277,6 +283,7 @@ class EditableTable extends React.Component {
       timestop: "",
       workday: "",
       ca: '',
+      sanluong: '',
       address: "",
       ot: ""
     };
@@ -387,11 +394,11 @@ class EditableTable extends React.Component {
       } else {
         if(json.data) {
           //Add key prop for table
-          // let data = json.data.map((item, index) => ({...item, key: index}) );
-          // this.setState({data});
-          this.props.dispatch(updateStateData({
-            sanluong: json.data
-          }));
+          let data = json.data.map((item, index) => ({...item, key: index}) );
+          this.setState({data});
+          // this.props.dispatch(updateStateData({
+          //   sanluong: json.data
+          // }));
         }
       }
     })
@@ -463,7 +470,7 @@ class EditableTable extends React.Component {
 
     let jobs = this.props.mainState.jobs;
     let khachhang = this.props.mainState.khachhang;
-    let sanluong = this.props.mainState.sanluong || [];
+    let data = this.props.mainState.data || [];
     
     const columns = this.columns.map((col) => {
       if (!col.editable) {
@@ -483,7 +490,7 @@ class EditableTable extends React.Component {
         }),
       };
     });
-    // Chọn ids để làm gì đó 
+    // Chọn ids để quick xóa hoặc edit ...
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
@@ -504,41 +511,13 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        <Table
-          rowSelection={rowSelection}
-          components={components}
-          bordered
-          columns={columns}
-          dataSource={sanluong}
-          rowClassName="editable-row"
-          loading={this.state.loadProduct}
-          scroll={{ x: 1500 }}
-          //expandRowByClick={true}
-          onChange={this.handleChange}
-          title={() => {
-            return (
-              <TimkiemSL loading={(loading) => {
-                this.setState({loadProduct: loading});
-              }}/>
-            );
-          }}
-          // expandedRowRender={record => {
-          //   return (
-          //     <FormChuyenViTri
-          //       mainState={this.props.mainState}
-          //       dispatch={this.props.dispatch}
-          //       record={record}
-          //     />
-          //   );
-          // }}
-        />
-        {/* <Table
+        {<Table
           components={components}
           bordered
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
-        /> */}
+        /> }
       </React.Fragment>
     );
   }

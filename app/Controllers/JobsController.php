@@ -21,7 +21,7 @@ class JobsController extends BaseController
 				'ma_cv',
 				'diengiai',
 				'heso',
-				'adress',
+				'sanluong',
 				'description'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
@@ -49,7 +49,7 @@ class JobsController extends BaseController
 		$maNs = $request->getParam('ma_cv');
 		$name = $request->getParam('diengiai');
 		$phone = $request->getParam('heso');
-		$adress = $request->getParam('adress');
+		$sanluong = $request->getParam('sanluong');
 		$address = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
@@ -68,7 +68,7 @@ class JobsController extends BaseController
 				'ma_cv' => $maNs,
 				'diengiai' => $name,
 				'heso' => $phone,
-				'adress' => $adress,
+				'sanluong' => $sanluong,
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
@@ -95,7 +95,7 @@ class JobsController extends BaseController
 				'ma_cv' => $maNs,
 				'diengiai' => $name,
 				'heso' => $phone,
-				'adress' => $adress,
+				'sanluong' => $sanluong,
 				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
