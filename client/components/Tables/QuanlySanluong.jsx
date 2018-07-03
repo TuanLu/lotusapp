@@ -27,12 +27,12 @@ class EditableCell extends React.Component {
         let khachhang = this.props.khachhang || [];
         return (
           <Select 
-            style={{ width: 250 }}
+            //style={{ width: 250 }}
             placeholder="Chọn nhân viên">
            {khachhang.map((khachhang) => {
               return <Select.Option 
               key={khachhang.id} 
-              value={khachhang.id}>
+              value={khachhang.ma_ns}>
                 {`${khachhang.ma_ns} - ${khachhang.name}`}
               </Select.Option>
            })}
@@ -43,32 +43,13 @@ class EditableCell extends React.Component {
         let jobs = this.props.jobs || [];
         return (
           <Select 
-            style={{ width: 250 }}
+            //style={{ width: 250 }}
             placeholder="Chọn công việc">
            {jobs.map((job) => {
               return <Select.Option 
               key={job.id} 
-              value={job.id}>
+              value={job.ma_cv}>
                 {`${job.ma_cv} - ${job.diengiai}  - ${job.heso}`}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
               </Select.Option>
            })}
           </Select>
@@ -149,7 +130,8 @@ class EditableTable extends React.Component {
       editingKey: '',
       newitem: 0,
       jobsList: {},
-      khachhangList: {}
+      khachhangList: {},
+      loading: false
     };
     this.columns = [
       {
@@ -382,6 +364,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
+    this.setState({loading: true});
     fetch(ISD_BASE_URL + 'qlsl/fetchSl', {
       headers: getTokenHeader()
     })
@@ -401,10 +384,12 @@ class EditableTable extends React.Component {
           // }));
         }
       }
+      this.setState({loading: false});
     })
     .catch((error) => {
       message.error('Có lỗi khi tải dữ liệu sản lượng!', 3);
       console.log(error);
+      this.setState({loading: false});
     }); 
   }
   fetchNhanvien() {
@@ -419,7 +404,7 @@ class EditableTable extends React.Component {
             khachhang: json.data
           }));
           this.setState({
-            khachhangList: convertArrayObjectToObject(json.data)
+            khachhangList: convertArrayObjectToObject(json.data, 'ma_ns')
           });
           
         }
@@ -443,7 +428,7 @@ class EditableTable extends React.Component {
             jobs: json.data
           }));
           this.setState({
-            jobsList: convertArrayObjectToObject(json.data)
+            jobsList: convertArrayObjectToObject(json.data, 'ma_cv')
           });
           
         }
@@ -516,7 +501,21 @@ class EditableTable extends React.Component {
           bordered
           dataSource={this.state.data}
           columns={columns}
+          loading={this.state.loading}
           rowClassName="editable-row"
+          pagination={{ pageSize: 20 }}
+          title={() => {
+            return (
+              <TimkiemSL 
+                //Cap nhat du lieu sau khi tim kiem
+                onResult={(data) => {
+                  this.setState({data});
+                }}
+                loading={(loading) => {
+                this.setState({loading: loading});
+              }}/>
+            );
+          }}
         /> }
       </React.Fragment>
     );

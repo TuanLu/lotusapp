@@ -153,3 +153,8 @@ td:hover .editable-cell-icon {
 .isd-advanced-search-form .ant-form-item-label {
   line-height: 20px;
 }
+.editable-row .ant-form-explain {
+  position: absolute;
+  font-size: 12px;
+  margin-top: -4px;
+}

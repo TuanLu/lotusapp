@@ -88,13 +88,8 @@ class AdvancedSearchForm extends React.Component {
       if(json.status == 'error') {
         message.error(json.message, 3);
       } else {
-        //message.success(json.message);
-        this.props.dispatch(updateStateData({
-          sanluong: {
-            ...this.props.mainState.sanluong,
-            sanluong: json.data
-          }
-        }));
+        //Truyền dữ liệu lại bảng sản lượng sau khi tìm kiếm xong
+        this.props.onResult(json.data);
       }
       this.setState({
         loading: false,
@@ -147,7 +142,7 @@ class AdvancedSearchForm extends React.Component {
                 showSearch
                 mode="multiple"
                 placeholder="Nhập mã nhân viên">
-                {nhanviens.map((nv) =><Option value={nv.id} key={nv.ma_ns}>{nv.ma_ns} {"-"} {nv.name}</Option>)}
+                {nhanviens.map((nv) =><Option value={nv.ma_ns} key={nv.ma_ns}>{nv.ma_ns} {"-"} {nv.name}</Option>)}
               </Select>
             )}
           </FormItem>
@@ -163,7 +158,7 @@ class AdvancedSearchForm extends React.Component {
                 showSearch
                 mode="multiple"
                 placeholder="Nhập mã công việc">
-                {jobs.map((job) =><Option value={job.id} key={job.ma_cv}>{job.ma_cv} - {job.diengiai}</Option>)}
+                {jobs.map((job) =><Option value={job.ma_cv} key={job.ma_cv}>{job.ma_cv} - {job.diengiai}</Option>)}
               </Select>
             )}
           </FormItem>

@@ -31,11 +31,12 @@ export function convertObjectsToArray(objects) {
   });
   return objectsArr;
 }
-export function convertArrayObjectToObject(objectArr) {
+export function convertArrayObjectToObject(objectArr, propId) {
   let objects = {};
+  propId = propId || 'id';
   if(objectArr.length) {
     objectArr.forEach((object) => {
-      objects[object.id] = object;
+      objects[object[propId]] = object;
     })
   }
   return objects;
