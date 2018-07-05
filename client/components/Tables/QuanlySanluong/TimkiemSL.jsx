@@ -140,6 +140,8 @@ class AdvancedSearchForm extends React.Component {
             })(
               <Select 
                 showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 mode="multiple"
                 placeholder="Nhập mã nhân viên">
                 {nhanviens.map((nv) =><Option value={nv.ma_ns} key={nv.ma_ns}>{nv.ma_ns} {"-"} {nv.name}</Option>)}
@@ -156,6 +158,8 @@ class AdvancedSearchForm extends React.Component {
             })(
               <Select 
                 showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 mode="multiple"
                 placeholder="Nhập mã công việc">
                 {jobs.map((job) =><Option value={job.ma_cv} key={job.ma_cv}>{job.ma_cv} - {job.diengiai}</Option>)}

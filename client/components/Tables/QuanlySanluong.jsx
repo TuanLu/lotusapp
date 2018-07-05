@@ -27,7 +27,7 @@ class EditableCell extends React.Component {
         let khachhang = this.props.khachhang || [];
         return (
           <Select 
-            //style={{ width: 250 }}
+            style={{ maxWidth: 200 }}
             placeholder="Chọn nhân viên">
            {khachhang.map((khachhang) => {
               return <Select.Option 
@@ -43,7 +43,7 @@ class EditableCell extends React.Component {
         let jobs = this.props.jobs || [];
         return (
           <Select 
-            //style={{ width: 250 }}
+            style={{ maxWidth: 200 }}
             placeholder="Chọn công việc">
            {jobs.map((job) => {
               return <Select.Option 
