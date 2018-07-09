@@ -38,41 +38,6 @@ class EditableCell extends React.Component {
           </Select>
         );
         break;
-      case 'ma_cv':
-        let jobs = this.props.jobs || [];
-        return (
-          <Select 
-            //style={{ width: 250 }}
-            placeholder="Chọn công việc">
-           {jobs.map((job) => {
-              return <Select.Option 
-              key={job.id} 
-              value={job.id}>
-                {`${job.ma_cv} - ${job.diengiai}  - ${job.heso}`}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
       case 'workday':
         return <DatePicker placeholder="Chọn ngày" format="DD-MM-YYYY"/>;
       break;
@@ -158,7 +123,7 @@ class EditableTable extends React.Component {
         editable: true,
         required: true,
         render: (text, record) => {
-          let label = text, ma_ns = '';
+          let ma_ns = '';
           if(this.state.khachhangList && this.state.khachhangList[text]) {
             ma_ns = this.state.khachhangList[text]['ma_ns'];
           }
@@ -167,34 +132,51 @@ class EditableTable extends React.Component {
       },
       {
         title: 'Tên nhân viên',
-        dataIndex: 'ma_cv',
+        dataIndex: 'ma_ns',
         //width: '40%',
         editable: true,
         required: true,
         render: (text, record) => {
-          let label = text, ma_ns = '';
+          let label = text;
           if(this.state.khachhangList && this.state.khachhangList[text]) {
             label = this.state.khachhangList[text]['name'];
-            ma_ns = this.state.khachhangList[text]['ma_ns'];
           }
           return <span>{label}</span>
         }
       },
       {
-        title: 'Tổng hệ số 1.0',
-        dataIndex: 'heso1',
+        title: 'Sum 1.0',
+        dataIndex: 'heso11',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'Tổng hệ số 1.2',
+        title: 'Sum 1.2',
         dataIndex: 'heso12',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'Tổng hệ số 1.3',
+        title: 'Sum 1.3',
         dataIndex: 'heso13',
+        //width: '40%',
+        editable: false,
+      },
+      {
+        title: 'Sum OT 1.0',
+        dataIndex: 'heso21',
+        //width: '40%',
+        editable: false,
+      },
+      {
+        title: 'Sum OT 1.2',
+        dataIndex: 'heso22',
+        //width: '40%',
+        editable: false,
+      },
+      {
+        title: 'Sum OT 1.3',
+        dataIndex: 'heso23',
         //width: '40%',
         editable: false,
       },
@@ -238,7 +220,6 @@ class EditableTable extends React.Component {
       workday: "",
       ca: '',
       sanluong: '',
-      address: "",
       ot: ""
     };
   }
@@ -271,8 +252,33 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  fetchNhanvien() {
+    fetch(ISD_BASE_URL + 'qlns/fetchNs', {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            khachhang: json.data
+          }));
+          this.setState({
+            khachhangList: convertArrayObjectToObject(json.data, 'ma_ns')
+          });
+          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
     this.fetchData();
+    this.fetchNhanvien();
   }
   
   render() {
@@ -316,6 +322,7 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
         /> }
+        
       </React.Fragment>
     );
   }
