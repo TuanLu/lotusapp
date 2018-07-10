@@ -7,6 +7,10 @@ use \Ramsey\Uuid\Uuid;
 class TinhtrangkhoController extends BaseController {
 
 	public function fetchAllProduct($request, $response, $args) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Sản phẩm chưa được load thành công!'
+		);
 		$collection = $this->findProduct([]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
