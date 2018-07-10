@@ -25,7 +25,7 @@ class Roles {
         'path' => 'qluser'
       ],
       'qlsx' => [
-        'label' => 'QL SX', 
+        'label' => 'QL Sản Xuất', 
         'icon' => 'inbox',
         'path' => 'qlsx'
       ],

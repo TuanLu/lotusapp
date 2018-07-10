@@ -83,6 +83,9 @@ $container['SanluongController'] = function ($c) {
 $container['CdcController'] = function ($c) {
   return new \App\Controllers\CdcController($c);
 };
+$container['SXController'] = function ($c) {
+  return new \App\Controllers\SXController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

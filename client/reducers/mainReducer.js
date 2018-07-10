@@ -17,6 +17,21 @@ let _designDefault = {
       products: [],
       editingKey: '',
     },
+    sx: {
+      ma_sx: '',
+			so: '',
+			cong_doan: '',
+			ma_sp: '',
+			co_lo: '',
+			so_lo: '',
+			nsx: '',
+			hd: '',
+			so_dk: '',
+			dang_bao_che: '',
+			qcdg: '',
+			dh: '',
+			tttb_kltb: ''
+    },
     phieuAction: {
       addNewItem: false,
       action: 'view',//view, edit, cancel

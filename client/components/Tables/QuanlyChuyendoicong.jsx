@@ -5,6 +5,7 @@ import {
   Popconfirm, Form, Row,
   Col, Button, message, DatePicker, TimePicker
 } from 'antd';
+const { MonthPicker } = DatePicker;
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 import TimkiemSL from './QuanlySanluong/TimkiemSL'
@@ -108,12 +109,12 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       data: [], 
+      total: [],
       editingKey: '',
       newitem: 0,
-      jobsList: {},
-      khachhangList: {}
+      jobsList: {}
     };
     this.columns = [
       {
@@ -122,31 +123,17 @@ class EditableTable extends React.Component {
         //width: '15%',
         editable: true,
         required: true,
-        render: (text, record) => {
-          let ma_ns = '';
-          if(this.state.khachhangList && this.state.khachhangList[text]) {
-            ma_ns = this.state.khachhangList[text]['ma_ns'];
-          }
-          return <span>{ma_ns}</span>
-        }
       },
       {
         title: 'Tên nhân viên',
-        dataIndex: 'ma_ns',
+        dataIndex: 'name',
         //width: '40%',
         editable: true,
         required: true,
-        render: (text, record) => {
-          let label = text;
-          if(this.state.khachhangList && this.state.khachhangList[text]) {
-            label = this.state.khachhangList[text]['name'];
-          }
-          return <span>{label}</span>
-        }
       },
       {
         title: 'Sum 1.0',
-        dataIndex: 'heso11',
+        dataIndex: 'heso1',
         //width: '40%',
         editable: false,
       },
@@ -182,7 +169,7 @@ class EditableTable extends React.Component {
       },
       {
         title: 'Tổng công',
-        dataIndex: 'congquydoi',
+        dataIndex: 'tong_cong',
         //width: '40%',
         editable: true,
       },
@@ -193,22 +180,6 @@ class EditableTable extends React.Component {
         editable: true,
       }
     ];
-  }
-  addNewRow() {
-    if(this.state.newitem == 0){
-      let rowItem = this.getDefaultFields();
-    rowItem = {
-      ...rowItem,
-      key: this.state.data.length + 1
-    };
-    this.setState({
-      data: [rowItem, ...this.state.data],
-      editingKey: rowItem.key
-    })
-    this.state.newitem = 1
-    }else{
-      message.error('Bạn đang thêm mới sản lượng rồi ...')
-    }
   }
   getDefaultFields() {
     return {
@@ -241,9 +212,6 @@ class EditableTable extends React.Component {
           //Add key prop for table
           let data = json.data.map((item, index) => ({...item, key: index}) );
           this.setState({data});
-          // this.props.dispatch(updateStateData({
-          //   sanluong: json.data
-          // }));
         }
       }
     })
@@ -261,10 +229,10 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            khachhang: json.data
+            nhansu: json.data
           }));
           this.setState({
-            khachhangList: convertArrayObjectToObject(json.data, 'ma_ns')
+            nhansuList: convertArrayObjectToObject(json.data, 'ma_ns')
           });
           
         }
@@ -276,8 +244,32 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
+  fetchTotal() {
+    fetch(ISD_BASE_URL + 'cdc/fetchTotal', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) { 
+          //get total
+          let total = json.data[0];
+          this.setState({total});
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu sản lượng!', 3);
+      console.log(error);
+    }); 
+  }
   componentDidMount() {
     this.fetchData();
+    this.fetchTotal();
     this.fetchNhanvien();
   }
   
@@ -289,8 +281,25 @@ class EditableTable extends React.Component {
       },
     };
     let data = this.props.mainState.data || [];
-    
+    let nhansu = this.props.mainState.nhansu || [];
+    let monthFormat = 'MM/YYYY';
     const columns = this.columns.map((col) => {
+      if (!col.editable) {
+        return col;
+      }
+      return {
+        ...col,
+        onCell: record => ({
+          record,
+          inputType: col.dataIndex,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          editing: this.isEditing(record),
+          required: col.required,
+        }),
+      };
+    });
+    const total = this.columns.map((col) => {
       if (!col.editable) {
         return col;
       }
@@ -315,14 +324,53 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
+        <Row>
+          <Col span={8}>
+            <div className="filter_adv">
+              <FormItem label={`Lọc theo tháng`}>
+                <MonthPicker placeholder="Chọn tháng" format={monthFormat} />
+              </FormItem>
+            </div>
+          </Col>
+          <Col span={8}>
+            <FormItem label={`Lọc theo nhân viên`}>
+              <Select 
+                  style={{ width: 200 }}
+                  showSearch
+                  mode="multiple"
+                  placeholder="Chọn nhân viên">
+                  {nhansu.map((nhansu) =><Option value={nhansu.ma_ns} key={nhansu.ma_ns}>{nhansu.name}</Option>)}
+                </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <div className="filter_adv">
+              <FormItem label={`Tổng công`}>
+              {this.state.total.tong_cong}
+              </FormItem>
+            </div>
+          </Col>
+        </Row>
         {<Table
           components={components}
           bordered
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
+          footer={() => 
+            <Row>
+              <Col span={3}> Tổng công </Col>
+              <Col span={3}> HS 1: {this.state.total.heso1}</Col>
+              <Col span={3}> HS 1.2: {this.state.total.heso12}</Col>
+              <Col span={3}> HS 1.3: {this.state.total.heso13}</Col>
+              <Col span={3}> HSOT 1: {this.state.total.heso1}</Col>
+              <Col span={3}> HSOT 1.2: {this.state.total.heso1}</Col>
+              <Col span={3}> HSOT 1.3: {this.state.total.heso1}</Col>
+              <Col span={3}> Tổng: {this.state.total.tong_cong}</Col>
+            </Row>
+            
+          }
         /> }
-        
       </React.Fragment>
     );
   }

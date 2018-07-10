@@ -99,3 +99,13 @@ $app->get('/qlsl/deleteSl/{id}', 'SanluongController:deleteSl');
 $app->post('/qlsl/search', 'SanluongController:search');
 //Chuyển đổi công router
 $app->get('/cdc/fetchCdc', 'CdcController:fetchCdc');
+$app->get('/cdc/fetchTotal', 'CdcController:fetchTotal');
+//SX router
+$app->get('/sx/fetch', 'SXController:fetch');
+$app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList');
+$app->get('/sx/fetchSelectedProduct/{ma_phieu}', 'SXController:fetchSelectedProduct');
+$app->post('/sx/update', 'SXController:update');
+$app->post('/sx/updateProduct', 'SXController:updateProduct');
+$app->post('/sx/changeStatus', 'SXController:changeStatus');
+$app->get('/sx/delete/{id}', 'SXController:delete');
+$app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
