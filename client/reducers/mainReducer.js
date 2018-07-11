@@ -19,7 +19,8 @@ let _designDefault = {
     },
     sx: {
       ma_sx: '',
-			so: '',
+      so: '',
+      ma: '',
 			cong_doan: '',
 			ma_sp: '',
 			co_lo: '',
@@ -30,7 +31,8 @@ let _designDefault = {
 			dang_bao_che: '',
 			qcdg: '',
 			dh: '',
-			tttb_kltb: ''
+      tttb_kltb: '',
+      products: []
     },
     phieuAction: {
       addNewItem: false,

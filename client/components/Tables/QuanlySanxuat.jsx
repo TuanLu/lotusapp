@@ -87,13 +87,13 @@ class EditableTable extends React.Component {
     this.columns = [
       {
         title: 'Mã sản xuất',
-        dataIndex: 'ma_sx',
+        dataIndex: 'ma',
         //width: '15%',
         editable: false,
       },
       {
         title: 'Sản phẩm',
-        dataIndex: 'sp',
+        dataIndex: 'ma_sp',
         //width: '40%',
         editable: false,
       },
@@ -105,7 +105,7 @@ class EditableTable extends React.Component {
       },
       {
         title: 'Số lô',
-        dataIndex: 'create_on',
+        dataIndex: 'so_lo',
         //width: '40%',
         editable: false,
       },
@@ -145,7 +145,7 @@ class EditableTable extends React.Component {
               ) : (
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
-                  {(!this.isQA() && !this.isQC()) ? 
+                  {
                     <React.Fragment>
                       {" | "}
                       <Popconfirm
@@ -156,7 +156,7 @@ class EditableTable extends React.Component {
                         <a href="javascript:;">Xoá</a>  
                       </Popconfirm>
                     </React.Fragment>
-                    : null} 
+                    } 
                 </React.Fragment>
                 
               )}
@@ -169,14 +169,22 @@ class EditableTable extends React.Component {
   getDefaultFields() {
     return {
       id: '',
-      ma_kho: '',
-      ma_phieu: '',
-      nguoi_giao_dich: '',
-      so_chung_tu: '',
-      note: '',
-      address: '',
+      ma_sx: '',
+      ma: '',
+      so: '',
+      cong_doan: '',
+      ma_sp: '',
+      co_lo: '',
+      so_lo: '',
+      nsx: '',
+      hd: '',
+      dang_bao_che: '',
+      so_dk: '',
+      qcdg: '',
+      dh: '',
+      tttb_kltb: '',
       products: [],
-      tinh_trang: '2',//Chờ phê duyệt
+      status: '',
     }
   }
   addNewRow() {
@@ -187,32 +195,18 @@ class EditableTable extends React.Component {
         action: 'edit',
         editingKey: '',
       },
-      phieunhap: this.getDefaultFields()
+      sx: this.getDefaultFields()
     }));
-  }
-  isQC() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqc') return true;
-    }
-    return false;
-  }
-  isQA() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqa') return true;
-    }
-    return false;
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
   view(phieu) {
-    let {phieunhap, phieuAction} = this.props.mainState;
-    if(phieu && phieu.ma_phieu && phieu.id) {
+    let {sx, phieuAction} = this.props.mainState;
+    if(phieu && phieu.ma_sx && phieu.id) {
       this.props.dispatch(updateStateData({
-        phieunhap: {
-          ...phieunhap,
+        sx: {
+          ...sx,
           ...phieu
         },
         phieuAction: {
@@ -330,8 +324,6 @@ class EditableTable extends React.Component {
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
           <FormPhieunhap
-            isQA={this.isQA()}
-            isQC={this.isQC()}
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />
@@ -345,11 +337,11 @@ class EditableTable extends React.Component {
                 </Col>
                 <Col span={12}>
                   <div className="action-btns">
-                   {(!this.isQA() && !this.isQC())? 
+                    {
                      <Button 
                      onClick={() => this.addNewRow()}
                      type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
-                      : null}
+                    }
                   </div>
                 </Col>
               </Row>

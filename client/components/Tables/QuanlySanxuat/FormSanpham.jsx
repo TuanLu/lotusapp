@@ -21,15 +21,15 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const tableConfig = {
-  headTitle: 'Vật tư của phiếu nhập',
-  addNewTitle: 'Thêm vật tư vào phiếu nhập'
+  headTitle: 'Nguyên liệu',
+  addNewTitle: 'Thêm'
 };
 
 const fetchConfig = {
-  fetch: 'phieunhap/fetch',
-  update: 'phieunhap/updateProduct',
-  delete: 'phieunhap/deleteProduct/',
-  changeStatus: 'phieunhap/changeStatus'
+  fetch: 'sx/fetch',
+  update: 'sx/updateProduct',
+  delete: 'sx/deleteProduct/',
+  changeStatus: 'sx/changeStatus'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -48,7 +48,6 @@ class EditableCell extends React.Component {
               if(unit && unit[3]) {
                 unit = unit[3].trim();
               }
-              console.log(unit, this.props);
               return false;
             }}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -69,8 +68,8 @@ class EditableCell extends React.Component {
       case 'price':
         return <InputNumber/>
         break;
-      case 'ngay_san_xuat':
-      case 'ngay_het_han':
+      case 'nsx':
+      case 'hd':
         return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>
         break;
       default:
@@ -140,16 +139,16 @@ class EditableTable extends React.Component {
     };
     this.columns = [
       {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
+        title: 'Công đoạn',
+        dataIndex: 'cong_doan',
         width: 100,
         //fixed: 'left',
         editable: true,
         required: true,
       },
       {
-        title: 'Mã VT',
-        dataIndex: 'product_id',
+        title: 'Số thứ tự',
+        dataIndex: 'stt',
         //fixed: 'left',
         width: 150,
         editable: true,
@@ -163,75 +162,37 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Quy cách',
-        dataIndex: 'label',
+        title: 'Mã maquet',
+        dataIndex: 'ma_maquet',
         width: 200,
         editable: true,
         required: true
       },
       {
-        title: 'Đơn vị tính',
-        dataIndex: 'unit',
-        width: 100,
+        title: 'Mã NL',
+        dataIndex: 'product_id',
+        width: '30%',
         editable: true,
       },
       {
-        title: 'SL theo chứng từ',
-        dataIndex: 'sl_chungtu',
+        title: 'SL cho 1000.000 viên/lọ/gói',
+        dataIndex: 'sl_1000',
         //width: '40%',
         editable: true,
       },
       {
-        title: 'SL thực nhập',
-        dataIndex: 'sl_thucnhap',
+        title: 'Hư hao',
+        dataIndex: 'hu_hao',
         //width: '40%',
         editable: true,
       },
       {
-        title: 'Đơn giá',
-        dataIndex: 'price',
+        title: 'SL NVL cần',
+        dataIndex: 'sl_nvl',
         //width: '40%',
         editable: true,
         required: true
       },
-      {
-        title: 'Ngày SX',
-        dataIndex: 'ngay_san_xuat',
-        width: '200px',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      },
-      {
-        title: 'Ngày Hết Hạn',
-        dataIndex: 'ngay_het_han',
-        width: '200px',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      },
-      // {
-      //   title: 'QC Duyệt',
-      //   dataIndex: 'qc_check',
-      //   editable: false,
-      //   width: 170,
-      //   show: false,
-      //   render: (text, record) => {
-      //     return this.showCheckStatus(text);
-      //   }
-      // },
-      // {
-      //   title: 'QA Duyệt',
-      //   dataIndex: 'qa_check',
-      //   editable: false,
-      //   width: 170,
-      //   show: false,
-      //   render: (text, record) => {
-      //     return this.showCheckStatus(text);
-      //   }
-      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
@@ -338,7 +299,7 @@ class EditableTable extends React.Component {
             showIcon />
   }
   addNewRow() {
-    let {products} = this.props.mainState.phieunhap;
+    let {products} = this.props.mainState.sx || [];
     let {editingKey} = this.props.mainState.phieuAction;
     if(editingKey !== undefined && editingKey !== '') return false;
     let rowItem = this.getDefaultFields();
@@ -348,8 +309,8 @@ class EditableTable extends React.Component {
     };
     
     this.props.dispatch(updateStateData({
-      phieunhap: {
-        ...this.props.mainState.phieunhap,
+      sx: {
+        ...this.props.mainState.sx,
         products: [rowItem, ...products],
       },
       phieuAction: {
@@ -360,18 +321,14 @@ class EditableTable extends React.Component {
   }
   getDefaultFields() {
     return {
-      ma_phieu: "",
-      ma_lo: "",
+      ma_sx: "",
+      ma_maquet: "",
       product_id: "",
-      label: "",
-      unit: "kg",
-      sl_chungtu: "1",
-      sl_thucnhap: "1",
-      price: 0,
-      qc_check: "0",
-      qa_check: "0",
-      ngay_het_han: "",
-      ngay_san_xuat: ""
+      sl_1000: "",
+      sl_nvl: "",
+      hu_hao: "",
+      status: "",
+      create_on: ""
     };
   }
   isEditing = (record) => {
@@ -394,8 +351,8 @@ class EditableTable extends React.Component {
       if (error) {
         return;
       }
-      const newData = [...this.props.mainState.phieunhap.products];
-      let maPhieu = this.props.mainState.phieunhap.ma_phieu || '';
+      const newData = [...this.props.mainState.sx.products];
+      let maPhieu = this.props.mainState.sx.ma_sx || '';
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -403,9 +360,7 @@ class EditableTable extends React.Component {
         let newItemData = {
           ...item,
           ...row,
-          ma_phieu: maPhieu,
-          ngay_san_xuat: row['ngay_san_xuat'].format('YYYY-MM-DD'),
-          ngay_het_han: row['ngay_het_han'].format('YYYY-MM-DD'),
+          ma_sx: maPhieu,
         };
         //Chua co ma phieu va ID la trong
         if(!newData.id && !maPhieu) {
@@ -413,8 +368,8 @@ class EditableTable extends React.Component {
             ...newItemData
           });
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            sx: {
+              ...this.props.mainState.sx,
               products: newData
             },
             phieuAction: {
@@ -445,8 +400,8 @@ class EditableTable extends React.Component {
                   ...json.data
                 });
                 this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
+                  sx: {
+                    ...this.props.mainState.sx,
                     products: newData
                   },
                   phieuAction: {
@@ -487,10 +442,10 @@ class EditableTable extends React.Component {
         if(json.status == 'error') {
           message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         } else {
-          let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.id);
+          let newData = this.props.mainState.sx.products.filter((item) => item.key != record.id);
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            sx: {
+              ...this.props.mainState.sx,
               products: newData
             }
           }));
@@ -503,10 +458,10 @@ class EditableTable extends React.Component {
       });
     } else {
       if(record.key) {
-        let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.key);
+        let newData = this.props.mainState.sx.products.filter((item) => item.key != record.key);
         this.props.dispatch(updateStateData({
-          phieunhap: {
-            ...this.props.mainState.phieunhap,
+          sx: {
+            ...this.props.mainState.sx,
             products: newData
           }
         }));
@@ -514,7 +469,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchProduct() {
-    fetch(ISD_BASE_URL + 'phieunhap/fetchProductDetailsList', {
+    fetch(ISD_BASE_URL + 'sx/fetchProductDetailsList', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -538,10 +493,10 @@ class EditableTable extends React.Component {
     });
   }
   fetchSelectedProduct() {
-    let {phieunhap} = this.props.mainState;
-    let maPhieu = phieunhap.ma_phieu;
+    let {sx} = this.props.mainState;
+    let maPhieu = sx.ma_phieu;
     this.setState({loadProduct: true});
-    fetch(ISD_BASE_URL + `phieunhap/fetchSelectedProduct/${maPhieu}`, {
+    fetch(ISD_BASE_URL + `sx/fetchSelectedProduct/${maPhieu}`, {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -549,8 +504,8 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            sx: {
+              ...this.props.mainState.sx,
               products: json.data
             }
           }));          
@@ -617,11 +572,11 @@ class EditableTable extends React.Component {
     );
   }
   componentDidMount() {
-    let {products, phieunhap} = this.props.mainState;
+    let {products, sx} = this.props.mainState;
     if(!products.length) {
       this.fetchProduct();
     }
-    if(phieunhap.ma_phieu) {
+    if(sx.ma_phieu) {
       this.fetchSelectedProduct();
     }
   }
@@ -660,7 +615,7 @@ class EditableTable extends React.Component {
       }
       return true;
     })
-    let selectedProducts = this.props.mainState.phieunhap.products || [];
+    let selectedProducts = this.props.mainState.sx.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,
