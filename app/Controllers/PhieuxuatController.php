@@ -114,11 +114,11 @@ class PhieuxuatController extends BaseController
 				echo json_encode($rsData);
 				die;
 		}
-		if(!$nguoiGiaoDich) {
-			$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
+		// if(!$nguoiGiaoDich) {
+		// 	$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
+		// 		echo json_encode($rsData);
+		// 		die;
+		// }
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		if(!$id) {
 			$uuid1 = Uuid::uuid1();
@@ -162,7 +162,7 @@ class PhieuxuatController extends BaseController
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
 					$columns = $this->getColumns();
-					$data = $this->db->select('phieu_nhap_xuat_kho', $columns, ['ma_phieu' => $maPhieu]);
+					$data = $this->db->select('phieu_nhap_xuat_kho', ["id", "ma_phieu"], ['ma_phieu' => $maPhieu]);
 					$rsData['data'] = $data[0];
 					$rsData['message'] = 'Đã thêm phiếu xuất thành công!';
 				} else {

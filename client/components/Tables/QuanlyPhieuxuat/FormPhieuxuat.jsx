@@ -52,10 +52,10 @@ class FormPhieuxuat extends React.Component {
       message.error('Mã kho không được để trống');
       return false;
     }
-    if(!phieuxuat.nguoi_giao_dich) {
-      message.error('Thiếu thông tin người giao dịch');
-      return false;
-    }
+    // if(!phieuxuat.nguoi_giao_dich) {
+    //   message.error('Thiếu thông tin người giao dịch');
+    //   return false;
+    // }
     if(!phieuxuat.products.length) {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
