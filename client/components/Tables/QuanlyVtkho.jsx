@@ -100,7 +100,7 @@ class EditableTable extends React.Component {
           if(this.state.categoryList && this.state.categoryList[text]) {
             label = this.state.categoryList[text]['name'];
           }
-          return <span>{label}</span>
+          return <span>{text} - {label}</span>
         }
       },
       {
@@ -286,7 +286,7 @@ class EditableTable extends React.Component {
             categories: json.data
           }));
           this.setState({
-            categoryList: convertArrayObjectToObject(json.data)
+            categoryList: convertArrayObjectToObject(json.data, 'ma_kho')
           });
           
         }
