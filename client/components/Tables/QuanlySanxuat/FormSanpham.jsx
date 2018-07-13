@@ -63,10 +63,13 @@ class EditableCell extends React.Component {
           </Select>
         );
         break;
-      case 'sl_thucnhap':
-      case 'sl_chungtu':
+      case 'sl_1000':
+      case 'sl_nvl':
       case 'price':
-        return <InputNumber/>
+        return <InputNumber formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+        break;
+      case 'hu_hao' :
+        return <InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')} />
         break;
       case 'nsx':
       case 'hd':
@@ -141,25 +144,10 @@ class EditableTable extends React.Component {
       {
         title: 'Công đoạn',
         dataIndex: 'cong_doan',
-        width: 100,
+        width: 200,
         //fixed: 'left',
         editable: true,
         required: true,
-      },
-      {
-        title: 'Số thứ tự',
-        dataIndex: 'stt',
-        //fixed: 'left',
-        width: 150,
-        editable: true,
-        required: true,
-        // render: (text, record) => {
-        //   let label = text;
-        //   if(this.state.productList && this.state.productList[text]) {
-        //     label = this.state.productList[text]['name'];
-        //   }
-        //   return <span>{label}</span>
-        // }
       },
       {
         title: 'Mã maquet',
@@ -171,27 +159,38 @@ class EditableTable extends React.Component {
       {
         title: 'Mã NL',
         dataIndex: 'product_id',
-        width: '30%',
+        width: '20%',
         editable: true,
+        render: (text, record) => { 
+          let label = text, unit = 'kg';
+          if(this.state.productList && this.state.productList[text]) {
+            label = this.state.productList[text]['name'];
+            unit = this.state.productList[text]['unit'];
+          }
+          return <span>{text} - {label} - {unit}</span>
+        }
       },
       {
         title: 'SL cho 1000.000 viên/lọ/gói',
         dataIndex: 'sl_1000',
         //width: '40%',
         editable: true,
+        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Hư hao',
         dataIndex: 'hu_hao',
         //width: '40%',
         editable: true,
+        render: (text, record) => `${text}%`
       },
       {
         title: 'SL NVL cần',
         dataIndex: 'sl_nvl',
         //width: '40%',
         editable: true,
-        required: true
+        required: true,
+        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Actions',
@@ -324,6 +323,7 @@ class EditableTable extends React.Component {
       ma_sx: "",
       ma_maquet: "",
       product_id: "",
+      cong_doan: "",
       sl_1000: "",
       sl_nvl: "",
       hu_hao: "",
@@ -480,7 +480,7 @@ class EditableTable extends React.Component {
             products: json.data
           }));
           this.setState({
-            productList: convertArrayObjectToObject(json.data)
+            productList: convertArrayObjectToObject(json.data, `product_id`)
           });
           
         }
@@ -494,7 +494,7 @@ class EditableTable extends React.Component {
   }
   fetchSelectedProduct() {
     let {sx} = this.props.mainState;
-    let maPhieu = sx.ma_phieu;
+    let maPhieu = sx.ma_sx;
     this.setState({loadProduct: true});
     fetch(ISD_BASE_URL + `sx/fetchSelectedProduct/${maPhieu}`, {
       headers: getTokenHeader()
@@ -538,45 +538,12 @@ class EditableTable extends React.Component {
     );
     return menu;
   }
-  getActionsByRoles() {
-    let {selectedRowKeys, loading} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ marginBottom: 16 }}>
-        {this.props.isQC? 
-        <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-          <Button
-            type="primary"
-            //onClick={this.start}
-            loading={loading}
-          >
-            QC Phê duyệt
-          </Button>
-        </Dropdown>
-        : null}
-        {this.props.isQA? 
-          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-           <Button
-             type="primary"
-             //onClick={this.start}
-             loading={loading}
-           >
-             QA Phê duyệt
-           </Button>
-          </Dropdown>
-        : null} 
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-        </span>
-      </div>
-    );
-  }
   componentDidMount() {
     let {products, sx} = this.props.mainState;
     if(!products.length) {
       this.fetchProduct();
     }
-    if(sx.ma_phieu) {
+    if(sx.ma_sx) {
       this.fetchSelectedProduct();
     }
   }
@@ -637,7 +604,6 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        {this.getActionsByRoles()}
         <Table
           rowSelection={rowSelection}
           components={components}
@@ -646,7 +612,6 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          scroll={{ x: 1500 }}
         />
       </React.Fragment>
     );

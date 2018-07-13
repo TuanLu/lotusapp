@@ -67,7 +67,7 @@ class EditableCell extends React.Component {
       case 'sl_thucnhap':
       case 'sl_chungtu':
       case 'price':
-        return <InputNumber/>
+        return <InputNumber formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
         break;
       case 'ngay_san_xuat':
       case 'ngay_het_han':
@@ -180,19 +180,22 @@ class EditableTable extends React.Component {
         dataIndex: 'sl_chungtu',
         //width: '40%',
         editable: true,
+        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'SL thực nhập',
         dataIndex: 'sl_thucnhap',
         //width: '40%',
         editable: true,
+        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Đơn giá',
         dataIndex: 'price',
         //width: '40%',
         editable: true,
-        required: true
+        required: true,
+        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Ngày SX',
