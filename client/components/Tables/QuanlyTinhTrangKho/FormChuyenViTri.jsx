@@ -11,7 +11,7 @@ class TimeRelatedForm extends React.Component {
     this.state = {
       loading: false,
       expandedRowRender: true,
-      ma_kho: this.props.record.kho_id,//Using kho_id instead of ma_kho
+      ma_kho: this.props.record.ma_kho,
       vi_tri_kho: this.props.record.vi_tri_kho
     };
     this.changeInventory = this.changeInventory.bind(this);
@@ -130,7 +130,7 @@ class TimeRelatedForm extends React.Component {
     let {mainState} = this.props;
     let kho = mainState.kho || [];
     if(kho.length) {
-      return kho.map((kho) => <Option key={kho.id} value={kho.id}>{kho.ma_kho} {"-"} {kho.name}</Option>);
+      return kho.map((kho) => <Option key={kho.id} value={kho.ma_kho}>{kho.ma_kho} {"-"} {kho.name}</Option>);
     }
   }
   viTriKhoOptions() {
