@@ -45,10 +45,10 @@ class FormPhieunhap extends React.Component {
       message.error('Mã kho không được để trống');
       return false;
     }
-    if(!phieunhap.nguoi_giao_dich) {
-      message.error('Thiếu thông tin người giao dịch');
-      return false;
-    }
+    // if(!phieunhap.nguoi_giao_dich) {
+    //   message.error('Thiếu thông tin người giao dịch');
+    //   return false;
+    // }
     if(!phieunhap.products.length) {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;

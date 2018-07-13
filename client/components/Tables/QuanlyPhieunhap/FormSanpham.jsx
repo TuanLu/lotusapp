@@ -145,7 +145,7 @@ class EditableTable extends React.Component {
         width: 100,
         //fixed: 'left',
         editable: true,
-        required: true,
+        required: false,
       },
       {
         title: 'Mã VT',
@@ -200,8 +200,8 @@ class EditableTable extends React.Component {
         width: '200px',
         //width: '40%',
         editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
+        required: false,
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
         title: 'Ngày Hết Hạn',
@@ -209,8 +209,8 @@ class EditableTable extends React.Component {
         width: '200px',
         //width: '40%',
         editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
+        required: false,
+        render: (text, record) => text? moment(text).format('DD/MM/YYYY') : ''
       },
       // {
       //   title: 'QC Duyệt',
@@ -404,8 +404,8 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
           ma_phieu: maPhieu,
-          ngay_san_xuat: row['ngay_san_xuat'].format('YYYY-MM-DD'),
-          ngay_het_han: row['ngay_het_han'].format('YYYY-MM-DD'),
+          ngay_san_xuat: row['ngay_san_xuat'] ? row['ngay_san_xuat'].format('YYYY-MM-DD') : '',
+          ngay_het_han: row['ngay_het_han'] ? row['ngay_het_han'].format('YYYY-MM-DD') : '',
         };
         //Chua co ma phieu va ID la trong
         if(!newData.id && !maPhieu) {

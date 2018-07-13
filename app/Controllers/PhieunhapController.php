@@ -116,11 +116,11 @@ class PhieunhapController extends BaseController
 				echo json_encode($rsData);
 				die;
 		}
-		if(!$nguoiGiaoDich) {
-			$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
+		// if(!$nguoiGiaoDich) {
+		// 	$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
+		// 		echo json_encode($rsData);
+		// 		die;
+		// }
 		if($maPhieu && $editNote == '') {
 			$rsData['message'] = 'Hãy nhập lý do sửa phiếu!';
 				echo json_encode($rsData);
@@ -168,12 +168,19 @@ class PhieunhapController extends BaseController
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
 					$columns = $this->getColumns();
-					$data = $this->db->select('phieu_nhap_xuat_kho', $columns, ['ma_phieu' => $maPhieu]);
+					$data = $this->db->select('phieu_nhap_xuat_kho', ["id", "ma_phieu"], ['ma_phieu' => $maPhieu]);
 					$rsData['data'] = $data[0];
 					$rsData['message'] = 'Đã thêm phiếu nhập thành công!';
 				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+					$rsData['message'] = 'Dữ liệu chưa được sản phẩm theo phiếu!';
 				}
+			} else {
+				// $error = $result->errorInfo();
+				// $errorMessage = 'Không thể tạo phiếu nhập vào CSDL';
+				// if(is_array($error) && !empty($error)) {
+				// 	$errorMessage = implode(', ',$error);
+				// }
+				$rsData['message'] = 'Không thể tạo phiếu nhập vào CSDL';
 			}
 		} else {
 			//update data base on $id

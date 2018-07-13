@@ -48,7 +48,7 @@ class FormThongtin extends React.Component {
     let options = '';
     let {kho} = this.props.mainState;
     if(kho.length) {
-      options = kho.map((kho) => <Option key={kho.id} value={kho.id}>{kho.name}</Option>);
+      options = kho.map((kho) => <Option key={kho.id} value={kho.ma_kho}>{kho.name}</Option>);
     }
     return (
       <Form>
