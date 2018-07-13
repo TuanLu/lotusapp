@@ -64,20 +64,14 @@ class SXController extends BaseController
 			'id',
 			'id(key)',//For unique react item
 			'ma_sx',
-			'ma',
-			'so',
+			'ma_maquet',
+			'product_id',
 			'cong_doan',
-			'ma_sp',
-			'co_lo',
-			'so_lo',
-			'nsx',
-			'hd',
-			'so_dk',
-			'dang_bao_che',
-			'qcdg',
-			'dh',
-			'tttb_kltb',
-			'status'
+			'sl_1000',
+			'sl_nvl',
+			'status',
+			'hu_hao',
+			'create_on'
 		];
 		$collection = $this->db->select('lotus_spsx', $columns, [
 			"status" => 1,
@@ -147,10 +141,10 @@ class SXController extends BaseController
 				'ma_sx' => $ma_sx,
 				'so' => $so,
 				'ma' => $ma,
-				'cong_doan' => $cong_doan,
 				'ma_sp' => $ma_sp,
 				'co_lo' => $co_lo,
 				'so_lo' => $so_lo,
+				'cong_doan' => $cong_doan,
 				'nsx' => $nsx,
 				'hd' => $hd,
 				'so_dk' => $so_dk,
@@ -169,6 +163,7 @@ class SXController extends BaseController
 						'ma_sx' => $ma_sx,
 						'ma_maquet' => $product['ma_maquet'],
 						'product_id' => $product['product_id'],
+						'cong_doan' => $product['cong_doan'],
 						'sl_1000' => $product['sl_1000'],
 						'sl_nvl' => $product['sl_nvl'],
 						'hu_hao' => $product['hu_hao'],
@@ -206,13 +201,18 @@ class SXController extends BaseController
 				'tttb_kltb' => $tttb_kltb,
 				'status' => 1
 			];
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
 			if($result->rowCount()) {
 				$this->superLog('Update phiếu nhập', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
+				//$errors = $result->errorInfo();
+				$message = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
+				// if(is_array($errors)) {
+				// 	$message = implode(', ', $errors);
+				// }
+				$rsData['message'] = $message;
 			}
 			
 		}
@@ -229,6 +229,7 @@ class SXController extends BaseController
 		$params = $request->getParams();
 		$maSp = isset($params['product_id']) ? $params['product_id'] : '';
 		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';		
+		$cong_doan = isset($params['cong_doan']) ? $params['cong_doan'] : '';		
 		//Some validation 
 		if(!$ma_sx) {
 			$rsData['message'] = 'Mã sản xuất không được để trống!';
@@ -248,6 +249,7 @@ class SXController extends BaseController
 				'ma_sx' => $ma_sx,
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
 				'product_id' => $maSp,
+				'cong_doan' => $cong_doan,
 				'sl_1000' => isset($params['sl_1000']) ? $params['sl_1000'] : '',
 				'sl_nvl' => isset($params['sl_nvl']) ? $params['sl_nvl'] : '',
 				'hu_hao' => isset($params['hu_hao']) ? $params['hu_hao'] : '',
@@ -267,8 +269,9 @@ class SXController extends BaseController
 			$itemData = [
 				'ma_sx' => $ma_sx,
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
-				'product_id' => $ma_sp,
+				'product_id' => isset($params['product_id']) ? $params['product_id'] : '',
 				'sl_1000' => isset($params['sl_1000']) ? $params['sl_1000'] : '',
+				'cong_doan' => $cong_doan,
 				'sl_nvl' => isset($params['sl_nvl']) ? $params['sl_nvl'] : '',
 				'hu_hao' => isset($params['hu_hao']) ? $params['hu_hao'] : '',
 				'create_on' => $createOn
@@ -409,7 +412,6 @@ class SXController extends BaseController
 		echo json_encode($rsData);
 	}
 	public function fetchProductDetailsList($request){
-		//$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
@@ -430,6 +432,39 @@ class SXController extends BaseController
 			"[>]lotus_cats" => ["category_id" => "id"],
 		], $columns, [
 			"products.status" => 1
+		]);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $collection;
+		}
+		header("Content-Type: application/json");
+        echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
+        exit;
+	}
+	public function fetchProductByCate($request, $response, $args){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+		);
+		$cate_id = isset(	$args['cate_id']) ? $args['cate_id'] : '';
+		// Columns to select.
+		$columns = [
+				'products.id',
+				'products.product_id',
+				'products.category_id',
+				'products.name',
+				//'price',
+				'products.unit',
+				'products.min',
+				'products.max',
+				'lotus_cats.name(category_name)'
+		];
+		$collection = $this->db->select('products', [
+			"[>]lotus_cats" => ["category_id" => "id"],
+		], $columns, [
+			"products.status" => 1,
+			"products.category_id" => $cate_id
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;

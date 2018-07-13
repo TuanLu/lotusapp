@@ -11,7 +11,7 @@ const formInfo = {
   person: 'Người giao hàng'
 }
 
-class FormThongtin extends React.Component {
+class FormNote extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,46 +83,6 @@ class FormThongtin extends React.Component {
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
     return (
       <Form>
-        <Row>
-            <Col span={12}>
-            <FormItem
-              label={'SỐ'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      so: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.so} />
-            </FormItem>
-            </Col>
-            <Col span={12}>
-            <FormItem
-              label={'CÔNG ĐOẠN'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      cong_doan: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.cong_doan} />
-            </FormItem>
-            </Col>
-        </Row>
         <Row>
             <Col span={12}>
             <FormItem
@@ -366,4 +326,4 @@ class FormThongtin extends React.Component {
   }
 }
 
-export default FormThongtin;
+export default FormNote;

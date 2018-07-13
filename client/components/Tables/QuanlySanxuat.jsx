@@ -4,11 +4,9 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormPhieunhap from './QuanlySanxuat/FormPhieunhap'
-
-const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -92,6 +90,12 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
+        title: 'Công đoạn',
+        dataIndex: 'cong_doan',
+        //width: '40%',
+        editable: false,
+      },
+      {
         title: 'Sản phẩm',
         dataIndex: 'ma_sp',
         //width: '40%',
@@ -112,6 +116,12 @@ class EditableTable extends React.Component {
       {
         title: 'NSX',
         dataIndex: 'nsx',
+        //width: '40%',
+        editable: false,
+      },
+      {
+        title: 'Tình trạng',
+        dataIndex: 'status',
         //width: '40%',
         editable: false,
       },
@@ -146,16 +156,16 @@ class EditableTable extends React.Component {
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
                   {
-                    <React.Fragment>
-                      {" | "}
-                      <Popconfirm
-                        title="Bạn thật sự muốn xoá?"
-                        okType="danger"
-                        onConfirm={() => this.delete(record)}
-                      >
-                        <a href="javascript:;">Xoá</a>  
-                      </Popconfirm>
-                    </React.Fragment>
+                    // <React.Fragment>
+                    //   {" | "}
+                    //   <Popconfirm
+                    //     title="Bạn thật sự muốn xoá?"
+                    //     okType="danger"
+                    //     onConfirm={() => this.delete(record)}
+                    //   >
+                    //     <a href="javascript:;">Xoá</a>  
+                    //   </Popconfirm>
+                    // </React.Fragment>
                     } 
                 </React.Fragment>
                 

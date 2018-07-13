@@ -103,7 +103,8 @@ $app->get('/cdc/fetchTotal', 'CdcController:fetchTotal');
 //SX router
 $app->get('/sx/fetch', 'SXController:fetch');
 $app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList');
-$app->get('/sx/fetchSelectedProduct/{ma_phieu}', 'SXController:fetchSelectedProduct');
+$app->get('/sx/fetchSelectedProduct/{ma_sx}', 'SXController:fetchSelectedProduct');
+$app->get('/sx/fetchProductByCate/{cate_id}', 'SXController:fetchProductByCate');
 $app->post('/sx/update', 'SXController:update');
 $app->post('/sx/updateProduct', 'SXController:updateProduct');
 $app->post('/sx/changeStatus', 'SXController:changeStatus');

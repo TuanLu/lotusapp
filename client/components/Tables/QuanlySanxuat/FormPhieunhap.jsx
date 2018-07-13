@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import FormThongTin from './FormThongtin'
 import FormSanpham from './FormSanpham'
+import FormNote from './FormNote'
 import { Row, Button, Col, Popconfirm,message } from 'antd';
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -123,6 +124,9 @@ class FormPhieunhap extends React.Component {
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham
+          dispatch={this.props.dispatch} 
+          mainState={this.props.mainState}/>
+        <FormNote 
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
       </div>
