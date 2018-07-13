@@ -141,27 +141,29 @@ class FormThongtin extends React.Component {
             }}
             value={phieunhap.address} />
         </FormItem>
-        {/* <FormItem
-          label="Trạng Thái"
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <Select 
-            disabled={readOnly}
-            onChange={(tinh_trang) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  tinh_trang
-                }
-              }));
-            }}
-            defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
-            {trangThaiPhieu.map((status) =>{
-              return <Option value={status.value} key={status.value}>{status.text}</Option>
-            })}
-          </Select>
-        </FormItem> */}
+        {this.props.isInventoryOwner? 
+          <FormItem
+            label="Trạng Thái"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 12 }}
+          >
+            <Select 
+              disabled={readOnly}
+              onChange={(tinh_trang) => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    tinh_trang
+                  }
+                }));
+              }}
+              defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
+              {trangThaiPhieu.map((status) =>{
+                return <Option value={status.value} key={status.value}>{status.text}</Option>
+              })}
+            </Select>
+          </FormItem>
+          : null}
         <FormItem
           label={'Ngày tạo'}
           labelCol={{ span: 5 }}

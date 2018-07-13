@@ -207,6 +207,13 @@ class EditableTable extends React.Component {
     }
     return false;
   }
+  isInventoryOwner() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhom_thu_kho') return true;
+    }
+    return false;
+  }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
@@ -335,6 +342,7 @@ class EditableTable extends React.Component {
           <FormPhieunhap
             isQA={this.isQA()}
             isQC={this.isQC()}
+            isInventoryOwner={this.isInventoryOwner()}
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />

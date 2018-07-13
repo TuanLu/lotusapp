@@ -125,6 +125,7 @@ class FormPhieunhap extends React.Component {
           </Row>
         </div>
         <FormThongTin 
+          isInventoryOwner={this.props.isInventoryOwner}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham
