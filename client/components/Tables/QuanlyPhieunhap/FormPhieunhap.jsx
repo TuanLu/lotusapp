@@ -53,6 +53,10 @@ class FormPhieunhap extends React.Component {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
     }
+    if(phieunhap.ma_phieu != "" && !phieunhap.editNote) {
+      message.error('Hãy nhập lý do sửa phiếu');
+      return false;
+    }
     return true;
   }
   cancel() {
@@ -121,6 +125,7 @@ class FormPhieunhap extends React.Component {
           </Row>
         </div>
         <FormThongTin 
+          isInventoryOwner={this.props.isInventoryOwner}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham

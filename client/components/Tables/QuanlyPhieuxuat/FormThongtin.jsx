@@ -43,8 +43,8 @@ class FormThongtin extends React.Component {
     }
   }
   render() {
-    let {phieunhap, phieuAction} = this.props.mainState;
-    let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
+    let {phieuxuat, phieuXuatAction} = this.props.mainState;
+    let readOnly = phieuXuatAction && phieuXuatAction.action == 'view' ? true : false;
     let options = '';
     let {kho} = this.props.mainState;
     if(kho.length) {
@@ -61,13 +61,13 @@ class FormThongtin extends React.Component {
             readOnly={readOnly}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   so_chung_tu: e.target.value
                 }
               }));
             }}
-            value={phieunhap.so_chung_tu} />
+            value={phieuxuat.so_chung_tu} />
         </FormItem>
         <FormItem
           label={formInfo.person}
@@ -78,13 +78,13 @@ class FormThongtin extends React.Component {
             readOnly={readOnly}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   nguoi_giao_dich: e.target.value
                 }
               }));
             }}
-            value={phieunhap.nguoi_giao_dich} />
+            value={phieuxuat.nguoi_giao_dich} />
         </FormItem>
         <FormItem
           label="Tại Kho"
@@ -95,13 +95,13 @@ class FormThongtin extends React.Component {
             disabled={readOnly}
             onChange={(ma_kho) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   ma_kho
                 }
               }));
             }}
-            defaultValue={phieunhap.ma_kho} placeholder="Chọn kho">
+            defaultValue={phieuxuat.ma_kho} placeholder="Chọn kho">
             {options}
           </Select>
         </FormItem>
@@ -115,13 +115,13 @@ class FormThongtin extends React.Component {
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   note: e.target.value
                 }
               }));
             }}
-            value={phieunhap.note} />
+            value={phieuxuat.note} />
         </FormItem>
         <FormItem
           label="Địa điểm"
@@ -133,13 +133,13 @@ class FormThongtin extends React.Component {
             autosize={{ minRows: 2, maxRows: 6 }}
             onChange={(e) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   address: e.target.value
                 }
               }));
             }}
-            value={phieunhap.address} />
+            value={phieuxuat.address} />
         </FormItem>
         {/* <FormItem
           label="Trạng Thái"
@@ -150,13 +150,13 @@ class FormThongtin extends React.Component {
             disabled={readOnly}
             onChange={(tinh_trang) => {
               this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
+                phieuxuat: {
+                  ...this.props.mainState.phieuxuat,
                   tinh_trang
                 }
               }));
             }}
-            defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
+            defaultValue={phieuxuat.tinh_trang} placeholder="Chọn trạng thái">
             {trangThaiPhieu.map((status) =>{
               return <Option value={status.value} key={status.value}>{status.text}</Option>
             })}
@@ -171,13 +171,13 @@ class FormThongtin extends React.Component {
             readOnly={true}
             onChange={(e) => {
               // this.props.dispatch(updateStateData({
-              //   phieunhap: {
-              //     ...this.props.mainState.phieunhap,
+              //   phieuxuat: {
+              //     ...this.props.mainState.phieuxuat,
               //     nguoi_giao_dich: e.target.value
               //   }
               // }));
             }}
-            value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
+            value={phieuxuat.create_on || moment(new Date()).format("DD/MM/YYYY")} />
         </FormItem>
       </Form>
     );

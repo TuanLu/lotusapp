@@ -76,6 +76,12 @@ class Roles {
         'path' => 'nhomqc',
         'include_in_menu' => false
       ],
+      'nhom_thu_kho' => [
+        'label' => 'Nhóm Thủ Kho', 
+        'icon' => 'team',
+        'path' => 'nhom_thu_kho',
+        'include_in_menu' => false
+      ],
       'qlns' => [
         'label' => 'QL Nhân sự', 
         'icon' => 'team',

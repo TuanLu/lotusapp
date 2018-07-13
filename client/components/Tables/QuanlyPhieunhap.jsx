@@ -110,6 +110,11 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
+        title: 'Người Tạo',
+        dataIndex: 'username',
+        render: (text, record) => record.name || text
+      },
+      {
         title: 'Tình trạng',
         dataIndex: 'tinh_trang',
         //width: '40%',
@@ -204,6 +209,13 @@ class EditableTable extends React.Component {
     let {userRoles} = this.props.mainState;
     for(let i = 0; i < userRoles.length; i++) {
       if(userRoles[i].path == 'nhomqa') return true;
+    }
+    return false;
+  }
+  isInventoryOwner() {
+    let {userRoles} = this.props.mainState;
+    for(let i = 0; i < userRoles.length; i++) {
+      if(userRoles[i].path == 'nhom_thu_kho') return true;
     }
     return false;
   }
@@ -335,6 +347,7 @@ class EditableTable extends React.Component {
           <FormPhieunhap
             isQA={this.isQA()}
             isQC={this.isQC()}
+            isInventoryOwner={this.isInventoryOwner()}
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />

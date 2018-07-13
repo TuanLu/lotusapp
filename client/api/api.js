@@ -78,7 +78,7 @@ export const trangThaiPhieu = [
   {
     id: '1',
     value: '1',
-    text: 'Đã phê duyệt'
+    text: 'Phê duyệt'
   },
   {
     id: '2',

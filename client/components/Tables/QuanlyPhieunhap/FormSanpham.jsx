@@ -560,6 +560,12 @@ class EditableTable extends React.Component {
         }
       } else {
         message.error(json.message);
+        this.props.dispatch(updateStateData({
+          phieunhap: {
+            ...this.props.mainState.phieunhap,
+            products: []
+          }
+        }));
       }
       this.setState({loadProduct: false});
     })

@@ -2,11 +2,18 @@ import React from 'react'
 import {connect} from 'react-redux'
 import FormThongTin from './FormThongtin'
 import FormSanpham from './FormSanpham'
-import { Row, Button, Col, Popconfirm,message } from 'antd';
+import DanhsachSanpham from './DanhsachSanpham'
+import { Row, Button, Col, Popconfirm,message,Modal } from 'antd';
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 
 class FormPhieuxuat extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedItems: []
+    }
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     let isValid = this.validBeforeSave();
@@ -14,7 +21,7 @@ class FormPhieuxuat extends React.Component {
       fetch(ISD_BASE_URL + 'phieuxuat/update', {
         method: 'POST',
         headers: getTokenHeader(),
-        body: JSON.stringify(this.props.mainState.phieunhap)
+        body: JSON.stringify(this.props.mainState.phieuxuat)
       })
       .then((response) => {
         return response.json()
@@ -27,10 +34,10 @@ class FormPhieuxuat extends React.Component {
         } else {
           message.success(json.message);
           this.props.dispatch(updateStateData({
-            phieunhap: {
+            phieuxuat: {
               refresh: true
             },
-            phieuAction: {}
+            phieuXuatAction: {}
           }));
         }
       }).catch((ex) => {
@@ -40,16 +47,16 @@ class FormPhieuxuat extends React.Component {
     }
   }
   validBeforeSave() {
-    let {phieunhap} = this.props.mainState;
-    if(!phieunhap.ma_kho) {
+    let {phieuxuat} = this.props.mainState;
+    if(!phieuxuat.ma_kho) {
       message.error('Mã kho không được để trống');
       return false;
     }
-    if(!phieunhap.nguoi_giao_dich) {
+    if(!phieuxuat.nguoi_giao_dich) {
       message.error('Thiếu thông tin người giao dịch');
       return false;
     }
-    if(!phieunhap.products.length) {
+    if(!phieuxuat.products.length) {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
     }
@@ -57,15 +64,15 @@ class FormPhieuxuat extends React.Component {
   }
   cancel() {
     this.props.dispatch(updateStateData({
-      phieuAction: {
-        ...this.props.mainState.phieuAction,
+      phieuXuatAction: {
+        ...this.props.mainState.phieuXuatAction,
         addNewItem: false
       }
     }));
   }
 
   render() {
-    let {phieuAction} = this.props.mainState;
+    let {phieuXuatAction} = this.props.mainState;
     return (
       <div>
         <div className="table-operations">
@@ -75,7 +82,7 @@ class FormPhieuxuat extends React.Component {
             </Col>
             <Col span={12}>
               <div className="action-btns">
-                {phieuAction && phieuAction.action == 'edit'? 
+                {phieuXuatAction && phieuXuatAction.action == 'edit'? 
                 <React.Fragment>
                  <Button 
                   onClick={this.handleSubmit}
@@ -96,8 +103,8 @@ class FormPhieuxuat extends React.Component {
                     <Button 
                     onClick={() => {
                       this.props.dispatch(updateStateData({
-                        phieuAction: {
-                          ...this.props.mainState.phieuAction,
+                        phieuXuatAction: {
+                          ...this.props.mainState.phieuXuatAction,
                           action: 'edit'
                         }
                       }));
@@ -118,6 +125,42 @@ class FormPhieuxuat extends React.Component {
             </Col>
           </Row>
         </div>
+        <Modal
+          width={"95%"}
+          title="Chọn vật tư cho phiếu xuất"
+          okText="Chọn vật tư"
+          cancelText="Đóng"
+          visible={phieuXuatAction.openModal}
+          onCancel={() => {
+            this.props.dispatch(updateStateData({
+              phieuXuatAction: {
+                ...this.props.mainState.phieuXuatAction,
+                openModal: false
+              }
+            }));
+          }}
+          onOk={() => {
+            let selectedProducts = this.props.mainState.productsForExport.filter((item) => this.state.selectedItems.indexOf(item.id) !== -1);
+            this.props.dispatch(updateStateData({
+              phieuXuatAction: {
+                ...this.props.mainState.phieuXuatAction,
+                openModal: false
+              },
+              phieuxuat: {
+                ...this.props.mainState.phieuxuat,
+                products: [...this.props.mainState.phieuxuat.products, ...selectedProducts]
+              }
+            }));
+          }}
+          //footer={null}
+          >
+          <DanhsachSanpham
+            onRowSelection={(selectedItems) => {
+              this.setState({selectedItems: selectedItems})
+            }}
+            dispatch={this.props.dispatch} 
+            mainState={this.props.mainState}/>
+        </Modal>
         <FormThongTin 
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
