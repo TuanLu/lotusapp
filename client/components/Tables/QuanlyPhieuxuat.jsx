@@ -183,28 +183,28 @@ class EditableTable extends React.Component {
   }
   addNewRow() {
     this.props.dispatch(updateStateData({
-      phieuAction: {
-        ...this.props.mainState.phieuAction,
+      phieuXuatAction: {
+        ...this.props.mainState.phieuXuatAction,
         addNewItem: true,
         action: 'edit',
         editingKey: '',
       },
-      phieunhap: this.getDefaultFields()
+      phieuxuat: this.getDefaultFields()
     }));
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
   view(phieu) {
-    let {phieunhap, phieuAction} = this.props.mainState;
+    let {phieuxuat, phieuXuatAction} = this.props.mainState;
     if(phieu && phieu.ma_phieu && phieu.id) {
       this.props.dispatch(updateStateData({
-        phieunhap: {
-          ...phieunhap,
+        phieuxuat: {
+          ...phieuxuat,
           ...phieu
         },
-        phieuAction: {
-          ...phieuAction,
+        phieuXuatAction: {
+          ...phieuXuatAction,
           addNewItem: true,
           action: 'view'
         }
@@ -231,7 +231,7 @@ class EditableTable extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
+            phieuxuat: {
               refresh: false
             }
           }));
@@ -272,7 +272,7 @@ class EditableTable extends React.Component {
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.phieunhap;
+    let {refresh} = nextProps.mainState.phieuxuat;
     if(refresh) {
       return {
         dataUpToDate: null
@@ -316,7 +316,7 @@ class EditableTable extends React.Component {
 
     return (
       <React.Fragment>
-        {mainState.phieuAction.addNewItem ? 
+        {mainState.phieuXuatAction.addNewItem ? 
           <FormPhieuxuat
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}

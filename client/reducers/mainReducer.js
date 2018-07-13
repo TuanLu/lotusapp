@@ -9,6 +9,7 @@ let _designDefault = {
     categories: [],
     kho: [],
     products: [],
+    productsForExport: [],
     phieunhap: {
       nguoi_giao_dich: '',
       ma_kho: '',
@@ -38,6 +39,20 @@ let _designDefault = {
     phieuAction: {
       addNewItem: false,
       action: 'view',//view, edit, cancel
+    },
+    phieuxuat: {
+      nguoi_giao_dich: '',
+      ma_kho: '',
+      note: '',
+      editNote: '',
+      address: '',
+      products: [],
+      editingKey: '',
+    },
+    phieuXuatAction: {
+      addNewItem: false,
+      action: 'view',//view, edit, cancel
+      openModal: false
     }
   },
   cloneState;

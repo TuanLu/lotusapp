@@ -72,7 +72,7 @@ class PhieuxuatController extends BaseController
 			'ngay_san_xuat',
 			'ngay_het_han'
 		];
-		$collection = $this->db->select('san_pham_theo_phieu', $columns, [
+		$collection = $this->db->select('san_pham_theo_phieu_xuat', $columns, [
 			"status" => 1,
 			"ma_phieu" => $maPhieu
 		]);
@@ -140,6 +140,7 @@ class PhieuxuatController extends BaseController
 				foreach($products as $product) {
 					$validProducts[] = array(
 						'ma_phieu' => $maPhieu,
+						'ma_phieu_nhap' => $product['ma_phieu'],
 						'ma_lo' => $product['ma_lo'],
 						'product_id' => $product['product_id'],
 						'label' => $product['label'],
@@ -152,7 +153,7 @@ class PhieuxuatController extends BaseController
 						'ngay_het_han' => $product['ngay_het_han'],
 					);
 				}
-				$productsNum = $this->db->insert('san_pham_theo_phieu', $validProducts);
+				$productsNum = $this->db->insert('san_pham_theo_phieu_xuat', $validProducts);
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
 					$columns = $this->getColumns();
@@ -191,144 +192,6 @@ class PhieuxuatController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-	public function updateProduct($request, $response)
-	{
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
-		);
-		// Get params and validate them here.
-		$id = $request->getParam('id');
-		$params = $request->getParams();
-		$maLo = isset($params['ma_lo']) ? $params['ma_lo'] : '';
-		$maSp = isset($params['product_id']) ? $params['product_id'] : '';
-		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';		
-		//Some validation 
-		if(!$maPhieu) {
-			$rsData['message'] = 'Mã phiếu không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
-		if(!$maLo) {
-			$rsData['message'] = 'Mã lô không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
-		if(!$maSp) {
-			$rsData['message'] = 'Mã VT không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
-		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-		$date = new \DateTime();
-		$createOn = $date->format('Y-m-d H:i:s');
-		if(!$id) {
-			$itemData = array(
-				'ma_phieu' => $maPhieu,
-				'ma_lo' => $maLo,
-				'product_id' => $maSp,
-				'label' => isset($params['label']) ? $params['label'] : '',
-				'unit' => isset($params['unit']) ? $params['unit'] : '',
-				'sl_chungtu' => isset($params['sl_chungtu']) ? $params['sl_chungtu'] : '',
-				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
-				'price' => isset($params['price']) ? $params['price'] : '',
-				'create_on' => $createOn,
-				'ngay_san_xuat' => isset($params['ngay_san_xuat']) ? $params['ngay_san_xuat'] : '',
-				'ngay_het_han' => isset($params['ngay_het_han']) ? $params['ngay_het_han'] : '',
-			);
-			$result = $this->db->insert('san_pham_theo_phieu', $itemData);
-			if($result->rowCount()) {
-				$rsData['status'] = 'success';
-				$id = $this->db->id();
-				$rsData['data'] = array('id' => $id);
-				$rsData['message'] = 'Đã thêm sản phẩm vào phiếu xuất thành công!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
-			}
-		} else {
-			//update data base on $id
-			$itemData = [
-				'ma_phieu' => $maPhieu,
-				'ma_lo' => $maLo,
-				'product_id' => $maSp,
-				'label' => isset($params['label']) ? $params['label'] : '',
-				'unit' => isset($params['unit']) ? $params['unit'] : '',
-				'sl_chungtu' => isset($params['sl_chungtu']) ? $params['sl_chungtu'] : '',
-				'sl_thucnhap' => isset($params['sl_thucnhap']) ? $params['sl_thucnhap'] : '',
-				'price' => isset($params['price']) ? $params['price'] : '',
-				'update_on' =>$createOn,
-				'ngay_san_xuat' => isset($params['ngay_san_xuat']) ? $params['ngay_san_xuat'] : '',
-				'ngay_het_han' => isset($params['ngay_het_han']) ? $params['ngay_het_han'] : '',
-			];
-			$result = $this->db->update('san_pham_theo_phieu', $itemData, ['id' => $id]);
-			if($result->rowCount()) {
-				$this->superLog('Update SP theo phiếu', $itemData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
-			}
-		}
-		echo json_encode($rsData);
-	}
-	public function changeStatus($request, $response) {
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
-		);
-		// Get params and validate them here.
-		$params = $request->getParams();
-		if(isset($params['ids'])
-			&& isset($params['type'])
-			&& isset($params['status'])) {
-
-			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-			$date = new \DateTime();
-			$createOn = $date->format('Y-m-d H:i:s');
-			$updateData = [
-				'update_on' => $createOn,
-			];
-			
-			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['ids']]);
-			if($result->rowCount()) {
-				$this->superLog('Update SP theo phiếu', $updateData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
-			}
-		}
-		echo json_encode($rsData);
-	}
-	public function changePosition($request, $response) {
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
-		);
-		// Get params and validate them here.
-		$params = $request->getParams();
-		if(isset($params['id'])
-			&& isset($params['vi_tri_kho'])) {
-
-			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-			$date = new \DateTime();
-			$createOn = $date->format('Y-m-d H:i:s');
-			$updateData = [
-				'vi_tri_kho' => $params['vi_tri_kho'],
-				'update_on' => $createOn,
-			];
-			
-			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);
-			if($result->rowCount()) {
-				$this->superLog('Update SP theo phiếu', $updateData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
-			}
-		}
-		echo json_encode($rsData);
-	}
 
 	public function delete($request, $response, $args){
 		$rsData = array(
@@ -345,28 +208,6 @@ class PhieuxuatController extends BaseController
 				$this->superLog('Delete Ma Phieu', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá phiếu khỏi hệ thống!';
-				$rsData['data'] = $id;
-			}
-		} else {
-			$rsData['message'] = 'ID trống, nên không xoá được dữ liệu!';
-		}
-		echo json_encode($rsData);
-	}
-	public function deleteProduct($request, $response, $args){
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Dữ liệu chưa được xoá thành công!'
-		);
-		// Get params and validate them here.
-		$id = isset(	$args['id']) ? $args['id'] : '';
-		if($id != "") {
-			$result = $this->db->update('san_pham_theo_phieu',[
-				'status' => 2,
-			], ['id' => $id]);
-			if($result->rowCount()) {
-				$this->superLog('Delete Sản Phẩm Theo Phiếu', $id);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá sản phẩm khỏi phiếu xuất!';
 				$rsData['data'] = $id;
 			}
 		} else {
