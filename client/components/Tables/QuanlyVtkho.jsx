@@ -30,7 +30,7 @@ class EditableCell extends React.Component {
            {categories.map((category) => {
               return <Select.Option 
               key={category.id} 
-              value={category.id}>
+              value={category.ma_kho}>
                 {category.name}
               </Select.Option>
            })}
