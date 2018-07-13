@@ -179,6 +179,26 @@ class FormThongtin extends React.Component {
             }}
             value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
         </FormItem>
+        {phieunhap.ma_phieu != "" ? 
+          <FormItem
+            label="Lý do sửa phiếu"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 12 }}
+          >
+            <Input.TextArea 
+              readOnly={readOnly}
+              autosize={{ minRows: 2, maxRows: 6 }}
+              onChange={(e) => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    editNote: e.target.value
+                  }
+                }));
+              }}
+              value={phieunhap.editNote} />
+          </FormItem>
+        : null}
       </Form>
     );
   }

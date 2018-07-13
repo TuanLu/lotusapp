@@ -53,6 +53,10 @@ class FormPhieunhap extends React.Component {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
     }
+    if(phieunhap.ma_phieu != "" && !phieunhap.editNote) {
+      message.error('Hãy nhập lý do sửa phiếu');
+      return false;
+    }
     return true;
   }
   cancel() {

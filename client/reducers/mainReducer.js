@@ -13,6 +13,7 @@ let _designDefault = {
       nguoi_giao_dich: '',
       ma_kho: '',
       note: '',
+      editNote: '',
       address: '',
       products: [],
       editingKey: '',

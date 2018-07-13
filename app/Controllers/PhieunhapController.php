@@ -7,6 +7,7 @@ use \Ramsey\Uuid\Uuid;
 class PhieunhapController extends BaseController
 {
 	private $tableName = 'phieu_nhap_xuat_kho';
+	private $editNoteTable = 'edit_note_phieu_nhap_xuat_kho';
 
 	private function getColumns() {
 		$columns = [
@@ -96,6 +97,7 @@ class PhieunhapController extends BaseController
 		$maKho = isset($params['ma_kho']) ? $params['ma_kho'] : '';
 		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';
 		$nguoiGiaoDich = isset($params['nguoi_giao_dich']) ? $params['nguoi_giao_dich'] : '';
+		$editNote = isset($params['editNote']) ? $params['editNote'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
 		//Some validation 
 		if(empty($products)) {
@@ -110,6 +112,11 @@ class PhieunhapController extends BaseController
 		}
 		if(!$nguoiGiaoDich) {
 			$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
+				echo json_encode($rsData);
+				die;
+		}
+		if($maPhieu && $editNote == '') {
+			$rsData['message'] = 'Hãy nhập lý do sửa phiếu!';
 				echo json_encode($rsData);
 				die;
 		}
@@ -178,15 +185,26 @@ class PhieunhapController extends BaseController
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
-			if($result->rowCount()) {
-				$this->superLog('Update phiếu nhập', $itemData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			//Create edit note before update data
+			$editNoteData = array(
+				'user_id' => $userId,
+				'ma_phieu' => $maPhieu,
+				'note' => $editNote,
+				'create_on' => $date->format('Y-m-d H:i:s'),
+			);
+			$createEditNote = $this->db->insert($this->editNoteTable, $editNoteData);
+			if($createEditNote->rowCount()) {
+				$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+				if($result->rowCount()) {
+					$this->superLog('Update phiếu nhập', $itemData);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
+				}
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
+				$rsData['message'] = 'Xin lỗi, chưa lưu được lý do chỉnh sửa phiếu!';
 			}
-			
 		}
 		echo json_encode($rsData);
 	}
