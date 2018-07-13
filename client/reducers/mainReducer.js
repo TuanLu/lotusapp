@@ -53,13 +53,24 @@ export default (state = _designDefault, action) => {
       return cloneState;
       break;
     case actionTypes.UPDATE_STATE_DATA:
+      let resetStateBeforeSwitchNewTab;
       cloneState = cloneDeep(state);
       if(action.updateData && action.updateData.showLogin) {
         //Clean localStore
         sessionStorage.setItem('ISD_TOKEN', '');
       }
+      //When user switch tab to another tab
+      if(action.updateData && action.updateData.defaultRouter) {
+        resetStateBeforeSwitchNewTab = {
+          phieuAction: {
+            ...cloneState.phieuAction,
+            addNewItem: false,//Khi user dang edit, click vao tab khac thi se doi trang thai add/edit sang trang thai view
+          }
+        }
+      }
       cloneState = {
         ...cloneState,
+        ...resetStateBeforeSwitchNewTab,
         ...action.updateData
       }
       return cloneState;
