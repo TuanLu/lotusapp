@@ -10,16 +10,19 @@ class PhieuxuatController extends BaseController
 
 	private function getColumns() {
 		$columns = [
-			'id',
-			'ma_phieu',
-			'ma_kho',
-			'note',
-			'type',
-			'nguoi_giao_dich',
-			'address',
-			'tinh_trang',
-			'so_chung_tu',
-			'create_on' => Medoo::raw("DATE_FORMAT( create_on, '%d/%m/%Y' )")
+			'phieu_nhap_xuat_kho.id',
+			'phieu_nhap_xuat_kho.ma_phieu',
+			'phieu_nhap_xuat_kho.ma_kho',
+			'phieu_nhap_xuat_kho.note',
+			'phieu_nhap_xuat_kho.type',
+			'phieu_nhap_xuat_kho.nguoi_giao_dich',
+			'phieu_nhap_xuat_kho.address',
+			'phieu_nhap_xuat_kho.tinh_trang',
+			'phieu_nhap_xuat_kho.create_by',
+			'users.username',
+			'users.name',
+			'phieu_nhap_xuat_kho.so_chung_tu',
+			'create_on' => Medoo::raw("DATE_FORMAT( `phieu_nhap_xuat_kho`.`create_on`, '%d/%m/%Y' )")
 		];
 		return $columns;
 	}
@@ -34,9 +37,11 @@ class PhieuxuatController extends BaseController
 		$columns = $this->getColumns();
 		//echo "<pre>";
 		//print_r($columns);die;
-		$collection = $this->db->select($this->tableName, $columns, [
-			"status" => 1,
-			'type' => 2,
+		$collection = $this->db->select($this->tableName,[
+			"[>]users" => ["create_by" => "id"],
+		] ,$columns, [
+			"phieu_nhap_xuat_kho.status" => 1,
+			"phieu_nhap_xuat_kho.type" => 2,
 			"ORDER" => ["id" => "DESC"],
 		]);
 		if(!empty($collection)) {

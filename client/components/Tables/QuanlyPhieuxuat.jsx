@@ -110,6 +110,11 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
+        title: 'Người Tạo',
+        dataIndex: 'username',
+        render: (text, record) => record.name || text
+      },
+      {
         title: 'Tình trạng',
         dataIndex: 'tinh_trang',
         //width: '40%',
