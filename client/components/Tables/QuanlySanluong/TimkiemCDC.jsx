@@ -77,7 +77,7 @@ class AdvancedSearchForm extends React.Component {
       loading: true
     });
     this.props.loading(true);
-    fetch(ISD_BASE_URL + 'qlsl/search', {
+    fetch(ISD_BASE_URL + 'cdc/search', {
       method: 'POST',
       headers: getTokenHeader(),
       body: JSON.stringify(searchData)

@@ -100,6 +100,7 @@ $app->post('/qlsl/search', 'SanluongController:search');
 //Chuyển đổi công router
 $app->get('/cdc/fetchCdc', 'CdcController:fetchCdc');
 $app->get('/cdc/fetchTotal', 'CdcController:fetchTotal');
+$app->post('/cdc/search', 'CdcController:search');
 //SX router
 $app->get('/sx/fetch', 'SXController:fetch');
 $app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList');
