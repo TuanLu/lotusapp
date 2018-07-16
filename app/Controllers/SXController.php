@@ -25,6 +25,7 @@ class SXController extends BaseController
 			'qcdg',
 			'dh',
 			'tttb_kltb',
+			'note',
 			'status',
 			'created' => Medoo::raw("DATE_FORMAT( created, '%d/%m/%Y' )")
 		];
@@ -111,6 +112,7 @@ class SXController extends BaseController
 		$qcdg = isset($params['qcdg']) ? $params['qcdg'] : '';
 		$dh = isset($params['dh']) ? $params['dh'] : '';
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
+		$note = isset($params['note']) ? $params['note'] : '';
 
 
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
@@ -152,6 +154,7 @@ class SXController extends BaseController
 				'qcdg' => $qcdg,
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
+				'note' => $note,
 				'status' => 1
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
@@ -199,6 +202,7 @@ class SXController extends BaseController
 				'qcdg' => $qcdg,
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
+				'note' => $note,
 				'status' => 1
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
@@ -228,8 +232,10 @@ class SXController extends BaseController
 		$id = $request->getParam('id');
 		$params = $request->getParams();
 		$maSp = isset($params['product_id']) ? $params['product_id'] : '';
-		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';		
-		$cong_doan = isset($params['cong_doan']) ? $params['cong_doan'] : '';		
+		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';	
+		$date = new \DateTime();
+		$createOn = isset($params['create_on']) ? $params['create_on'] : $date->format('Y-m-d H:i:s');
+		$updateOn = $date->format('Y-m-d H:i:s');
 		//Some validation 
 		if(!$ma_sx) {
 			$rsData['message'] = 'Mã sản xuất không được để trống!';
@@ -242,14 +248,12 @@ class SXController extends BaseController
 				die;
 		}
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-		$date = new \DateTime();
-		$createOn = $date->format('Y-m-d H:i:s');
 		if(!$id) {
 			$itemData = array(
 				'ma_sx' => $ma_sx,
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
 				'product_id' => $maSp,
-				'cong_doan' => $cong_doan,
+				'cong_doan' => isset($params['cong_doan']) ? $params['cong_doan'] : '',
 				'sl_1000' => isset($params['sl_1000']) ? $params['sl_1000'] : '',
 				'sl_nvl' => isset($params['sl_nvl']) ? $params['sl_nvl'] : '',
 				'hu_hao' => isset($params['hu_hao']) ? $params['hu_hao'] : '',
@@ -271,10 +275,11 @@ class SXController extends BaseController
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
 				'product_id' => isset($params['product_id']) ? $params['product_id'] : '',
 				'sl_1000' => isset($params['sl_1000']) ? $params['sl_1000'] : '',
-				'cong_doan' => $cong_doan,
+				'cong_doan' => isset($params['cong_doan']) ? $params['cong_doan'] : '',
 				'sl_nvl' => isset($params['sl_nvl']) ? $params['sl_nvl'] : '',
 				'hu_hao' => isset($params['hu_hao']) ? $params['hu_hao'] : '',
-				'create_on' => $createOn
+				'create_on' => $createOn,
+				'update_on' => $updateOn
 			];
 			$result = $this->db->update('lotus_spsx', $itemData, ['id' => $id]);
 			if($result->rowCount()) {

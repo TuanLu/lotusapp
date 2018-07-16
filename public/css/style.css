@@ -158,3 +158,11 @@ td:hover .editable-cell-icon {
   font-size: 12px;
   margin-top: -4px;
 }
+.filter_adv {
+  text-align: center;
+  margin: 10px;
+  border: 1px solid #ddd;
+}
+.filter_adv .cdc_result {
+  font-weight: bold;
+}
