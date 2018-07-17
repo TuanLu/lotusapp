@@ -73,8 +73,8 @@ class EditableTable extends React.Component {
     };
     this.columns = [
       {
-        title: 'Mã Khách Hàng',
-        dataIndex: 'ma_kh',
+        title: 'Mã phòng ban',
+        dataIndex: 'ma_pb',
         width: '10%',
         editable: true,
         required: true,
@@ -87,21 +87,7 @@ class EditableTable extends React.Component {
         required: true
       },
       {
-        title: 'Số điện thoại',
-        dataIndex: 'phone',
-        //width: '15%',
-        editable: true,
-        required: true
-      },
-      {
-        title: 'Địa chỉ',
-        dataIndex: 'address',
-        //width: '15%',
-        editable: true,
-        required: true
-      },
-      {
-        title: 'Thông tin',
+        title: 'Thông tin mô tả',
         dataIndex: 'description',
         //width: '40%',
         editable: true,
@@ -167,12 +153,12 @@ class EditableTable extends React.Component {
       })
       this.state.newitem  = 1 ;
     }else{
-      message.error('Bạn đang thêm mới khách hàng rồi ...');
+      message.error('Bạn đang thêm mới phòng ban rồi ...');
     }
   }
   getDefaultFields() {
     return {
-      ma_kh: "",
+      ma_pb: "",
       name: "",
       description: ""
     };
@@ -197,7 +183,7 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
         };
-        fetch(ISD_BASE_URL + 'qlkh/updateKh', {
+        fetch(ISD_BASE_URL + 'qlpb/updatePb', {
           method: 'POST',
           headers: getTokenHeader(),
           body: JSON.stringify(newItemData)
@@ -237,13 +223,13 @@ class EditableTable extends React.Component {
   }
   delete = (record) => {
     if(record.id) {
-      fetch(ISD_BASE_URL + 'qlkh/deleteKh/' + record.id, {
+      fetch(ISD_BASE_URL + 'qlpb/deletePb/' + record.id, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá dữ liệu khách hàng!', 3);
+          message.error('Có lỗi xảy ra khi xoá dữ liệu phòng ban!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -252,7 +238,7 @@ class EditableTable extends React.Component {
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá dữ liệu khách hàng!', 3);
+        message.error('Có lỗi xảy ra khi xoá dữ liệu phòng ban!', 3);
         console.log(error);
       });
     } else {
@@ -265,7 +251,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
-    fetch(ISD_BASE_URL + 'qlkh/fetchKh', {
+    fetch(ISD_BASE_URL + 'qlpb/fetchPb', {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -283,7 +269,7 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu dữ liệu khách hàng!', 3);
+      message.error('Có lỗi khi tải dữ liệu dữ liệu phòng ban!', 3);
       console.log(error);
     }); 
   }
@@ -297,24 +283,6 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -337,13 +305,13 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý khách hàng</h2>
+              <h2 className="head-title">Quản lý phòng ban</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm khách hàng mới</Button>
+                  type="primary" icon="plus">Thêm phòng ban mới</Button>
               </div>
             </Col>
           </Row>

@@ -102,6 +102,11 @@ class Roles {
         'icon' => 'solution',
         'path' => 'cdc'
       ],
+      'qlpb' => [
+        'label' => 'QL Phòng ban', 
+        'icon' => 'solution',
+        'path' => 'qlpb'
+      ],
     ];
   }
 }

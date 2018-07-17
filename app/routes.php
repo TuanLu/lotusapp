@@ -111,3 +111,7 @@ $app->post('/sx/updateProduct', 'SXController:updateProduct');
 $app->post('/sx/changeStatus', 'SXController:changeStatus');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
+//Phòng ban router
+$app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
+$app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
+$app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb');

@@ -4,13 +4,13 @@ use \Medoo\Medoo;
 use \Monolog\Logger;
 //use \Ramsey\Uuid\Uuid;
 
-class KhController extends BaseController
+class PhongBanController extends BaseController
 {
-	private $tableName = 'lotus_khachhang';
+	private $tableName = 'lotus_phongban';
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
  
-	public function fetchKh($request){ 
+	public function fetchPb($request){ 
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
@@ -18,7 +18,7 @@ class KhController extends BaseController
 		// Columns to select.
 		$columns = [
 				'id',
-				'ma_kh',
+				'ma_pb',
 				'name',
 				'phone',
 				'address',
@@ -35,7 +35,7 @@ class KhController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-	public function updateKh($request, $response)
+	public function updatePb($request, $response)
 	{
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -46,53 +46,53 @@ class KhController extends BaseController
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
 		//die($id);
-		$maKh = $request->getParam('ma_kh');
+		$maPb = $request->getParam('ma_pb');
 		$name = $request->getParam('name');
 		$phone = $request->getParam('phone');
 		$address = $request->getParam('address');
 		$description = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
-			if(!$maKh) {
-				$rsData['message'] = 'Mã khách hàng không được để trống!';
+			if(!$maPb) {
+				$rsData['message'] = 'Mã phòng ban không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			if(!$name) {
-				$rsData['message'] = 'Tên khách hàng không được để trống!';
+				$rsData['message'] = 'Tên phòng ban không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
 			$date = new \DateTime();
 			$itemData = [
-				'ma_kh' => $maKh,
+				'ma_pb' => $maPb,
 				'name' => $name,
 				'phone' => $phone,
 				'address' => $address,
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
-			$selectColumns = ['id', 'ma_kh'];
-			$where = ['ma_kh' => $itemData['ma_kh']];
+			$selectColumns = ['id', 'ma_pb'];
+			$where = ['ma_pb' => $itemData['ma_pb']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã khách hàng [". $itemData['ma_kh'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã phòng ban [". $itemData['ma_pb'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã thêm khách hàng mới thành công!';
+				$rsData['message'] = 'Đã thêm phòng ban mới thành công!';
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã PB: ' . $maPb;
 			}
 		} else {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
-				'ma_kh' => $maKh,
+				'ma_pb' => $maPb,
 				'name' => $name,
 				'phone' => $phone,
 				'address' => $address,
@@ -105,14 +105,14 @@ class KhController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maKh;
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã KH: ' . $maPb;
 			}
 			
 		}
 		echo json_encode($rsData);
 	}
 
-	public function deleteKh($request, $response, $args){
+	public function deletePb($request, $response, $args){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Dữ liệu chưa được xoá thành công!'
@@ -124,7 +124,7 @@ class KhController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete KH', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá khách hàng khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá phòng ban khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {
