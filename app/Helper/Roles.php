@@ -102,6 +102,11 @@ class Roles {
         'icon' => 'solution',
         'path' => 'cdc'
       ],
+      'quy_trinh_sx' => [
+        'label' => 'Quy trình SX', 
+        'icon' => 'solution',
+        'path' => 'quy_trinh_sx'
+      ],
     ];
   }
 }

@@ -110,3 +110,7 @@ $app->post('/sx/updateProduct', 'SXController:updateProduct');
 $app->post('/sx/changeStatus', 'SXController:changeStatus');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
+//Quy trinh san xuat router
+$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch');
+$app->post('/quytrinhsx/update', 'QuytrinhSxController:update');
+$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete');

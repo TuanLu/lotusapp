@@ -25,6 +25,7 @@ import QuanlyNhansu from './Tables/QuanlyNhansu'
 import QuanlyJobs from './Tables/QuanlyJobs'
 import QuanlySanluong from './Tables/QuanlySanluong'
 import QuanlyChuyendoicong from './Tables/QuanlyChuyendoicong';
+import QuanlyQuytrinhSanxuat from './Tables/QuanlyQuytrinhSanxuat'
 
 class MainComponent extends React.Component {
   state = {
@@ -128,6 +129,9 @@ class MainComponent extends React.Component {
         break;
       case 'cdc':
         return <QuanlyChuyendoicong dispatch={dispatch} mainState={mainState}/>
+        break;
+      case 'quy_trinh_sx':
+        return <QuanlyQuytrinhSanxuat dispatch={dispatch} mainState={mainState}/>
         break;
       default:
         break;

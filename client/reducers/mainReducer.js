@@ -53,6 +53,9 @@ let _designDefault = {
       addNewItem: false,
       action: 'view',//view, edit, cancel
       openModal: false
+    },
+    quyTrinhSx: {
+      openModal: false
     }
   },
   cloneState;

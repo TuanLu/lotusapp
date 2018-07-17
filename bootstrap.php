@@ -86,6 +86,9 @@ $container['CdcController'] = function ($c) {
 $container['SXController'] = function ($c) {
   return new \App\Controllers\SXController($c);
 };
+$container['QuytrinhSxController'] = function ($c) {
+  return new \App\Controllers\QuytrinhSxController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
