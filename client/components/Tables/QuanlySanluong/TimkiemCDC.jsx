@@ -118,83 +118,87 @@ class AdvancedSearchForm extends React.Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
-        <Col span={8}>
-          <FormItem label={`Lọc theo ngày`}>
-            {getFieldDecorator(`workday`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <RangePicker 
-                placeholder={['Từ Ngày', 'Đến Ngày']}
-                format="DD/MM/YYYY" />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label={`Lọc theo nhân viên`}>
-            {getFieldDecorator(`ma_ns`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Select 
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) => option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                mode="multiple"
-                placeholder="Nhập mã nhân viên">
-                {nhanviens.map((nv) =><Option value={nv.ma_ns} key={nv.ma_ns}>{nv.ma_ns} {"-"} {nv.name}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label={`Lọc theo mã công việc`}>
-            {getFieldDecorator(`ma_cv`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Select 
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                mode="multiple"
-                placeholder="Nhập mã công việc">
-                {jobs.map((job) =><Option value={job.ma_cv} key={job.ma_cv}>{job.ma_cv} - {job.diengiai}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col span={6}>
-          <div className="filter_adv">
-            <FormItem label={`Tổng công HS 1.0`}>
-              <span className="cdc_result">999</span>
+        <Row>
+          <Col span={8}>
+            <FormItem label={`Lọc theo ngày`}>
+              {getFieldDecorator(`workday`, {
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <RangePicker 
+                  placeholder={['Từ Ngày', 'Đến Ngày']}
+                  format="DD/MM/YYYY" />
+              )}
             </FormItem>
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className="filter_adv">
-            <FormItem label={`Tổng công HS 1.2`}>
-              <span className="cdc_result">999</span>
+          </Col>
+          <Col span={8}>
+            <FormItem label={`Lọc theo nhân viên`}>
+              {getFieldDecorator(`ma_ns`, {
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <Select 
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  mode="multiple"
+                  placeholder="Nhập mã nhân viên">
+                  {nhanviens.map((nv) =><Option value={nv.ma_ns} key={nv.ma_ns}>{nv.ma_ns} {"-"} {nv.name}</Option>)}
+                </Select>
+              )}
             </FormItem>
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className="filter_adv">
-            <FormItem label={`Tổng công HS 1.3`}>
-              <span className="cdc_result">999</span>
+          </Col>
+          <Col span={8}>
+            <FormItem label={`Lọc theo mã công việc`}>
+              {getFieldDecorator(`ma_cv`, {
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <Select 
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>option.props.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  mode="multiple"
+                  placeholder="Nhập mã công việc">
+                  {jobs.map((job) =><Option value={job.ma_cv} key={job.ma_cv}>{job.ma_cv} - {job.diengiai}</Option>)}
+                </Select>
+              )}
             </FormItem>
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className="filter_adv">
-            <FormItem label={`Tổng công`}>
-              <span className="cdc_result">999</span>
-            </FormItem>
-          </div>
-        </Col>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={6}>
+            <div className="filter_adv">
+              <FormItem label={`Tổng công HS 1.0`}>
+                <span className="cdc_result">999</span>
+              </FormItem>
+            </div>
+          </Col>
+          <Col span={6}>
+            <div className="filter_adv">
+              <FormItem label={`Tổng công HS 1.2`}>
+                <span className="cdc_result">999</span>
+              </FormItem>
+            </div>
+          </Col>
+          <Col span={6}>
+            <div className="filter_adv">
+              <FormItem label={`Tổng công HS 1.3`}>
+                <span className="cdc_result">999</span>
+              </FormItem>
+            </div>
+          </Col>
+          <Col span={6}>
+            <div className="filter_adv">
+              <FormItem label={`Tổng công`}>
+                <span className="cdc_result">999</span>
+              </FormItem>
+            </div>
+          </Col>
+        </Row>
       </React.Fragment>
     );
   }

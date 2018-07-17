@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment';
-import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Switch, Row, Col, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
@@ -52,141 +52,153 @@ class FormThongtin extends React.Component {
     }
     return (
       <Form>
-        <FormItem
-          label={'Số chứng từ'}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-         <Input 
-            readOnly={readOnly}
-            onChange={(e) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  so_chung_tu: e.target.value
-                }
-              }));
-            }}
-            value={phieunhap.so_chung_tu} />
-        </FormItem>
-        <FormItem
-          label={formInfo.person}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-         <Input 
-            readOnly={readOnly}
-            onChange={(e) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  nguoi_giao_dich: e.target.value
-                }
-              }));
-            }}
-            value={phieunhap.nguoi_giao_dich} />
-        </FormItem>
-        <FormItem
-          label="Tại Kho"
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <Select 
-            disabled={readOnly}
-            onChange={(ma_kho) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  ma_kho
-                }
-              }));
-            }}
-            defaultValue={phieunhap.ma_kho} placeholder="Chọn kho">
-            {options}
-          </Select>
-        </FormItem>
-        <FormItem
-          label="Mô tả"
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <Input.TextArea 
-            readOnly={readOnly}
-            autosize={{ minRows: 2, maxRows: 6 }}
-            onChange={(e) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  note: e.target.value
-                }
-              }));
-            }}
-            value={phieunhap.note} />
-        </FormItem>
-        <FormItem
-          label="Địa điểm"
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <Input.TextArea 
-            readOnly={readOnly}
-            autosize={{ minRows: 2, maxRows: 6 }}
-            onChange={(e) => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  address: e.target.value
-                }
-              }));
-            }}
-            value={phieunhap.address} />
-        </FormItem>
-        {this.props.isInventoryOwner? 
-          <FormItem
-            label="Trạng Thái"
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 12 }}
-          >
+        <Row>
+          <Col span={12}>
+            {this.props.isInventoryOwner? 
+            <FormItem
+              label="Trạng Thái"
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
+              <Switch checkedChildren="Đã phê duyệt" unCheckedChildren="Chờ phê duyệt" disabled={readOnly} defaultChecked 
+                onChange={(tinh_trang) => {
+                  this.props.dispatch(updateStateData({
+                    phieunhap: {
+                      ...this.props.mainState.phieunhap,
+                      tinh_trang
+                    }
+                  }));
+                }} />
+              {/* <Select 
+                disabled={readOnly}
+                onChange={(tinh_trang) => {
+                  this.props.dispatch(updateStateData({
+                    phieunhap: {
+                      ...this.props.mainState.phieunhap,
+                      tinh_trang
+                    }
+                  }));
+                }}
+                defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
+                {trangThaiPhieu.map((status) =>{
+                  return <Option value={status.value} key={status.value}>{status.text}</Option>
+                })}
+              </Select> */}
+            </FormItem>
+            : null}
+            </Col>
+            <Col span={12}>
+            {phieunhap.ma_phieu != "" ?
+              <FormItem
+                label="Lý do sửa phiếu"
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
+              >
+                <Input.TextArea 
+                  readOnly={readOnly}
+                  autosize={{ minRows: 2, maxRows: 6 }}
+                  onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      phieunhap: {
+                        ...this.props.mainState.phieunhap,
+                        editNote: e.target.value
+                      }
+                    }));
+                  }}
+                  value={phieunhap.editNote} />
+              </FormItem>
+            : null}
+            </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              label={'Số chứng từ'}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
+            <Input 
+                readOnly={readOnly}
+                onChange={(e) => {
+                  this.props.dispatch(updateStateData({
+                    phieunhap: {
+                      ...this.props.mainState.phieunhap,
+                      so_chung_tu: e.target.value
+                    }
+                  }));
+                }}
+                value={phieunhap.so_chung_tu} />
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              label={formInfo.person}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
+            <Input 
+                readOnly={readOnly}
+                onChange={(e) => {
+                  this.props.dispatch(updateStateData({
+                    phieunhap: {
+                      ...this.props.mainState.phieunhap,
+                      nguoi_giao_dich: e.target.value
+                    }
+                  }));
+                }}
+                value={phieunhap.nguoi_giao_dich} />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              label="Tại Kho"
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
             <Select 
               disabled={readOnly}
-              onChange={(tinh_trang) => {
+              onChange={(ma_kho) => {
                 this.props.dispatch(updateStateData({
                   phieunhap: {
                     ...this.props.mainState.phieunhap,
-                    tinh_trang
+                    ma_kho
                   }
                 }));
               }}
-              defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
-              {trangThaiPhieu.map((status) =>{
-                return <Option value={status.value} key={status.value}>{status.text}</Option>
-              })}
+              defaultValue={phieunhap.ma_kho} placeholder="Chọn kho">
+              {options}
             </Select>
+          </FormItem>   
+          </Col>
+          <Col span={12}>
+            <FormItem
+              label={'Ngày tạo'}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
+            <Input 
+              readOnly={true}
+              onChange={(e) => {
+                // this.props.dispatch(updateStateData({
+                //   phieunhap: {
+                //     ...this.props.mainState.phieunhap,
+                //     nguoi_giao_dich: e.target.value
+                //   }
+                // }));
+              }}
+              value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
           </FormItem>
-          : null}
-        <FormItem
-          label={'Ngày tạo'}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 12 }}
-        >
-          <Input 
-            readOnly={true}
-            onChange={(e) => {
-              // this.props.dispatch(updateStateData({
-              //   phieunhap: {
-              //     ...this.props.mainState.phieunhap,
-              //     nguoi_giao_dich: e.target.value
-              //   }
-              // }));
-            }}
-            value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
-        </FormItem>
-        {phieunhap.ma_phieu != "" ? 
-          <FormItem
-            label="Lý do sửa phiếu"
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 12 }}
-          >
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              label="Mô tả"
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
             <Input.TextArea 
               readOnly={readOnly}
               autosize={{ minRows: 2, maxRows: 6 }}
@@ -194,13 +206,35 @@ class FormThongtin extends React.Component {
                 this.props.dispatch(updateStateData({
                   phieunhap: {
                     ...this.props.mainState.phieunhap,
-                    editNote: e.target.value
+                    note: e.target.value
                   }
                 }));
               }}
-              value={phieunhap.editNote} />
-          </FormItem>
-        : null}
+              value={phieunhap.note} />
+          </FormItem>  
+          </Col>
+          <Col span={12}>
+            <FormItem
+            label="Địa điểm"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 16 }}
+            >
+            <Input.TextArea 
+              readOnly={readOnly}
+              autosize={{ minRows: 2, maxRows: 6 }}
+              onChange={(e) => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    address: e.target.value
+                  }
+                }));
+              }}
+              value={phieunhap.address} />
+            </FormItem>
+          </Col>
+        </Row>
+        
       </Form>
     );
   }

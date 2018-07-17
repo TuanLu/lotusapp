@@ -118,7 +118,8 @@ td:hover .editable-cell-icon {
   width: initial!important;
 }
 .ant-card-head-title {
-  
+  text-align: center;
+  font-size: 18px;
 }
 .isd-status-number {
   text-align: center;
@@ -165,4 +166,8 @@ td:hover .editable-cell-icon {
 }
 .filter_adv .cdc_result {
   font-weight: bold;
+}
+.qc_button_check {
+  float: right;
+  margin: 0 5px;
 }

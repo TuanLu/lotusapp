@@ -21,8 +21,8 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const tableConfig = {
-  headTitle: 'Vật tư của phiếu nhập',
-  addNewTitle: 'Thêm vật tư vào phiếu nhập'
+  headTitle: 'Vật tư',
+  addNewTitle: 'Thêm vật tư'
 };
 
 const fetchConfig = {
@@ -598,7 +598,7 @@ class EditableTable extends React.Component {
     return (
       <div style={{ marginBottom: 16 }}>
         {this.props.isQC? 
-        <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
+        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
           <Button
             type="primary"
             //onClick={this.start}
@@ -609,7 +609,7 @@ class EditableTable extends React.Component {
         </Dropdown>
         : null}
         {this.props.isQA? 
-          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
+          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
            <Button
              type="primary"
              //onClick={this.start}
@@ -681,17 +681,20 @@ class EditableTable extends React.Component {
             <Col span={12}>
               <h2 className="head-title">{tableConfig.headTitle}</h2>
             </Col>
-            <Col span={12}>
-              <div className="action-btns">
-                {!this.isReadOnly() ? 
-                  <Button 
-                  onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button> : null}
-              </div>
-            </Col>
+            {!this.isReadOnly() ? 
+              <Col span={12}>
+                <div className="action-btns">
+                    <Button 
+                    onClick={() => this.addNewRow()}
+                    type="primary" icon="plus">{tableConfig.addNewTitle}</Button> 
+                </div>
+              </Col>
+            : null}
           </Row>
         </div>
-        {this.getActionsByRoles()}
+        {/* { (this.props.isQA || this.props.isQC) ?
+          this.getActionsByRoles() : null
+        } */}
         <Table
           rowSelection={rowSelection}
           components={components}
