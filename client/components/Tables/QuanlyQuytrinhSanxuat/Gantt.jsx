@@ -19,8 +19,10 @@ class Gantt extends Component {
     super(props);
     this.saveData = this.saveData.bind(this);
     this.getQuyTrinhId = this.getQuyTrinhId.bind(this);
+    this.clearAllEvents = this.clearAllEvents.bind(this);
     this.state = {
       loading: false,
+      resetEvents: false,
     }
   }
   setZoom(value){
@@ -95,15 +97,24 @@ class Gantt extends Component {
     gantt.parse(ganttData);   
     gantt.render();
   }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
-  //     console.log('new state, new qt ID', nextProps.mainState.quyTrinhSx.edit.id);
-  //     return {
-  //       quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id
-  //     }
-  //   }
-  //   return null;
-  // }
+  //Switch tu quy trinh nay sang quy trinh khac, phai cap nhat lai bien gantt
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
+      return {
+        quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id,
+        resetEvents: true
+      }
+    }
+    return null;
+  }
+  componentDidUpdate() {
+    //Cap nhat lai gantt
+    if(this.state.resetEvents) {
+      this.clearAllEvents();
+      this.initGanttEvents();
+      this.setState({resetEvents: false});
+    }
+  }
   saveData(task) {
     fetch(ISD_BASE_URL + 'gantt/update', {
       method: 'POST',
@@ -214,46 +225,65 @@ class Gantt extends Component {
       });
     }
   }
+  clearAllEvents() {
+    //Reset lai toan bo events cua gantt, de khong su dung du lieu cu
+    let {mainState} = this.props;
+    if(mainState.quyTrinhSx && mainState.quyTrinhSx.ganttEvents) {
+      mainState.quyTrinhSx.ganttEvents.forEach((event) => {
+        gantt.detachEvent(event);
+      });
+      gantt.ganttEventsInitialized = false;
+    }
+  }
 
   initGanttEvents() {
     if(gantt.ganttEventsInitialized){
       return;
     }
     gantt.ganttEventsInitialized = true;
-
-    gantt.attachEvent('onAfterTaskAdd', (id, task) => {
-      this.updateTask(id, 'inserted', task);
-    });
-
-    gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
-      this.updateTask(id, 'updated', task);
-    });
-
-    gantt.attachEvent('onAfterTaskDelete', (id) => {
-      this.deleteTask(id);
-    });
-
-    gantt.attachEvent('onAfterLinkAdd', (id, link) => {
-      this.updateLink(id, 'inserted', link);
-    });
-    // gantt.attachEvent('onAfterLinkUpdate', (id, link) => {
-    //   if(this.props.onLinkUpdated) {
-    //     this.props.onLinkUpdated(id, 'updated', link);
-    //   }
-    // });
-    gantt.attachEvent('onAfterLinkDelete', (id, link) => {
-      this.deleteLink(id);
-    });
+    //Cho tat ca cac su kien vao mainState de co the reset ve sau
+    let eventsList = [];
+    eventsList.push(
+      gantt.attachEvent('onAfterTaskAdd', (id, task) => {
+        this.updateTask(id, 'inserted', task);
+      })
+    );
+    eventsList.push(
+      gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
+        this.updateTask(id, 'updated', task);
+      })
+    );
+    eventsList.push(
+      gantt.attachEvent('onAfterTaskDelete', (id) => {
+        this.deleteTask(id);
+      })
+    );
+    eventsList.push(
+      gantt.attachEvent('onAfterLinkAdd', (id, link) => {
+        this.updateLink(id, 'inserted', link);
+      })
+    );
+    eventsList.push(
+      gantt.attachEvent('onAfterLinkDelete', (id, link) => {
+        this.deleteLink(id);
+      })
+    );
+    this.props.dispatch(updateStateData({
+      quyTrinhSx: {
+        ...this.props.mainState.quyTrinhSx,
+        ganttEvents: eventsList,
+      }
+    }));
   }
   componentDidMount() {
     let {mainState} = this.props;
     let {ganttData} = mainState;
-    this.initGanttEvents();
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
     //gantt.config.start_date = new Date();
     gantt.config.start_date = gantt.date.day_start(new Date());
     //gantt.config.task_date = "%d-%m-%Y";
+    //this.initGanttEvents();
     gantt.config.order_branch = true;
     gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);
