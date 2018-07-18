@@ -1,6 +1,7 @@
 /*global gantt*/
 import React, { Component } from 'react';
 import 'dhtmlx-gantt';
+//import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip.js';
 import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
 //import 'dhtmlx-gantt/codebase/locale/locale_ar.js';
 //import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
@@ -282,6 +283,9 @@ class Gantt extends Component {
     gantt.config.date_grid = "%d-%m-%Y";
     //gantt.config.start_date = new Date();
     gantt.config.start_date = gantt.date.day_start(new Date());
+    // gantt.templates.progress_text = function (start, end, task) {
+    //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+    // };
     //gantt.config.task_date = "%d-%m-%Y";
     //this.initGanttEvents();
     gantt.config.order_branch = true;
