@@ -1,11 +1,12 @@
 import React from 'react'
 import moment from 'moment';
-import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Button,Popconfirm, message, Icon } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader} from 'ISD_API'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const dateFormat = 'YYYY/MM/DD';
+const ButtonGroup = Button.Group;
 
 class QTSXForm extends React.Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class QTSXForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        this.props.saveData(values);
       }
     });
   }
@@ -52,10 +53,7 @@ class QTSXForm extends React.Component {
           wrapperCol={{ span: 12, offset: 5 }}
         >
           <Button type="primary" htmlType="submit">
-            Lưu và tiếp tục
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Lưu và đóng
+            Tạo quy trình <Icon type="save" />
           </Button>
         </FormItem>
       </Form>

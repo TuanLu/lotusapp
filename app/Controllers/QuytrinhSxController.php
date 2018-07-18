@@ -17,10 +17,17 @@ class QuytrinhSxController extends BaseController
 			'quy_trinh_san_xuat.tinh_trang',
 			'quy_trinh_san_xuat.create_by',
 			'users.username',
-			'users.name',
+			'users.name(nick_name)',
 			'create_on' => Medoo::raw("DATE_FORMAT( `quy_trinh_san_xuat`.`create_on`, '%d/%m/%Y' )")
 		];
 		return $columns;
+	}
+	private function fetchData($whereArr) {
+		// Columns to select.
+		$columns = $this->getColumns();
+		return $collection = $this->db->select($this->tableName,[
+			"[>]{$this->userTable}" => ["create_by" => "id"],
+		] ,$columns, $whereArr);
 	}
  
 	public function fetch($request){
@@ -29,16 +36,13 @@ class QuytrinhSxController extends BaseController
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
-		// Columns to select.
-		$columns = $this->getColumns();
 		//echo "<pre>";
 		//print_r($columns);die;
-		$collection = $this->db->select($this->tableName,[
-			"[>]{$this->userTable}" => ["create_by" => "id"],
-		] ,$columns, [
+		$whereArr = array(
 			"{$this->tableName}.status" => 1,
 			"ORDER" => ["id" => "DESC"],
-		]);
+		);
+		$collection = $this->fetchData($whereArr);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';
@@ -59,7 +63,7 @@ class QuytrinhSxController extends BaseController
 		$params = $request->getParams();
 		$id = isset($params['id']) ? $params['id']  : '';
 		//Some validation 
-		if(isset($params['name']) && $params['name'] == '') {
+		if(!isset($params['name']) || $params['name'] == '') {
 			$rsData['message'] = 'Không có tên quy trình!';
 				echo json_encode($rsData);
 				die;
@@ -78,13 +82,22 @@ class QuytrinhSxController extends BaseController
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm quy trình thành công!';
+				//Select item have just added
+				$whereArr = array(
+					"{$this->tableName}.status" => 1,
+					"{$this->tableName}.name" => $itemData['name'],
+					"{$this->tableName}.create_on" => $itemData['create_on'],
+					"{$this->tableName}.create_by" => $itemData['create_by'],
+					"ORDER" => ["id" => "DESC"],
+				);
+				$data = $this->fetchData($whereArr);
+				if(count($data) == 1) {
+					$rsData['newRecord'] = $data[0];
+				}
 			} else {
-				// $error = $result->errorInfo();
-				// $errorMessage = 'Không thể tạo phiếu nhập vào CSDL';
-				// if(is_array($error) && !empty($error)) {
-				// 	$errorMessage = implode(', ',$error);
-				// }
-				$rsData['message'] = 'Không thể tạo phiếu nhập vào CSDL';
+				//$error = $result->errorInfo();
+				//echo "<pre>"; print_r($error);
+				$rsData['message'] = 'Không thể tạo quy trình vào CSDL';
 			}
 		} else {
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
@@ -112,7 +125,7 @@ class QuytrinhSxController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Ma Phieu', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá phiếu khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá quy trình khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

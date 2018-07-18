@@ -5,7 +5,7 @@ import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
 //import 'dhtmlx-gantt/codebase/locale/locale_ar.js';
 //import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import './Theme.css';
-import {connect} from 'react-redux'
+//import {connect} from 'react-redux'
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 import moment from 'moment'
@@ -17,9 +17,10 @@ import {
 class Gantt extends Component {
   constructor(props) {
     super(props);
+    this.saveData = this.saveData.bind(this);
+    this.getQuyTrinhId = this.getQuyTrinhId.bind(this);
     this.state = {
-      dataUpToDate: true,
-      loading: false
+      loading: false,
     }
   }
   setZoom(value){
@@ -56,14 +57,10 @@ class Gantt extends Component {
         break;
     }
   }
-
-  // shouldComponentUpdate(nextProps ){
-  //   console.log('component should update', nextProps);
-  //   return this.props.tasks !== nextProps.tasks;
-  // }
   fetchTasks() {
     this.setState({loading: true});
-    fetch(ISD_BASE_URL + 'gantt/fetchTasks', {
+    let quyTrinhId = this.getQuyTrinhId();
+    fetch(ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId, {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -79,7 +76,9 @@ class Gantt extends Component {
           }));
         }
       }
-      this.setState({loading: false});
+      this.setState({
+        loading: false, 
+      });
       this.renderGantt();
     })
     .catch((error) => {
@@ -96,39 +95,57 @@ class Gantt extends Component {
     gantt.parse(ganttData);   
     gantt.render();
   }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
+      console.log('new state, new qt ID', nextProps.mainState.quyTrinhSx.edit.id);
+      return {
+        quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id
+      }
+    }
+    return null;
+  }
+  saveData(task) {
+    console.log('save task', task);
+    return false;
+    fetch(ISD_BASE_URL + 'gantt/update', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(task)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        this.fetchTasks();
+      }
+    }).catch((ex) => {
+      this.fetchTasks();
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa quy trình!');
+    });
+  }
+  getQuyTrinhId() {
+    return this.props.mainState.quyTrinhSx.edit ? this.props.mainState.quyTrinhSx.edit.id : '';
+  }
   updateTask(id, mode, task) {
+    let quyTrinhId = this.getQuyTrinhId();
     if(mode == "inserted") {
-      //delete task['id'];
+      console.log(this.props);
+      console.warn(this.state);
       let taskData = {
         text: task.text,
         start_date: moment(task.start_date).format('YYYY-MM-DD HH:mm:ss'),
         duration: task.duration,
         parent: task.parent,
-        progress: task.progress
+        progress: task.progress,
+        quy_trinh_id: quyTrinhId
       };
-
-      console.log(taskData);
-      console.warn(JSON.stringify(taskData));
-      fetch(ISD_BASE_URL + 'gantt/update', {
-        method: 'POST',
-        headers: getTokenHeader(),
-        body: JSON.stringify(taskData)
-      })
-      .then((response) => {
-        return response.json()
-      }).then((json) => {
-        if(json.status == 'error') {
-          message.error(json.message, 3);
-          if(json.show_login) {
-            this.props.dispatch(updateStateData({showLogin: true}));
-          }
-        } else {
-          this.fetchTasks();
-        }
-      }).catch((ex) => {
-        console.log('parsing failed', ex)
-        message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa quy trình!');
-      });
+      this.saveData(taskData);
     }
   }
 
@@ -143,7 +160,6 @@ class Gantt extends Component {
     });
 
     gantt.attachEvent('onAfterTaskAdd', (id, task) => {
-      console.log(task);
       this.updateTask(id, 'inserted', task);
     });
 
@@ -177,7 +193,6 @@ class Gantt extends Component {
       }
     });
   }
-  
   componentDidMount() {
     let {mainState} = this.props;
     let {ganttData} = mainState;
@@ -192,20 +207,6 @@ class Gantt extends Component {
     gantt.init(this.ganttContainer);
     gantt.parse(ganttData);
     this.fetchTasks();
-  }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   let {refresh} = nextProps.mainState.phieuxuat;
-  //   if(refresh) {
-  //     return {
-  //       dataUpToDate: null
-  //     }
-  //   }
-  //   return null;
-  // }
-  componentDidUpdate() {
-    if(this.state.dataUpToDate === null) {
-      this.fetchTasks();
-    }
   }
 
   render() {
@@ -226,8 +227,10 @@ class Gantt extends Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    mainState: state.main.present,
-  }
-})(Gantt)
+export default Gantt
+
+// export default connect((state) => {
+//   return {
+//     mainState: state.main.present,
+//   }
+// })(Gantt)

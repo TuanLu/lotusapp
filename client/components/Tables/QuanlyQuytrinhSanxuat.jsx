@@ -16,6 +16,7 @@ const tableConfig = {
 
 const fetchConfig = {
   fetch: 'quytrinhsx/fetch',
+  update: 'quytrinhsx/update',
   delete: 'quytrinhsx/delete/'
 }
 
@@ -27,10 +28,12 @@ class QuanlyQuytrinhSanxuat extends React.Component {
       addNewItem: false,
       currentZoom: 'Days'
     };
+    this.back = this.back.bind(this);
+    this.saveData = this.saveData.bind(this);
     this.columns = [
       {
         title: 'Tên quy trình',
-        dataIndex: 'nguoi_giao_dich',
+        dataIndex: 'name',
         //width: '40%',
         editable: false,
       },
@@ -49,53 +52,24 @@ class QuanlyQuytrinhSanxuat extends React.Component {
       {
         title: 'Người Tạo',
         dataIndex: 'username',
-        render: (text, record) => record.name || text
+        render: (text, record) => record.nick_name || text
       },
       {
         title: 'Actions',
         dataIndex: 'operation',
         render: (text, record) => {
-          const editable = this.isEditing(record);
+          
           return (
             <div style={{minWidth: 100}}>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.save(form, record.key)}
-                        style={{ marginRight: 8 }}
-                      >
-                        Lưu
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm
-                    title="Bạn thật sự muốn huỷ?"
-                    onConfirm={() => this.cancel(record.key)}
-                  >
-                    <a href="javascript:;">Huỷ</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
-                  {(!this.isQA() && !this.isQC()) ? 
-                    <React.Fragment>
-                      {" | "}
-                      <Popconfirm
-                        title="Bạn thật sự muốn xoá?"
-                        okType="danger"
-                        onConfirm={() => this.delete(record)}
-                      >
-                        <a href="javascript:;">Xoá</a>  
-                      </Popconfirm>
-                    </React.Fragment>
-                    : null} 
-                </React.Fragment>
-                
-              )}
+              <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
+              {" | "}
+              <Popconfirm
+                title="Bạn thật sự muốn xoá?"
+                okType="danger"
+                onConfirm={() => this.delete(record)}
+              >
+                <a href="javascript:;">Xoá</a>  
+              </Popconfirm>
             </div>
           );
         },
@@ -117,21 +91,61 @@ class QuanlyQuytrinhSanxuat extends React.Component {
       },
     }));
   }
-  view(phieu) {
-    let {phieunhap, phieuAction} = this.props.mainState;
-    if(phieu && phieu.ma_phieu && phieu.id) {
-      this.props.dispatch(updateStateData({
-        phieunhap: {
-          ...phieunhap,
-          ...phieu
-        },
-        phieuAction: {
-          ...phieuAction,
-          addNewItem: true,
-          action: 'view'
+  view(record) {
+    let {quyTrinhSx} = this.props.mainState;
+    this.props.dispatch(updateStateData({
+      quyTrinhSx: {
+        ...this.props.mainState.quyTrinhSx,
+        edit: record
+      },
+      //Reset gantt data
+      ganttData: {
+        "data":[],
+        "links":[]
+      }
+    }));
+  }
+  saveData(values) {
+    fetch(ISD_BASE_URL + fetchConfig.update, {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(values)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
         }
-      }));
-    }
+      } else {
+        message.success(json.message);
+        if(json.newRecord) {
+          this.props.dispatch(updateStateData({
+            quyTrinhSx: {
+              ...this.props.mainState.quyTrinhSx,
+              edit: json.newRecord,
+              openModal: false
+            }
+          }));
+          this.fetchData();
+        } else {
+          this.back();
+        }
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa quy trình!');
+    });
+  }
+  back() {
+    this.props.dispatch(updateStateData({
+      quyTrinhSx: {
+        ...this.props.mainState.quyTrinhSx,
+        edit: {}
+      }
+    }));
   }
   fetchData() {
     fetch(ISD_BASE_URL + fetchConfig.fetch, {
@@ -230,7 +244,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
     });
   }  
   render() {
-    let {mainState} = this.props;
+    let {mainState, dispatch} = this.props;
     let {quyTrinhSx} = mainState;
     const columns = this.columns;
 
@@ -240,36 +254,87 @@ class QuanlyQuytrinhSanxuat extends React.Component {
           //width={"100%"}
           title="Form quy trình sản xuất"
           visible={quyTrinhSx.openModal}
+          onCancel={()=> {
+            dispatch(updateStateData({
+              quyTrinhSx: {
+                ...mainState.quyTrinhSx,
+                openModal: false
+              }
+            }));
+          }}
           footer={null}
           >
           <QTSXForm
+            saveData={this.saveData}
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />
         </Modal>
-        <div className="wrap-gantt-chart">
-            <Gantt/>
-          </div>
-        <div className="table-operations">
-          <Row>
-            <Col span={12}>
-              <h2 className="head-title">{tableConfig.headTitle}</h2>
-            </Col>
-            <Col span={12}>
-              <div className="action-btns">
-                  <Button 
-                  onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+        {(!quyTrinhSx.edit || !quyTrinhSx.edit.id) ? 
+          <React.Fragment>
+            <div className="table-operations">
+              <Row>
+                <Col span={12}>
+                  <h2 className="head-title">{tableConfig.headTitle}</h2>
+                </Col>
+                <Col span={12}>
+                  <div className="action-btns">
+                      <Button 
+                      onClick={() => this.addNewRow()}
+                      type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+            <Table
+              bordered
+              dataSource={this.state.data}
+              columns={columns}
+              rowClassName="editable-row"
+            />
+          </React.Fragment>
+          : 
+            <div className="edit-quy-trinh">
+              <div className="table-operations">
+                <Row>
+                  <Col span={12}>
+                    <Input onChange={(e) => {
+                      dispatch(updateStateData({
+                        quyTrinhSx: {
+                          ...mainState.quyTrinhSx,
+                          edit: {
+                            ...mainState.quyTrinhSx.edit,
+                            name: e.target.value
+                          }
+                        }
+                      }))
+                    }} value={quyTrinhSx.edit.name} />
+                  </Col>
+                  <Col span={12}>
+                    <div className="action-btns">
+                    <Button.Group>
+                      <Button 
+                        onClick={this.back}
+                        icon="left">Quay lại</Button>
+                      <Button 
+                        onClick={() => {
+                          this.saveData(mainState.quyTrinhSx.edit)
+                        }}
+                        type="primary" icon="save">Lưu thay dổi</Button>
+                      </Button.Group>
+                    </div>
+                  </Col>
+                </Row>
               </div>
-            </Col>
-          </Row>
-        </div>
-        <Table
-          bordered
-          dataSource={this.state.data}
-          columns={columns}
-          rowClassName="editable-row"
-        />
+              <div className="wrap-gantt-chart">
+                <Gantt
+                  mainState={this.props.mainState}
+                  dispatch={this.props.dispatch}
+                />
+              </div>
+            </div>
+          }
+        
       </React.Fragment>
     );
   }

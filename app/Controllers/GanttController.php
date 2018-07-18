@@ -11,12 +11,18 @@ class GanttController extends BaseController {
   private $tableName = 'gantt_tasks';
   private $linkTable = 'gantt_links';
 
-  public function fetchTasks($request, $response){
-		//$this->logger->addInfo('Request Npp path');
+  public function fetchTasks($request, $response, $args){
+    //$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
-		);
+    );
+    $quyTrinhId = isset(	$args['quy_trinh_id']) ? $args['quy_trinh_id'] : '';
+    if($quyTrinhId == "") {
+      $rsData['message'] = 'Không tìm thấy mã quy trình!';
+      echo json_encode($rsData);
+      die;
+    };
 		// Columns to select.
 		$columns = [
 				'id',
@@ -26,10 +32,12 @@ class GanttController extends BaseController {
         'status',
         'progress',
         'parent',
+        'quy_trinh_id',
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["start_date" => "ASC"],
-			"status" => 1
+      "status" => 1,
+      "quy_trinh_id" => $quyTrinhId
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -57,6 +65,7 @@ class GanttController extends BaseController {
     $progress = $request->getParam('progress');
     $sortorder = $request->getParam('sortorder');
     $parent = $request->getParam('parent');
+    $quyTrinhId = $request->getParam('quy_trinh_id');
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
     $userId = isset($this->jwt->id) ? $this->jwt->id : '';
@@ -64,7 +73,7 @@ class GanttController extends BaseController {
       'text' => $text,
       'duration' => $duration,
       'start_date' => $start_date,
-      //'create_by' => $userId
+      'quy_trinh_id' => $quyTrinhId
     ];
 		if(!$id) {
 			//Insert new data to db
@@ -99,9 +108,9 @@ class GanttController extends BaseController {
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-        $error = $result->errorInfo();
-        echo "<pre>";
-        print_r($error);
+        //$error = $result->errorInfo();
+        //echo "<pre>";
+        //print_r($error);
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {

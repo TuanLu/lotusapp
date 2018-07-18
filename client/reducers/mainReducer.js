@@ -55,7 +55,8 @@ let _designDefault = {
       openModal: false
     },
     quyTrinhSx: {
-      openModal: false
+      openModal: false,
+      edit: {}
     },
     ganttData: {
       "data":[],
