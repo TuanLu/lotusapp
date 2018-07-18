@@ -95,18 +95,16 @@ class Gantt extends Component {
     gantt.parse(ganttData);   
     gantt.render();
   }
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
-      console.log('new state, new qt ID', nextProps.mainState.quyTrinhSx.edit.id);
-      return {
-        quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id
-      }
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
+  //     console.log('new state, new qt ID', nextProps.mainState.quyTrinhSx.edit.id);
+  //     return {
+  //       quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id
+  //     }
+  //   }
+  //   return null;
+  // }
   saveData(task) {
-    console.log('save task', task);
-    return false;
     fetch(ISD_BASE_URL + 'gantt/update', {
       method: 'POST',
       headers: getTokenHeader(),
@@ -134,18 +132,36 @@ class Gantt extends Component {
   }
   updateTask(id, mode, task) {
     let quyTrinhId = this.getQuyTrinhId();
-    if(mode == "inserted") {
-      console.log(this.props);
-      console.warn(this.state);
-      let taskData = {
-        text: task.text,
-        start_date: moment(task.start_date).format('YYYY-MM-DD HH:mm:ss'),
-        duration: task.duration,
-        parent: task.parent,
-        progress: task.progress,
-        quy_trinh_id: quyTrinhId
-      };
-      this.saveData(taskData);
+    let taskData = {
+      text: task.text,
+      start_date: moment(task.start_date).format('YYYY-MM-DD HH:mm:ss'),
+      duration: task.duration,
+      parent: task.parent,
+      progress: task.progress,
+      quy_trinh_id: quyTrinhId
+    };
+    if(mode == "updated") {
+      taskData.id = id;
+    }
+    this.saveData(taskData);
+  }
+  deleteTask = (id) => {
+    if(id) {
+      fetch(ISD_BASE_URL + `gantt/delete/${id}`, {
+        headers: getTokenHeader()
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        if(json.status == 'error') {
+          message.error('Có lỗi xảy ra khi xoá quy trình!', 3);
+        } else {
+          message.success(json.message);
+        }
+      })
+      .catch((error) => {
+        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
+        console.log(error);
+      });
     }
   }
 
@@ -155,24 +171,16 @@ class Gantt extends Component {
     }
     gantt.ganttEventsInitialized = true;
 
-    gantt.attachEvent('onBeforeTaskAdd', (id, task) => {
-      console.log('before');
-    });
-
     gantt.attachEvent('onAfterTaskAdd', (id, task) => {
       this.updateTask(id, 'inserted', task);
     });
 
     gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
-      if(this.props.onTaskUpdated) {
-        this.props.onTaskUpdated(id, 'updated', task);
-      }
+      this.updateTask(id, 'updated', task);
     });
 
     gantt.attachEvent('onAfterTaskDelete', (id) => {
-      if(this.props.onTaskUpdated) {
-        this.props.onTaskUpdated(id, 'deleted');
-      }
+      this.deleteTask(id);
     });
 
     gantt.attachEvent('onAfterLinkAdd', (id, link) => {

@@ -150,9 +150,9 @@ class GanttController extends BaseController {
 		if($id != "") {
 			$result = $this->db->update($this->tableName,['status' => 2], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete User', $id);
+				$this->superLog('Delete Task', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá user khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá công việc khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

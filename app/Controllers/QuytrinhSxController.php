@@ -123,7 +123,7 @@ class QuytrinhSxController extends BaseController
 				'status' => 2,
 			], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete Ma Phieu', $id);
+				$this->superLog('Delete Quy Trình', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá quy trình khỏi hệ thống!';
 				$rsData['data'] = $id;
