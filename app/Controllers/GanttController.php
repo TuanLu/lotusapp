@@ -43,7 +43,9 @@ class GanttController extends BaseController {
 			$rsData['status'] = self::SUCCESS_STATUS;
       $rsData['message'] = 'Dữ liệu đã được load!';
       //Load links 
-      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type']);
+      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
+				"status" => 1
+			]);
 			$rsData['data'] = array(
         'data' => $collection,
         'links' => $links
@@ -139,6 +141,88 @@ class GanttController extends BaseController {
 			
 		}
 		echo json_encode($rsData);
+	}
+	public function updateLink($request, $response){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		//$params = $request->getParams();
+		$id = $request->getParam('id');
+		$source = $request->getParam('source');
+		$target = $request->getParam('target');
+		$type = $request->getParam('type');
+    
+    $date = new \DateTime();
+    $createOn = $date->format('Y-m-d H:i:s');
+    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+    $itemData = [
+      'source' => $source,
+      'target' => $target,
+      'type' => $type,
+		];
+		//Kiem tra lien ket da ton tai hay chua
+		$existLink = $this->db->select($this->linkTable, ['id', 'source', 'target'], [
+			"source" => $itemData["source"],
+			"target" => $itemData["target"],
+		]);
+		if(empty($existLink)) {
+			//Insert new data to db
+			if(!$source) {
+				$rsData['message'] = 'Thiếu công việc bắt đầu!';
+				echo json_encode($rsData);
+				die;
+			}
+			if(!$target) {
+				$rsData['message'] = 'Thiếu công việc kết thúc';
+				echo json_encode($rsData);
+				die;
+      }
+      $itemData['create_by'] = $userId;
+      $itemData['create_on'] = $createOn;
+			$result = $this->db->insert($this->linkTable, $itemData);
+			if($result->rowCount()) {
+				$rsData['status'] = 'success';
+				$rsData['message'] = 'Đã thêm liên kết thành công!';
+			} else {
+        //$error = $result->errorInfo();
+        //echo "<pre>";
+        //print_r($error);
+        $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+			}
+		} else {
+			//update data base on $id
+			$date = new \DateTime();
+			$itemData['update_on'] = $createOn;
+			//Active link between source and target
+			$itemData['status'] = 1;
+      
+			$result = $this->db->update($this->linkTable, $itemData, [
+				'source' => $itemData['source'],
+				'target' => $itemData["target"]
+			]);
+			if($result->rowCount()) {
+        $this->superLog('Update Link', $itemData);
+        $data = $this->db->select($this->linkTable, 
+        [
+          'source',
+          'target',
+          'type',
+        ], 
+        [
+					'source' => $itemData['source'],
+					'target' => $itemData["target"]
+				]);
+				$rsData['data'] = $data[0];
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			}
+			
+		}
+		echo json_encode($rsData);
   }
   public function delete($request, $response, $args){
 		$rsData = array(
@@ -153,6 +237,26 @@ class GanttController extends BaseController {
 				$this->superLog('Delete Task', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá công việc khỏi hệ thống!';
+				$rsData['data'] = $id;
+			}
+		} else {
+			$rsData['message'] = 'ID trống, nên không xoá được dữ liệu!';
+		}
+		echo json_encode($rsData);
+	}
+	public function deleteLink($request, $response, $args){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Dữ liệu chưa được xoá thành công!'
+		);
+		// Get params and validate them here.
+		$id = isset(	$args['id']) ? $args['id'] : '';
+		if($id != "") {
+			$result = $this->db->update($this->linkTable,['status' => 2], ['id' => $id]);
+			if($result->rowCount()) {
+				$this->superLog('Delete Link', $id);
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Đã xoá liên kết thành công!';
 				$rsData['data'] = $id;
 			}
 		} else {

@@ -116,5 +116,7 @@ $app->post('/quytrinhsx/update', 'QuytrinhSxController:update');
 $app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete');
 //Gantt router
 $app->post('/gantt/update', 'GanttController:update');
+$app->post('/gantt/updateLink', 'GanttController:updateLink');
+$app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');

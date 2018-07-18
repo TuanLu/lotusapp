@@ -127,6 +127,29 @@ class Gantt extends Component {
       message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa quy trình!');
     });
   }
+  saveLink(link) {
+    fetch(ISD_BASE_URL + 'gantt/updateLink', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(link)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        this.fetchTasks();
+      }
+    }).catch((ex) => {
+      this.fetchTasks();
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình update link!');
+    });
+  }
   getQuyTrinhId() {
     return this.props.mainState.quyTrinhSx.edit ? this.props.mainState.quyTrinhSx.edit.id : '';
   }
@@ -145,9 +168,36 @@ class Gantt extends Component {
     }
     this.saveData(taskData);
   }
+  updateLink(id, mode, link) {
+    let linkData = {
+      source: link.source,
+      target: link.target,
+      type: link.type
+    }
+    this.saveLink(linkData);
+  }
   deleteTask = (id) => {
     if(id) {
       fetch(ISD_BASE_URL + `gantt/delete/${id}`, {
+        headers: getTokenHeader()
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        if(json.status == 'error') {
+          message.error('Có lỗi xảy ra khi xoá quy trình!', 3);
+        } else {
+          message.success(json.message);
+        }
+      })
+      .catch((error) => {
+        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
+        console.log(error);
+      });
+    }
+  }
+  deleteLink = (id) => {
+    if(id) {
+      fetch(ISD_BASE_URL + `gantt/deleteLink/${id}`, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
@@ -184,21 +234,15 @@ class Gantt extends Component {
     });
 
     gantt.attachEvent('onAfterLinkAdd', (id, link) => {
-      if(this.props.onLinkUpdated) {
-        this.props.onLinkUpdated(id, 'inserted', link);
-      }
+      this.updateLink(id, 'inserted', link);
     });
-
-    gantt.attachEvent('onAfterLinkUpdate', (id, link) => {
-      if(this.props.onLinkUpdated) {
-        this.props.onLinkUpdated(id, 'updated', link);
-      }
-    });
-
+    // gantt.attachEvent('onAfterLinkUpdate', (id, link) => {
+    //   if(this.props.onLinkUpdated) {
+    //     this.props.onLinkUpdated(id, 'updated', link);
+    //   }
+    // });
     gantt.attachEvent('onAfterLinkDelete', (id, link) => {
-      if(this.props.onLinkUpdated) {
-        this.props.onLinkUpdated(id, 'deleted');
-      }
+      this.deleteLink(id);
     });
   }
   componentDidMount() {
