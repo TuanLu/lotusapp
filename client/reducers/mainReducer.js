@@ -56,6 +56,10 @@ let _designDefault = {
     },
     quyTrinhSx: {
       openModal: false
+    },
+    ganttData: {
+      "data":[],
+	    "links":[]
     }
   },
   cloneState;

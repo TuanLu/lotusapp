@@ -8,6 +8,9 @@ import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_AP
 import {updateStateData} from 'actions'
 import QTSXForm from './QuanlyQuytrinhSanxuat/QTSXForm'
 import Gantt from './QuanlyQuytrinhSanxuat/Gantt'
+import Toolbar from './QuanlyQuytrinhSanxuat/Toolbar'
+
+const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 
 const tableConfig = {
   headTitle: 'Quản lý quy trình sản xuất',
@@ -16,7 +19,8 @@ const tableConfig = {
 
 const fetchConfig = {
   fetch: 'quytrinhsx/fetch',
-  delete: 'quytrinhsx/delete/'
+  delete: 'quytrinhsx/delete/',
+  fetchTasks: 'gantt/fetchTasks'
 }
 
 class QuanlyQuytrinhSanxuat extends React.Component {
@@ -50,6 +54,15 @@ class QuanlyQuytrinhSanxuat extends React.Component {
         title: 'Người Tạo',
         dataIndex: 'username',
         render: (text, record) => record.name || text
+      },
+      {
+        title: 'Tình trạng',
+        dataIndex: 'tinh_trang',
+        //width: '40%',
+        editable: false,
+        render: (text, record) => {
+          return trangThaiPhieuObj[text]['text'] || text;
+        }
       },
       {
         title: 'Actions',
@@ -133,8 +146,8 @@ class QuanlyQuytrinhSanxuat extends React.Component {
       }));
     }
   }
-  fetchData() {
-    fetch(ISD_BASE_URL + fetchConfig.fetch, {
+  fetchTasks() {
+    fetch(ISD_BASE_URL + fetchConfig.fetchTasks, {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -145,17 +158,8 @@ class QuanlyQuytrinhSanxuat extends React.Component {
         message.warning(json.message, 3);
       } else {
         if(json.data) {
-          //Add key prop for table
-          let data = json.data.map((item, index) => ({...item, key: index}) );
-          this.setState({
-            data,
-            dataUpToDate: true
-          });
-          //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              refresh: false
-            }
+            ganttData: json.data,
           }));
         }
       }
@@ -208,12 +212,45 @@ class QuanlyQuytrinhSanxuat extends React.Component {
     }
   }
   componentDidMount() {
-    this.fetchData();
+    //this.fetchData();
+    this.fetchTasks();
   }
   logTaskUpdate(id, mode, task) {
     let text = task && task.text ? ` (${task.text})`: '';
     let msg = `Task ${mode}: ${id} ${text}`;
     message.success(msg);
+    console.log(mode);
+    console.info(task);
+    if(mode == "inserted") {
+      //delete task['id'];
+      let taskData = {
+        text: task.text,
+        start_date: task.start_date,
+        duration: task.duration,
+        parent: task.parent,
+        progress: task.progress
+      };
+      fetch(ISD_BASE_URL + 'gantt/update', {
+        method: 'POST',
+        headers: getTokenHeader(),
+        body: JSON.stringify(taskData)
+      })
+      .then((response) => {
+        return response.json()
+      }).then((json) => {
+        if(json.status == 'error') {
+          message.error(json.message, 3);
+          if(json.show_login) {
+            this.props.dispatch(updateStateData({showLogin: true}));
+          }
+        } else {
+          message.success(json.message);
+        }
+      }).catch((ex) => {
+        console.log('parsing failed', ex)
+        message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa quy trình!');
+      });
+    }
   }
 
   logLinkUpdate(id, mode, link) {
@@ -231,7 +268,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
   }  
   render() {
     let {mainState} = this.props;
-    let {quyTrinhSx} = mainState;
+    let {quyTrinhSx, ganttData} = mainState;
     const columns = this.columns;
 
     return (
@@ -248,7 +285,12 @@ class QuanlyQuytrinhSanxuat extends React.Component {
           />
         </Modal>
         <div className="wrap-gantt-chart">
-            <Gantt/>
+            <Gantt
+              tasks={ganttData}
+              zoom={this.state.currentZoom}
+              onTaskUpdated={this.logTaskUpdate}
+              onLinkUpdated={this.logLinkUpdate}
+            />
           </div>
         <div className="table-operations">
           <Row>

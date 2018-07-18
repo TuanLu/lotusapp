@@ -114,3 +114,6 @@ $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
 $app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch');
 $app->post('/quytrinhsx/update', 'QuytrinhSxController:update');
 $app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete');
+//Gantt router
+$app->post('/gantt/update', 'GanttController:update');
+$app->get('/gantt/fetchTasks', 'GanttController:fetchTasks');

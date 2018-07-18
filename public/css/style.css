@@ -223,4 +223,18 @@ td:hover .editable-cell-icon {
   width: 100%;
   overflow: hidden;
   height: 500px;
+  position: relative;
 }
+.wrap-gantt-chart .loading {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+}
+.wrap-gantt-chart .loading .ant-spin-spinning {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  position: absolute;
+}
+
