@@ -129,7 +129,8 @@ class GanttController extends BaseController {
           'text',
           'duration',
           'start_date',
-          'parent',
+					'parent',
+					'progress',
           'status',
         ], 
         ['id' => $id]);

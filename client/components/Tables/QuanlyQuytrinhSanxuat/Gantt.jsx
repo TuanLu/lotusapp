@@ -172,7 +172,7 @@ class Gantt extends Component {
       start_date: moment(task.start_date).format('YYYY-MM-DD HH:mm:ss'),
       duration: task.duration,
       parent: task.parent,
-      progress: task.progress,
+      progress: task.progress || 0,
       quy_trinh_id: quyTrinhId
     };
     if(mode == "updated") {
