@@ -111,6 +111,16 @@ $app->post('/sx/updateProduct', 'SXController:updateProduct');
 $app->post('/sx/changeStatus', 'SXController:changeStatus');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
+//Quy trinh san xuat router
+$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch');
+$app->post('/quytrinhsx/update', 'QuytrinhSxController:update');
+$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete');
+//Gantt router
+$app->post('/gantt/update', 'GanttController:update');
+$app->post('/gantt/updateLink', 'GanttController:updateLink');
+$app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
+$app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
+$app->get('/gantt/delete/{id}', 'GanttController:delete');
 //Phòng ban router
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');

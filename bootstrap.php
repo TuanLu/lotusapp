@@ -86,6 +86,12 @@ $container['CdcController'] = function ($c) {
 $container['SXController'] = function ($c) {
   return new \App\Controllers\SXController($c);
 };
+$container['QuytrinhSxController'] = function ($c) {
+  return new \App\Controllers\QuytrinhSxController($c);
+};
+$container['GanttController'] = function ($c) {
+  return new \App\Controllers\GanttController($c);
+};
 $container['PhongbanController'] = function ($c) {
   return new \App\Controllers\PhongbanController($c);
 };

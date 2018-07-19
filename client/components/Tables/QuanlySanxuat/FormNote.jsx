@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment';
-import { Form, Select, Input, Row, Col, DatePicker, Button,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Row, Col,Switch, DatePicker, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
@@ -14,6 +14,14 @@ class FormNote extends React.Component {
     this.state = {
       productListbyCateList: []
     }
+  }
+  phongDBCL(value) { 
+    this.props.dispatch(updateStateData({
+      sx: {
+        ...this.props.mainState.sx,
+        pdbcl: value
+      }
+    }));console.log(sx);
   }
   componentDidMount() {
     
@@ -33,7 +41,7 @@ class FormNote extends React.Component {
             <Input.TextArea 
               rows={4} 
               readOnly={readOnly}
-              onChange={(e) => { console.log(e)
+              onChange={(e) => {
                 this.props.dispatch(updateStateData({
                   sx: {
                     ...this.props.mainState.sx,
@@ -47,6 +55,31 @@ class FormNote extends React.Component {
             </FormItem>
             </Col>
         </Row>
+        <Row>
+            <Col className="align_center" span={8}>
+                <label>P. KHSX</label><br />
+                  <Switch
+                  defaultChecked
+                  checkedChildren="Đã ký"
+                  unCheckedChildren="Chờ duyệt"
+                />
+            </Col>
+            <Col className="align_center" span={8}>
+                  P. ĐBCL<br />
+                  <Switch
+                  onChange={this.phongDBCL}
+                  checkedChildren="Đã ký"
+                  unCheckedChildren="Chờ duyệt"
+                />
+            </Col>
+            <Col className="align_center" span={8}>
+                  Giám Đốc<br />
+                  <Switch
+                  checkedChildren="Đã ký"
+                  unCheckedChildren="Chờ duyệt"
+                />
+            </Col>
+          </Row>
       </Form>
     );
   }
