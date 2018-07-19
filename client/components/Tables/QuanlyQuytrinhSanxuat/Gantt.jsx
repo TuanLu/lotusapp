@@ -74,8 +74,21 @@ class Gantt extends Component {
         message.warning(json.message, 3);
       } else {
         if(json.data) {
+          let ganttTasks = [];
+          if(json.data.data) {
+            ganttTasks = json.data.data.map((task) => {
+              return {
+                ...task,
+                open: true,//Expand all task
+              }
+            });
+          } 
+          let ganttData = {
+            links: json.data.links,
+            data: ganttTasks
+          }
           this.props.dispatch(updateStateData({
-            ganttData: json.data,
+            ganttData: ganttData,
           }));
         }
       }
