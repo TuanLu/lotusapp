@@ -76,7 +76,8 @@ class GanttController extends BaseController {
       'duration' => $duration,
       'start_date' => $start_date,
 			'quy_trinh_id' => $quyTrinhId,
-			'progress' => $progress
+			'progress' => $progress,
+			'parent' => $parent
     ];
 		if(!$id) {
 			//Insert new data to db
