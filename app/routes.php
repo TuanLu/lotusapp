@@ -100,6 +100,7 @@ $app->post('/qlsl/search', 'SanluongController:search');
 //Chuyển đổi công router
 $app->get('/cdc/fetchCdc', 'CdcController:fetchCdc');
 $app->get('/cdc/fetchTotal', 'CdcController:fetchTotal');
+$app->post('/cdc/search', 'CdcController:search');
 //SX router
 $app->get('/sx/fetch', 'SXController:fetch');
 $app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList');
@@ -120,3 +121,7 @@ $app->post('/gantt/updateLink', 'GanttController:updateLink');
 $app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');
+//Phòng ban router
+$app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
+$app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
+$app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb');

@@ -91,6 +91,8 @@ $container['QuytrinhSxController'] = function ($c) {
 };
 $container['GanttController'] = function ($c) {
   return new \App\Controllers\GanttController($c);
+$container['PhongbanController'] = function ($c) {
+  return new \App\Controllers\PhongbanController($c);
 };
 //Add more controllers
 

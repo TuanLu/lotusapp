@@ -45,10 +45,6 @@ class FormPhieunhap extends React.Component {
       message.error('Mã kho không được để trống');
       return false;
     }
-    // if(!phieunhap.nguoi_giao_dich) {
-    //   message.error('Thiếu thông tin người giao dịch');
-    //   return false;
-    // }
     if(!phieunhap.products.length) {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
@@ -58,6 +54,12 @@ class FormPhieunhap extends React.Component {
       return false;
     }
     return true;
+  }
+  pheduyet() {
+    let isValid = this.validBeforeSave();
+    if(isValid) {
+      // Thay status, phê duyệt phiếu nhập
+    }
   }
   cancel() {
     this.props.dispatch(updateStateData({
@@ -85,7 +87,7 @@ class FormPhieunhap extends React.Component {
                   onClick={this.handleSubmit}
                   type="primary"
                   htmlType="button" 
-                  icon="save">Lưu phiếu nhập</Button>
+                  icon="save">Lưu</Button>
                 <Popconfirm
                   title="Bạn thật sự muốn huỷ?"
                   onConfirm={() => this.cancel()}
@@ -97,7 +99,16 @@ class FormPhieunhap extends React.Component {
                 </React.Fragment>
                 :
                 <React.Fragment>
-                  {(!this.props.isQA && !this.props.isQC)? 
+                  {(this.props.isInventoryOwner )? 
+                  <Button 
+                      onClick={() => this.pheduyet()}
+                      style={{marginRight: 10}}
+                      icon="check-circle"
+                      type="primary">
+                      Phê duyệt
+                  </Button>
+                  : null}
+                  {(this.props.isInventoryOwner )? 
                     <Button 
                     onClick={() => {
                       this.props.dispatch(updateStateData({
@@ -109,17 +120,17 @@ class FormPhieunhap extends React.Component {
                     }}
                     type="primary"
                     htmlType="button" 
-                    icon="edit">Sửa phiếu nhập</Button>
+                    icon="edit">Sửa</Button>
                     : null}
-                <Button 
-                    onClick={() => this.cancel()}
-                    style={{marginLeft: 10}}
-                    icon="left"
-                    type="default">Quay lại</Button>
+                    <Button 
+                        onClick={() => this.cancel()}
+                        style={{marginLeft: 10}}
+                        icon="left"
+                        type="default">
+                        Quay lại
+                    </Button>
                 </React.Fragment>
                 }
-               
-                
               </div>
             </Col>
           </Row>

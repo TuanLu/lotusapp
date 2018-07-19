@@ -21,7 +21,7 @@ const EditableRow = ({ form, index, ...props }) => (
 
 const tableConfig = {
   headTitle: 'Quản lý phiếu nhập',
-  addNewTitle: 'Thêm phiếu nhập mới'
+  addNewTitle: 'Tạo phiếu nhập mới'
 };
 
 const fetchConfig = {
@@ -153,7 +153,7 @@ class EditableTable extends React.Component {
               ) : (
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
-                  {(!this.isQA() && !this.isQC()) ? 
+                  {/* {(!this.isQA() && !this.isQC()) ? 
                     <React.Fragment>
                       {" | "}
                       <Popconfirm
@@ -164,7 +164,7 @@ class EditableTable extends React.Component {
                         <a href="javascript:;">Xoá</a>  
                       </Popconfirm>
                     </React.Fragment>
-                    : null} 
+                    : null}  */}
                 </React.Fragment>
                 
               )}
@@ -361,11 +361,9 @@ class EditableTable extends React.Component {
                 </Col>
                 <Col span={12}>
                   <div className="action-btns">
-                   {(!this.isQA() && !this.isQC())? 
-                     <Button 
+                    <Button 
                      onClick={() => this.addNewRow()}
                      type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
-                      : null}
                   </div>
                 </Col>
               </Row>

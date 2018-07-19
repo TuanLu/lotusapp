@@ -8,7 +8,7 @@ import {
 const { MonthPicker } = DatePicker;
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
-import TimkiemSL from './QuanlySanluong/TimkiemSL'
+import TimkiemCDC from './QuanlySanluong/TimkiemCDC'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -324,52 +324,37 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        <Row>
-          <Col span={8}>
-            <div className="filter_adv">
-              <FormItem label={`Lọc theo tháng`}>
-                <MonthPicker placeholder="Chọn tháng" format={monthFormat} />
-              </FormItem>
-            </div>
-          </Col>
-          <Col span={8}>
-            <FormItem label={`Lọc theo nhân viên`}>
-              <Select 
-                  style={{ width: 200 }}
-                  showSearch
-                  mode="multiple"
-                  placeholder="Chọn nhân viên">
-                  {nhansu.map((nhansu) =><Option value={nhansu.ma_ns} key={nhansu.ma_ns}>{nhansu.name}</Option>)}
-                </Select>
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <div className="filter_adv">
-              <FormItem label={`Tổng công`}>
-              {this.state.total.tong_cong}
-              </FormItem>
-            </div>
-          </Col>
-        </Row>
         {<Table
           components={components}
           bordered
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
-          footer={() => 
-            <Row>
-              <Col span={3}> Tổng công </Col>
-              <Col span={3}> HS 1: {this.state.total.heso1}</Col>
-              <Col span={3}> HS 1.2: {this.state.total.heso12}</Col>
-              <Col span={3}> HS 1.3: {this.state.total.heso13}</Col>
-              <Col span={3}> HSOT 1: {this.state.total.heso1}</Col>
-              <Col span={3}> HSOT 1.2: {this.state.total.heso1}</Col>
-              <Col span={3}> HSOT 1.3: {this.state.total.heso1}</Col>
-              <Col span={3}> Tổng: {this.state.total.tong_cong}</Col>
-            </Row>
+          title={() => {
+            return (
+              <TimkiemCDC 
+                //Cap nhat du lieu sau khi tim kiem
+                onResult={(data) => {
+                  this.setState({data});
+                }}
+                loading={(loading) => {
+                this.setState({loading: loading});
+              }}/>
+            );
+          }}
+          // footer={() => 
+          //   <Row>
+          //     <Col span={3}> Tổng công </Col>
+          //     <Col span={3}> HS 1: {this.state.total.heso1}</Col>
+          //     <Col span={3}> HS 1.2: {this.state.total.heso12}</Col>
+          //     <Col span={3}> HS 1.3: {this.state.total.heso13}</Col>
+          //     <Col span={3}> HSOT 1: {this.state.total.heso1}</Col>
+          //     <Col span={3}> HSOT 1.2: {this.state.total.heso1}</Col>
+          //     <Col span={3}> HSOT 1.3: {this.state.total.heso1}</Col>
+          //     <Col span={3}> Tổng: {this.state.total.tong_cong}</Col>
+          //   </Row>
             
-          }
+          // }
         /> }
       </React.Fragment>
     );

@@ -105,7 +105,11 @@ class Roles {
       'quy_trinh_sx' => [
         'label' => 'Quy trình SX', 
         'icon' => 'solution',
-        'path' => 'quy_trinh_sx'
+        'path' => 'quy_trinh_sx',
+      'qlpb' => [
+        'label' => 'QL Phòng ban', 
+        'icon' => 'solution',
+        'path' => 'qlpb'
       ],
     ];
   }

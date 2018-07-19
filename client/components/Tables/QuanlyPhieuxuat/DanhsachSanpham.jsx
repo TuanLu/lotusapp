@@ -241,18 +241,19 @@ class VatTuPhieuXuat extends React.Component {
     return (
       <div style={{ marginBottom: 16 }}>
         {this.props.isQC? 
-        <Dropdown overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
+        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
           <Button
             type="primary"
             //onClick={this.start}
             loading={loading}
+            style={{marginRight: 10}}
           >
             QC Phê duyệt
           </Button>
         </Dropdown>
         : null}
         {this.props.isQA? 
-          <Dropdown overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
+          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
            <Button
              type="primary"
              //onClick={this.start}

@@ -34,6 +34,10 @@ let _designDefault = {
 			qcdg: '',
 			dh: '',
       tttb_kltb: '',
+      note: '',
+      pkhsx: '',
+      pdbcl: '',
+      gd: '',
       products: []
     },
     phieuAction: {

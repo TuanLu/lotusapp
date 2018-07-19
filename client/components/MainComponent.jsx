@@ -23,6 +23,7 @@ import QuanlyDonhang from './Tables/QuanlyDonhang'
 import QuanlyTinhTrangKho from './Tables/QuanlyTinhTrangKho'
 import QuanlyNhansu from './Tables/QuanlyNhansu'
 import QuanlyJobs from './Tables/QuanlyJobs'
+import QuanlyPhongban from './Tables/QuanlyPhongban'
 import QuanlySanluong from './Tables/QuanlySanluong'
 import QuanlyChuyendoicong from './Tables/QuanlyChuyendoicong';
 import QuanlyQuytrinhSanxuat from './Tables/QuanlyQuytrinhSanxuat'
@@ -130,8 +131,13 @@ class MainComponent extends React.Component {
       case 'cdc':
         return <QuanlyChuyendoicong dispatch={dispatch} mainState={mainState}/>
         break;
+<<<<<<< HEAD
       case 'quy_trinh_sx':
         return <QuanlyQuytrinhSanxuat dispatch={dispatch} mainState={mainState}/>
+=======
+      case 'qlpb':
+        return <QuanlyPhongban dispatch={dispatch} mainState={mainState}/>
+>>>>>>> bd27fcb8d1549206f2076698c620074e6fed95ef
         break;
       default:
         break;
