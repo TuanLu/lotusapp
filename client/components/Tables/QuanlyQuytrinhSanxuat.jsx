@@ -127,6 +127,10 @@ class QuanlyQuytrinhSanxuat extends React.Component {
               ...this.props.mainState.quyTrinhSx,
               edit: json.newRecord,
               openModal: false
+            },
+            ganttData: {
+              links: [],
+              data: []
             }
           }));
           this.fetchData();
