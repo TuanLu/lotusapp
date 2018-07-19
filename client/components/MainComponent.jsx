@@ -131,13 +131,10 @@ class MainComponent extends React.Component {
       case 'cdc':
         return <QuanlyChuyendoicong dispatch={dispatch} mainState={mainState}/>
         break;
-<<<<<<< HEAD
       case 'quy_trinh_sx':
         return <QuanlyQuytrinhSanxuat dispatch={dispatch} mainState={mainState}/>
-=======
       case 'qlpb':
         return <QuanlyPhongban dispatch={dispatch} mainState={mainState}/>
->>>>>>> bd27fcb8d1549206f2076698c620074e6fed95ef
         break;
       default:
         break;
