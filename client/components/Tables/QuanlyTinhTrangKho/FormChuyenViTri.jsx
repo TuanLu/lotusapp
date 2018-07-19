@@ -129,6 +129,7 @@ class TimeRelatedForm extends React.Component {
   khoOptions() {
     let {mainState} = this.props;
     let kho = mainState.kho || [];
+    //Cần check xem SP được phê duyệt chưa, nếu đã được phê duyệt thì mới được chuyển kho
     if(kho.length) {
       return kho.map((kho) => <Option key={kho.id} value={kho.ma_kho}>{kho.ma_kho} {"-"} {kho.name}</Option>);
     }

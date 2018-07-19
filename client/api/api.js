@@ -78,12 +78,12 @@ export const trangThaiPhieu = [
   {
     id: '1',
     value: '1',
-    text: 'Phê duyệt'
+    text: 'Đã phê duyệt'
   },
   {
     id: '2',
     value: '2',
-    text: 'Chờ phê duyệt'
+    text: 'Chưa phê duyệt'
   },
 ];
 
@@ -91,7 +91,7 @@ export const qcQAStatus = [
   {
     id: '0',
     value: '0',
-    text: 'Chờ'
+    text: 'Chờ duyệt'
   },
   {
     id: '2',
@@ -101,6 +101,6 @@ export const qcQAStatus = [
   {
     id: '1',
     value: '1',
-    text: 'Đạt'
+    text: 'Đã đạt'
   },
 ];

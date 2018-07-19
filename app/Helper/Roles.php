@@ -41,12 +41,12 @@ class Roles {
       ],
       'qlphieunhap' => [
         'label' => 'QL Phiếu Nhập', 
-        'icon' => 'home',
+        'icon' => 'schedule',
         'path' => 'qlphieunhap'
       ],
       'qlphieuxuat' => [
         'label' => 'QL Phiếu Xuất', 
-        'icon' => 'home',
+        'icon' => 'schedule',
         'path' => 'qlphieuxuat'
       ],
       'qlcate' => [
@@ -56,7 +56,7 @@ class Roles {
       ],
       'product' => [
         'label' => 'QL Sản phẩm', 
-        'icon' => 'pushpin-o',
+        'icon' => 'shop',
         'path' => 'product'
       ],
       'qlkh' => [
@@ -94,17 +94,17 @@ class Roles {
       ],
       'qlsl' => [
         'label' => 'QL Sản Lượng', 
-        'icon' => 'solution',
+        'icon' => 'form',
         'path' => 'qlsl'
       ],
       'cdc' => [
         'label' => 'Chuyển đổi công', 
-        'icon' => 'solution',
+        'icon' => 'calculator',
         'path' => 'cdc'
       ],
       'qlpb' => [
         'label' => 'QL Phòng ban', 
-        'icon' => 'solution',
+        'icon' => 'team',
         'path' => 'qlpb'
       ],
     ];

@@ -178,6 +178,7 @@ class EditableTable extends React.Component {
       {
         title: 'SL',
         dataIndex: 'sl_thucnhap',
+        width: 120,
         //width: '40%',
         editable: true,
       },

@@ -171,3 +171,10 @@ td:hover .editable-cell-icon {
   float: right;
   margin: 0 5px;
 }
+.ant-form label {
+  font-size: 16px;
+}
+.ant-select-dropdown-menu-item {
+  padding: 5px 30px 5px 12px;
+  min-width: 80px;
+}
