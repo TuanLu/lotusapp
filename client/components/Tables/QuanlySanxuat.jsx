@@ -119,15 +119,15 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: false,
       },
-      {
-        title: 'Tình trạng',
-        dataIndex: 'status',
-        //width: '40%',
-        editable: false,
-        render: (text, record) => {
-          return trangThaiPhieuObj[text]['text'] || text;
-        }
-      },
+      // {
+      //   title: 'Tình trạng',
+      //   dataIndex: 'status',
+      //   //width: '40%',
+      //   editable: false,
+      //   render: (text, record) => {
+      //     return trangThaiPhieuObj[text]['text'] || text;
+      //   }
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
