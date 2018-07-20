@@ -56,10 +56,34 @@ class FormPhieunhap extends React.Component {
     return true;
   }
   pheduyet() {
-    let isValid = this.validBeforeSave();
-    if(isValid) {
-      // Thay status, phê duyệt phiếu nhập
-    }
+    return false;
+    let {phieunhap} = this.props.mainState;
+    fetch(ISD_BASE_URL + 'phieunhap/update', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(this.props.mainState.phieunhap)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          phieunhap: {
+            refresh: true
+          },
+          phieuAction: {}
+        }));
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
+    });
   }
   cancel() {
     this.props.dispatch(updateStateData({

@@ -581,7 +581,7 @@ class EditableTable extends React.Component {
             onClick={() => {
               this.changeStatus(item.id, type);
             }}
-            rel="noopener noreferrer">{item.text}</a>
+            rel="noopener noreferrer">{item ? item.text : ''}</a>
         </Menu.Item>
       );
     });
