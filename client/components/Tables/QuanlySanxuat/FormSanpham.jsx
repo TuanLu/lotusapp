@@ -147,7 +147,7 @@ class EditableTable extends React.Component {
         width: 200,
         //fixed: 'left',
         editable: true,
-        required: true,
+        required: false,
       },
       {
         title: 'Mã maquet',
@@ -310,7 +310,7 @@ class EditableTable extends React.Component {
     this.props.dispatch(updateStateData({
       sx: {
         ...this.props.mainState.sx,
-        products: [rowItem, ...products],
+        products: [...products, rowItem],
       },
       phieuAction: {
         ...this.props.mainState.phieuAction,
