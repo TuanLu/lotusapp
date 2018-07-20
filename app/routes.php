@@ -121,6 +121,8 @@ $app->post('/gantt/updateLink', 'GanttController:updateLink');
 $app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');
+$app->get('/gantt/allPlan', 'GanttController:getAllPlanData');
+
 //Phòng ban router
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');

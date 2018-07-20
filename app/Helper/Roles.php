@@ -107,6 +107,11 @@ class Roles {
         'icon' => 'solution',
         'path' => 'quy_trinh_sx',
       ],
+      'khsx_daihan' => [
+        'label' => 'KHSX dài hạn', 
+        'icon' => 'solution',
+        'path' => 'khsx_daihan',
+      ],
       'qlpb' => [
         'label' => 'QL Phòng ban', 
         'icon' => 'team',
