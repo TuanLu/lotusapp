@@ -19,8 +19,34 @@ class FormNote extends React.Component {
       productListbyCateList: []
     }
   }
-  pheDuyet() {
-
+  pheDuyet(type, value) {
+    this.setState({ loading: true });
+    let {sx} = this.props.mainState;
+    let pheDuyetData = {
+      type,
+      value,
+      ma_sx: sx.ma_sx
+    };
+    fetch(ISD_BASE_URL + 'sx/pheduyet', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(pheDuyetData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình phê duyệt!');
+    });
   }
   componentDidMount() {
     
@@ -43,9 +69,9 @@ class FormNote extends React.Component {
   render() {
     let {sx, phieuAction} = this.props.mainState; 
     let readOnly = false;//Read by roles
-    let gdact = sx && sx.gd == 0 ? false : true;
-    let pkhsxact = sx && sx.pkhsx == 0 ? false : true;
-    let pdbclact = sx && sx.pdbcl == 0 ? false : true;
+    let gdact = sx && sx.gd == "" ? false : true;
+    let pkhsxact = sx && sx.pkhsx == "" ? false : true;
+    let pdbclact = sx && sx.pdbcl == "" ? false : true;
     return ( 
       <Form> 
         <Row>
@@ -81,12 +107,7 @@ class FormNote extends React.Component {
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pkhsx) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        pkhsx
-                      }
-                    }));
+                    this.pheDuyet('pkhsx', pkhsx);
                   }}
                 />
             </Col>
@@ -98,12 +119,7 @@ class FormNote extends React.Component {
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pdbcl) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        pdbcl
-                      }
-                    }));
+                    this.pheDuyet('pdbcl', pdbcl);
                   }}
                 />
             </Col>
@@ -115,12 +131,7 @@ class FormNote extends React.Component {
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(gd) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        gd
-                      }
-                    }));
+                    this.pheDuyet('gd', gd);
                   }}
                 />
             </Col>

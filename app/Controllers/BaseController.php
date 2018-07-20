@@ -36,7 +36,7 @@ class BaseController {
       $this->logger->addInfo($action_name, $insertItem);
     }
   }
-  public function updateDB($tableName, $data, $where) {
+  protected function updateDB($tableName, $data, $where) {
     $rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa cập nhật được dữ liệu'

@@ -108,7 +108,7 @@ $app->get('/sx/fetchSelectedProduct/{ma_sx}', 'SXController:fetchSelectedProduct
 $app->get('/sx/fetchProductByCate/{cate_id}', 'SXController:fetchProductByCate');
 $app->post('/sx/update', 'SXController:update');
 $app->post('/sx/updateProduct', 'SXController:updateProduct');
-$app->post('/sx/changeStatus', 'SXController:changeStatus');
+$app->post('/sx/pheduyet', 'SXController:pheDuyet');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
 //Quy trinh san xuat router
