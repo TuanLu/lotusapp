@@ -168,7 +168,9 @@ class SXController extends BaseController
 				'pkhsx' => $pkhsx,
 				'pdbcl' => $pdbcl,
 				'gd' => $gd,
-				'create_on' => $createOn
+				'create_on' => $createOn,
+				'create_by' => $userId,
+				'update_by' => $userId,
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -196,6 +198,10 @@ class SXController extends BaseController
 				} else {
 					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 				}
+			} else {
+				// echo "<pre>";
+				// print_r($result->errorInfo());
+				$rsData['message'] = 'Không chèn được lệnh vào CSDL!';
 			}
 		} else {
 			//update data base on $id
@@ -220,7 +226,8 @@ class SXController extends BaseController
 				'pkhsx' => $pkhsx,
 				'pdbcl' => $pdbcl,
 				'gd' => $gd,
-				'update_on' => $date->format('Y-m-d H:i:s')
+				'update_on' => $date->format('Y-m-d H:i:s'),
+				'update_by' => $userId
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
 			if($result->rowCount()) {
