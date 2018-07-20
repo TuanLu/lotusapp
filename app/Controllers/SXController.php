@@ -30,7 +30,7 @@ class SXController extends BaseController
 			'pdbcl',
 			'gd',
 			'status',
-			'created' => Medoo::raw("DATE_FORMAT( created, '%d/%m/%Y' )")
+			'create_on' => Medoo::raw("DATE_FORMAT( create_on, '%d/%m/%Y' )")
 		];
 		return $columns;
 	}
@@ -168,7 +168,7 @@ class SXController extends BaseController
 				'pkhsx' => $pkhsx,
 				'pdbcl' => $pdbcl,
 				'gd' => $gd,
-				'created' => $createOn
+				'create_on' => $createOn
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -220,7 +220,7 @@ class SXController extends BaseController
 				'pkhsx' => $pkhsx,
 				'pdbcl' => $pdbcl,
 				'gd' => $gd,
-				'updated' => $date->format('Y-m-d H:i:s')
+				'update_on' => $date->format('Y-m-d H:i:s')
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
 			if($result->rowCount()) {
