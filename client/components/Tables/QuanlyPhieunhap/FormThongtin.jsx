@@ -45,6 +45,7 @@ class FormThongtin extends React.Component {
   render() {
     let {phieunhap, phieuAction} = this.props.mainState;
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
+    let tinh_trang = phieunhap.tinh_trang == 1 ? true : false;
     let options = '';
     let {kho} = this.props.mainState;
     if(kho.length) {
@@ -60,7 +61,7 @@ class FormThongtin extends React.Component {
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 16 }}
             >
-              <Switch checkedChildren="Đã phê duyệt" unCheckedChildren="Chờ phê duyệt" disabled={readOnly} defaultChecked 
+              <Switch checkedChildren="Đã phê duyệt" unCheckedChildren="Chờ phê duyệt" disabled={readOnly} defaultChecked = {tinh_trang} 
                 onChange={(tinh_trang) => {
                   this.props.dispatch(updateStateData({
                     phieunhap: {

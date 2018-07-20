@@ -105,6 +105,9 @@ class PhieunhapController extends BaseController
 		$nguoiGiaoDich = isset($params['nguoi_giao_dich']) ? $params['nguoi_giao_dich'] : '';
 		$editNote = isset($params['editNote']) ? $params['editNote'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
+		$tinh_trang = isset($params['tinh_trang']) ? $params['tinh_trang'] : 2;
+		$userId = isset($params['create_by']) ? $params['create_by'] : '';
+		if($tinh_trang) {$tinh_trang = 1;}else{$tinh_trang = 2;}
 		//Some validation 
 		if(empty($products)) {
 			$rsData['message'] = 'Không có sản phẩm nào trong phiếu nhập!';
@@ -126,12 +129,12 @@ class PhieunhapController extends BaseController
 				echo json_encode($rsData);
 				die;
 		}
-		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		if(!$id) {
 			$uuid1 = Uuid::uuid1();
 			$maPhieu = $uuid1->toString();
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 			//Tao phieu 
 			$duLieuPhieu = array(
 				'ma_phieu' => $maPhieu,
@@ -143,7 +146,7 @@ class PhieunhapController extends BaseController
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
-				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '', // 2 => Chờ phê duyệt
+				'tinh_trang' => $tinh_trang, // 2 => Chờ phê duyệt
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -194,7 +197,7 @@ class PhieunhapController extends BaseController
 				'nguoi_giao_dich' => $nguoiGiaoDich,
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
-				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '',
+				'tinh_trang' => $tinh_trang,
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];

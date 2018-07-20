@@ -180,7 +180,7 @@ class EditableTable extends React.Component {
       {
         title: 'Hư hao',
         dataIndex: 'hu_hao',
-        //width: '40%',
+        width: '100',
         editable: true,
         render: (text, record) => `${text}%`
       },

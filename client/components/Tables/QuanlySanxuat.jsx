@@ -4,10 +4,10 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormPhieunhap from './QuanlySanxuat/FormPhieunhap'
-
+const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -124,6 +124,9 @@ class EditableTable extends React.Component {
         dataIndex: 'status',
         //width: '40%',
         editable: false,
+        render: (text, record) => {
+          return trangThaiPhieuObj[text]['text'] || text;
+        }
       },
       {
         title: 'Actions',
@@ -192,6 +195,9 @@ class EditableTable extends React.Component {
       so_dk: '',
       qcdg: '',
       dh: '',
+      pkhsx: '',
+      pdbcl: '',
+      gd: '',
       tttb_kltb: '',
       products: [],
       status: '',

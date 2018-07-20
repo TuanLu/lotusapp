@@ -266,3 +266,6 @@ td:hover .editable-cell-icon {
   padding: 5px 30px 5px 12px;
   min-width: 80px;
 }
+.align_center {
+  text-align: center;
+}

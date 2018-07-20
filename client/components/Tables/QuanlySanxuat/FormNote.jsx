@@ -15,20 +15,15 @@ class FormNote extends React.Component {
       productListbyCateList: []
     }
   }
-  phongDBCL(value) { 
-    this.props.dispatch(updateStateData({
-      sx: {
-        ...this.props.mainState.sx,
-        pdbcl: value
-      }
-    }));console.log(sx);
-  }
   componentDidMount() {
     
   }
   render() {
     let {sx, phieuAction} = this.props.mainState; 
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
+    let gdact = sx && sx.gd == 0 ? false : true;
+    let pkhsxact = sx && sx.pkhsx == 0 ? false : true;
+    let pdbclact = sx && sx.pdbcl == 0 ? false : true;
     return ( 
       <Form> 
         <Row>
@@ -59,24 +54,52 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                 <label>P. KHSX</label><br />
                   <Switch
-                  defaultChecked
+                  disabled = {readOnly}
+                  defaultChecked = {pkhsxact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
+                  onChange={(pkhsx) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        pkhsx
+                      }
+                    }));
+                  }}
                 />
             </Col>
             <Col className="align_center" span={8}>
                   P. ĐBCL<br />
                   <Switch
-                  onChange={this.phongDBCL}
+                  disabled = {readOnly}
+                  defaultChecked = {pdbclact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
+                  onChange={(pdbcl) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        pdbcl
+                      }
+                    }));
+                  }}
                 />
             </Col>
             <Col className="align_center" span={8}>
                   Giám Đốc<br />
                   <Switch
+                  disabled = {readOnly}
+                  defaultChecked = {gdact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
+                  onChange={(gd) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        gd
+                      }
+                    }));
+                  }}
                 />
             </Col>
           </Row>

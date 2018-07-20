@@ -26,6 +26,9 @@ class SXController extends BaseController
 			'dh',
 			'tttb_kltb',
 			'note',
+			'pkhsx',
+			'pdbcl',
+			'gd',
 			'status',
 			'created' => Medoo::raw("DATE_FORMAT( created, '%d/%m/%Y' )")
 		];
@@ -111,6 +114,12 @@ class SXController extends BaseController
 		$dang_bao_che = isset($params['dang_bao_che']) ? $params['dang_bao_che'] : '';
 		$qcdg = isset($params['qcdg']) ? $params['qcdg'] : '';
 		$dh = isset($params['dh']) ? $params['dh'] : '';
+		$pkhsx = isset($params['pkhsx']) ? $params['pkhsx'] : '';
+		$pdbcl = isset($params['pdbcl']) ? $params['pdbcl'] : '';
+		$gd = isset($params['gd']) ? $params['gd'] : '';
+		if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
+		if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
+		if($gd) {$gd = 1;}else{$gd = 0;}
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
 		$note = isset($params['note']) ? $params['note'] : '';
 
@@ -155,7 +164,11 @@ class SXController extends BaseController
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
-				'status' => 1
+				'status' => 1,
+				'pkhsx' => $pkhsx,
+				'pdbcl' => $pdbcl,
+				'gd' => $gd,
+				'created' => $createOn
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -203,7 +216,11 @@ class SXController extends BaseController
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
-				'status' => 1
+				'status' => 1,
+				'pkhsx' => $pkhsx,
+				'pdbcl' => $pdbcl,
+				'gd' => $gd,
+				'updated' => $date->format('Y-m-d H:i:s')
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
 			if($result->rowCount()) {
