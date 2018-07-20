@@ -36,4 +36,20 @@ class BaseController {
       $this->logger->addInfo($action_name, $insertItem);
     }
   }
+  public function updateDB($tableName, $data, $where) {
+    $rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa cập nhật được dữ liệu'
+    );
+    if(!$tableName || !$data || !$where) {
+      $rsData['message'] = 'Missing table or data or where clause!';
+      return $rsData;
+    }
+    $result = $this->db->update($tableName, $data, $where);
+    if($result->rowCount()) {
+      $rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Dữ liệu đã được cập nhật thành công!';
+    }
+    return $rsData;
+  }
 }

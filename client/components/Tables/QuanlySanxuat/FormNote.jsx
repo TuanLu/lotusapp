@@ -11,16 +11,20 @@ const { TextArea } = Input;
 class FormNote extends React.Component {
   constructor(props) {
     super(props);
+    this.pheDuyet = this.pheDuyet.bind(this);
     this.state = {
       productListbyCateList: []
     }
+  }
+  pheDuyet() {
+
   }
   componentDidMount() {
     
   }
   render() {
     let {sx, phieuAction} = this.props.mainState; 
-    let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
+    let readOnly = false;//Read by roles
     let gdact = sx && sx.gd == 0 ? false : true;
     let pkhsxact = sx && sx.pkhsx == 0 ? false : true;
     let pdbclact = sx && sx.pdbcl == 0 ? false : true;
