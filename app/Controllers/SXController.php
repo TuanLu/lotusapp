@@ -117,9 +117,9 @@ class SXController extends BaseController
 		//$pkhsx = isset($params['pkhsx']) ? $params['pkhsx'] : '';
 		//$pdbcl = isset($params['pdbcl']) ? $params['pdbcl'] : '';
 		//$gd = isset($params['gd']) ? $params['gd'] : '';
-		if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
-		if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
-		if($gd) {$gd = 1;}else{$gd = 0;}
+		// if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
+		// if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
+		// if($gd) {$gd = 1;}else{$gd = 0;}
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
 		$note = isset($params['note']) ? $params['note'] : '';
 

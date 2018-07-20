@@ -291,7 +291,7 @@ class EditableTable extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
+            sx: {
               refresh: false
             }
           }));
