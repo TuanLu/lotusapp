@@ -55,6 +55,9 @@ class FormPhieunhap extends React.Component {
     }
     return true;
   }
+  delete() {
+
+  }
   pheduyet() {
     let isValid = this.validBeforeSave();
     if(isValid) {
@@ -121,6 +124,20 @@ class FormPhieunhap extends React.Component {
                     type="primary"
                     htmlType="button" 
                     icon="edit">Sửa</Button>
+                    : null}
+                    {(this.props.isInventoryOwner )? 
+                    <Popconfirm
+                      title="Bạn thật sự muốn xoá?"
+                      okType="danger"
+                      onConfirm={() => this.delete(record)}
+                    >
+                      <Button 
+                          style={{marginLeft: 10}}
+                          icon="delete"
+                          type="danger">
+                          Xóa
+                      </Button>  
+                    </Popconfirm>
                     : null}
                     <Button 
                         onClick={() => this.cancel()}

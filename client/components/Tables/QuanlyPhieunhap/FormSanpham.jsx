@@ -142,7 +142,7 @@ class EditableTable extends React.Component {
       {
         title: 'Mã Lô',
         dataIndex: 'ma_lo',
-        width: 100,
+        width: 120,
         //fixed: 'left',
         editable: true,
         required: false,

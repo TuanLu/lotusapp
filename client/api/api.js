@@ -77,8 +77,8 @@ export const statusOptions = [
 export const trangThaiPhieu = [
   {
     id: '3',
-    value: '0',
-    text: 'Chờ phê duyệt'
+    value: '3',
+    text: 'Đã hủy'
   },
   {
     id: '1',

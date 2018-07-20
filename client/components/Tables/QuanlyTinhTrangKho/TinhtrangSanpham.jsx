@@ -132,6 +132,7 @@ class EditableTable extends React.Component {
         width: 150,
         editable: true,
         required: true,
+        fixed: 'left',
         // render: (text, record) => {
         //   let label = text;
         //   if(this.state.productList && this.state.productList[text]) {
@@ -147,11 +148,12 @@ class EditableTable extends React.Component {
         //fixed: 'left',
         editable: true,
         required: true,
+        fixed: 'left',
       },
       {
         title: 'Mã Lô',
         dataIndex: 'ma_lo',
-        width: 100,
+        width:120,
         //fixed: 'left',
         editable: true,
         required: true,
@@ -185,7 +187,7 @@ class EditableTable extends React.Component {
       {
         title: 'Đơn giá',
         dataIndex: 'price',
-        //width: '40%',
+        width: 200,
         editable: true,
         required: true
       },
@@ -215,7 +217,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        //fixed: 'right',
+        fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
@@ -228,7 +230,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        //fixed: 'right',
+        fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
