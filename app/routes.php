@@ -125,3 +125,7 @@ $app->get('/gantt/delete/{id}', 'GanttController:delete');
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
 $app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb');
+//Kế hoạch vật tư router
+$app->get('/khvt/fetchAllProduct', 'KHVTController:fetchAllProduct');
+$app->post('/khvt/search', 'KHVTController:search');
+$app->get('/khvt/fetchProductInInventory', 'KHVTController:fetchProductInInventory');

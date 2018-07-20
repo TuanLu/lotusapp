@@ -112,6 +112,11 @@ class Roles {
         'icon' => 'team',
         'path' => 'qlpb'
       ],
+      'khvt' => [
+        'label' => 'Kế hoạch Vật tư', 
+        'icon' => 'schedule',
+        'path' => 'khvt'
+      ],
     ];
   }
 }

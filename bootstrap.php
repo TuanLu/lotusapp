@@ -95,6 +95,9 @@ $container['GanttController'] = function ($c) {
 $container['PhongbanController'] = function ($c) {
   return new \App\Controllers\PhongbanController($c);
 };
+$container['KHVTController'] = function ($c) {
+  return new \App\Controllers\KHVTController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
