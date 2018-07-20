@@ -2,7 +2,7 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -118,6 +118,44 @@ class EditableTable extends React.Component {
         dataIndex: 'nsx',
         //width: '40%',
         editable: false,
+      },
+      {
+        title: 'Phê duyệt',
+        children: [
+          {
+            title: 'PKHSX',
+            dataIndex: 'pkhsx',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+          {
+            title: 'PĐBCL',
+            dataIndex: 'pdbcl',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+          {
+            title: 'Giám đốc',
+            dataIndex: 'gd',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+        ]
       },
       // {
       //   title: 'Tình trạng',
@@ -294,7 +332,7 @@ class EditableTable extends React.Component {
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.phieunhap;
+    let {refresh} = nextProps.mainState.sx;
     if(refresh) {
       return {
         dataUpToDate: null

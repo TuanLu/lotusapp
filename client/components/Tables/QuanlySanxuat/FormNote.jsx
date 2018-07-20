@@ -42,6 +42,11 @@ class FormNote extends React.Component {
         }
       } else {
         message.success(json.message);
+        this.props.dispatch(updateStateData({
+          sx: {
+            refresh: true
+          },
+        }));
       }
     }).catch((ex) => {
       console.log('parsing failed', ex)

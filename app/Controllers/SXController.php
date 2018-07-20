@@ -335,6 +335,8 @@ class SXController extends BaseController
 			];
 			if($value != "") {
 				$value = $userId;
+			} else {
+				$value = "";
 			}
 			$updateData[$type] = $value;
 			$result = $this->db->update($this->tableName, $updateData, ['ma_sx' => $maSx]);
