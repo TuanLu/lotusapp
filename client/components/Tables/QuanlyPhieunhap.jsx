@@ -199,25 +199,19 @@ class EditableTable extends React.Component {
     }));
   }
   isQC() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqc') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];   
+    return roles.indexOf('nhomqc') !== -1;
   }
   isQA() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqa') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('nhomqa') !== -1;
   }
   isInventoryOwner() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhom_thu_kho') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('nhom_thu_kho') !== -1;
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;

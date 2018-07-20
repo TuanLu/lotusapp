@@ -12,6 +12,9 @@ class FormNote extends React.Component {
   constructor(props) {
     super(props);
     this.pheDuyet = this.pheDuyet.bind(this);
+    this.isNhomKHSX = this.isNhomKHSX.bind(this);
+    this.isNhomDBCL = this.isNhomDBCL.bind(this);
+    this.isNhomGD = this.isNhomGD.bind(this);
     this.state = {
       productListbyCateList: []
     }
@@ -21,6 +24,21 @@ class FormNote extends React.Component {
   }
   componentDidMount() {
     
+  }
+  isNhomKHSX() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_khsx') !== -1;
+  }
+  isNhomDBCL() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_dbcl') !== -1;
+  }
+  isNhomGD() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_gd') !== -1;
   }
   render() {
     let {sx, phieuAction} = this.props.mainState; 
@@ -58,7 +76,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                 <label>P. KHSX</label><br />
                   <Switch
-                  disabled = {readOnly}
+                  disabled = {this.isNhomKHSX() ? false : true}
                   defaultChecked = {pkhsxact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
@@ -75,7 +93,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                   P. ĐBCL<br />
                   <Switch
-                  disabled = {readOnly}
+                  disabled = {this.isNhomDBCL() ? false : true}
                   defaultChecked = {pdbclact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
@@ -92,7 +110,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                   Giám Đốc<br />
                   <Switch
-                  disabled = {readOnly}
+                  disabled = {this.isNhomGD() ? false : true}
                   defaultChecked = {gdact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"

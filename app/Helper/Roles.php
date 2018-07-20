@@ -64,23 +64,19 @@ class Roles {
         'icon' => 'team',
         'path' => 'qlkh'
       ],
-      'nhomqa' => [
-        'label' => 'Nhóm QA', 
+      'full_quyen' => [
+        'label' => 'Chức vụ, phê duyệt', 
         'icon' => 'team',
-        'path' => 'nhomqa',
-        'include_in_menu' => false
-      ],
-      'nhomqc' => [
-        'label' => 'Nhóm QC', 
-        'icon' => 'team',
-        'path' => 'nhomqc',
-        'include_in_menu' => false
-      ],
-      'nhom_thu_kho' => [
-        'label' => 'Nhóm Thủ Kho', 
-        'icon' => 'team',
-        'path' => 'nhom_thu_kho',
-        'include_in_menu' => false
+        'path' => 'full_quyen',
+        'include_in_menu' => false,
+        'children' => [
+          array('title' => 'Kí duyệt KHSX', 'value' => 'duyet_khsx', 'key' => 'duyet_khsx'),
+          array('title' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl', 'key' => 'duyet_dbcl'),
+          array('title' => 'Giám đốc QLSX', 'value' => 'duyet_gd', 'key' => 'duyet_gd'),
+          array('title' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho', 'key' => 'nhom_thu_kho'),
+          array('title' => 'Nhóm QA', 'value' => 'nhomqa', 'key' => 'nhomqa'),
+          array('title' => 'Nhóm QC', 'value' => 'nhomqc', 'key' => 'nhomqc'),
+        ]
       ],
       'qlns' => [
         'label' => 'QL Nhân sự', 
