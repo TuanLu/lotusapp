@@ -63,7 +63,11 @@ class Gantt extends Component {
   fetchTasks() {
     this.setState({loading: true});
     let quyTrinhId = this.getQuyTrinhId();
-    fetch(ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId, {
+    let fetchUrl = ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId;
+    if(this.props.type == "allPlan") {
+      fetchUrl = ISD_BASE_URL + 'gantt/allPlan';
+    }
+    fetch(fetchUrl, {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -294,6 +298,29 @@ class Gantt extends Component {
     let {ganttData} = mainState;
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
+    
+    gantt.config.columns = [
+      {name: "text", hide: true},
+      {name: "start_date", hide: true},
+      {name: "duration", hide: false},
+      {name: "add", hide: false}
+    ];
+    //gantt.config.show_grid = true;
+    gantt.config.show_links = true;
+    //gantt.config.show_progress = true;
+    gantt.config.drag_move = true;
+    if(this.props.type == "allPlan") {
+      gantt.config.drag_move = false;
+      //gantt.config.show_grid = false;
+      gantt.config.show_links = false;
+      //gantt.config.show_progress = false;
+      gantt.config.columns = [
+        {name: "text", hide: true},
+        {name: "start_date", hide: true},
+        {name: "duration", hide: true},
+        //{name: "add", hide: true}
+      ];
+    }
     //gantt.config.start_date = new Date();
     gantt.config.start_date = gantt.date.day_start(new Date());
     // gantt.templates.progress_text = function (start, end, task) {
