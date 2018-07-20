@@ -321,8 +321,6 @@ class SXController extends BaseController
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
 		);
-		// Get params and validate them here.
-		$params = $request->getParams();
 		$type = $request->getParam('type');
 		$maSx = $request->getParam('ma_sx');
 		$value = $request->getParam('value');
