@@ -128,8 +128,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -139,8 +139,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -150,8 +150,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -292,6 +292,7 @@ class EditableTable extends React.Component {
           //Stop after fetching data
           this.props.dispatch(updateStateData({
             sx: {
+              ...this.props.mainState.sx,
               refresh: false
             }
           }));

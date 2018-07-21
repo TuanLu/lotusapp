@@ -342,7 +342,11 @@ class SXController extends BaseController
 				$this->superLog('Phe duyet lenh sx', $updateData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				$data = $this->db->select($this->tableName, [$type, 'ma_sx'], ['ma_sx' => $maSx]);
+				$rsData['data'] = isset($data[0]) ? $data[0] : [];
 			} else {
+				// echo "<pre>";
+				// print_r($result->errorInfo());
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
 			}
 		}

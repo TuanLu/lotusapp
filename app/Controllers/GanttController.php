@@ -51,6 +51,8 @@ class GanttController extends BaseController {
         'data' => $collection,
         'links' => $links
       );
+		} else {
+			$rsData = $this->getEmptyGanttChart();
 		}
 		echo json_encode($rsData);
 	}
@@ -94,6 +96,8 @@ class GanttController extends BaseController {
         'data' => $collection,
         'links' => $links
       );
+		} else {
+			$rsData = $this->getEmptyGanttChart();
 		}
 		echo json_encode($rsData);
   }
@@ -323,7 +327,7 @@ class GanttController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có quy trình nào trong kế hoạch dài hạn!'
 		);
-		$sql = "SELECT quy_trinh_id, MIN(start_date) as start_date, MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)) as end_date,DATEDIFF( MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)), MIN(start_date)) as duration, quy_trinh_san_xuat.name as text, progress FROM gantt_tasks, quy_trinh_san_xuat WHERE quy_trinh_san_xuat.id = gantt_tasks.quy_trinh_id GROUP BY quy_trinh_id ORDER BY start_date";
+		$sql = "SELECT lotus_sanxuat.ma_sx, MIN(start_date) as start_date, MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)) as end_date,DATEDIFF( MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)), MIN(start_date)) as duration, CONCAT('Mã SX: ',  lotus_sanxuat.ma, ', Mã SP: ', lotus_sanxuat.ma_sp) as text, progress FROM gantt_tasks, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = gantt_tasks.ma_sx AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' AND lotus_sanxuat.status = 1 GROUP BY ma_sx ORDER BY start_date";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -332,7 +336,19 @@ class GanttController extends BaseController {
 				'data' => $collection,
 				'links' => []
 			);
+		} else {
+			$rsData = $this->getEmptyGanttChart();
 		}
 		echo json_encode($rsData);
+	}
+	private function getEmptyGanttChart() {
+		return array(
+			'status' => self::SUCCESS_STATUS,
+			'message' => 'Chưa có dữ liệu để vẽ biểu đồ Gantt',
+			'data' => array(
+				'data' => [],
+				'links' => []
+			)
+		);
 	}
 }

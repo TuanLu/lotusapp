@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import 'dhtmlx-gantt';
 //import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip.js';
-import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
+//import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
 //import 'dhtmlx-gantt/codebase/locale/locale_ar.js';
 //import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import './Theme.css';
@@ -85,6 +85,7 @@ class Gantt extends Component {
     })
     .then((json) => {
       if(json.status == 'error') {
+        this.renderGantt();
         message.warning(json.message, 3);
       } else {
         if(json.data) {
@@ -112,6 +113,7 @@ class Gantt extends Component {
       this.renderGantt();
     })
     .catch((error) => {
+      this.renderGantt();
       message.error('Có lỗi khi tải dữ liệu quy trình sản xuất!', 3);
       console.log(error);
       this.setState({loading: false});
@@ -334,9 +336,11 @@ class Gantt extends Component {
     //gantt.config.show_grid = true;
     gantt.config.show_links = true;
     //gantt.config.show_progress = true;
+    gantt.config.readonly = false;
     gantt.config.drag_move = true;
     if(this.props.type == "allPlan") {
       gantt.config.drag_move = false;
+      gantt.config.readonly = true;
       //gantt.config.show_grid = false;
       gantt.config.show_links = false;
       //gantt.config.show_progress = false;
