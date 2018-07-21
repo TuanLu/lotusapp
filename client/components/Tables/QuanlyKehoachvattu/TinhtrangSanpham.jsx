@@ -13,102 +13,15 @@ import Timkiem from './Timkiem'
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
 const FormItem = Form.Item;
-const EditableContext = React.createContext();
-
-const EditableRow = ({ form, index, ...props }) => (
-  <EditableContext.Provider value={form}>
-    <tr {...props} />
-  </EditableContext.Provider>
-);
-
 const tableConfig = {
   headTitle: 'Kế hoạch Vật Tư dài hạn',
   addNewTitle: 'Thêm vật tư'
 };
-
 const fetchConfig = {
   changeStatus: 'phieunhap/changeStatus'
 }
 
-const EditableFormRow = Form.create()(EditableRow);
 
-class EditableCell extends React.Component {
-  getInput = () => {
-    switch (this.props.inputType) {
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            onChange={(value, option) => {
-              let unit = option.props.children.split('-');
-              if(unit && unit[3]) {
-                unit = unit[3].trim();
-              }
-              console.log(unit, this.props);
-              return false;
-            }}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.product_id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'sl_thucnhap':
-      case 'sl_chungtu':
-      case 'price':
-        return <InputNumber/>
-        break;
-      default:
-        return <Input />;
-        break;
-    }
-     
-  };
-  render() {
-    const {
-      editing,
-      required,
-      dataIndex,
-      title,
-      inputType,
-      record,
-      index,
-      ...restProps
-    } = this.props;
-    return (
-      <EditableContext.Consumer>
-        {(form) => {
-          const { getFieldDecorator } = form;
-          return (
-            <td {...restProps}>
-              {editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(dataIndex, {
-                    rules: [{
-                      required: required,
-                      message: `Hãy nhập dữ liệu ô ${title}!`,
-                    }],
-                    initialValue: record[dataIndex],
-                    
-                  })(this.getInput())}
-                </FormItem>
-              ) : restProps.children}
-            </td>
-          );
-        }}
-      </EditableContext.Consumer>
-    );
-  }
-}
 
 class EditableTable extends React.Component {
   constructor(props) {
@@ -129,8 +42,6 @@ class EditableTable extends React.Component {
         dataIndex: 'product_id',
         //fixed: 'left',
         width: 150,
-        editable: true,
-        required: true,
         // render: (text, record) => {
         //   let label = text;
         //   if(this.state.productList && this.state.productList[text]) {
@@ -140,79 +51,37 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Mã Kho',
-        dataIndex: 'ma_kho',
+        title: 'Mã KH',
+        dataIndex: 'ma',
         width: 100,
         //fixed: 'left',
-        editable: true,
-        required: true,
       },
-      // {
-      //   title: 'Mã Lô',
-      //   dataIndex: 'ma_lo',
-      //   width:120,
-      //   //fixed: 'left',
-      //   editable: true,
-      //   required: true,
-      // },
       {
-        title: 'Quy cách',
-        dataIndex: 'label',
-        width: 200,
-        editable: true,
-        required: true
+        title: 'Mã quet',
+        dataIndex: 'ma_maquet',
+        width: 100,
+        //fixed: 'left',
       },
-      // {
-      //   title: 'Đơn vị tính',
-      //   dataIndex: 'unit',
-      //   //width: '40%',
-      //   editable: true,
-      // },
-      // {
-      //   title: 'SL theo chứng từ',
-      //   dataIndex: 'sl_chungtu',
-      //   //width: '40%',
-      //   editable: true,
-      // },
       {
-        title: 'SL trong kho',
-        dataIndex: 'sl_thucnhap',
-        width: 120,
+        title: 'SL cho 1000.000 viên/lọ/gói	',
+        dataIndex: 'sl_1000',
         //width: '40%',
-        editable: true,
       },
       {
-        title: 'SL trong LSX',
-        dataIndex: 'sl_lenhsx',
-        width: 120,
+        title: 'Số lượng NVL cần',
+        dataIndex: 'sl_nvl',
         //width: '40%',
-        editable: true,
       },
       {
-        title: 'Đơn giá',
-        dataIndex: 'price',
-        width: 200,
-        editable: true,
-        required: true
+        title: 'Hư hao',
+        dataIndex: 'hu_hao',
+        render: (text, record) => `${text}%`
       },
-      // {
-      //   title: 'Ngày SX',
-      //   dataIndex: 'ngay_san_xuat',
-      //   width: '200px',
-      //   //width: '40%',
-      //   editable: true,
-      //   required: true,
-      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
-      // },
-      // {
-      //   title: 'Ngày hết hạn',
-      //   dataIndex: 'ngay_het_han',
-      //   width: '200px',
-      //   //width: '40%',
-      //   editable: true,
-      //   required: true,
-      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
-      // }
+      {
+        title: 'Đơn vị tính',
+        dataIndex: 'unit',
+        //width: '40%',
+      },
     ];
   }
   onInputChange = (e) => {
@@ -224,23 +93,6 @@ class EditableTable extends React.Component {
     this.setState({
       filterDropdownVisible: false,
       filtered: !!searchText,
-      // data: data.map((record) => {
-      //   const match = record.product_id.match(reg);
-      //   if (!match) {
-      //     return null;
-      //   }
-      //   return {
-      //     ...record,
-      //     product_id: (
-      //       <span>
-      //         {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
-      //           text.toLowerCase() === searchText.toLowerCase() ?
-      //             <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
-      //         ))}
-      //       </span>
-      //     ),
-      //   };
-      // }).filter(record => !!record),
     });
   }
   handleChange = (pagination, filters, sorter) => {
@@ -304,30 +156,13 @@ class EditableTable extends React.Component {
             text={checkStatusOptions[0]['text']} 
             status={"processing"}/>
   }
-  getDefaultFields() {
-    return {
-      ma_phieu: "",
-      ma_lo: "",
-      product_id: "",
-      label: "",
-      unit: "kg",
-      sl_chungtu: "1",
-      sl_thucnhap: "1",
-      price: 0,
-      qc_check: "0",
-      qa_check: "0"
-    };
-  }
-  isEditing = (record) => {
-    return record.key === this.props.mainState.phieuAction.editingKey;
-  };
   isReadOnly() {
     let {phieuAction} = this.props.mainState;
     return phieuAction && phieuAction.action == 'view' ? true : false;
   }
   fetchAllProduct() {
     this.setState({loadProduct: true});
-    fetch(ISD_BASE_URL + `tinhtrangkho/fetchAllProduct`, {
+    fetch(ISD_BASE_URL + `khvt/fetchAllProduct`, {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -350,124 +185,23 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
-  getStatusMenu(type) {
-    const menuItems = qcQAStatus.map((item) => {
-      return (
-        <Menu.Item key={item.id}>
-          <a 
-            onClick={() => {
-              this.changeStatus(item.id, type);
-            }}
-            rel="noopener noreferrer">{item.text}</a>
-        </Menu.Item>
-      );
-    });
-    const menu = (
-      <Menu>
-       {menuItems}
-      </Menu>
-    );
-    return menu;
-  }
-  getActionsByRoles() {
-    if(!this.props.isQA && !this.props.isQC) return false;
-    let {selectedRowKeys, loading} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ marginBottom: 16 }}>
-        {this.props.isQC? 
-        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-          <Button
-            type="primary"
-            //onClick={this.start}
-            loading={loading}
-          >
-            QC Phê duyệt
-          </Button>
-        </Dropdown>
-        : null}
-        {this.props.isQA? 
-          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-           <Button
-             type="primary"
-             //onClick={this.start}
-             loading={loading}
-           >
-             QA Phê duyệt
-           </Button>
-          </Dropdown>
-        : null} 
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-        </span>
-      </div>
-    );
-  }
   componentDidMount() {
     //let {products, phieunhap} = this.props.mainState;
     this.fetchAllProduct();
   }
   render() {
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell,
-      },
-    };
-    let products = this.props.mainState.products;
-    let columns = this.columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: this.isEditing(record),
-          required: col.required,
-          products,
-        }),
-      };
-    });
-    //Show and hide some columns by roles
-    columns = columns.filter((column) => {
-      if(this.props.isQA || this.props.isQC) {
-        if(column.dataIndex == 'operation') return false;
-        if(this.props.isQC) {
-          if(column.dataIndex == 'qa_check') return false;
-        }
-      }
-      return true;
-    });
+    // const components = {
+    //   body: {
+    //     row: EditableFormRow,
+    //     cell: EditableCell,
+    //   },
+    // };
+    
+    let columns = this.columns;
     //Add filter 
     let {filteredInfo, searchText} = this.state;
     filteredInfo = filteredInfo || {};
     columns = columns.map((col) => {
-      if(col.filterable) {
-        switch (col.dataIndex) {
-          case 'qc_check':
-            return {
-              ...col,
-              filteredValue: filteredInfo.qc_check || null,
-              onFilter: (value, record) => {
-                return record.qc_check.includes(value)
-              },
-            }
-            break;
-          case 'qa_check':
-            return {
-              ...col,
-              filteredValue: filteredInfo.qa_check || null,
-              onFilter: (value, record) => {
-                return record.qa_check.includes(value)
-              },
-            }
-            break;
-        }
-      }
       //Search by product ID
       if(col.dataIndex == 'product_id') {
         return {
@@ -533,10 +267,9 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        {this.getActionsByRoles()}
         <Table
           // rowSelection={rowSelection}
-          components={components}
+          //components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}

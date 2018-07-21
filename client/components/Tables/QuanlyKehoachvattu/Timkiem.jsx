@@ -32,58 +32,12 @@ class AdvancedSearchForm extends React.Component {
       this.search(filters);
     });
   }
-  fetchProductInInventory() {
-    fetch(ISD_BASE_URL + 'tinhtrangkho/fetchProductInInventory', {
-      headers: getTokenHeader()
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      if(json.status == 'error') {
-        message.warning(json.message, 3);
-      } else {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            productInInventory: json.data
-          }));
-        }
-      }
-    })
-    .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
-      console.log(error);
-    });
-  }
-  fetchKho() {
-    fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
-      headers: getTokenHeader()
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((json) => {
-      if(json.status == 'error') {
-        message.warning(json.message, 3);
-      } else {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            kho: json.data
-          }));
-        }
-      }
-    })
-    .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
-      console.log(error);
-    }); 
-  }
   search(searchData) {
     this.setState({
       loading: true
     });
     this.props.loading(true);
-    fetch(ISD_BASE_URL + 'tinhtrangkho/search', {
+    fetch(ISD_BASE_URL + 'khvt/search', {
       method: 'POST',
       headers: getTokenHeader(),
       body: JSON.stringify(searchData)
@@ -124,88 +78,39 @@ class AdvancedSearchForm extends React.Component {
   // To generate mock Form.Item
   getFields() {
     let {mainState} = this.props;
-    let kho = mainState.kho || [];
-    let productInInventory = mainState.productInInventory || [];
     const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
         <Col span={8}>
-          <FormItem label={`Lọc theo mã kho`}>
-            {getFieldDecorator(`ma_kho`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Select 
-                showSearch
-                mode="multiple"
-                placeholder="Nhập mã kho">
-                {kho.map((kho) =><Option value={kho.ma_kho} key={kho.ma_kho}>{kho.name}</Option>)}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label={`Lọc theo mã vật tư`}>
+          <FormItem label={`Lọc theo vật tư`}>
             {getFieldDecorator(`product_id`, {
               rules: [{
                 required: false,
               }],
             })(
-              <Select 
-                showSearch
-                mode="multiple"
-                placeholder="Nhập mã vật tư">
-                {productInInventory.map((vattu) =><Option value={vattu.product_id} key={vattu.product_id}>{vattu.product_id} {"-"} {vattu.name}</Option>)}
-              </Select>
+              <Input placeholder="Nhập mã vật tư" />
             )}
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem label={`Lọc theo mã lô`}>
-            {getFieldDecorator(`ma_lo`, {
+          <FormItem label={`Lọc theo mã kế hoạch`}>
+            {getFieldDecorator(`ma`, {
               rules: [{
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập mã lô" />
+              <Input placeholder="Nhập mã kế hoạch sản xuất" />
             )}
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem label={`Lọc theo ngày sản xuất`}>
-            {getFieldDecorator(`ngay_san_xuat`, {
+          <FormItem label={`Lọc theo mã quet`}>
+            {getFieldDecorator(`ma_maquet`, {
               rules: [{
                 required: false,
               }],
             })(
-              <RangePicker 
-                placeholder={['Từ Ngày', 'Đến Ngày']}
-                format="DD/MM/YYYY" />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label={`Lọc theo ngày hết hạn`}>
-            {getFieldDecorator(`ngay_het_han`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <RangePicker 
-                placeholder={['Từ Ngày', 'Đến Ngày']}
-                format="DD/MM/YYYY" />
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label={`Lọc sản phẩm sắp hết hạn`}>
-            {getFieldDecorator(`sap_het_han`, {
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Input placeholder="Nhập số ngày" />
+              <Input placeholder="Nhập mã quet" />
             )}
           </FormItem>
         </Col>
@@ -213,15 +118,7 @@ class AdvancedSearchForm extends React.Component {
     );
   }
   componentDidMount() {
-    let {mainState} = this.props;
-    let kho = mainState.kho || [];
-    let productInInventory = mainState.productInInventory || [];
-    if(!kho.length) {
-      this.fetchKho();
-    }
-    if(!productInInventory.length) {
-      this.fetchProductInInventory();
-    }
+    
   }
 
   render() {

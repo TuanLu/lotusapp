@@ -25,31 +25,19 @@ class KHVTController extends BaseController {
 		//echo "<pre>";
 		//print_r($filters);
 		$where = "";
-		//Tim theo ma kho
-		if(isset($filters['ma_kho']) && !empty($filters['ma_kho'])) {
-			$where .= " AND `lotus_kho`.`ma_kho` IN ('" . implode("', '", $filters['ma_kho']) . "')";
-		}
 		//Tim theo ma vat tu
 		if(isset($filters['product_id']) && !empty($filters['product_id'])) {
-			$where .= " AND `san_pham_theo_phieu`.`product_id` IN ('" . implode("', '", $filters['product_id']) . "')";
+			$where .= " AND `lotus_spsx`.`product_id` = '" . $filters['product_id'] . "'";
 		}
-		//Tim theo ma lo
-		if(isset($filters['ma_lo']) && !empty($filters['ma_lo'])) {
-			$where .= " AND `san_pham_theo_phieu`.`ma_lo` = '" . $filters['ma_lo'] . "'";
+		//Tim theo ma khsx
+		if(isset($filters['ma']) && !empty($filters['ma'])) {
+			$where .= " AND `lotus_sanxuat`.`ma` = '" . $filters['ma'] . "'";
 		}
-		//Tim theo ngay san xuat
-		if(isset($filters['ngay_san_xuat']) && !empty($filters['ngay_san_xuat'])) {
-			$where .= " AND `san_pham_theo_phieu`.`ngay_san_xuat` BETWEEN '{$filters['ngay_san_xuat'][0]}' AND '{$filters['ngay_san_xuat'][1]}'";
+		//Tim theo ma quet
+		if(isset($filters['ma_maquet']) && !empty($filters['ma_maquet'])) {
+			$where .= " AND `lotus_spsx`.`ma_maquet` = '" . $filters['ma_maquet'] . "'";
 		}
-		//Tim theo ngay het han
-		if(isset($filters['ngay_het_han']) && !empty($filters['ngay_het_han'])) {
-			$where .= " AND `san_pham_theo_phieu`.`ngay_het_han` BETWEEN '{$filters['ngay_het_han'][0]}' AND '{$filters['ngay_het_han'][1]}'";
-		}
-		//Tim theo ngay sap het han
-		if(isset($filters['sap_het_han']) && !empty($filters['sap_het_han'])) {
-		$where .= " AND (SELECT DATEDIFF(san_pham_theo_phieu.ngay_het_han, CURRENT_DATE()) AS days) <= {$filters['sap_het_han']}";
-		}
-		$sql = "SELECT lotus_spsx.ma_sx, lotus_sanxuat.ma,lotus_spsx.ma_maquet,lotus_spsx.product_id, lotus_spsx.cong_doan, lotus_spsx.sl_1000, lotus_spsx.unit, lotus_spsx.sl_nvl, lotus_spsx.status,lotus_spsx.hu_hao FROM lotus_spsx, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = lotus_spsx.ma_sx AND lotus_spsx.status = 1 AND lotus_sanxuat.status = 1 AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> ''";
+		$sql = "SELECT lotus_spsx.ma_sx, lotus_sanxuat.ma,lotus_spsx.ma_maquet,lotus_spsx.product_id, lotus_spsx.cong_doan, lotus_spsx.sl_1000, lotus_spsx.unit, lotus_spsx.sl_nvl, lotus_spsx.status,lotus_spsx.hu_hao FROM lotus_spsx, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = lotus_spsx.ma_sx AND lotus_spsx.status = 1 AND lotus_sanxuat.status = 1 AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' $where";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		return $collection;
 	}
