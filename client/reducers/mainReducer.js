@@ -44,6 +44,15 @@ let _designDefault = {
       addNewItem: false,
       action: 'view',//view, edit, cancel
     },
+    kkvt: {
+      ma_phieu: '',
+      ma_kho: '',
+      note: '',
+      editNote: '',
+      address: '',
+      products: [],
+      editingKey: '',
+    },
     phieuxuat: {
       nguoi_giao_dich: '',
       ma_kho: '',

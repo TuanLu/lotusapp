@@ -21,15 +21,15 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const tableConfig = {
-  headTitle: 'Vật tư',
-  addNewTitle: 'Thêm vật tư'
+  headTitle: 'Vật tư kiểm kê',
+  addNewTitle: 'Kiểm kê vật tư'
 };
 
 const fetchConfig = {
-  fetch: 'phieunhap/fetch',
-  update: 'phieunhap/updateProduct',
-  delete: 'phieunhap/deleteProduct/',
-  changeStatus: 'phieunhap/changeStatus'
+  fetch: 'kkvt/fetch',
+  update: 'kkvt/updateProduct',
+  delete: 'kkvt/deleteProduct/',
+  changeStatus: 'kkvt/changeStatus'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -170,22 +170,22 @@ class EditableTable extends React.Component {
         required: true
       },
       {
-        title: 'Đơn vị tính',
+        title: 'ĐVT',
         dataIndex: 'unit',
         width: 100,
         editable: true,
       },
       {
-        title: 'SL theo chứng từ',
+        title: 'SL tồn',
         dataIndex: 'sl_chungtu',
-        //width: '40%',
+        width: '120',
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
-        title: 'SL thực nhập',
+        title: 'SL thực tế',
         dataIndex: 'sl_thucnhap',
-        //width: '40%',
+        width: '120',
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
@@ -341,7 +341,7 @@ class EditableTable extends React.Component {
             showIcon />
   }
   addNewRow() {
-    let {products} = this.props.mainState.phieunhap;
+    let {products} = this.props.mainState.kkvt;
     let {editingKey} = this.props.mainState.phieuAction;
     if(editingKey !== undefined && editingKey !== '') return false;
     let rowItem = this.getDefaultFields();
@@ -351,8 +351,8 @@ class EditableTable extends React.Component {
     };
     
     this.props.dispatch(updateStateData({
-      phieunhap: {
-        ...this.props.mainState.phieunhap,
+      kkvt: {
+        ...this.props.mainState.kkvt,
         products: [rowItem, ...products],
       },
       phieuAction: {
@@ -397,8 +397,8 @@ class EditableTable extends React.Component {
       if (error) {
         return;
       }
-      const newData = [...this.props.mainState.phieunhap.products];
-      let maPhieu = this.props.mainState.phieunhap.ma_phieu || '';
+      const newData = [...this.props.mainState.kkvt.products];
+      let maPhieu = this.props.mainState.kkvt.ma_phieu || '';
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const item = newData[index];
@@ -416,8 +416,8 @@ class EditableTable extends React.Component {
             ...newItemData
           });
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            kkvt: {
+              ...this.props.mainState.kkvt,
               products: newData
             },
             phieuAction: {
@@ -448,8 +448,8 @@ class EditableTable extends React.Component {
                   ...json.data
                 });
                 this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
+                  kkvt: {
+                    ...this.props.mainState.kkvt,
                     products: newData
                   },
                   phieuAction: {
@@ -490,10 +490,10 @@ class EditableTable extends React.Component {
         if(json.status == 'error') {
           message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         } else {
-          let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.id);
+          let newData = this.props.mainState.kkvt.products.filter((item) => item.key != record.id);
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            kkvt: {
+              ...this.props.mainState.kkvt,
               products: newData
             }
           }));
@@ -506,10 +506,10 @@ class EditableTable extends React.Component {
       });
     } else {
       if(record.key) {
-        let newData = this.props.mainState.phieunhap.products.filter((item) => item.key != record.key);
+        let newData = this.props.mainState.kkvt.products.filter((item) => item.key != record.key);
         this.props.dispatch(updateStateData({
-          phieunhap: {
-            ...this.props.mainState.phieunhap,
+          kkvt: {
+            ...this.props.mainState.kkvt,
             products: newData
           }
         }));
@@ -517,7 +517,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchProduct() {
-    fetch(ISD_BASE_URL + 'phieunhap/fetchProductDetailsList', {
+    fetch(ISD_BASE_URL + 'kkvt/fetchProductDetailsList', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -541,10 +541,10 @@ class EditableTable extends React.Component {
     });
   }
   fetchSelectedProduct() {
-    let {phieunhap} = this.props.mainState;
-    let maPhieu = phieunhap.ma_phieu;
+    let {kkvt} = this.props.mainState;
+    let maPhieu = kkvt.ma_phieu;
     this.setState({loadProduct: true});
-    fetch(ISD_BASE_URL + `phieunhap/fetchSelectedProduct/${maPhieu}`, {
+    fetch(ISD_BASE_URL + `kkvt/fetchSelectedProduct/${maPhieu}`, {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -552,8 +552,8 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            kkvt: {
+              ...this.props.mainState.kkvt,
               products: json.data
             }
           }));          
@@ -561,8 +561,8 @@ class EditableTable extends React.Component {
       } else {
         message.error(json.message);
         this.props.dispatch(updateStateData({
-          phieunhap: {
-            ...this.props.mainState.phieunhap,
+          kkvt: {
+            ...this.props.mainState.kkvt,
             products: []
           }
         }));
@@ -626,11 +626,11 @@ class EditableTable extends React.Component {
     );
   }
   componentDidMount() {
-    let {products, phieunhap} = this.props.mainState;
+    let {products, kkvt} = this.props.mainState;
     if(!products.length) {
       this.fetchProduct();
     }
-    if(phieunhap.ma_phieu) {
+    if(kkvt.ma_phieu) {
       this.fetchSelectedProduct();
     }
   }
@@ -669,7 +669,7 @@ class EditableTable extends React.Component {
       }
       return true;
     })
-    let selectedProducts = this.props.mainState.phieunhap.products || [];
+    let selectedProducts = this.props.mainState.kkvt.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange,

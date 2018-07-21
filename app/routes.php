@@ -129,3 +129,21 @@ $app->get('/gantt/allPlan', 'GanttController:getAllPlanData');
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
 $app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb');
+//Kế hoạch vật tư router
+$app->get('/khvt/fetchAllProduct', 'KHVTController:fetchAllProduct');
+$app->post('/khvt/search', 'KHVTController:search');
+$app->get('/khvt/fetchProductInInventory', 'KHVTController:fetchProductInInventory');
+//Kiểm kê vật tư router
+$app->get('/kkvt/fetch', 'KiemkeController:fetch');
+$app->get('/kkvt/delete/{id}', 'KiemkeController:delete');
+$app->get('/kkvt/fetchAllProduct', 'KiemkeController:fetchAllProduct');
+$app->post('/kkvt/search', 'KiemkeController:search');
+$app->get('/kkvt/fetchProductInInventory', 'KiemkeController:fetchProductInInventory');
+$app->get('/kkvt/fetchProductDetailsList', 'KiemkeController:fetchProductDetailsList');
+$app->get('/kkvt/fetchSelectedProduct/{ma_phieu}', 'KiemkeController:fetchSelectedProduct');
+$app->post('/kkvt/update', 'KiemkeController:update');
+$app->post('/kkvt/updateProduct', 'KiemkeController:updateProduct');
+$app->post('/kkvt/changeStatus', 'KiemkeController:changeStatus');
+$app->post('/kkvt/pheduyet', 'KiemkeController:pheDuyet');
+$app->post('/kkvt/changePosition', 'KiemkeController:changePosition');
+$app->get('/kkvt/deleteProduct/{id}', 'KiemkeController:deleteProduct');

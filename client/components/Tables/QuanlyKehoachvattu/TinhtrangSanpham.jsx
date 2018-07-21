@@ -8,7 +8,6 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
-import FormChuyenViTri from './FormChuyenViTri'
 import Timkiem from './Timkiem'
 
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
@@ -23,8 +22,8 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const tableConfig = {
-  headTitle: 'Vật tư trong kho',
-  addNewTitle: 'Thêm vật tư vào phiếu nhập'
+  headTitle: 'Kế hoạch Vật Tư dài hạn',
+  addNewTitle: 'Thêm vật tư'
 };
 
 const fetchConfig = {
@@ -132,7 +131,6 @@ class EditableTable extends React.Component {
         width: 150,
         editable: true,
         required: true,
-        fixed: 'left',
         // render: (text, record) => {
         //   let label = text;
         //   if(this.state.productList && this.state.productList[text]) {
@@ -148,16 +146,15 @@ class EditableTable extends React.Component {
         //fixed: 'left',
         editable: true,
         required: true,
-        fixed: 'left',
       },
-      {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
-        width:120,
-        //fixed: 'left',
-        editable: true,
-        required: true,
-      },
+      // {
+      //   title: 'Mã Lô',
+      //   dataIndex: 'ma_lo',
+      //   width:120,
+      //   //fixed: 'left',
+      //   editable: true,
+      //   required: true,
+      // },
       {
         title: 'Quy cách',
         dataIndex: 'label',
@@ -178,8 +175,15 @@ class EditableTable extends React.Component {
       //   editable: true,
       // },
       {
-        title: 'SL',
+        title: 'SL trong kho',
         dataIndex: 'sl_thucnhap',
+        width: 120,
+        //width: '40%',
+        editable: true,
+      },
+      {
+        title: 'SL trong LSX',
+        dataIndex: 'sl_lenhsx',
         width: 120,
         //width: '40%',
         editable: true,
@@ -191,50 +195,24 @@ class EditableTable extends React.Component {
         editable: true,
         required: true
       },
-      {
-        title: 'Ngày SX',
-        dataIndex: 'ngay_san_xuat',
-        width: '200px',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      },
-      {
-        title: 'Ngày hết hạn',
-        dataIndex: 'ngay_het_han',
-        width: '200px',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      },
-      {
-        title: 'QC Duyệt',
-        dataIndex: 'qc_check',
-        editable: false,
-        filterable: true,
-        filters: qcQAStatus,
-        filterMultiple: false,
-        width: 130,
-        fixed: 'right',
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      },
-      {
-        title: 'QA Duyệt',
-        dataIndex: 'qa_check',
-        editable: false,
-        filterable: true,
-        filters: qcQAStatus,
-        filterMultiple: false,
-        width: 130,
-        fixed: 'right',
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      }
+      // {
+      //   title: 'Ngày SX',
+      //   dataIndex: 'ngay_san_xuat',
+      //   width: '200px',
+      //   //width: '40%',
+      //   editable: true,
+      //   required: true,
+      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
+      // },
+      // {
+      //   title: 'Ngày hết hạn',
+      //   dataIndex: 'ngay_het_han',
+      //   width: '200px',
+      //   //width: '40%',
+      //   editable: true,
+      //   required: true,
+      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
+      // }
     ];
   }
   onInputChange = (e) => {
@@ -557,14 +535,14 @@ class EditableTable extends React.Component {
         </div>
         {this.getActionsByRoles()}
         <Table
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          scroll={{ x: 1500 }}
+          // scroll={{ x: 1500 }}
           //expandRowByClick={true}
           onChange={this.handleChange}
           title={() => {
@@ -572,15 +550,6 @@ class EditableTable extends React.Component {
               <Timkiem loading={(loading) => {
                 this.setState({loadProduct: loading});
               }}/>
-            );
-          }}
-          expandedRowRender={record => {
-            return (
-              <FormChuyenViTri
-                mainState={this.props.mainState}
-                dispatch={this.props.dispatch}
-                record={record}
-              />
             );
           }}
         />
