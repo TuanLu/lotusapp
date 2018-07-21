@@ -9,7 +9,6 @@ import {updateStateData} from 'actions'
 import Formkkvt from './QuanlyKiemke/Formkkvt'
 
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
-
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -79,11 +78,12 @@ class EditableCell extends React.Component {
 
 class EditableTable extends React.Component {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = { 
       data: [], 
       addNewItem: false,
     };
+    let {userInfo} = this.props.mainState;
     this.columns = [
       {
         title: 'Ngày Tạo',
@@ -99,9 +99,11 @@ class EditableTable extends React.Component {
       },
       {
         title: 'Người kiểm kê',
-        dataIndex: 'userid',
+        dataIndex: 'create_by',
         //width: '40%',
         editable: false,
+        render: (text, record) => {console.log(record);
+          record.name || text }
       },
       {
         title: 'Mô tả',

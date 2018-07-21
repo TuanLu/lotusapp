@@ -148,7 +148,7 @@ class KiemkeController extends BaseController
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'tinh_trang' => $tinh_trang, // 2 => Chờ phê duyệt
 			);
-			$result = $this->db->insert($this->tableName, $duLieuPhieu);
+			$result = $this->db->insert($this->tableName, $duLieuPhieu); 
 			if($result->rowCount()) {
 				//San pham trong phieu
 				$validProducts = [];
