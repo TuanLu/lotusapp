@@ -44,7 +44,51 @@ class GanttController extends BaseController {
       $rsData['message'] = 'Dữ liệu đã được load!';
       //Load links 
       $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
-				"status" => 1
+				"status" => 1,
+				"quy_trinh_id" => $quyTrinhId
+			]);
+			$rsData['data'] = array(
+        'data' => $collection,
+        'links' => $links
+      );
+		}
+		echo json_encode($rsData);
+	}
+	public function fetchTasksByMaSx($request, $response, $args){
+    //$this->logger->addInfo('Request Npp path');
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+    );
+    $maSx = isset(	$args['ma_sx']) ? $args['ma_sx'] : '';
+    if($maSx == "") {
+      $rsData['message'] = 'Không tìm thấy mã sản xuất!';
+      echo json_encode($rsData);
+      die;
+    };
+		// Columns to select.
+		$columns = [
+				'id',
+				'text',
+        'start_date',
+				'duration',
+        'status',
+        'progress',
+        'parent',
+        'ma_sx',
+		];
+		$collection = $this->db->select($this->tableName, $columns, [
+			"ORDER" => ["start_date" => "ASC"],
+      "status" => 1,
+      "ma_sx" => $maSx
+		]);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Dữ liệu đã được load!';
+      //Load links 
+      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
+				"status" => 1,
+				"ma_sx" => $maSx
 			]);
 			$rsData['data'] = array(
         'data' => $collection,
@@ -67,7 +111,8 @@ class GanttController extends BaseController {
     $progress = $request->getParam('progress');
     $sortorder = $request->getParam('sortorder');
     $parent = $request->getParam('parent');
-    $quyTrinhId = $request->getParam('quy_trinh_id');
+		$quyTrinhId = $request->getParam('quy_trinh_id');
+		$maSx = $request->getParam('ma_sx');
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
     $userId = isset($this->jwt->id) ? $this->jwt->id : '';
@@ -76,6 +121,7 @@ class GanttController extends BaseController {
       'duration' => $duration,
       'start_date' => $start_date,
 			'quy_trinh_id' => $quyTrinhId,
+			'ma_sx' => $maSx,
 			'progress' => $progress,
 			'parent' => $parent
     ];
@@ -112,9 +158,9 @@ class GanttController extends BaseController {
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-        //$error = $result->errorInfo();
-        //echo "<pre>";
-        //print_r($error);
+        // $error = $result->errorInfo();
+        // echo "<pre>";
+        // print_r($error);
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
@@ -156,6 +202,8 @@ class GanttController extends BaseController {
 		$source = $request->getParam('source');
 		$target = $request->getParam('target');
 		$type = $request->getParam('type');
+		$quyTrinhId = $request->getParam('quy_trinh_id');
+		$maSx = $request->getParam('ma_sx');
     
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
@@ -163,7 +211,10 @@ class GanttController extends BaseController {
     $itemData = [
       'source' => $source,
       'target' => $target,
-      'type' => $type,
+			'type' => $type,
+			'quy_trinh_id' => $quyTrinhId,
+			'ma_sx' => $maSx
+			
 		];
 		//Kiem tra lien ket da ton tai hay chua
 		$existLink = $this->db->select($this->linkTable, ['id', 'source', 'target'], [
@@ -189,9 +240,9 @@ class GanttController extends BaseController {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm liên kết thành công!';
 			} else {
-        //$error = $result->errorInfo();
-        //echo "<pre>";
-        //print_r($error);
+        // $error = $result->errorInfo();
+        // echo "<pre>";
+        // print_r($error);
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {

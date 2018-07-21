@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
-import FormPhieunhap from './QuanlySanxuat/FormPhieunhap'
+import FormLenhSx from './QuanlySanxuat/FormLenhSx'
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -377,7 +377,7 @@ class EditableTable extends React.Component {
     return (
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
-          <FormPhieunhap
+          <FormLenhSx
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />

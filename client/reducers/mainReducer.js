@@ -65,6 +65,9 @@ let _designDefault = {
     ganttData: {
       "data":[],
 	    "links":[]
+    },
+    quyTrinhTheoLenh: {
+      showGantt: false
     }
   },
   cloneState;

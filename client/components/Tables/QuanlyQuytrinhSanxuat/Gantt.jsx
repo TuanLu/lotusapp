@@ -20,6 +20,7 @@ class Gantt extends Component {
     super(props);
     this.saveData = this.saveData.bind(this);
     this.getQuyTrinhId = this.getQuyTrinhId.bind(this);
+    this.getMaSx = this.getMaSx.bind(this);
     this.clearAllEvents = this.clearAllEvents.bind(this);
     this.state = {
       loading: false,
@@ -62,10 +63,19 @@ class Gantt extends Component {
   }
   fetchTasks() {
     this.setState({loading: true});
-    let quyTrinhId = this.getQuyTrinhId();
-    let fetchUrl = ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId;
-    if(this.props.type == "allPlan") {
-      fetchUrl = ISD_BASE_URL + 'gantt/allPlan';
+    let fetchUrl;
+    switch (this.props.type) {
+      case 'allPlan':
+        fetchUrl = ISD_BASE_URL + 'gantt/allPlan';
+        break;
+      case 'theo_lenh_sx':
+        let maSX = this.getMaSx();
+        fetchUrl = ISD_BASE_URL + 'gantt/fetchTasksByMaSx/' + maSX;
+        break;
+      default:
+        let quyTrinhId = this.getQuyTrinhId();
+        fetchUrl = ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId;
+        break;
     }
     fetch(fetchUrl, {
       headers: getTokenHeader()
@@ -182,16 +192,25 @@ class Gantt extends Component {
   getQuyTrinhId() {
     return this.props.mainState.quyTrinhSx.edit ? this.props.mainState.quyTrinhSx.edit.id : '';
   }
+  getMaSx() {
+    return this.props.mainState.sx.ma_sx ? this.props.mainState.sx.ma_sx : '';
+  }
   updateTask(id, mode, task) {
-    let quyTrinhId = this.getQuyTrinhId();
     let taskData = {
       text: task.text,
       start_date: moment(task.start_date).format('YYYY-MM-DD HH:mm:ss'),
       duration: task.duration,
       parent: task.parent,
       progress: task.progress || 0,
-      quy_trinh_id: quyTrinhId
     };
+    //Luu theo quy trinh hoac luu theo lenh san xuat
+    if(this.props.type == "theo_lenh_sx") {
+      let maSX = this.getMaSx();
+      taskData.ma_sx = maSX;
+    } else {
+      let quyTrinhId = this.getQuyTrinhId();
+      taskData.quy_trinh_id = quyTrinhId;
+    }
     if(mode == "updated") {
       taskData.id = id;
     }
@@ -202,6 +221,13 @@ class Gantt extends Component {
       source: link.source,
       target: link.target,
       type: link.type
+    }
+    if(this.props.type == "theo_lenh_sx") {
+      let maSX = this.getMaSx();
+      linkData.ma_sx = maSX;
+    } else {
+      let quyTrinhId = this.getQuyTrinhId();
+      linkData.quy_trinh_id = quyTrinhId;
     }
     this.saveLink(linkData);
   }
@@ -300,7 +326,7 @@ class Gantt extends Component {
     gantt.config.date_grid = "%d-%m-%Y";
     
     gantt.config.columns = [
-      {name: "text", hide: true},
+      {name: "text", hide: true, tree: true},
       {name: "start_date", hide: true},
       {name: "duration", hide: false},
       {name: "add", hide: false}
@@ -315,7 +341,7 @@ class Gantt extends Component {
       gantt.config.show_links = false;
       //gantt.config.show_progress = false;
       gantt.config.columns = [
-        {name: "text", hide: true},
+        {name: "text", hide: true, tree: true},
         {name: "start_date", hide: true},
         {name: "duration", hide: true},
         //{name: "add", hide: true}
@@ -327,7 +353,7 @@ class Gantt extends Component {
     //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
     // };
     //gantt.config.task_date = "%d-%m-%Y";
-    //this.initGanttEvents();
+    this.initGanttEvents();
     gantt.config.order_branch = true;
     gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);
