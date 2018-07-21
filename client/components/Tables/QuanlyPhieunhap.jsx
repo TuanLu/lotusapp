@@ -2,7 +2,7 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -120,7 +120,12 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: false,
         render: (text, record) => {
-          return trangThaiPhieuObj[text]['text'] || text;
+          let type = "processing";
+          if(text == "0") type = "error";
+          if(text == "1") type = "success";
+          return <Badge 
+            text={trangThaiPhieuObj[text]['text'] || text} 
+            status={type}/>
         }
       },
       {
@@ -199,25 +204,19 @@ class EditableTable extends React.Component {
     }));
   }
   isQC() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqc') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];   
+    return roles.indexOf('nhomqc') !== -1;
   }
   isQA() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhomqa') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('nhomqa') !== -1;
   }
   isInventoryOwner() {
-    let {userRoles} = this.props.mainState;
-    for(let i = 0; i < userRoles.length; i++) {
-      if(userRoles[i].path == 'nhom_thu_kho') return true;
-    }
-    return false;
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('nhom_thu_kho') !== -1;
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
@@ -259,6 +258,7 @@ class EditableTable extends React.Component {
           //Stop after fetching data
           this.props.dispatch(updateStateData({
             phieunhap: {
+              ...this.props.mainState.phieunhap,
               refresh: false
             }
           }));
@@ -270,9 +270,10 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
-  delete = (record) => {
-    if(record.id) {
-      fetch(ISD_BASE_URL + fetchConfig.delete + record.id, {
+  delete = () => {
+    let {id} = this.props.mainState.phieunhap;
+    if(id) {
+      fetch(ISD_BASE_URL + fetchConfig.delete + id, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
@@ -283,19 +284,19 @@ class EditableTable extends React.Component {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
           message.success(json.message);
+          this.props.dispatch(updateStateData({
+            phieunhap: {},
+            phieuAction: {
+              ...this.props.mainState.phieuAction,
+              addNewItem: false
+            }
+          }));
         }
       })
       .catch((error) => {
         message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         console.log(error);
       });
-    } else {
-      if(record.key) {
-        let newData = this.state.data.filter((item) => item.key != record.key);
-        this.setState({
-          data: newData
-        })
-      }  
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -345,6 +346,7 @@ class EditableTable extends React.Component {
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
           <FormPhieunhap
+            onDelete={() => this.delete()}
             isQA={this.isQA()}
             isQC={this.isQC()}
             isInventoryOwner={this.isInventoryOwner()}

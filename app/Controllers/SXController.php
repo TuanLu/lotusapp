@@ -30,7 +30,7 @@ class SXController extends BaseController
 			'pdbcl',
 			'gd',
 			'status',
-			'created' => Medoo::raw("DATE_FORMAT( created, '%d/%m/%Y' )")
+			'create_on' => Medoo::raw("DATE_FORMAT( create_on, '%d/%m/%Y' )")
 		];
 		return $columns;
 	}
@@ -114,12 +114,12 @@ class SXController extends BaseController
 		$dang_bao_che = isset($params['dang_bao_che']) ? $params['dang_bao_che'] : '';
 		$qcdg = isset($params['qcdg']) ? $params['qcdg'] : '';
 		$dh = isset($params['dh']) ? $params['dh'] : '';
-		$pkhsx = isset($params['pkhsx']) ? $params['pkhsx'] : '';
-		$pdbcl = isset($params['pdbcl']) ? $params['pdbcl'] : '';
-		$gd = isset($params['gd']) ? $params['gd'] : '';
-		if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
-		if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
-		if($gd) {$gd = 1;}else{$gd = 0;}
+		//$pkhsx = isset($params['pkhsx']) ? $params['pkhsx'] : '';
+		//$pdbcl = isset($params['pdbcl']) ? $params['pdbcl'] : '';
+		//$gd = isset($params['gd']) ? $params['gd'] : '';
+		// if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
+		// if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
+		// if($gd) {$gd = 1;}else{$gd = 0;}
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
 		$note = isset($params['note']) ? $params['note'] : '';
 
@@ -165,10 +165,12 @@ class SXController extends BaseController
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
 				'status' => 1,
-				'pkhsx' => $pkhsx,
-				'pdbcl' => $pdbcl,
-				'gd' => $gd,
-				'created' => $createOn
+				//'pkhsx' => $pkhsx,
+				//'pdbcl' => $pdbcl,
+				//'gd' => $gd,
+				'create_on' => $createOn,
+				'create_by' => $userId,
+				'update_by' => $userId,
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -196,6 +198,10 @@ class SXController extends BaseController
 				} else {
 					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 				}
+			} else {
+				// echo "<pre>";
+				// print_r($result->errorInfo());
+				$rsData['message'] = 'Không chèn được lệnh vào CSDL!';
 			}
 		} else {
 			//update data base on $id
@@ -217,10 +223,11 @@ class SXController extends BaseController
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
 				'status' => 1,
-				'pkhsx' => $pkhsx,
-				'pdbcl' => $pdbcl,
-				'gd' => $gd,
-				'updated' => $date->format('Y-m-d H:i:s')
+				//'pkhsx' => $pkhsx,
+				//'pdbcl' => $pdbcl,
+				//'gd' => $gd,
+				'update_on' => $date->format('Y-m-d H:i:s'),
+				'update_by' => $userId
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
 			if($result->rowCount()) {
@@ -309,81 +316,34 @@ class SXController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-	public function changeStatus($request, $response) {
+	public function pheDuyet($request, $response) {
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
 		);
-		// Get params and validate them here.
-		$params = $request->getParams();
-		if(isset($params['ids'])
-			&& isset($params['type'])
-			&& isset($params['status'])) {
-
+		$type = $request->getParam('type');
+		$maSx = $request->getParam('ma_sx');
+		$value = $request->getParam('value');
+		if($type && $maSx) {
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
 			$updateData = [
 				'update_on' => $createOn,
 			];
-			if($params['type'] == 'qc_check') {
-				$updateData['qc_check'] = $params['status'];
-				$updateData['qc_id'] = $userId;
+			if($value != "") {
+				$value = $userId;
 			} else {
-				$updateData['qa_check'] = $params['status'];
-				$updateData['qa_id'] = $userId;
+				$value = "";
 			}
-			
-			$result = $this->db->update('lotus_spsx', $updateData, ['id' => $params['ids']]);
+			$updateData[$type] = $value;
+			$result = $this->db->update($this->tableName, $updateData, ['ma_sx' => $maSx]);
 			if($result->rowCount()) {
-				$this->superLog('Update SP theo mã SX ', $updateData);
+				$this->superLog('Phe duyet lenh sx', $updateData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
-			}
-		}
-		echo json_encode($rsData);
-	}
-	public function changePosition($request, $response) {
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
-		);
-		// Get params and validate them here.
-		$params = $request->getParams();
-		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';
-		if(!$ma_sx) {
-			$rsData['message'] = 'Thiếu mã sản xuất';
-			echo json_encode($rsData);
-			die;
-		}
-		if(isset($params['id'])
-			&& isset($params['vi_tri_kho'])) {
-
-			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-			$date = new \DateTime();
-			$createOn = $date->format('Y-m-d H:i:s');
-			//Update kho 
-			$updateKhoData = [
-				'update_by' => $userId,
-				'ma_kho' => $maKho,
-				'update_on' => $createOn,
-			];
-			$result = $this->db->update('phieu_nhap_xuat_kho', $updateKhoData, ['ma_sx' => $ma_sx]);
-			if($result->rowCount()) {
-				$updateData = [
-					'vi_tri_kho' => $params['vi_tri_kho'],
-					'update_on' => $createOn,
-				];
-				$result = $this->db->update('lotus_spsx', $updateData, ['id' => $params['id']]);
-				if($result->rowCount()) {
-					$this->superLog('Update SP theo phiếu', $updateData);
-					$rsData['status'] = self::SUCCESS_STATUS;
-					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-				} else {
-					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
-				}
 			}
 		}
 		echo json_encode($rsData);
@@ -497,4 +457,5 @@ class SXController extends BaseController
         echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
         exit;
 	}
+
 }

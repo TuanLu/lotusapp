@@ -2,11 +2,11 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
-import FormPhieunhap from './QuanlySanxuat/FormPhieunhap'
+import FormLenhSx from './QuanlySanxuat/FormLenhSx'
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -120,14 +120,52 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
-        title: 'Tình trạng',
-        dataIndex: 'status',
-        //width: '40%',
-        editable: false,
-        render: (text, record) => {
-          return trangThaiPhieuObj[text]['text'] || text;
-        }
+        title: 'Phê duyệt',
+        children: [
+          {
+            title: 'PKHSX',
+            dataIndex: 'pkhsx',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+          {
+            title: 'PĐBCL',
+            dataIndex: 'pdbcl',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+          {
+            title: 'Giám đốc',
+            dataIndex: 'gd',
+            render: (text, record) => {
+              return (
+                <Badge 
+                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
+                status={text == "" ? "error" : "success"}/>
+              );
+            }
+          },
+        ]
       },
+      // {
+      //   title: 'Tình trạng',
+      //   dataIndex: 'status',
+      //   //width: '40%',
+      //   editable: false,
+      //   render: (text, record) => {
+      //     return trangThaiPhieuObj[text]['text'] || text;
+      //   }
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
@@ -195,9 +233,9 @@ class EditableTable extends React.Component {
       so_dk: '',
       qcdg: '',
       dh: '',
-      pkhsx: '',
-      pdbcl: '',
-      gd: '',
+      //pkhsx: '',
+      //pdbcl: '',
+      //gd: '',
       tttb_kltb: '',
       products: [],
       status: '',
@@ -253,7 +291,7 @@ class EditableTable extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
+            sx: {
               refresh: false
             }
           }));
@@ -294,7 +332,7 @@ class EditableTable extends React.Component {
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.phieunhap;
+    let {refresh} = nextProps.mainState.sx;
     if(refresh) {
       return {
         dataUpToDate: null
@@ -339,7 +377,7 @@ class EditableTable extends React.Component {
     return (
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
-          <FormPhieunhap
+          <FormLenhSx
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />

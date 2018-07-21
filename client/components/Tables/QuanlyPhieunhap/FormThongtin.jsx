@@ -61,14 +61,9 @@ class FormThongtin extends React.Component {
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 16 }}
             >
-              <Switch checkedChildren="Đã phê duyệt" unCheckedChildren="Chờ phê duyệt" disabled={readOnly} defaultChecked = {tinh_trang} 
+              <Switch checkedChildren="Đã duyệt" unCheckedChildren="Chưa duyệt" checked ={tinh_trang} 
                 onChange={(tinh_trang) => {
-                  this.props.dispatch(updateStateData({
-                    phieunhap: {
-                      ...this.props.mainState.phieunhap,
-                      tinh_trang
-                    }
-                  }));
+                  this.props.pheDuyet(tinh_trang);
                 }} />
               {/* <Select 
                 disabled={readOnly}

@@ -67,6 +67,7 @@ $app->get('/phieunhap/fetchSelectedProduct/{ma_phieu}', 'PhieunhapController:fet
 $app->post('/phieunhap/update', 'PhieunhapController:update');
 $app->post('/phieunhap/updateProduct', 'PhieunhapController:updateProduct');
 $app->post('/phieunhap/changeStatus', 'PhieunhapController:changeStatus');
+$app->post('/phieunhap/pheduyet', 'PhieunhapController:pheDuyet');
 $app->post('/phieunhap/changePosition', 'PhieunhapController:changePosition');
 $app->get('/phieunhap/delete/{id}', 'PhieunhapController:delete');
 $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct');
@@ -108,7 +109,7 @@ $app->get('/sx/fetchSelectedProduct/{ma_sx}', 'SXController:fetchSelectedProduct
 $app->get('/sx/fetchProductByCate/{cate_id}', 'SXController:fetchProductByCate');
 $app->post('/sx/update', 'SXController:update');
 $app->post('/sx/updateProduct', 'SXController:updateProduct');
-$app->post('/sx/changeStatus', 'SXController:changeStatus');
+$app->post('/sx/pheduyet', 'SXController:pheDuyet');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
 //Quy trinh san xuat router
@@ -120,7 +121,10 @@ $app->post('/gantt/update', 'GanttController:update');
 $app->post('/gantt/updateLink', 'GanttController:updateLink');
 $app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
+$app->get('/gantt/fetchTasksByMaSx/{ma_sx}', 'GanttController:fetchTasksByMaSx');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');
+$app->get('/gantt/allPlan', 'GanttController:getAllPlanData');
+
 //Phòng ban router
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');

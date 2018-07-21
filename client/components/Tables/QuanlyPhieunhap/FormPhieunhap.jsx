@@ -55,14 +55,40 @@ class FormPhieunhap extends React.Component {
     }
     return true;
   }
-  delete() {
-
-  }
-  pheduyet() {
-    let isValid = this.validBeforeSave();
-    if(isValid) {
-      // Thay status, phê duyệt phiếu nhập
-    }
+  pheDuyet(value) {
+    this.setState({ loading: true });
+    let {phieunhap} = this.props.mainState;
+    let pheDuyetData = {
+      value,
+      ma_phieu: phieunhap.ma_phieu
+    };
+    fetch(ISD_BASE_URL + 'phieunhap/pheduyet', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(pheDuyetData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          phieunhap: {
+            ...this.props.mainState.phieunhap,
+            refresh: true,
+            ...json.data
+          },
+        }));
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình phê duyệt!');
+    });
   }
   cancel() {
     this.props.dispatch(updateStateData({
@@ -74,7 +100,8 @@ class FormPhieunhap extends React.Component {
   }
 
   render() {
-    let {phieuAction} = this.props.mainState;
+    let {phieuAction, phieunhap} = this.props.mainState;
+    let tinh_trang = phieunhap.tinh_trang || '';
     return (
       <div>
         <div className="table-operations">
@@ -103,15 +130,39 @@ class FormPhieunhap extends React.Component {
                 :
                 <React.Fragment>
                   {(this.props.isInventoryOwner )? 
-                  <Button 
-                      onClick={() => this.pheduyet()}
-                      style={{marginRight: 10}}
-                      icon="check-circle"
-                      type="primary">
-                      Phê duyệt
-                  </Button>
+                    <React.Fragment>
+                      {tinh_trang == 1? 
+                        <Button 
+                          onClick={() => this.pheDuyet(0)}
+                          style={{marginRight: 10}}
+                          icon="exclamation-circle"
+                          type="danger">
+                          Huỷ phê duyệt
+                      </Button>
+                      : 
+                      <Button 
+                        onClick={() => this.pheDuyet(1)}
+                        style={{marginRight: 10}}
+                        icon="check-circle"
+                        type="primary">
+                        Phê duyệt
+                      </Button>
+                      }
+                    </React.Fragment>
                   : null}
                   {(this.props.isInventoryOwner )? 
+                  <React.Fragment>
+                    <Popconfirm
+                    title="Bạn thật sự muốn xoá phiếu này?"
+                    onConfirm={() => this.props.onDelete()}
+                  >
+                    <Button 
+                      style={{marginRight: 10}}
+                      icon="close-circle"
+                      type="danger">
+                          Xoá
+                      </Button>
+                  </Popconfirm>
                     <Button 
                     onClick={() => {
                       this.props.dispatch(updateStateData({
@@ -124,20 +175,7 @@ class FormPhieunhap extends React.Component {
                     type="primary"
                     htmlType="button" 
                     icon="edit">Sửa</Button>
-                    : null}
-                    {(this.props.isInventoryOwner )? 
-                    <Popconfirm
-                      title="Bạn thật sự muốn xoá?"
-                      okType="danger"
-                      onConfirm={() => this.delete(record)}
-                    >
-                      <Button 
-                          style={{marginLeft: 10}}
-                          icon="delete"
-                          type="danger">
-                          Xóa
-                      </Button>  
-                    </Popconfirm>
+                    </React.Fragment>
                     : null}
                     <Button 
                         onClick={() => this.cancel()}
@@ -153,6 +191,9 @@ class FormPhieunhap extends React.Component {
           </Row>
         </div>
         <FormThongTin 
+          pheDuyet={(tinh_trang) => {
+            this.pheDuyet(tinh_trang);
+          }}
           isInventoryOwner={this.props.isInventoryOwner}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>

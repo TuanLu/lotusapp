@@ -78,17 +78,17 @@ export const trangThaiPhieu = [
   {
     id: '0',
     value: '0',
-    text: 'Đã hủy'
+    text: 'Không duyệt'
   },
   {
     id: '1',
     value: '1',
-    text: 'Đã phê duyệt'
+    text: 'Đã duyệt'
   },
   {
     id: '2',
     value: '2',
-    text: 'Chưa phê duyệt'
+    text: 'Chưa duyệt'
   },
 ];
 

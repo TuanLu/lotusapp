@@ -11,19 +11,72 @@ const { TextArea } = Input;
 class FormNote extends React.Component {
   constructor(props) {
     super(props);
+    this.pheDuyet = this.pheDuyet.bind(this);
+    this.isNhomKHSX = this.isNhomKHSX.bind(this);
+    this.isNhomDBCL = this.isNhomDBCL.bind(this);
+    this.isNhomGD = this.isNhomGD.bind(this);
     this.state = {
       productListbyCateList: []
     }
   }
+  pheDuyet(type, value) {
+    this.setState({ loading: true });
+    let {sx} = this.props.mainState;
+    let pheDuyetData = {
+      type,
+      value,
+      ma_sx: sx.ma_sx
+    };
+    fetch(ISD_BASE_URL + 'sx/pheduyet', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(pheDuyetData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          sx: {
+            refresh: true
+          },
+        }));
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình phê duyệt!');
+    });
+  }
   componentDidMount() {
     
   }
+  isNhomKHSX() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_khsx') !== -1;
+  }
+  isNhomDBCL() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_dbcl') !== -1;
+  }
+  isNhomGD() {
+    let {userInfo} = this.props.mainState;
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    return roles.indexOf('duyet_gd') !== -1;
+  }
   render() {
     let {sx, phieuAction} = this.props.mainState; 
-    let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
-    let gdact = sx && sx.gd == 0 ? false : true;
-    let pkhsxact = sx && sx.pkhsx == 0 ? false : true;
-    let pdbclact = sx && sx.pdbcl == 0 ? false : true;
+    let readOnly = false;//Read by roles
+    let gdact = sx && sx.gd == "" ? false : true;
+    let pkhsxact = sx && sx.pkhsx == "" ? false : true;
+    let pdbclact = sx && sx.pdbcl == "" ? false : true;
     return ( 
       <Form> 
         <Row>
@@ -54,51 +107,36 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                 <label>P. KHSX</label><br />
                   <Switch
-                  disabled = {readOnly}
-                  defaultChecked = {pkhsxact}
+                  disabled = {this.isNhomKHSX() ? false : true}
+                  checked = {pkhsxact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pkhsx) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        pkhsx
-                      }
-                    }));
+                    this.pheDuyet('pkhsx', pkhsx);
                   }}
                 />
             </Col>
             <Col className="align_center" span={8}>
                   P. ĐBCL<br />
                   <Switch
-                  disabled = {readOnly}
-                  defaultChecked = {pdbclact}
+                  disabled = {this.isNhomDBCL() ? false : true}
+                  checked = {pdbclact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pdbcl) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        pdbcl
-                      }
-                    }));
+                    this.pheDuyet('pdbcl', pdbcl);
                   }}
                 />
             </Col>
             <Col className="align_center" span={8}>
                   Giám Đốc<br />
                   <Switch
-                  disabled = {readOnly}
-                  defaultChecked = {gdact}
+                  disabled = {this.isNhomGD() ? false : true}
+                  checked = {gdact}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(gd) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        gd
-                      }
-                    }));
+                    this.pheDuyet('gd', gd);
                   }}
                 />
             </Col>

@@ -461,4 +461,38 @@ class PhieunhapController extends BaseController
         echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
         exit;
 	}
+	public function pheDuyet($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		$value = $request->getParam('value');
+		$maPhieu = $request->getParam('ma_phieu');
+		if($maPhieu) {
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$date = new \DateTime();
+			$createOn = $date->format('Y-m-d H:i:s');
+			$updateData = [
+				'update_on' => $createOn,
+				'update_by' => $userId
+			];
+			if($value != "") {
+				$value = 1;
+			} else {
+				$value = 2;
+			}
+			$updateData['tinh_trang'] = $value;
+			$result = $this->db->update($this->tableName, $updateData, ['ma_phieu' => $maPhieu]);
+			if($result->rowCount()) {
+				$this->superLog('Phe duyet phiếu nhập', $updateData);
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				$data = $this->db->select($this->tableName, ['ma_phieu', 'tinh_trang'], ['ma_phieu' => $maPhieu]);
+				$rsData['data'] = isset($data[0]) ? $data[0] : [];
+			} else {
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			}
+		}
+		echo json_encode($rsData);
+	}
 }

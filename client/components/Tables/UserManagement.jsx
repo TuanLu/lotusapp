@@ -265,6 +265,7 @@ class EditableTable extends React.Component {
             this.setState({ data: newData, editingKey: '' });
             message.success(json.message);
             this.state.newitem = 0;
+            window.location.reload();
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)

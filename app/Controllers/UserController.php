@@ -285,11 +285,15 @@ class UserController extends BaseController {
     $allRoles = Roles::getRoles();
     $roleList = [];
     foreach ($allRoles as $key => $value) {
-      $roleList[] = [
+      $roleItem = [
         'label' => $value['label'],
         'value' => $value['path'],
         'key' => $value['path'],
       ];
+      if(isset($value['children'])) {
+        $roleItem['children'] = $value['children'];
+      }
+      $roleList[] = $roleItem;
     }
     if(!empty($roleList)) {
       $rsData['status'] = self::SUCCESS_STATUS;
