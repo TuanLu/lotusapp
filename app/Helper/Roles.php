@@ -118,6 +118,11 @@ class Roles {
         'icon' => 'schedule',
         'path' => 'khvt'
       ],
+      'kkvt' => [
+        'label' => 'Kiểm kê vật tư', 
+        'icon' => 'schedule',
+        'path' => 'kkvt'
+      ],
     ];
   }
 }
