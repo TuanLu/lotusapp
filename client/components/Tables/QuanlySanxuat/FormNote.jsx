@@ -107,7 +107,7 @@ class FormNote extends React.Component {
                 <label>P. KHSX</label><br />
                   <Switch
                   disabled = {this.isNhomKHSX() ? false : true}
-                  checked = {sx.pkhsx}
+                  checked = {sx.pkhsx ? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pkhsx) => {
@@ -119,7 +119,7 @@ class FormNote extends React.Component {
                   P. ĐBCL<br />
                   <Switch
                   disabled = {this.isNhomDBCL() ? false : true}
-                  checked = {sx.pdbcl}
+                  checked = {sx.pdbcl? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pdbcl) => {
@@ -131,7 +131,7 @@ class FormNote extends React.Component {
                   Giám Đốc<br />
                   <Switch
                   disabled = {this.isNhomGD() ? false : true}
-                  checked = {sx.gd}
+                  checked = {sx.gd? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(gd) => {

@@ -5,7 +5,7 @@ import FormSanpham from './FormSanpham'
 import FormNote from './FormNote'
 import Gantt from './../QuanlyQuytrinhSanxuat/Gantt'
 import { Row, Button, Col, Popconfirm,message } from 'antd';
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader, blankGanttData} from 'ISD_API'
 import {updateStateData} from 'actions'
 
 class FormPhieunhap extends React.Component {
@@ -62,12 +62,16 @@ class FormPhieunhap extends React.Component {
     return true;
   }
   openQTSX(showGantt) {
-    this.props.dispatch(updateStateData({
+    let updateData = {
       quyTrinhTheoLenh: {
         ...this.props.mainState.quyTrinhTheoLenh,
         showGantt: showGantt
       }
-    }));
+    };
+    if(!showGantt) {
+      updateData.ganttData = blankGanttData;
+    }
+    this.props.dispatch(updateStateData(updateData));
   }
   cancel() {
     this.props.dispatch(updateStateData({

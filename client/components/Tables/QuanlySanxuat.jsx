@@ -4,7 +4,7 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message, Badge
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu, blankGanttData} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormLenhSx from './QuanlySanxuat/FormLenhSx'
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
@@ -267,7 +267,8 @@ class EditableTable extends React.Component {
           ...phieuAction,
           addNewItem: true,
           action: 'view'
-        }
+        },
+        ganttData: blankGanttData
       }));
     }
   }

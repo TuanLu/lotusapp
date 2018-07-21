@@ -9,7 +9,80 @@ use Firebase\JWT\JWT;
 
 class GanttController extends BaseController {
   private $tableName = 'gantt_tasks';
-  private $linkTable = 'gantt_links';
+	private $linkTable = 'gantt_links';
+	
+	protected function getTasksByQuytrinhId($quyTrinhId) {
+		$tasks = [
+			'data' => [],
+			'links' => []
+		];
+		if($quyTrinhId) {
+			// Columns to select.
+			$columns = [
+				'id',
+				'text',
+				'start_date',
+				'duration',
+				'status',
+				'progress',
+				'parent',
+				'quy_trinh_id',
+			];
+			$collection = $this->db->select($this->tableName, $columns, [
+				"ORDER" => ["start_date" => "ASC"],
+				"status" => 1,
+				"quy_trinh_id" => $quyTrinhId
+			]);
+			//Get links
+      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
+				"status" => 1,
+				"quy_trinh_id" => $quyTrinhId
+			]);
+			if(!empty($collection)) {
+				$tasks['data'] = $collection;
+			}
+			if(!empty($links)) {
+				$tasks['links'] = $links;
+			}
+		}
+		return $tasks;
+	}
+	protected function getTasksByMaSx($maSx) {
+		$tasks = [
+			'data' => [],
+			'links' => []
+		];
+		if($maSx) {
+			// Columns to select.
+			$columns = [
+				'id',
+				'text',
+				'start_date',
+				'duration',
+				'status',
+				'progress',
+				'parent',
+				'ma_sx',
+			];
+			$collection = $this->db->select($this->tableName, $columns, [
+				"ORDER" => ["start_date" => "ASC"],
+				"status" => 1,
+				"ma_sx" => $maSx
+			]);
+			//Get links
+      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
+				"status" => 1,
+				"ma_sx" => $maSx
+			]);
+			if(!empty($collection)) {
+				$tasks['data'] = $collection;
+			}
+			if(!empty($links)) {
+				$tasks['links'] = $links;
+			}
+		}
+		return $tasks;
+	}
 
   public function fetchTasks($request, $response, $args){
     //$this->logger->addInfo('Request Npp path');
@@ -23,40 +96,18 @@ class GanttController extends BaseController {
       echo json_encode($rsData);
       die;
     };
-		// Columns to select.
-		$columns = [
-				'id',
-				'text',
-        'start_date',
-				'duration',
-        'status',
-        'progress',
-        'parent',
-        'quy_trinh_id',
-		];
-		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["start_date" => "ASC"],
-      "status" => 1,
-      "quy_trinh_id" => $quyTrinhId
-		]);
-		if(!empty($collection)) {
+		
+		$collection = $this->getTasksByQuytrinhId($quyTrinhId);
+		if(!empty($collection['data'])) {
 			$rsData['status'] = self::SUCCESS_STATUS;
       $rsData['message'] = 'Dữ liệu đã được load!';
-      //Load links 
-      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
-				"status" => 1,
-				"quy_trinh_id" => $quyTrinhId
-			]);
-			$rsData['data'] = array(
-        'data' => $collection,
-        'links' => $links
-      );
+			$rsData['data'] = $collection;
 		} else {
 			$rsData = $this->getEmptyGanttChart();
 		}
 		echo json_encode($rsData);
 	}
-	public function fetchTasksByMaSx($request, $response, $args){
+  public function fetchTasksByMaSx($request, $response, $args){
     //$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -64,43 +115,21 @@ class GanttController extends BaseController {
     );
     $maSx = isset(	$args['ma_sx']) ? $args['ma_sx'] : '';
     if($maSx == "") {
-      $rsData['message'] = 'Không tìm thấy mã sản xuất!';
+      $rsData['message'] = 'Không tìm thấy mã sx!';
       echo json_encode($rsData);
       die;
     };
-		// Columns to select.
-		$columns = [
-				'id',
-				'text',
-        'start_date',
-				'duration',
-        'status',
-        'progress',
-        'parent',
-        'ma_sx',
-		];
-		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["start_date" => "ASC"],
-      "status" => 1,
-      "ma_sx" => $maSx
-		]);
-		if(!empty($collection)) {
+		
+		$collection = $this->getTasksByMaSx($maSx);
+		if(!empty($collection['data'])) {
 			$rsData['status'] = self::SUCCESS_STATUS;
       $rsData['message'] = 'Dữ liệu đã được load!';
-      //Load links 
-      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
-				"status" => 1,
-				"ma_sx" => $maSx
-			]);
-			$rsData['data'] = array(
-        'data' => $collection,
-        'links' => $links
-      );
+			$rsData['data'] = $collection;
 		} else {
 			$rsData = $this->getEmptyGanttChart();
 		}
 		echo json_encode($rsData);
-  }
+	}
   public function update($request, $response){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -159,8 +188,6 @@ class GanttController extends BaseController {
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm công việc thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data[0];
 			} else {
         // $error = $result->errorInfo();
         // echo "<pre>";
@@ -175,23 +202,20 @@ class GanttController extends BaseController {
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
         $this->superLog('Update Quy trinh', $itemData);
-        $data = $this->db->select($this->tableName, 
-        [
-          'text',
-          'duration',
-          'start_date',
-					'parent',
-					'progress',
-          'status',
-        ], 
-        ['id' => $id]);
-				$rsData['data'] = $data[0];
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
 			}
 			
+		}
+		//Load data after added or updated
+		if($quyTrinhId) {
+			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
+			$rsData['data'] = $collection;
+		} elseif($maSx) {
+			$collection = $this->getTasksByMaSx($maSx);
+			$rsData['data'] = $collection;
 		}
 		echo json_encode($rsData);
 	}
@@ -272,13 +296,20 @@ class GanttController extends BaseController {
 					'source' => $itemData['source'],
 					'target' => $itemData["target"]
 				]);
-				$rsData['data'] = $data[0];
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
 			}
 			
+		}
+		//Load data after added or updated
+		if($quyTrinhId) {
+			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
+			$rsData['data'] = $collection;
+		} elseif($maSx) {
+			$collection = $this->getTasksByMaSx($maSx);
+			$rsData['data'] = $collection;
 		}
 		echo json_encode($rsData);
   }
