@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import 'dhtmlx-gantt';
 //import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip.js';
 //import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
-//import 'dhtmlx-gantt/codebase/locale/locale_ar.js';
+import './locale_vn.js';
 //import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import './Theme.css';
 //import {connect} from 'react-redux'
