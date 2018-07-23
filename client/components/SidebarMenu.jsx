@@ -10,18 +10,39 @@ class SidebarMenu extends React.Component {
     let {defaultRouter} = mainState;
     let menuItems = mainState.userRoles.filter((role) => role.include_in_menu !== false);
     menuItems = menuItems.map((role, index) => {
-      return (
-        <Menu.Item
-          onClick={() => {
-            this.props.dispatch(updateStateData({
-              defaultRouter: role.path
-            }));
-          }} 
-          key={role.path}>
-            <Icon type={role.icon} />
-            <span>{role.label}</span>
-        </Menu.Item>
-      );
+      if(role.children && role.children.length) {
+        return (
+          <SubMenu key={role.path} title={<span><Icon type={role.icon} /><span>{role.label}</span></span>}>
+             {role.children.map((child) => {
+              return (
+                <Menu.Item
+                  onClick={() => {
+                    this.props.dispatch(updateStateData({
+                      defaultRouter: child.path
+                    }));
+                  }} 
+                  key={child.path}>
+                    {/* <Icon type={child.icon} /> */}
+                    <span>{child.label}</span>
+                </Menu.Item>
+              );
+            })}
+          </SubMenu>
+        );
+      } else {
+        return (
+          <Menu.Item
+            onClick={() => {
+              this.props.dispatch(updateStateData({
+                defaultRouter: role.path
+              }));
+            }} 
+            key={role.path}>
+              <Icon type={role.icon} />
+              <span>{role.label}</span>
+          </Menu.Item>
+        );
+      }
     });
     return menuItems;
   }
@@ -35,17 +56,7 @@ class SidebarMenu extends React.Component {
           theme="dark"
         >
          {this.renderMenuItem()}
-         {/* <Menu.Item
-            onClick={() => {
-              this.props.dispatch(updateStateData({
-                defaultRouter: 'tinhtrangkho'
-              }));
-            }} 
-            key={"tinhtrangkho"}>
-            <Icon type="home" />
-            <span>Tình trạng kho</span>
-        </Menu.Item>
-         <SubMenu key="user_group" title={<span><Icon type="team" /><span>QL Users</span></span>}>
+         {/* <SubMenu key="user_group" title={<span><Icon type="team" /><span>QL Users</span></span>}>
             <Menu.Item key="5">Option 5</Menu.Item>
           </SubMenu>
           <SubMenu key="setting_group" title={<span><Icon type="setting" /><span>Cài đặt</span></span>}>

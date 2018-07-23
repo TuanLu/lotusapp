@@ -44,7 +44,9 @@ class FormNote extends React.Component {
         message.success(json.message);
         this.props.dispatch(updateStateData({
           sx: {
-            refresh: true
+            ...this.props.mainState.sx,
+            refresh: true,
+            ...json.data
           },
         }));
       }
@@ -74,9 +76,6 @@ class FormNote extends React.Component {
   render() {
     let {sx, phieuAction} = this.props.mainState; 
     let readOnly = false;//Read by roles
-    let gdact = sx && sx.gd == "" ? false : true;
-    let pkhsxact = sx && sx.pkhsx == "" ? false : true;
-    let pdbclact = sx && sx.pdbcl == "" ? false : true;
     return ( 
       <Form> 
         <Row>
@@ -108,7 +107,7 @@ class FormNote extends React.Component {
                 <label>P. KHSX</label><br />
                   <Switch
                   disabled = {this.isNhomKHSX() ? false : true}
-                  checked = {pkhsxact}
+                  checked = {sx.pkhsx ? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pkhsx) => {
@@ -120,7 +119,7 @@ class FormNote extends React.Component {
                   P. ĐBCL<br />
                   <Switch
                   disabled = {this.isNhomDBCL() ? false : true}
-                  checked = {pdbclact}
+                  checked = {sx.pdbcl? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(pdbcl) => {
@@ -132,7 +131,7 @@ class FormNote extends React.Component {
                   Giám Đốc<br />
                   <Switch
                   disabled = {this.isNhomGD() ? false : true}
-                  checked = {gdact}
+                  checked = {sx.gd? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
                   onChange={(gd) => {

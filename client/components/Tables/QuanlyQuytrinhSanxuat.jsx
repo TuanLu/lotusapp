@@ -332,6 +332,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
               </div>
               <div className="wrap-gantt-chart">
                 <Gantt
+                  type="quy_trinh_mau"
                   mainState={this.props.mainState}
                   dispatch={this.props.dispatch}
                 />

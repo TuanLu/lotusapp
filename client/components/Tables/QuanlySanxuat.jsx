@@ -4,7 +4,7 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message, Badge
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu, blankGanttData} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormLenhSx from './QuanlySanxuat/FormLenhSx'
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
@@ -128,8 +128,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -139,8 +139,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -150,8 +150,8 @@ class EditableTable extends React.Component {
             render: (text, record) => {
               return (
                 <Badge 
-                text={text == "" ? "Chưa duyệt" : "Đã duyệt"} 
-                status={text == "" ? "error" : "success"}/>
+                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                status={!text ? "error" : "success"}/>
               );
             }
           },
@@ -267,7 +267,8 @@ class EditableTable extends React.Component {
           ...phieuAction,
           addNewItem: true,
           action: 'view'
-        }
+        },
+        ganttData: blankGanttData
       }));
     }
   }
@@ -292,6 +293,7 @@ class EditableTable extends React.Component {
           //Stop after fetching data
           this.props.dispatch(updateStateData({
             sx: {
+              ...this.props.mainState.sx,
               refresh: false
             }
           }));

@@ -3,66 +3,85 @@ namespace App\Helper;
 
 class Roles {
   static function getRoles() {
+    //Parents: main_group, vattu_group, qlsx_group, chamcong_group, qluser_group, other_group
     return [
       'tinhtrangkho' => [
         'label' => 'Tình trạng kho', 
         'icon' => 'home',
         'path' => 'tinhtrangkho',
+        'parent' => 'main_group'
       ],
       'qldh' => [
         'label' => 'QL Đơn hàng', 
         'icon' => 'shopping-cart',
-        'path' => 'qldh'
+        'path' => 'qldh',
+        'parent' => 'other_group'
       ],
       'npp' => [
         'label' => 'QL NCC', 
         'icon' => 'solution',
-        'path' => 'npp'
+        'path' => 'npp',
+        'parent' => 'other_group'
       ],
       'qluser' => [
         'label' => 'QL Users', 
         'icon' => 'user',
-        'path' => 'qluser'
+        'path' => 'qluser',
+        'parent' => 'qluser_group'
       ],
       'qlsx' => [
         'label' => 'QL Sản Xuất', 
         'icon' => 'inbox',
-        'path' => 'qlsx'
-      ],
-      'qlkho' => [
-        'label' => 'QL Kho', 
-        'icon' => 'home',
-        'path' => 'qlkho'
-      ],
-      'qlvtkho' => [
-        'label' => 'QL Vị trí Kho', 
-        'icon' => 'home',
-        'path' => 'qlvtkho'
+        'path' => 'qlsx',
+        'parent' => 'qlsx_group'
       ],
       'qlphieunhap' => [
         'label' => 'QL Phiếu Nhập', 
         'icon' => 'schedule',
-        'path' => 'qlphieunhap'
+        'path' => 'qlphieunhap',
+        'parent' => 'vattu_group'
       ],
       'qlphieuxuat' => [
         'label' => 'QL Phiếu Xuất', 
         'icon' => 'schedule',
-        'path' => 'qlphieuxuat'
+        'path' => 'qlphieuxuat',
+        'parent' => 'vattu_group'
       ],
       'qlcate' => [
-        'label' => 'QL Danh mục SP', 
+        'label' => 'QL Danh mục vật tư', 
         'icon' => 'table',
-        'path' => 'qlcate'
+        'path' => 'qlcate',
+        'parent' => 'vattu_group'
       ],
       'product' => [
-        'label' => 'QL Sản phẩm', 
+        'label' => 'QL Vật tư', 
         'icon' => 'shop',
-        'path' => 'product'
+        'path' => 'product',
+        'parent' => 'vattu_group'
+      ],
+      'qlkho' => [
+        'label' => 'QL Kho', 
+        'icon' => 'home',
+        'path' => 'qlkho',
+        'parent' => 'vattu_group'
+      ],
+      'qlvtkho' => [
+        'label' => 'QL Vị trí Kho', 
+        'icon' => 'home',
+        'path' => 'qlvtkho',
+        'parent' => 'vattu_group'
+      ],
+      'khvt' => [
+        'label' => 'Kế hoạch Vật tư', 
+        'icon' => 'schedule',
+        'path' => 'khvt',
+        'parent' => 'vattu_group'
       ],
       'qlkh' => [
         'label' => 'QL Khách Hàng', 
         'icon' => 'team',
-        'path' => 'qlkh'
+        'path' => 'qlkh',
+        'parent' => 'other_group'
       ],
       'full_quyen' => [
         'label' => 'Chức vụ, phê duyệt', 
@@ -81,47 +100,50 @@ class Roles {
       'qlns' => [
         'label' => 'QL Nhân sự', 
         'icon' => 'team',
-        'path' => 'qlns'
+        'path' => 'qlns',
+        'parent' => 'chamcong_group'
       ],
       'qljobs' => [
         'label' => 'QL Công việc', 
         'icon' => 'solution',
-        'path' => 'qljobs'
+        'path' => 'qljobs',
+        'parent' => 'chamcong_group'
       ],
       'qlsl' => [
         'label' => 'QL Sản Lượng', 
         'icon' => 'form',
-        'path' => 'qlsl'
+        'path' => 'qlsl',
+        'parent' => 'chamcong_group'
       ],
       'cdc' => [
         'label' => 'Chuyển đổi công', 
         'icon' => 'calculator',
-        'path' => 'cdc'
+        'path' => 'cdc',
+        'parent' => 'chamcong_group'
       ],
       'quy_trinh_sx' => [
         'label' => 'Quy trình SX', 
         'icon' => 'solution',
         'path' => 'quy_trinh_sx',
+        'parent' => 'qlsx_group'
       ],
       'khsx_daihan' => [
         'label' => 'KHSX dài hạn', 
         'icon' => 'solution',
         'path' => 'khsx_daihan',
+        'parent' => 'qlsx_group'
       ],
       'qlpb' => [
         'label' => 'QL Phòng ban', 
         'icon' => 'team',
-        'path' => 'qlpb'
-      ],
-      'khvt' => [
-        'label' => 'Kế hoạch Vật tư', 
-        'icon' => 'schedule',
-        'path' => 'khvt'
+        'path' => 'qlpb',
+        'parent' => 'other_group'
       ],
       'kkvt' => [
         'label' => 'Kiểm kê vật tư', 
         'icon' => 'schedule',
-        'path' => 'kkvt'
+        'path' => 'kkvt',
+        'parent' => 'qlsx_group'
       ],
     ];
   }

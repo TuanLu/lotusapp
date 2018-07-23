@@ -1,9 +1,14 @@
 /*global gantt*/
+
+/**
+ * Vi gantt la global object, nen toan bo app chi dung 1 doi tuong gantt.
+ * Thay doi cac bieu do bang cach reset lai event, reset lai data
+ */
 import React, { Component } from 'react';
 import 'dhtmlx-gantt';
 //import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip.js';
-import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
-//import 'dhtmlx-gantt/codebase/locale/locale_ar.js';
+//import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
+import './locale_vn.js';
 //import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import './Theme.css';
 //import {connect} from 'react-redux'
@@ -22,6 +27,7 @@ class Gantt extends Component {
     this.getQuyTrinhId = this.getQuyTrinhId.bind(this);
     this.getMaSx = this.getMaSx.bind(this);
     this.clearAllEvents = this.clearAllEvents.bind(this);
+    this.expandAllTask = this.expandAllTask.bind(this);
     this.state = {
       loading: false,
       resetEvents: false,
@@ -61,6 +67,30 @@ class Gantt extends Component {
         break;
     }
   }
+  expandAllTask(ganttData) {
+    if(ganttData) {
+      let ganttTasks = [];
+      if(ganttData.data) {
+        ganttTasks = ganttData.data.map((task) => {
+          return {
+            ...task,
+            open: true,//Expand all task
+          }
+        });
+      } 
+      let expandAllGanttData = {
+        links: ganttData.links,
+        data: ganttTasks
+      }
+      return expandAllGanttData;
+    }
+  }
+  updateGanttDataToState(data) {
+    let ganttData = this.expandAllTask(data) || data;
+    this.props.dispatch(updateStateData({
+      ganttData: ganttData,
+    }));
+  }
   fetchTasks() {
     this.setState({loading: true});
     let fetchUrl;
@@ -85,25 +115,11 @@ class Gantt extends Component {
     })
     .then((json) => {
       if(json.status == 'error') {
+        this.renderGantt();
         message.warning(json.message, 3);
       } else {
         if(json.data) {
-          let ganttTasks = [];
-          if(json.data.data) {
-            ganttTasks = json.data.data.map((task) => {
-              return {
-                ...task,
-                open: true,//Expand all task
-              }
-            });
-          } 
-          let ganttData = {
-            links: json.data.links,
-            data: ganttTasks
-          }
-          this.props.dispatch(updateStateData({
-            ganttData: ganttData,
-          }));
+          this.updateGanttDataToState(json.data);
         }
       }
       this.setState({
@@ -112,6 +128,7 @@ class Gantt extends Component {
       this.renderGantt();
     })
     .catch((error) => {
+      this.renderGantt();
       message.error('Có lỗi khi tải dữ liệu quy trình sản xuất!', 3);
       console.log(error);
       this.setState({loading: false});
@@ -127,9 +144,19 @@ class Gantt extends Component {
   }
   //Switch tu quy trinh nay sang quy trinh khac, phai cap nhat lai bien gantt
   static getDerivedStateFromProps(nextProps, prevState) {
-    if(nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
+    //Switch theo quy trinh ID
+    if(nextProps.mainState.quyTrinhSx.edit.id && nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
+      //console.log('thay doi quy trinh, reset lai event di nao');
       return {
         quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id,
+        resetEvents: true
+      }
+    }
+    //Cap nhat khi thay doi ma sx
+    if(nextProps.mainState.sx.ma_sx && nextProps.mainState.sx.ma_sx !== prevState.ma_sx) {
+      //console.log('thay doi ma san xuat kia, reset lai event di nao');
+      return {
+        ma_sx: nextProps.mainState.sx.ma_sx,
         resetEvents: true
       }
     }
@@ -158,8 +185,11 @@ class Gantt extends Component {
           this.props.dispatch(updateStateData({showLogin: true}));
         }
       } else {
-        this.fetchTasks();
+        if(json.data) {
+          this.updateGanttDataToState(json.data);
+        }
       }
+      this.renderGantt();
     }).catch((ex) => {
       this.fetchTasks();
       console.log('parsing failed', ex)
@@ -181,8 +211,11 @@ class Gantt extends Component {
           this.props.dispatch(updateStateData({showLogin: true}));
         }
       } else {
-        this.fetchTasks();
+        if(json.data) {
+          this.updateGanttDataToState(json.data);
+        }
       }
+      this.renderGantt();
     }).catch((ex) => {
       this.fetchTasks();
       console.log('parsing failed', ex)
@@ -272,8 +305,8 @@ class Gantt extends Component {
   clearAllEvents() {
     //Reset lai toan bo events cua gantt, de khong su dung du lieu cu
     let {mainState} = this.props;
-    if(mainState.quyTrinhSx && mainState.quyTrinhSx.ganttEvents) {
-      mainState.quyTrinhSx.ganttEvents.forEach((event) => {
+    if(mainState && mainState.ganttEvents) {
+      mainState.ganttEvents.forEach((event) => {
         gantt.detachEvent(event);
       });
       gantt.ganttEventsInitialized = false;
@@ -313,10 +346,7 @@ class Gantt extends Component {
       })
     );
     this.props.dispatch(updateStateData({
-      quyTrinhSx: {
-        ...this.props.mainState.quyTrinhSx,
-        ganttEvents: eventsList,
-      }
+      ganttEvents: eventsList,
     }));
   }
   componentDidMount() {
@@ -334,9 +364,11 @@ class Gantt extends Component {
     //gantt.config.show_grid = true;
     gantt.config.show_links = true;
     //gantt.config.show_progress = true;
+    gantt.config.readonly = false;
     gantt.config.drag_move = true;
     if(this.props.type == "allPlan") {
       gantt.config.drag_move = false;
+      gantt.config.readonly = true;
       //gantt.config.show_grid = false;
       gantt.config.show_links = false;
       //gantt.config.show_progress = false;
@@ -353,7 +385,7 @@ class Gantt extends Component {
     //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
     // };
     //gantt.config.task_date = "%d-%m-%Y";
-    this.initGanttEvents();
+    //this.initGanttEvents();
     gantt.config.order_branch = true;
     gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);

@@ -109,3 +109,10 @@ export const qcQAStatus = [
     text: 'Đã đạt'
   },
 ];
+
+export const blankGanttData = {
+  data: [],
+  links: []
+} 
+
+

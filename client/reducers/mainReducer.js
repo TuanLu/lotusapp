@@ -72,9 +72,10 @@ let _designDefault = {
       edit: {}
     },
     ganttData: {
-      "data":[],
-	    "links":[]
+      data:[],
+	    links:[]
     },
+    ganttEvents: [],//Truoc khi reset phai dung gantt xoa di tat ca su kien da attach vao gantt
     quyTrinhTheoLenh: {
       showGantt: false
     }
@@ -104,7 +105,16 @@ export default (state = _designDefault, action) => {
           phieuAction: {
             ...cloneState.phieuAction,
             addNewItem: false,//Khi user dang edit, click vao tab khac thi se doi trang thai add/edit sang trang thai view
-          }
+          },
+          ganttData: _designDefault.ganttData,
+          //ganttEvents: _designDefault.ganttEvents,// Khong nen reset o day, phai xoa events truoc
+          quyTrinhSx: _designDefault.quyTrinhSx,
+          quyTrinhTheoLenh: _designDefault.quyTrinhTheoLenh,
+          phieunhap: _designDefault.phieunhap,
+          phieuxuat: _designDefault.phieuxuat,
+          phieuXuatAction: _designDefault.phieuXuatAction,
+          productsForExport: _designDefault.productsForExport,
+          sx: _designDefault.sx
         }
       }
       cloneState = {
