@@ -75,6 +75,46 @@ class UserController extends BaseController {
     }
     echo json_encode($rsData);
   }
+  protected function appMenus() {
+    return [
+      [
+        'label' => 'QL Cảnh báo', 
+        'icon' => 'safety',
+        'path' => 'main_group',
+        'children' => []
+      ],
+      [
+        'label' => 'QL Kho vật tư', 
+        'icon' => 'home',
+        'path' => 'vattu_group',
+        'children' => []
+      ],
+      [
+        'label' => 'QL Sản xuất', 
+        'icon' => 'rocket',
+        'path' => 'qlsx_group',
+        'children' => []
+      ],
+      [
+        'label' => 'QL Chấm công',
+        'icon' => 'schedule',
+        'path' => 'chamcong_group',
+        'children' => []
+      ],
+      [
+        'label' => 'QL User', 
+        'icon' => 'team',
+        'path' => 'qluser_group',
+        'children' => []
+      ],
+      [
+        'label' => 'QL Khác', 
+        'icon' => 'pushpin',
+        'path' => 'other_group',
+        'children' => []
+      ],
+    ];
+  }
   private function getUserRoles($userId) {
     $roles = [];
     if($userId) {
@@ -88,14 +128,23 @@ class UserController extends BaseController {
       if(!empty($roles)) {
         $allScopes = Roles::getRoles();
         $userRoles = [];
+        $menus = $this->appMenus();
         foreach($roles as $role) {
           if(in_array($role, array_keys($allScopes))) {
            $userRoles[] = $allScopes[$role];
           }
         }
+        //Append menu item to parent 
+        foreach ($menus as $menuKey => $menuItem) {
+          foreach ($userRoles as $roleKey => $role) {
+            if(isset($role['parent']) && $role['parent'] == $menuItem['path']) {
+              $menus[$menuKey]['children'][] = $role;
+            }
+          }
+        }
         if(!empty($userRoles)) {
           return [
-            'roles' => $userRoles,
+            'roles' => $menus,
             'userInfo' => $roleData[0]
           ];
         }
