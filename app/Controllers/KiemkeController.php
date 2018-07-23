@@ -178,11 +178,6 @@ class KiemkeController extends BaseController
 					$rsData['message'] = 'Dữ liệu chưa được sản phẩm theo phiếu!';
 				}
 			} else {
-				// $error = $result->errorInfo();
-				// $errorMessage = 'Không thể tạo phiếu kiểm kê vào CSDL';
-				// if(is_array($error) && !empty($error)) {
-				// 	$errorMessage = implode(', ',$error);
-				// }
 				$rsData['message'] = 'Không thể tạo phiếu kiểm kê vào CSDL';
 			}
 		} else {
@@ -242,11 +237,11 @@ class KiemkeController extends BaseController
 				echo json_encode($rsData);
 				die;
 		}
-		if(!$maLo) {
-			$rsData['message'] = 'Mã lô không được để trống!';
-				echo json_encode($rsData);
-				die;
-		}
+		// if(!$maLo) {
+		// 	$rsData['message'] = 'Mã lô không được để trống!';
+		// 		echo json_encode($rsData);
+		// 		die;
+		// }
 		if(!$maSp) {
 			$rsData['message'] = 'Mã VT không được để trống!';
 				echo json_encode($rsData);

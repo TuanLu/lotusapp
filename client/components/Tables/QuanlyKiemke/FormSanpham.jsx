@@ -139,14 +139,14 @@ class EditableTable extends React.Component {
       loadProduct: false
     };
     this.columns = [
-      {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
-        width: 120,
-        //fixed: 'left',
-        editable: true,
-        required: false,
-      },
+      // {
+      //   title: 'Mã Lô',
+      //   dataIndex: 'ma_lo',
+      //   width: 120,
+      //   //fixed: 'left',
+      //   editable: true,
+      //   required: false,
+      // },
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
@@ -187,14 +187,6 @@ class EditableTable extends React.Component {
         dataIndex: 'sl_thucnhap',
         width: '120',
         editable: true,
-        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      },
-      {
-        title: 'Đơn giá',
-        dataIndex: 'price',
-        //width: '40%',
-        editable: true,
-        required: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
@@ -364,9 +356,9 @@ class EditableTable extends React.Component {
   getDefaultFields() {
     return {
       ma_phieu: "",
-      ma_lo: "",
       product_id: "",
       label: "",
+      ma_lo: "",
       unit: "kg",
       sl_chungtu: "1",
       sl_thucnhap: "1",

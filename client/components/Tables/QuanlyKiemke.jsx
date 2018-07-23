@@ -202,7 +202,7 @@ class EditableTable extends React.Component {
         action: 'edit',
         editingKey: '',
       },
-      phieunhap: this.getDefaultFields()
+      kkvt: this.getDefaultFields()
     }));
   }
   isQC() {
@@ -224,11 +224,11 @@ class EditableTable extends React.Component {
     return record.key === this.state.editingKey;
   };
   view(phieu) {
-    let {phieunhap, phieuAction} = this.props.mainState;
+    let {kkvt, phieuAction} = this.props.mainState;
     if(phieu && phieu.ma_phieu && phieu.id) {
       this.props.dispatch(updateStateData({
-        phieunhap: {
-          ...phieunhap,
+        kkvt: {
+          ...kkvt,
           ...phieu
         },
         phieuAction: {
@@ -259,8 +259,8 @@ class EditableTable extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            kkvt: {
+              ...this.props.mainState.kkvt,
               refresh: false
             }
           }));
@@ -273,7 +273,7 @@ class EditableTable extends React.Component {
     }); 
   }
   delete = () => {
-    let {id} = this.props.mainState.phieunhap;
+    let {id} = this.props.mainState.kkvt;
     if(id) {
       fetch(ISD_BASE_URL + fetchConfig.delete + id, {
         headers: getTokenHeader()
@@ -287,7 +287,7 @@ class EditableTable extends React.Component {
           this.setState({data: newData});
           message.success(json.message);
           this.props.dispatch(updateStateData({
-            phieunhap: {},
+            kkvt: {},
             phieuAction: {
               ...this.props.mainState.phieuAction,
               addNewItem: false
@@ -302,7 +302,7 @@ class EditableTable extends React.Component {
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.phieunhap;
+    let {refresh} = nextProps.mainState.kkvt;
     if(refresh) {
       return {
         dataUpToDate: null
