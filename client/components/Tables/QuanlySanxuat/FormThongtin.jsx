@@ -257,47 +257,46 @@ class FormThongtin extends React.Component {
         </Row>
         <Row>
             <Col span={12}>
-            <FormItem
-              label={'HSD'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <DatePicker defaultValue={hsd} onChange={(date) => {
-              if(date != null){
-                date = date.format('YYYY-MM-DD');
-              }else{ 
-                date = '';
-              }
-              this.props.dispatch(updateStateData({
-                sx: {
-                  ...this.props.mainState.sx,
-                  hd: date
+              <FormItem
+                label={'NSX'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+              <DatePicker defaultValue={nsx} onChange={(date) => {
+                if(date != null){
+                  date = date.format('YYYY-MM-DD');
+                }else{ 
+                  date = '';
                 }
-              }));
-            }} placeholder="Chọn ngày" format="DD/MM/YYYY"/>
-            
-            </FormItem>
+                this.props.dispatch(updateStateData({
+                  sx: {
+                    ...this.props.mainState.sx,
+                    nsx: date
+                  }
+                }));
+              }} placeholder="Chọn ngày"  format="DD/MM/YYYY"/>
+              </FormItem>
             </Col>
             <Col span={12}>
-            <FormItem
-              label={'NSX'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <DatePicker defaultValue={nsx} onChange={(date) => {
-              if(date != null){
-                date = date.format('YYYY-MM-DD');
-              }else{ 
-                date = '';
-              }
-              this.props.dispatch(updateStateData({
-                sx: {
-                  ...this.props.mainState.sx,
-                  nsx: date
+              <FormItem
+                label={'HSD'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+              <DatePicker defaultValue={hsd} onChange={(date) => {
+                if(date != null){
+                  date = date.format('YYYY-MM-DD');
+                }else{ 
+                  date = '';
                 }
-              }));
-            }} placeholder="Chọn ngày"  format="DD/MM/YYYY"/>
-            </FormItem>
+                this.props.dispatch(updateStateData({
+                  sx: {
+                    ...this.props.mainState.sx,
+                    hd: date
+                  }
+                }));
+              }} placeholder="Chọn ngày" format="DD/MM/YYYY"/>
+              </FormItem>
             </Col>
             </Row>
             <Row>

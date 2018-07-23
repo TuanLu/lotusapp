@@ -143,7 +143,7 @@ class Roles {
         'label' => 'Kiểm kê vật tư', 
         'icon' => 'schedule',
         'path' => 'kkvt',
-        'parent' => 'qlsx_group'
+        'parent' => 'vattu_group'
       ],
     ];
   }
