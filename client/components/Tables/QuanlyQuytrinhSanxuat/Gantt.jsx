@@ -28,6 +28,8 @@ class Gantt extends Component {
     this.getMaSx = this.getMaSx.bind(this);
     this.clearAllEvents = this.clearAllEvents.bind(this);
     this.expandAllTask = this.expandAllTask.bind(this);
+    this.addControlToLightBox = this.addControlToLightBox.bind(this);
+    this.fetchUsers = this.fetchUsers.bind(this);
     this.state = {
       loading: false,
       resetEvents: false,
@@ -134,6 +136,38 @@ class Gantt extends Component {
       this.setState({loading: false});
     }); 
   }
+  fetchUsers() {
+    this.setState({loading: true});
+    fetch(ISD_BASE_URL + 'gantt/users', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+       if(json.data) {
+         this.props.dispatch(updateStateData({
+            worker_and_users: {
+              workers: json.data.workers,
+              check_users: json.data.check_users
+           }
+         }));
+         this.addControlToLightBox();
+       }
+      }
+      this.setState({
+        loading: false, 
+      });
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu nhân sự và người phê duyệt!', 3);
+      console.log(error);
+      this.setState({loading: false});
+    }); 
+  }
   renderGantt(data) {
     let {mainState} = this.props;
     let {ganttData} = mainState;
@@ -235,6 +269,8 @@ class Gantt extends Component {
       duration: task.duration,
       parent: task.parent,
       progress: task.progress || 0,
+      user: task.user,
+      check_user: task.check_user
     };
     //Luu theo quy trinh hoac luu theo lenh san xuat
     if(this.props.type == "theo_lenh_sx") {
@@ -345,6 +381,19 @@ class Gantt extends Component {
         this.deleteLink(id);
       })
     );
+    eventsList.push(
+      gantt.attachEvent("onLightboxSave", function (id, item) {
+        if (!item.text) {
+          gantt.message({type: "error", text: "Hãy nhập mô tả công việc!"});
+          return false;
+        }
+        if (!item.user) {
+          gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
+          return false;
+        }
+        return true;
+      })
+    );
     this.props.dispatch(updateStateData({
       ganttEvents: eventsList,
     }));
@@ -354,7 +403,7 @@ class Gantt extends Component {
     let {ganttData} = mainState;
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
-    
+    gantt.config.grid_width = 400;
     gantt.config.columns = [
       {name: "text", hide: true, tree: true},
       {name: "start_date", hide: true},
@@ -389,8 +438,58 @@ class Gantt extends Component {
     gantt.config.order_branch = true;
     gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);
+    this.addControlToLightBox();
     gantt.parse(ganttData);
     this.fetchTasks();
+  }
+  addControlToLightBox() {
+    let {worker_and_users} = this.props.mainState;
+    if(worker_and_users) {
+      let workers = worker_and_users.workers || [];
+      let check_users = worker_and_users.check_users || [];
+
+      let workerOptions = [{key: "", label: "Người thực hiện"}];
+      workerOptions = workerOptions.concat(workers.map((worker) => {
+        return {
+          key: worker.ma_ns,
+          label: worker.ma_ns + '-' + worker.name
+        }
+      }));
+      let checkUserOptions = [{key: "", label: "Người phê duyệt"}];
+      checkUserOptions = checkUserOptions.concat(check_users.map((user) => {
+        return {
+          key: user.id,
+          label: user.name || user.username
+        }
+      }));
+      gantt.config.lightbox.sections = [
+        {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
+        {name: "user", height: 25, map_to: "user", type: "select", options: workerOptions},
+        {name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
+        {
+          name: "progress", height: 25, map_to: "progress", type: "select", options: [
+            {key: "0", label: "Chưa bắt đầu"},
+            {key: "0.1", label: "10%"},
+            {key: "0.2", label: "20%"},
+            {key: "0.3", label: "30%"},
+            {key: "0.4", label: "40%"},
+            {key: "0.5", label: "50%"},
+            {key: "0.6", label: "60%"},
+            {key: "0.7", label: "70%"},
+            {key: "0.8", label: "80%"},
+            {key: "0.9", label: "90%"},
+            {key: "1", label: "Hoàn thành"}
+          ]
+        },
+        {name: "time", type: "duration", map_to: "auto"},
+      ];
+    
+      gantt.locale.labels["section_user"] = "Người thực hiện";
+      gantt.locale.labels["section_check_user"] = "Người phê duyệt";
+      gantt.locale.labels["section_progress"] = "Số % hoàn thành";
+    } else {
+      this.fetchUsers();
+    }
   }
 
   render() {

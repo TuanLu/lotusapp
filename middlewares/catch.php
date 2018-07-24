@@ -22,6 +22,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "relaxed" => ["localhost", "127.0.0.1", "erpapp", "annhien", "lotus"],
     "secret" => $ISD_KEY,
     "callback" => function ($request, $response, $arguments) use ($container) {
+        //Check first login witout token, check user permisstion and current router
         $container["jwt"] = $arguments["decoded"];
     },
     "error" => function ($request, $response, $arguments) {
