@@ -54,9 +54,9 @@ class FormThongtin extends React.Component {
     return (
       <Form>
       {kkvt.ma_phieu != "" ?
+            this.props.isInventoryOwner? 
         <Row>
           <Col span={12}>
-            {this.props.isInventoryOwner? 
             <FormItem
               label="Trạng Thái"
               labelCol={{ span: 5 }}
@@ -82,7 +82,6 @@ class FormThongtin extends React.Component {
                 })}
               </Select> */}
             </FormItem>
-            : null}
             </Col>
             <Col span={12}>
               <FormItem
@@ -105,6 +104,7 @@ class FormThongtin extends React.Component {
               </FormItem>
             </Col>
         </Row>
+        : null
         : null}
         <Row>
           <Col span={12}>

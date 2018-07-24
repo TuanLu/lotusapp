@@ -4,7 +4,8 @@ import {
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import { getTokenHeader } from 'ISD_API';
+import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
+import {updateStateData} from 'actions'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -15,27 +16,38 @@ const EditableRow = ({ form, index, ...props }) => (
   </EditableContext.Provider>
 );
 
+const tableConfig = {
+  headTitle: 'Quản lý phân quyền user',
+  addNewTitle: 'Thêm mới'
+};
+
+const fetchConfig = {
+  fetch: 'qlpq/fetch',
+  update: 'qlpq/update',
+  delete: 'qlpq/delete/'
+}
+
 const EditableFormRow = Form.create()(EditableRow);
 
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'quanly' :
-        let quanly = this.props.quanly || [];
+      case 'category_id':
+        let categories = this.props.categories;
         return (
           <Select 
-            style={{ maxWidth: 200 }}
-            placeholder="Chọn user">
-          {quanly.map((quanly) => {
+            style={{ width: 250 }}
+            placeholder="Chọn danh mục">
+           {categories.map((category) => {
               return <Select.Option 
-              key={quanly.id} 
-              value={quanly.username}>
-                {`${quanly.username} - ${quanly.name}`}
+              key={category.id} 
+              value={category.id}>
+                {category.name}
               </Select.Option>
-          })}
+           })}
           </Select>
         );
-      break;
+        break;
       default:
         return <Input />;
         break;
@@ -85,36 +97,61 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
+      categoryList: {},
       newitem: 0
     };
     this.columns = [
       {
-        title: 'Mã Kho',
-        dataIndex: 'ma_kho',
-        width: '10%',
+        title: 'Mã User',
+        dataIndex: 'category_id',
+        width: '15%',
+        editable: true,
+        required: true,
+        render: (text, record) => {
+          let label = text;
+          if(this.state.categoryList && this.state.categoryList[text]) {
+            label = this.state.categoryList[text]['name'];
+          }
+          return <span>{label}</span>
+        }
+      },
+      {
+        title: 'Mã Router',
+        dataIndex: 'role_id',
+        width: '15%',
         editable: true,
         required: true,
       },
       {
-        title: 'Tên',
+        title: 'Tên module',
         dataIndex: 'name',
         //width: '15%',
         editable: true,
         required: true
       },
       {
-        title: 'Quản lý',
-        dataIndex: 'quanly',
-        width: 120,
-        editable: true,
-        required: true
-      },
-      {
-        title: 'Thông tin',
-        dataIndex: 'description',
+        title: 'Quyền xem',
+        dataIndex: 'role_view',
         //width: '40%',
         editable: true,
-        required: true
+      },
+      {
+        title: 'Quyền thêm',
+        dataIndex: 'role_add',
+        //width: '40%',
+        editable: true,
+      },
+      {
+        title: 'Quyền sửa',
+        dataIndex: 'role_edit',
+        //width: '40%',
+        editable: true,
+      },
+      {
+        title: 'Quyền xóa',
+        dataIndex: 'role_delete',
+        //width: '40%',
+        editable: true,
       },
       {
         title: 'Actions',
@@ -176,14 +213,17 @@ class EditableTable extends React.Component {
       })
       this.state.newitem  = 1 ;
     }else{
-      message.error('Bạn đang thêm mới kho rồi ...');
+      message.error('Bạn đang thêm mới sản phẩm rồi ...');
     }
   }
   getDefaultFields() {
     return {
-      ma_kho: "",
+      product_id: "",
+      category_id: "",
       name: "",
-      description: ""
+      unit: "",
+      min: "0",
+      max: "0",
     };
   }
   isEditing = (record) => {
@@ -206,7 +246,7 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
         };
-        fetch(ISD_BASE_URL + 'qlkho/updateKho', {
+        fetch(ISD_BASE_URL + fetchConfig.update, {
           method: 'POST',
           headers: getTokenHeader(),
           body: JSON.stringify(newItemData)
@@ -216,6 +256,9 @@ class EditableTable extends React.Component {
         }).then((json) => {
           if(json.status == 'error') {
             message.error(json.message, 3);
+            if(json.show_login) {
+              this.props.dispatch(updateStateData({showLogin: true}));
+            }
           } else {
             //udate table state
             newData.splice(index, 1, {
@@ -246,13 +289,13 @@ class EditableTable extends React.Component {
   }
   delete = (record) => {
     if(record.id) {
-      fetch(ISD_BASE_URL + 'qlkho/deleteKho/' + record.id, {
+      fetch(ISD_BASE_URL + fetchConfig.delete + record.id, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá dữ liệu kho!', 3);
+          message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -261,7 +304,7 @@ class EditableTable extends React.Component {
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá dữ liệu kho!', 3);
+        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
         console.log(error);
       });
     } else {
@@ -273,8 +316,32 @@ class EditableTable extends React.Component {
       }  
     }
   }
+  fetchCategories() {
+    fetch(ISD_BASE_URL + 'qlcate/fetchCate', {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            categories: json.data
+          }));
+          this.setState({
+            categoryList: convertArrayObjectToObject(json.data)
+          });
+          
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   fetchData() {
-    fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
+    fetch(ISD_BASE_URL + fetchConfig.fetch, {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -292,37 +359,13 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      message.error('Có lỗi khi tải dữ liệu sản phẩm!', 3);
       console.log(error);
     }); 
   }
-  fetchQuanly() {
-    fetch(ISD_BASE_URL + 'qlkho/fetchQl', {
-      headers: getTokenHeader()
-    })
-    .then((resopnse) => resopnse.json())
-    .then((json) => {
-      if(json.data) {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            quanly: json.data
-          }));
-          this.setState({
-            quanlyList: convertArrayObjectToObject(json.data, 'username')
-          });
-          
-        }
-      } else {
-        message.error(json.message);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
   componentDidMount() {
+    this.fetchCategories();
     this.fetchData();
-    this.fetchQuanly();
   }
   render() {
     const components = {
@@ -349,6 +392,7 @@ class EditableTable extends React.Component {
       filteredValue?: any[];
       sortOrder?: boolean | ('ascend' | 'descend');
     */
+   let categories = this.props.mainState.categories;
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -361,7 +405,8 @@ class EditableTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          required: col.required
+          required: col.required,
+          categories
         }),
       };
     });
@@ -371,13 +416,13 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý kho</h2>
+              <h2 className="head-title">{tableConfig.headTitle}</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm kho mới</Button>
+                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
               </div>
             </Col>
           </Row>

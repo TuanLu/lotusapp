@@ -102,8 +102,7 @@ class EditableTable extends React.Component {
         dataIndex: 'create_by',
         //width: '40%',
         editable: false,
-        render: (text, record) => {console.log(record);
-          record.name || text }
+        render: (text, record) => record.name || text
       },
       {
         title: 'Mô tả',
@@ -114,7 +113,7 @@ class EditableTable extends React.Component {
       {
         title: 'Người Duyệt',
         dataIndex: 'user_check',
-        render: (text, record) => record.name || text
+        //render: (text, record) => record.name || text
       },
       {
         title: 'Tình trạng',

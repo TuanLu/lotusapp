@@ -10,7 +10,7 @@ class KhoController extends BaseController
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
  
-	public function fetchKho($request){ 
+	public function fetchKho($request){
 		//$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -21,12 +21,27 @@ class KhoController extends BaseController
 				'id',
 				'ma_kho',
 				'name',
+				'quanly',
 				'description'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
 			"status" => 1
 		]);
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $collection;
+		}
+		echo json_encode($rsData);
+	}
+	public function fetchQl($request){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu users từ hệ thống!'
+		);
+		$sql = 'SELECT `id`,`username`,`email`,`name`,`roles` FROM users WHERE `status` = 1 AND `roles` LIKE "%qlkho%"';
+		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';
@@ -47,6 +62,7 @@ class KhoController extends BaseController
 		//die($id);
 		$maKho = $request->getParam('ma_kho');
 		$name = $request->getParam('name');
+		$quanly = $request->getParam('quanly');
 		$address = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
@@ -64,6 +80,7 @@ class KhoController extends BaseController
 			$itemData = [
 				'ma_kho' => $maKho,
 				'name' => $name,
+				'quanly' => $quanly,
 				'description' => $address,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
@@ -91,6 +108,7 @@ class KhoController extends BaseController
 			$itemData = [
 				'ma_kho' => $maKho,
 				'name' => $name,
+				'quanly' => $quanly,
 				'description' => $address,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
