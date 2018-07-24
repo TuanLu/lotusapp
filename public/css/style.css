@@ -239,7 +239,7 @@ td:hover .editable-cell-icon {
   position: absolute;
 }
 .gantt_cal_light {
-  min-height: 280px!important;
+  min-height: 445px!important;
 }
 .gantt_duration input {
   line-height: 1;
@@ -268,4 +268,21 @@ td:hover .editable-cell-icon {
 }
 .align_center {
   text-align: center;
+}
+/* .gantt_task_line.gantt_project {
+  background-color: #65c16f!important;
+  border: 1px solid #3c9445!important;
+}
+#isd_app .gantt_task_progress {
+  text-align: center;
+  z-index: 0;
+  background: #E91E63;
+  border-right: 1px solid #E91E63;
+  box-shadow: inset -1px 0 0 1px #E91E63;
+} */
+#isd_app .gantt_side_content.gantt_right {
+  padding-left: 5px;
+}
+#isd_app .gantt_side_content.gantt_right span{
+  font-size: 12px;
 }
