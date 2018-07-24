@@ -1,6 +1,6 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Switch,
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
@@ -32,17 +32,17 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'category_id':
-        let categories = this.props.categories;
+      case 'user_id':
+        let userlist = this.props.userlist || [];
         return (
           <Select 
             style={{ width: 250 }}
             placeholder="Chọn danh mục">
-           {categories.map((category) => {
+           {userlist.map((user) => {
               return <Select.Option 
-              key={category.id} 
-              value={category.id}>
-                {category.name}
+              key={user.id} 
+              value={user.id}>
+                {user.name}
               </Select.Option>
            })}
           </Select>
@@ -97,31 +97,10 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
-      categoryList: {},
+      userlist: {},
       newitem: 0
     };
     this.columns = [
-      {
-        title: 'Mã User',
-        dataIndex: 'category_id',
-        width: '15%',
-        editable: true,
-        required: true,
-        render: (text, record) => {
-          let label = text;
-          if(this.state.categoryList && this.state.categoryList[text]) {
-            label = this.state.categoryList[text]['name'];
-          }
-          return <span>{label}</span>
-        }
-      },
-      {
-        title: 'Mã Router',
-        dataIndex: 'role_id',
-        width: '15%',
-        editable: true,
-        required: true,
-      },
       {
         title: 'Tên module',
         dataIndex: 'name',
@@ -152,53 +131,46 @@ class EditableTable extends React.Component {
         dataIndex: 'role_delete',
         //width: '40%',
         editable: true,
-      },
-      {
-        title: 'Actions',
-        dataIndex: 'operation',
-        render: (text, record) => {
-          const editable = this.isEditing(record);
-          return (
-            <div style={{minWidth: 100}}>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.save(form, record.key)}
-                        style={{ marginRight: 8 }}
-                      >
-                        Lưu
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm
-                    title="Bạn thật sự muốn huỷ?"
-                    onConfirm={() => this.cancel(record)}
-                  >
-                    <a href="javascript:;">Huỷ</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
-                  {" | "}
-                  <Popconfirm
-                    title="Bạn thật sự muốn xoá?"
-                    okType="danger"
-                    onConfirm={() => this.delete(record)}
-                  >
-                    <a href="javascript:;">Xoá</a>  
-                  </Popconfirm>
-                </React.Fragment>
-                
-              )}
-            </div>
-          );
-        },
-      },
+      }
     ];
+    this.state.data = [{
+      key: 1,
+      name: 'QL Kho hàng',
+      role_add:     <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_edit:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_delete:  <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_view:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      children: [{
+        key: 11,
+        name: 'Kho Thành phẩm',
+        role_add:     <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_edit:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_delete:  <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_view:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      }, {
+        key: 12,
+        name: 'Kho Bán Thành Phẩm',
+        role_add:     <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_edit:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_delete:  <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+        role_view:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      }],
+    }, {
+      key: 2,
+      name: 'QL NPP',
+      role_add:     <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_edit:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_delete:  <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_view:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+    },
+    {
+      key: 13,
+      name: 'QL Công việc ',
+      role_add:     <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_edit:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_delete:  <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+      role_view:    <Switch checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />,
+    }]
   }
   addNewRow() {
     if(this.state.newitem == 0){
@@ -213,17 +185,16 @@ class EditableTable extends React.Component {
       })
       this.state.newitem  = 1 ;
     }else{
-      message.error('Bạn đang thêm mới sản phẩm rồi ...');
+      message.error('Bạn đang thêm mới quyền hạn rồi ...');
     }
   }
   getDefaultFields() {
     return {
-      product_id: "",
-      category_id: "",
-      name: "",
-      unit: "",
-      min: "0",
-      max: "0",
+      user_id: "",
+      ma_role: "",
+      role_add: "",
+      role_edit: "",
+      role_delete: "",
     };
   }
   isEditing = (record) => {
@@ -295,7 +266,7 @@ class EditableTable extends React.Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
+          message.error('Có lỗi xảy ra khi xoá quyền hạn!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -304,7 +275,7 @@ class EditableTable extends React.Component {
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
+        message.error('Có lỗi xảy ra khi xoá quyền hạn!', 3);
         console.log(error);
       });
     } else {
@@ -316,8 +287,8 @@ class EditableTable extends React.Component {
       }  
     }
   }
-  fetchCategories() {
-    fetch(ISD_BASE_URL + 'qlcate/fetchCate', {
+  fetchUsers() {
+    fetch(ISD_BASE_URL + 'users/fetchUsers', {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -325,12 +296,8 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            categories: json.data
+            userlist: json.data
           }));
-          this.setState({
-            categoryList: convertArrayObjectToObject(json.data)
-          });
-          
         }
       } else {
         message.error(json.message);
@@ -359,13 +326,13 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu sản phẩm!', 3);
+      message.error('Có lỗi khi tải dữ liệu quyền hạn!', 3);
       console.log(error);
     }); 
   }
   componentDidMount() {
-    this.fetchCategories();
-    this.fetchData();
+    this.fetchUsers();
+    //this.fetchData();
   }
   render() {
     const components = {
@@ -374,25 +341,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
-   let categories = this.props.mainState.categories;
+   let userlist = this.props.mainState.userlist;
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -406,7 +355,7 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: this.isEditing(record),
           required: col.required,
-          categories
+          userlist
         }),
       };
     });
@@ -420,9 +369,17 @@ class EditableTable extends React.Component {
             </Col>
             <Col span={12}>
               <div className="action-btns">
-                <Button 
-                  onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                  <Select 
+                    style={{ width: 250 }}
+                    placeholder="Chọn user">
+                    {userlist.map((user) => {
+                        return <Select.Option 
+                        key={user.id} 
+                        value={user.id}>
+                          {user.name}
+                        </Select.Option>
+                    })}
+                  </Select>
               </div>
             </Col>
           </Row>

@@ -6,6 +6,7 @@ let _designDefault = {
     showLogin: true,
     defaultRouter: '',
     userRoles: [],
+    userlist: [],
     categories: [],
     kho: [],
     products: [],
