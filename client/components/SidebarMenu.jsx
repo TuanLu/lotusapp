@@ -10,7 +10,7 @@ class SidebarMenu extends React.Component {
     let {defaultRouter} = mainState;
     let menuItems = mainState.userRoles.filter((role) => role.include_in_menu !== false);
     menuItems = menuItems.map((role, index) => {
-      if(role.children && role.children.length) {
+      if(role.children && role.children.length > 0) {
         return (
           <SubMenu key={role.path} title={<span><Icon type={role.icon} /><span>{role.label}</span></span>}>
              {role.children.map((child) => {

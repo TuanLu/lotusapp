@@ -145,6 +145,12 @@ class Roles {
         'path' => 'kkvt',
         'parent' => 'vattu_group'
       ],
+      'qlpq' => [
+        'label' => 'Phân quyền', 
+        'icon' => 'schedule',
+        'path' => 'qlpq',
+        'parent' => 'other_group'
+      ],
     ];
   }
 }

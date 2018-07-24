@@ -42,6 +42,7 @@ $app->post('/qlcate/updateCate', 'CateController:updateCate');
 $app->get('/qlcate/deleteCate/{id}', 'CateController:deleteCate');
 //Kho router
 $app->get('/qlkho/fetchKho', 'KhoController:fetchKho');
+$app->get('/qlkho/fetchQl', 'KhoController:fetchQl');
 $app->post('/qlkho/updateKho', 'KhoController:updateKho');
 $app->get('/qlkho/deleteKho/{id}', 'KhoController:deleteKho');
 //VTKho router
@@ -148,3 +149,7 @@ $app->post('/kkvt/changeStatus', 'KiemkeController:changeStatus');
 $app->post('/kkvt/pheduyet', 'KiemkeController:pheDuyet');
 $app->post('/kkvt/changePosition', 'KiemkeController:changePosition');
 $app->get('/kkvt/deleteProduct/{id}', 'KiemkeController:deleteProduct');
+//Phân Quyền router
+$app->get('/qlpq/fetch', 'PhanquyenController:fetch');
+$app->post('/qlpq/update', 'PhanquyenController:update');
+$app->get('/qlpq/delete/{id}', 'PhanquyenController:delete');

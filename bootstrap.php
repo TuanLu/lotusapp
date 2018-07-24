@@ -101,6 +101,9 @@ $container['KHVTController'] = function ($c) {
 $container['KiemkeController'] = function ($c) {
   return new \App\Controllers\KiemkeController($c);
 };
+$container['PhanquyenController'] = function ($c) {
+  return new \App\Controllers\PhanquyenController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
