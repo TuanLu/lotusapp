@@ -79,7 +79,11 @@ let _designDefault = {
     ganttEvents: [],//Truoc khi reset phai dung gantt xoa di tat ca su kien da attach vao gantt
     quyTrinhTheoLenh: {
       showGantt: false
-    }
+    },
+    // worker_and_users: {
+    //   workers: [],
+    //   check_users: []
+    // }
   },
   cloneState;
 

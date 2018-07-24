@@ -62,7 +62,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
               day_short: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
           },
           labels: {
-              new_task: "Thêm việc mới",
+              new_task: "Nhiệm vụ",
               dhx_cal_today_button: "Hôm nay",
               day_tab: "Theo Ngày",
               week_tab: "Theo Tuần",

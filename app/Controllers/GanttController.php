@@ -27,6 +27,8 @@ class GanttController extends BaseController {
 				'progress',
 				'parent',
 				'quy_trinh_id',
+				'user',
+				'check_user'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
 				"ORDER" => ["start_date" => "ASC"],
@@ -63,6 +65,8 @@ class GanttController extends BaseController {
 				'progress',
 				'parent',
 				'ma_sx',
+				'user',
+				'check_user'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
 				"ORDER" => ["start_date" => "ASC"],
@@ -146,6 +150,8 @@ class GanttController extends BaseController {
     $parent = $request->getParam('parent');
 		$quyTrinhId = $request->getParam('quy_trinh_id');
 		$maSx = $request->getParam('ma_sx');
+		$worker = $request->getParam('user');
+		$check_user = $request->getParam('check_user');
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
     $userId = isset($this->jwt->id) ? $this->jwt->id : '';
@@ -156,7 +162,9 @@ class GanttController extends BaseController {
 			'quy_trinh_id' => $quyTrinhId,
 			'ma_sx' => $maSx,
 			'progress' => $progress,
-			'parent' => $parent
+			'parent' => $parent,
+			'user' => $worker,
+			'check_user' => $check_user
     ];
 		if(!$id) {
 			//Insert new data to db
@@ -381,5 +389,25 @@ class GanttController extends BaseController {
 				'links' => []
 			)
 		);
+	}
+	public function getUsers($request, $response, $args){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+    );
+		$nhancong = $this->db->select('lotus_nhansu', ['ma_ns', 'name'], ['status' => 1, 'ORDER' => 'name']);
+		$users = $this->db->select('users', ['id', 'name', 'username'], ['status' => 1, 'ORDER' => 'name']);
+		if(!empty($nhancong) && !empty($users)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Đã load được nhân sự và người phê duyệt';
+			$rsData['data'] = [
+				'workers' => $nhancong,
+				'check_users' => $users
+			];
+		} else {
+			$rsData['message'] = 'Chưa có nhân sự hoặc chưa có người kiểm duyệt cho biểu đồ Gantt!';
+		}
+		
+		echo json_encode($rsData);
 	}
 }

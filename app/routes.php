@@ -125,6 +125,8 @@ $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/fetchTasksByMaSx/{ma_sx}', 'GanttController:fetchTasksByMaSx');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');
 $app->get('/gantt/allPlan', 'GanttController:getAllPlanData');
+$app->get('/gantt/users', 'GanttController:getUsers');
+
 //Phòng ban router
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
