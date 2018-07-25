@@ -5,7 +5,7 @@
 *{
     padding: 0; 
     margin: 0;
-    font-family: "SegoeUI";
+    font-family: "Roboto",Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 16px;
 }
 .ant-layout-header .trigger {
@@ -15,7 +15,19 @@
   cursor: pointer;
   transition: color .3s;
 }
-
+.menu_item_left {
+  padding: 0 0 0 30px!important;
+}
+.menu_item_left .anticon {
+  margin: 0 5px 0 0;
+  color: lightskyblue;
+}
+.menu_item_left_icon {
+  color: deepskyblue;
+}
+.menu_parent_left {
+  padding: 0 0 0 15px!important;
+}
 .ant-layout-header .trigger:hover {
   color: #1890ff;
 }

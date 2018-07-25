@@ -90,37 +90,37 @@ class UserController extends BaseController {
   protected function appMenus($userId = "") {
     $menus = [
       [
-        'label' => 'QL Cảnh báo', 
+        'label' => 'Cảnh báo', 
         'icon' => 'safety',
         'path' => 'main_group',
         'children' => []
       ],
       [
-        'label' => 'QL Kho vật tư', 
+        'label' => 'Kho vật tư', 
         'icon' => 'home',
         'path' => 'vattu_group',
         'children' => []
       ],
       [
-        'label' => 'QL Sản xuất', 
+        'label' => 'Sản xuất', 
         'icon' => 'rocket',
         'path' => 'qlsx_group',
         'children' => []
       ],
       [
-        'label' => 'QL Chấm công',
+        'label' => 'Chấm công',
         'icon' => 'schedule',
         'path' => 'chamcong_group',
         'children' => []
       ],
-      // [
-      //   'label' => 'QL User', 
-      //   'icon' => 'team',
-      //   'path' => 'qluser_group',
-      //   'children' => []
-      // ],
       [
-        'label' => 'QL Khác', 
+        'label' => 'Thành viên', 
+        'icon' => 'team',
+        'path' => 'qluser_group',
+        'children' => []
+      ],
+      [
+        'label' => 'Cấu hình', 
         'icon' => 'pushpin',
         'path' => 'other_group',
         'children' => []
