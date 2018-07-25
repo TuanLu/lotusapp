@@ -75,8 +75,18 @@ class UserController extends BaseController {
     }
     echo json_encode($rsData);
   }
+  private function isSuperAdmin() {
+    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+    if($userId != "") {
+      $user = $this->db->select('users', ['is_super'], ['id' => $userId]);
+      if(!empty($user) && $user[0]['is_super'] === "1") {
+        return true;
+      }
+    }
+    return false;
+  }
   protected function appMenus() {
-    return [
+    $menus = [
       [
         'label' => 'QL Cảnh báo', 
         'icon' => 'safety',
@@ -101,12 +111,12 @@ class UserController extends BaseController {
         'path' => 'chamcong_group',
         'children' => []
       ],
-      [
-        'label' => 'QL User', 
-        'icon' => 'team',
-        'path' => 'qluser_group',
-        'children' => []
-      ],
+      // [
+      //   'label' => 'QL User', 
+      //   'icon' => 'team',
+      //   'path' => 'qluser_group',
+      //   'children' => []
+      // ],
       [
         'label' => 'QL Khác', 
         'icon' => 'pushpin',
@@ -114,6 +124,17 @@ class UserController extends BaseController {
         'children' => []
       ],
     ];
+    //Check is_supper admin
+    if($this->isSuperAdmin()) {
+      $menus[] = [
+        'label' => 'QL User', 
+        'icon' => 'team',
+        'path' => 'qluser_group',
+        'children' => []
+      ];
+    }
+    return $menus;
+
   }
   private function getUserRoles($userId) {
     $roles = [];
@@ -153,13 +174,15 @@ class UserController extends BaseController {
   }
   public function fetchRoles($request, $response) {
     $rsData = [
-      "status" => "error",
+      "status" => self::ERROR_STATUS,
       "message" => "Bạn hãy đăng nhập lại!",
     ];
     $userId = $this->jwt->id ? : '';
     if($userId) {
       $userRoles = $this->getUserRoles($userId);
       if(!empty($userRoles)) {
+        $rsData['status'] = self::SUCCESS_STATUS;
+        $rsData['message'] = 'Đã load quyền thành công!';
         $rsData['userInfo'] = $userRoles['userInfo'];
         $rsData['scopes'] = $userRoles['roles'];
       } else {

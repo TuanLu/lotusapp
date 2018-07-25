@@ -3,33 +3,15 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-// $app->get('/', function (Request $request, Response $response, $args) {
-//   $data['template_data'] = 'Lotus.App.Slim';
-//   //$this->logger->addInfo('You open home router');
-//   // Columns to select.
-//   $columns = [
-//     'uuid',
-//     'name',
-//     'created_on',
-//     'updated_on',
-//   ];
-
-//   // Get user.
-//   // https://medoo.in/api/get
-//   $data = $this->db->get('users', $columns, [
-//       "name" => "Lu Tuan"
-//   ]);
-//   $this->renderer->render($response, "home.phtml", $data);
-// });
 //User router
 //$app->get('/login', 'UserController:index');
-$app->post('/token', 'UserController:token');
-$app->get('/fetchRoles', 'UserController:fetchRoles')->setName('fetchRoles');//Per User
+$app->post('/token', 'UserController:token')->setName('token');
+$app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
 $app->get('/fetchAllRoles', 'UserController:fetchAllRoles');// To assign to user
 
-$app->get('/users/fetchUsers', 'UserController:fetchUsers');
-$app->post('/users/updateUser', 'UserController:updateUser');
-$app->get('/users/deleteUser/{id}', 'UserController:deleteUser');
+$app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
+$app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
+$app->get('/users/deleteUser/{id}', 'UserController:deleteUser')->setName('users__users__delete');
 $app->get('/dashboard', 'HomeController:index');
 //Npp router
 $app->get('/npp/fetchNpp', 'NppController:fetchNpp');
@@ -114,9 +96,9 @@ $app->post('/sx/pheduyet', 'SXController:pheDuyet');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
 //Quy trinh san xuat router
-$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch');
-$app->post('/quytrinhsx/update', 'QuytrinhSxController:update');
-$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete');
+$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch')->setName('quytrinhsx__quy_trinh_san_xuat__view');
+$app->post('/quytrinhsx/update', 'QuytrinhSxController:update')->setName('quytrinhsx__quy_trinh_san_xuat__update');
+$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete')->setName('quytrinhsx__quy_trinh_san_xuat__delete');
 //Gantt router
 $app->post('/gantt/update', 'GanttController:update');
 $app->post('/gantt/updateLink', 'GanttController:updateLink');
