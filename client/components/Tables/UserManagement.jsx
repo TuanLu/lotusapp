@@ -2,11 +2,12 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Modal
 } from 'antd';
 import {getTokenHeader, statusOptions} from 'ISD_API'
 import {updateStateData} from 'actions'
 import Roles from './User/Roles'
+import QuanlyPhanquyen from './User/QuanlyPhanquyen'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -134,13 +135,13 @@ class EditableTable extends React.Component {
         width: '15%',
         required: false
       },
-      {
-        title: 'Quyền',
-        dataIndex: 'roles',
-        width: '25%',
-        editable: true,
-        required: false
-      },
+      // {
+      //   title: 'Quyền',
+      //   dataIndex: 'roles',
+      //   width: '25%',
+      //   editable: true,
+      //   required: false
+      // },
       {
         title: 'Trạng thái',
         dataIndex: 'status',
@@ -148,6 +149,27 @@ class EditableTable extends React.Component {
         render: (text, record) => {
           let selectedOption = statusOptions.filter((option) => option.value == text);
           return <span>{selectedOption[0].text}</span>
+        }
+      },
+      {
+        title: 'Phân Quyền',
+        dataIndex: 'phan_quyen',
+        editable: false,
+        required: false,
+        width: 100,
+        render: (text, record) => {
+          return (
+            <Button
+              onClick={() => {
+                this.props.dispatch(updateStateData({
+                  phanquyen: {
+                    user: record,
+                    openModal: true
+                  }
+                }));
+              }}
+              type="primary">Phân quyền</Button>
+          );
         }
       },
       {
@@ -347,24 +369,6 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -381,6 +385,8 @@ class EditableTable extends React.Component {
         }),
       };
     });
+    let {mainState} = this.props;
+    let openModal = mainState.openModal || false;
 
     return (
       <React.Fragment>
@@ -398,6 +404,29 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
+        {openModal? 
+          <Modal
+            width={"95%"}
+            title="Phân quyền người dùng"
+            okText="Lưu"
+            cancelText="Đóng"
+            visible={openModal}
+            onCancel={() => {
+              this.props.dispatch(updateStateData({
+                phanquyen: {
+                  ...this.props.mainState.phanquyen,
+                  openModal: false
+                }
+              }));
+            }}
+            onOk={() => {
+              
+            }}
+            //footer={null}
+            >
+            
+          </Modal>  
+        : null}
         <Table
           components={components}
           bordered
