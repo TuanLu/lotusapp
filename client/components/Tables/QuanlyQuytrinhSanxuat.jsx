@@ -161,6 +161,9 @@ class QuanlyQuytrinhSanxuat extends React.Component {
     .then((json) => {
       if(json.status == 'error') {
         message.warning(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
       } else {
         if(json.data) {
           //Add key prop for table

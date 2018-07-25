@@ -221,6 +221,7 @@ class Gantt extends Component {
       } else {
         if(json.data) {
           this.updateGanttDataToState(json.data);
+          message.success(json.message);
         }
       }
       this.renderGantt();
@@ -247,6 +248,7 @@ class Gantt extends Component {
       } else {
         if(json.data) {
           this.updateGanttDataToState(json.data);
+          message.success(json.message);
         }
       }
       this.renderGantt();
@@ -391,6 +393,10 @@ class Gantt extends Component {
           gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
           return false;
         }
+        if (!item.check_user) {
+          gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
+          return false;
+        }
         return true;
       })
     );
@@ -403,7 +409,14 @@ class Gantt extends Component {
     let {ganttData} = mainState;
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
-    gantt.config.grid_width = 400;
+    gantt.config.grid_width = 450;
+    //Detect Project Level - Level 0
+    gantt.templates.task_class = function (st, end, item) {
+      return item.$level == 0 ? "gantt_project" : ""
+    };
+    gantt.templates.rightside_text = function (start, end, task) {
+      return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+    };
     gantt.config.columns = [
       {name: "text", hide: true, tree: true},
       {name: "start_date", hide: true},
@@ -468,7 +481,7 @@ class Gantt extends Component {
         {name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
         {
           name: "progress", height: 25, map_to: "progress", type: "select", options: [
-            {key: "0", label: "Chưa bắt đầu"},
+            {key: 0, label: "Chưa bắt đầu"},
             {key: "0.1", label: "10%"},
             {key: "0.2", label: "20%"},
             {key: "0.3", label: "30%"},
