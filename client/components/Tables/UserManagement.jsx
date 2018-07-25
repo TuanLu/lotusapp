@@ -386,7 +386,7 @@ class EditableTable extends React.Component {
       };
     });
     let {mainState} = this.props;
-    let openModal = mainState.openModal || false;
+    let openModal = mainState.phanquyen ? mainState.phanquyen.openModal : false;
 
     return (
       <React.Fragment>
@@ -407,6 +407,7 @@ class EditableTable extends React.Component {
         {openModal? 
           <Modal
             width={"95%"}
+            style={{top: 20}}
             title="Phân quyền người dùng"
             okText="Lưu"
             cancelText="Đóng"
@@ -424,7 +425,7 @@ class EditableTable extends React.Component {
             }}
             //footer={null}
             >
-            
+            <QuanlyPhanquyen mainState={this.props.mainState} dispatch={this.props.dispatch} />
           </Modal>  
         : null}
         <Table

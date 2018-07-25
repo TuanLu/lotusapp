@@ -136,39 +136,37 @@ class UserController extends BaseController {
     return $menus;
 
   }
-  private function getUserRoles($userId) {
-    $roles = [];
+  private function getUserRoles($userId) { 
     if($userId) {
-      $roleData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
+      $allScopes = Roles::getRoles();
+      $userRoles = [];
+      $menus = $this->appMenus();
+      foreach($allScopes as $router => $role) {
+        $userRoles[] = $role;
+      }
+      //Append menu item to parent 
+      foreach ($menus as $menuKey => $menuItem) {
+        foreach ($userRoles as $roleKey => $role) {
+          if(isset($role['parent']) && $role['parent'] == $menuItem['path']) {
+            $menus[$menuKey]['children'][] = $role;
+          }
+        }
+      }
+      $userData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
         'id' => $userId,
         'status' => 1
       ]);
-      if(isset($roleData[0]['roles']) && $roleData[0]['roles'] != '') {
-        $roles = explode(',',$roleData[0]['roles']);
+      if(!$this->isSuperAdmin()) {
+        //Limit permission here 
+        $routerNames = $this->db->select('user_permission', ['router_name', 'allow','include'], [
+          'user_id' => $userId,
+        ]);
       }
-      if(!empty($roles)) {
-        $allScopes = Roles::getRoles();
-        $userRoles = [];
-        $menus = $this->appMenus();
-        foreach($roles as $role) {
-          if(in_array($role, array_keys($allScopes))) {
-           $userRoles[] = $allScopes[$role];
-          }
-        }
-        //Append menu item to parent 
-        foreach ($menus as $menuKey => $menuItem) {
-          foreach ($userRoles as $roleKey => $role) {
-            if(isset($role['parent']) && $role['parent'] == $menuItem['path']) {
-              $menus[$menuKey]['children'][] = $role;
-            }
-          }
-        }
-        if(!empty($userRoles)) {
-          return [
-            'roles' => $menus,
-            'userInfo' => $roleData[0]
-          ];
-        }
+      if(!empty($userRoles)) {
+        return [
+          'roles' => $menus,
+          'userInfo' => $userData[0]
+        ];
       }
     }
   }
@@ -358,12 +356,15 @@ class UserController extends BaseController {
     $roleList = [];
     foreach ($allRoles as $key => $value) {
       $roleItem = [
-        'label' => $value['label'],
+        'name' => $value['label'],
         'value' => $value['path'],
         'key' => $value['path'],
       ];
       if(isset($value['children'])) {
         $roleItem['children'] = $value['children'];
+      }
+      if(isset($value['permission'])) {
+        $roleItem['permission'] = $value['permission'];
       }
       $roleList[] = $roleItem;
     }
@@ -373,5 +374,45 @@ class UserController extends BaseController {
       $rsData['data'] = $roleList;
     }
     echo json_encode($rsData);
+  }
+  public function updatePermission($request, $response){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+    );
+    if(!$this->isSuperAdmin()) {
+      $rsData['message'] = 'Bạn không có quyền để thực hiện tác vụ này';
+      echo json_encode($rsData);die;
+    }
+		//$params = $request->getParams();
+		$userId = $request->getParam('user_id');
+		$routerName = $request->getParam('router_name');
+		$allow = $request->getParam('allow') ? 1 : 2;
+    $include = $request->getParam('include');
+    
+		if($userId && $routerName) {
+      $permissionExists = $this->db->select('user_permission', ['user_id', 'router_name'], 
+      ['user_id' => $userId, 'router_name' => $routerName]);
+      if(!empty($permissionExists)) {
+        //Update permission
+        $result = $this->db->update('user_permission', ['allow' => $allow, 'include' => $include], ['user_id' => $userId, 'router_name' => $routerName]);
+      } else {
+        //Add permission 
+        $result = $this->db->insert('user_permission', 
+        [
+          'user_id' => $userId, 
+          'router_name' => $routerName, 
+          'allow' => $allow, 
+          'include' => $include,
+        ]);
+      }
+			if($result->rowCount()) {
+				$rsData['status'] = 'success';
+				$rsData['message'] = 'Đã cập nhật quyền thành công!';
+			} else {
+        $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+			}
+		}
+		echo json_encode($rsData);
   }
 }

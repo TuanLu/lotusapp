@@ -24,14 +24,16 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "callback" => function ($request, $response, $arguments) use ($container) {
         //Check first login witout token, check user permisstion and current router
         $route = $request->getAttribute('route');
-        $name = $route->getName();
-        $container["jwt"] = $arguments["decoded"];
-        if($name != "" && $name != "token") {
-          //Check permission of this router
-          $userId = $container->jwt->id ? : "";
-          if($userId) {
-            $isAllow = false;
-            //return false;
+        if($route) {
+          $name = $route->getName();
+          $container["jwt"] = $arguments["decoded"];
+          if($name != "" && $name != "token") {
+            //Check permission of this router
+            $userId = $container->jwt->id ? : "";
+            if($userId) {
+              $isAllow = false;
+              //return false;
+            }
           }
         }
     },

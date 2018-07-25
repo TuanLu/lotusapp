@@ -2,6 +2,7 @@
 // PSR 7 standard.
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use App\Helper\Roles;
 
 //User router
 //$app->get('/login', 'UserController:index');
@@ -12,6 +13,7 @@ $app->get('/fetchAllRoles', 'UserController:fetchAllRoles');// To assign to user
 $app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
 $app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
 $app->get('/users/deleteUser/{id}', 'UserController:deleteUser')->setName('users__users__delete');
+$app->post('/users/updatePermission', 'UserController:updatePermission');
 $app->get('/dashboard', 'HomeController:index');
 //Npp router
 $app->get('/npp/fetchNpp', 'NppController:fetchNpp');
@@ -65,7 +67,7 @@ $app->post('/phieuxuat/changePosition', 'PhieuxuatController:changePosition');
 $app->get('/phieuxuat/delete/{id}', 'PhieuxuatController:delete');
 $app->get('/phieuxuat/deleteProduct/{id}', 'PhieuxuatController:deleteProduct');
 //Tinh trang kho router
-$app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct')->setName('tinhtrangkho');
+$app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct')->setName(Roles::roleAndRouter()['tinhtrangkho']['view']);
 $app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
 $app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetchProductInInventory');
 //Nhân sự router
