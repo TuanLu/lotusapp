@@ -75,7 +75,7 @@ class UserController extends BaseController {
     }
     echo json_encode($rsData);
   }
-  private function isSuperAdmin($userId = "") {
+  public function isSuperAdmin($userId = "") {
     if(!$userId) {
       $userId = isset($this->jwt->id) ? $this->jwt->id : '';
     }
@@ -150,10 +150,11 @@ class UserController extends BaseController {
         'id' => $userId,
         'status' => 1
       ]);
-      if(!$this->isSuperAdmin($userId)) {
+      $allAllowedRouter = [];
+      $isSuperAdmin = $this->isSuperAdmin($userId);
+      if(!$isSuperAdmin) {
         //Limit permission here 
         $allowedPermission = $this->getUserPermission($userId);
-        $allAllowedRouter = [];
         foreach ($allowedPermission as $key => $permission) {
           $allAllowedRouter[] = $permission['router_name'];
         }
@@ -170,9 +171,13 @@ class UserController extends BaseController {
       foreach ($menus as $menuKey => $menuItem) {
         foreach ($userRoles as $roleKey => $role) {
           if(isset($role['parent']) && $role['parent'] == $menuItem['path']) {
-            //Check if user has view permission or not
-            if(isset($role['permission']['view']) && in_array($role['permission']['view'], $allAllowedRouter)) {
+            if($isSuperAdmin) {
               $menus[$menuKey]['children'][] = $role;
+            } else {
+              //Check if user has view permission or not
+              if(isset($role['permission']['view']) && in_array($role['permission']['view'], $allAllowedRouter)) {
+                $menus[$menuKey]['children'][] = $role;
+              }
             }
           }
         }

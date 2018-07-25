@@ -22,11 +22,13 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "relaxed" => ["localhost", "127.0.0.1", "erpapp", "annhien", "lotus"],
     "secret" => $ISD_KEY,
     "callback" => function ($request, $response, $arguments) use ($container) {
+        $container["jwt"] = $arguments["decoded"];
+        $isSuperAdmin = $container['UserController']->isSuperAdmin();
+        if($isSuperAdmin) return true;
         //Check first login witout token, check user permisstion and current router
         $route = $request->getAttribute('route');
         if($route) {
           $name = $route->getName();
-          $container["jwt"] = $arguments["decoded"];
           if($name != "" && $name != "token") {
             //Check permission of this router
             $userId = $container->jwt->id ? : "";
