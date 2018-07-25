@@ -455,7 +455,7 @@ class UserController extends BaseController {
 		}
 		echo json_encode($rsData);
   }
-  private function getUserPermission($userId) {
+  public function getUserPermission($userId) {
     if($userId) {
       $collection = $this->db->select('user_permission', ['router_name','include'], ['user_id' => $userId, 'allow' => '1']);
       return $collection;

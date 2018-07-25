@@ -32,7 +32,17 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
             $userId = $container->jwt->id ? : "";
             if($userId) {
               $isAllow = false;
-              //return false;
+              $permission = $container['UserController']->getUserPermission($userId);
+              if(!empty($permission)) {
+                $allowedList = [];
+                foreach ($permission as $key => $router) {
+                  $allowedList[] = $router['router_name'];
+                  if(in_array($name, $allowedList)) {
+                    return true;
+                  }
+                }
+              }
+              return false;
             }
           }
         }

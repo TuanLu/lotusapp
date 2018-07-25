@@ -426,7 +426,7 @@ class EditableTable extends React.Component {
             onOk={() => {
               
             }}
-            //footer={null}
+            footer={null}
             >
             <QuanlyPhanquyen mainState={this.props.mainState} dispatch={this.props.dispatch} />
           </Modal>  
