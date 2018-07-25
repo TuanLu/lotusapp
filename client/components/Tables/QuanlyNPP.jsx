@@ -1,6 +1,6 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
@@ -77,7 +77,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       data: [], 
       editingKey: '',
       newitem: 0
@@ -89,6 +89,12 @@ class EditableTable extends React.Component {
         width: '10%',
         editable: true,
         required: true,
+        render : (text) => {
+          return (
+            <React.Fragment>
+              {text}
+            </React.Fragment>
+        )}
       },
       {
         title: 'Tên',

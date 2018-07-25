@@ -12,17 +12,17 @@ class SidebarMenu extends React.Component {
     menuItems = menuItems.map((role, index) => {
       if(role.children && role.children.length > 0) {
         return (
-          <SubMenu key={role.path} title={<span><Icon type={role.icon} /><span>{role.label}</span></span>}>
+          <SubMenu key={role.path} title={<span><Icon className="menu_item_left_icon" type={role.icon} /><span>{role.label}</span></span>}>
              {role.children.map((child) => {
               return (
-                <Menu.Item
+                <Menu.Item className="menu_item_left"
                   onClick={() => {
                     this.props.dispatch(updateStateData({
                       defaultRouter: child.path
                     }));
                   }} 
                   key={child.path}>
-                    {/* <Icon type={child.icon} /> */}
+                    {/* {<Icon type={child.icon} />} */ <Icon type="api" />}
                     <span>{child.label}</span>
                 </Menu.Item>
               );

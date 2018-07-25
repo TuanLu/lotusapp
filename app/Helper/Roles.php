@@ -12,61 +12,61 @@ class Roles {
         'parent' => 'main_group'
       ],
       'qldh' => [
-        'label' => 'QL Đơn hàng', 
+        'label' => 'Đơn hàng', 
         'icon' => 'shopping-cart',
         'path' => 'qldh',
         'parent' => 'other_group'
       ],
       'npp' => [
-        'label' => 'QL NCC', 
+        'label' => 'Nhà cung cấp', 
         'icon' => 'solution',
         'path' => 'npp',
         'parent' => 'other_group'
       ],
       'qluser' => [
-        'label' => 'QL Users', 
+        'label' => 'Thành viên', 
         'icon' => 'user',
         'path' => 'qluser',
         'parent' => 'qluser_group'
       ],
       'qlsx' => [
-        'label' => 'QL Sản Xuất', 
+        'label' => 'Sản Xuất', 
         'icon' => 'inbox',
         'path' => 'qlsx',
         'parent' => 'qlsx_group'
       ],
       'qlphieunhap' => [
-        'label' => 'QL Phiếu Nhập', 
+        'label' => 'Phiếu Nhập', 
         'icon' => 'schedule',
         'path' => 'qlphieunhap',
         'parent' => 'vattu_group'
       ],
       'qlphieuxuat' => [
-        'label' => 'QL Phiếu Xuất', 
+        'label' => 'Phiếu Xuất', 
         'icon' => 'schedule',
         'path' => 'qlphieuxuat',
         'parent' => 'vattu_group'
       ],
       'qlcate' => [
-        'label' => 'QL Danh mục vật tư', 
+        'label' => 'Danh mục vật tư', 
         'icon' => 'table',
         'path' => 'qlcate',
         'parent' => 'vattu_group'
       ],
       'product' => [
-        'label' => 'QL Vật tư', 
+        'label' => 'Vật tư', 
         'icon' => 'shop',
         'path' => 'product',
         'parent' => 'vattu_group'
       ],
       'qlkho' => [
-        'label' => 'QL Kho', 
+        'label' => 'Kho VT', 
         'icon' => 'home',
         'path' => 'qlkho',
         'parent' => 'vattu_group'
       ],
       'qlvtkho' => [
-        'label' => 'QL Vị trí Kho', 
+        'label' => 'Vị trí Kho', 
         'icon' => 'home',
         'path' => 'qlvtkho',
         'parent' => 'vattu_group'
@@ -78,7 +78,7 @@ class Roles {
         'parent' => 'vattu_group'
       ],
       'qlkh' => [
-        'label' => 'QL Khách Hàng', 
+        'label' => 'Khách Hàng', 
         'icon' => 'team',
         'path' => 'qlkh',
         'parent' => 'other_group'
@@ -98,19 +98,19 @@ class Roles {
         ]
       ],
       'qlns' => [
-        'label' => 'QL Nhân sự', 
+        'label' => 'Nhân sự', 
         'icon' => 'team',
         'path' => 'qlns',
         'parent' => 'chamcong_group'
       ],
       'qljobs' => [
-        'label' => 'QL Công việc', 
+        'label' => 'Công việc', 
         'icon' => 'solution',
         'path' => 'qljobs',
         'parent' => 'chamcong_group'
       ],
       'qlsl' => [
-        'label' => 'QL Sản Lượng', 
+        'label' => 'Sản Lượng', 
         'icon' => 'form',
         'path' => 'qlsl',
         'parent' => 'chamcong_group'
@@ -134,7 +134,7 @@ class Roles {
         'parent' => 'qlsx_group'
       ],
       'qlpb' => [
-        'label' => 'QL Phòng ban', 
+        'label' => 'Phòng ban', 
         'icon' => 'team',
         'path' => 'qlpb',
         'parent' => 'other_group'
