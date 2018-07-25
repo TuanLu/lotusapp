@@ -77,17 +77,15 @@ class UserPermission extends React.Component {
         dataIndex: 'delete',
         width: "15%",
         render: (text, record) => {
-          render: (text, record) => {
-            if(record && record.permission && record.permission.delete) {
-              return (
-                <Switch 
-                  checked={this.state.allowed_router.indexOf(record.permission.delete) !== -1 ? true : false} 
-                  checkedChildren="Có quyền" 
-                  unCheckedChildren="Không có quyền" />
-              )
-            }
+          if(record && record.permission && record.permission.delete) {
+            return (
+              <Switch 
+                checked={this.state.allowed_router.indexOf(record.permission.delete) !== -1 ? true : false} 
+                checkedChildren="Có quyền" 
+                unCheckedChildren="Không có quyền" />
+            )
           }
-        }
+        } 
       }
     ];
   }

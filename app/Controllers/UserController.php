@@ -113,12 +113,12 @@ class UserController extends BaseController {
         'path' => 'chamcong_group',
         'children' => []
       ],
-      [
-        'label' => 'Thành viên', 
-        'icon' => 'team',
-        'path' => 'qluser_group',
-        'children' => []
-      ],
+      // [
+      //   'label' => 'Thành viên', 
+      //   'icon' => 'team',
+      //   'path' => 'qluser_group',
+      //   'children' => []
+      // ],
       [
         'label' => 'Cấu hình', 
         'icon' => 'pushpin',
@@ -129,7 +129,7 @@ class UserController extends BaseController {
     //Check is_supper admin
     if($this->isSuperAdmin($userId)) {
       $menus[] = [
-        'label' => 'QL User', 
+        'label' => 'Thành viên', 
         'icon' => 'team',
         'path' => 'qluser_group',
         'children' => []
