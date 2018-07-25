@@ -158,6 +158,9 @@ class EditableTable extends React.Component {
         required: false,
         width: 100,
         render: (text, record) => {
+          if(!record.id) {
+            return null;
+          }
           return (
             <Button
               onClick={() => {

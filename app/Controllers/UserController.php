@@ -75,8 +75,10 @@ class UserController extends BaseController {
     }
     echo json_encode($rsData);
   }
-  private function isSuperAdmin() {
-    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+  private function isSuperAdmin($userId = "") {
+    if(!$userId) {
+      $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+    }
     if($userId != "") {
       $user = $this->db->select('users', ['is_super'], ['id' => $userId]);
       if(!empty($user) && $user[0]['is_super'] === "1") {
@@ -85,7 +87,7 @@ class UserController extends BaseController {
     }
     return false;
   }
-  protected function appMenus() {
+  protected function appMenus($userId = "") {
     $menus = [
       [
         'label' => 'QL Cảnh báo', 
@@ -125,7 +127,7 @@ class UserController extends BaseController {
       ],
     ];
     //Check is_supper admin
-    if($this->isSuperAdmin()) {
+    if($this->isSuperAdmin($userId)) {
       $menus[] = [
         'label' => 'QL User', 
         'icon' => 'team',
@@ -140,9 +142,27 @@ class UserController extends BaseController {
     if($userId) {
       $allScopes = Roles::getRoles();
       $userRoles = [];
-      $menus = $this->appMenus();
+      $menus = $this->appMenus($userId);
       foreach($allScopes as $router => $role) {
         $userRoles[] = $role;
+      }
+      $userData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
+        'id' => $userId,
+        'status' => 1
+      ]);
+      if(!$this->isSuperAdmin($userId)) {
+        //Limit permission here 
+        $routerNames = $this->db->select('user_permission', ['router_name', 'allow','include'], [
+          'user_id' => $userId,
+        ]);
+        $routerAndRole = Roles::roleAndRouter();
+        foreach ($userRoles as $key => $role) {
+          if(isset($role['path']) && isset($routerAndRole[$role['path']])) {
+            //Will do something later
+          } else {
+            unset($userRoles[$key]);
+          }
+        }
       }
       //Append menu item to parent 
       foreach ($menus as $menuKey => $menuItem) {
@@ -152,19 +172,16 @@ class UserController extends BaseController {
           }
         }
       }
-      $userData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
-        'id' => $userId,
-        'status' => 1
-      ]);
-      if(!$this->isSuperAdmin()) {
-        //Limit permission here 
-        $routerNames = $this->db->select('user_permission', ['router_name', 'allow','include'], [
-          'user_id' => $userId,
-        ]);
+      //Filter level 1 menu
+      foreach ($menus as $key => $menu) {
+        if(empty($menu['children'])) {
+          unset($menus[$key]);
+        }
       }
+
       if(!empty($userRoles)) {
         return [
-          'roles' => $menus,
+          'roles' => array_values($menus),
           'userInfo' => $userData[0]
         ];
       }

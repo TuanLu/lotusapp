@@ -6,20 +6,24 @@ class Roles {
     return [
       'tinhtrangkho' => [
         'view' => 'tinhtrangkho__view'
+      ],
+      'quy_trinh_sx' => [
+        'view' => 'quy_trinh_sx__quy_trinh_san_xuat__view',
+        'add' => 'quy_trinh_sx__quy_trinh_san_xuat__add',
+        'edit' => 'quy_trinh_sx__quy_trinh_san_xuat__edit',
+        'delete' => 'quy_trinh_sx__quy_trinh_san_xuat__delete',
       ]
     ];
   }
   static function getRoles() {
     //Parents: main_group, vattu_group, qlsx_group, chamcong_group, qluser_group, other_group
     return [
-      'tinhtrangkho' => [
+      [
         'label' => 'Tình trạng kho', 
         'icon' => 'home',
         'path' => 'tinhtrangkho',
         'parent' => 'main_group',
-        'permission' => [
-          'view' => Roles::roleAndRouter()['tinhtrangkho']['view']
-        ]
+        'permission' => Roles::roleAndRouter()['tinhtrangkho']
       ],
       'qldh' => [
         'label' => 'QL Đơn hàng', 
@@ -131,17 +135,12 @@ class Roles {
         'path' => 'cdc',
         'parent' => 'chamcong_group'
       ],
-      'quy_trinh_sx' => [
+      [
         'label' => 'Quy trình SX', 
         'icon' => 'solution',
         'path' => 'quy_trinh_sx',
         'parent' => 'qlsx_group',
-        'permission' => [
-          'view' => 'quytrinhsx__quy_trinh_san_xuat__view',
-          'add' => 'quytrinhsx__quy_trinh_san_xuat__add',
-          'edit' => 'quytrinhsx__quy_trinh_san_xuat__edit',
-          'delete' => 'quytrinhsx__quy_trinh_san_xuat__delete',
-        ]
+        'permission' => Roles::roleAndRouter()['quy_trinh_sx']
       ],
       'khsx_daihan' => [
         'label' => 'KHSX dài hạn', 
