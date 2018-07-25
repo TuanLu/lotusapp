@@ -152,9 +152,11 @@ class UserController extends BaseController {
       ]);
       if(!$this->isSuperAdmin($userId)) {
         //Limit permission here 
-        $routerNames = $this->db->select('user_permission', ['router_name', 'allow','include'], [
-          'user_id' => $userId,
-        ]);
+        $allowedPermission = $this->getUserPermission($userId);
+        $allAllowedRouter = [];
+        foreach ($allowedPermission as $key => $permission) {
+          $allAllowedRouter[] = $permission['router_name'];
+        }
         $routerAndRole = Roles::roleAndRouter();
         foreach ($userRoles as $key => $role) {
           if(isset($role['path']) && isset($routerAndRole[$role['path']])) {
@@ -168,7 +170,10 @@ class UserController extends BaseController {
       foreach ($menus as $menuKey => $menuItem) {
         foreach ($userRoles as $roleKey => $role) {
           if(isset($role['parent']) && $role['parent'] == $menuItem['path']) {
-            $menus[$menuKey]['children'][] = $role;
+            //Check if user has view permission or not
+            if(isset($role['permission']['view']) && in_array($role['permission']['view'], $allAllowedRouter)) {
+              $menus[$menuKey]['children'][] = $role;
+            }
           }
         }
       }
