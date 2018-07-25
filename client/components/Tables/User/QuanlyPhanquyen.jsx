@@ -12,9 +12,12 @@ class UserPermission extends React.Component {
     super(props);
     this.state = { 
       data: [],
+      permission: [],
+      allowed_router: [],
       loading: false
     };
     this.updateUserPermission = this.updateUserPermission.bind(this);
+    this.showRouterAndPermission = this.showRouterAndPermission.bind(this);
     this.columns = [
       {
         title: 'Tên module',
@@ -32,9 +35,9 @@ class UserPermission extends React.Component {
                 onChange={(value) => {                  
                   this.updateUserPermission(record.permission.view, value);
                 }} 
-                checked={text == "1" ? true : false} 
+                checked={this.state.allowed_router.indexOf(record.permission.view) !== -1 ? true : false} 
                 checkedChildren="Có quyền" 
-                unCheckedChildren={record.permission.view} />
+                unCheckedChildren={"Không có quyền"} />
             )
           }
         }
@@ -46,7 +49,10 @@ class UserPermission extends React.Component {
         render: (text, record) => {
           if(record && record.permission && record.permission.add) {
             return (
-              <Switch checked={text == "1" ? true : false} checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />
+              <Switch 
+                checked={this.state.allowed_router.indexOf(record.permission.add) !== -1 ? true : false}
+                checkedChildren="Có quyền" 
+                unCheckedChildren="Không có quyền" />
             )
           }
         }
@@ -58,7 +64,10 @@ class UserPermission extends React.Component {
         render: (text, record) => {
           if(record && record.permission && record.permission.edit) {
             return (
-              <Switch checked={text == "1" ? true : false} checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />
+              <Switch 
+                checked={this.state.allowed_router.indexOf(record.permission.edit) !== -1 ? true : false} 
+                checkedChildren="Có quyền" 
+                unCheckedChildren="Không có quyền" />
             )
           }
         }
@@ -71,7 +80,10 @@ class UserPermission extends React.Component {
           render: (text, record) => {
             if(record && record.permission && record.permission.delete) {
               return (
-                <Switch checked={text == "1" ? true : false} checkedChildren="Có quyền" unCheckedChildren="Không có quyền" />
+                <Switch 
+                  checked={this.state.allowed_router.indexOf(record.permission.delete) !== -1 ? true : false} 
+                  checkedChildren="Có quyền" 
+                  unCheckedChildren="Không có quyền" />
               )
             }
           }
@@ -104,6 +116,7 @@ class UserPermission extends React.Component {
               this.props.dispatch(updateStateData({showLogin: true}));
             }
           } else {
+            this.showRouterAndPermission(json.data);
             message.success(json.message);
           }
         }).catch((ex) => {
@@ -113,19 +126,28 @@ class UserPermission extends React.Component {
       }
     }
   }
+  showRouterAndPermission(data) {
+    if(data.permission && data.roles) {
+      let allowedRouter = data.permission.map((router) => router.router_name);
+      this.setState({
+        data: data.roles,
+        permission: data.permission,
+        loading: false,
+        allowed_router: allowedRouter
+      })
+    }
+  }
   fetchData() {
+    let {phanquyen} = this.props.mainState;
+    let userId = phanquyen.user ? phanquyen.user.id : '';
     this.setState({loading: true});
-    fetch(ISD_BASE_URL + 'fetchAllRoles')
+    fetch(ISD_BASE_URL + 'fetchAllRoles/' + userId, {
+      headers: getTokenHeader()
+    })
     .then((response) => response.json())
     .then((json) => {
       if(json.data) {
-        // this.props.dispatch(updateStateData({
-        //   allUserRoles: json.data
-        // }));
-        this.setState({
-          data: json.data,
-          loading: false
-        })
+        this.showRouterAndPermission(json.data);
       } else {
         message.error(json.message);
         this.setState({loading: false});

@@ -364,11 +364,27 @@ class UserController extends BaseController {
 		}
 		echo json_encode($rsData);
   }
-  public function fetchAllRoles() {
+  public function fetchAllRoles($request, $response, $args) {
     $rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa load được chức năng nào!'
     );
+    $userId = isset($args['user_id']) ? $args['user_id'] : ''; 
+    $routerAndPermission = $this->getUserRouteAndPermission($userId);
+    if($routerAndPermission) {
+      $rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Các chức năng đã load thành công!';
+      $rsData['data'] = array(
+        'roles' => $routerAndPermission['roles'],
+        'permission' => $routerAndPermission['permission']
+      );
+    }
+    echo json_encode($rsData);
+  }
+  private function getUserRouteAndPermission($userId) {
+    if(!$userId) {
+      return false;
+    }
     $allRoles = Roles::getRoles();
     $roleList = [];
     foreach ($allRoles as $key => $value) {
@@ -386,11 +402,13 @@ class UserController extends BaseController {
       $roleList[] = $roleItem;
     }
     if(!empty($roleList)) {
-      $rsData['status'] = self::SUCCESS_STATUS;
-      $rsData['message'] = 'Các chức năng đã load thành công!';
-      $rsData['data'] = $roleList;
+      $permission = $this->getUserPermission($userId);
+      return array(
+        'roles' => $roleList,
+        'permission' => $permission
+      );
     }
-    echo json_encode($rsData);
+    return false;
   }
   public function updatePermission($request, $response){
 		$rsData = array(
@@ -425,11 +443,23 @@ class UserController extends BaseController {
       }
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
-				$rsData['message'] = 'Đã cập nhật quyền thành công!';
+        $rsData['message'] = 'Đã cập nhật quyền thành công!';
+        $routerAndPermission = $this->getUserRouteAndPermission($userId);
+        $rsData['data'] = array(
+          'roles' => $routerAndPermission['roles'],
+          'permission' => $routerAndPermission['permission']
+        );
 			} else {
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		}
 		echo json_encode($rsData);
+  }
+  private function getUserPermission($userId) {
+    if($userId) {
+      $collection = $this->db->select('user_permission', ['router_name','include'], ['user_id' => $userId, 'allow' => '1']);
+      return $collection;
+    }
+    return [];
   }
 }

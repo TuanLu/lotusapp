@@ -8,7 +8,7 @@ use App\Helper\Roles;
 //$app->get('/login', 'UserController:index');
 $app->post('/token', 'UserController:token')->setName('token');
 $app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
-$app->get('/fetchAllRoles', 'UserController:fetchAllRoles');// To assign to user
+$app->get('/fetchAllRoles/{user_id}', 'UserController:fetchAllRoles');// To assign to user
 
 $app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
 $app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
