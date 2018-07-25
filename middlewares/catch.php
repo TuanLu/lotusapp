@@ -23,6 +23,9 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "secret" => $ISD_KEY,
     "callback" => function ($request, $response, $arguments) use ($container) {
         //Check first login witout token, check user permisstion and current router
+        $route = $request->getAttribute('route');
+        $name = $route->getName();
+        //echo "Router: $name";
         $container["jwt"] = $arguments["decoded"];
     },
     "error" => function ($request, $response, $arguments) {

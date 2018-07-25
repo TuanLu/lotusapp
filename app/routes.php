@@ -24,7 +24,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 //User router
 //$app->get('/login', 'UserController:index');
 $app->post('/token', 'UserController:token');
-$app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
+$app->get('/fetchRoles', 'UserController:fetchRoles')->setName('fetchRoles');//Per User
 $app->get('/fetchAllRoles', 'UserController:fetchAllRoles');// To assign to user
 
 $app->get('/users/fetchUsers', 'UserController:fetchUsers');
@@ -83,7 +83,7 @@ $app->post('/phieuxuat/changePosition', 'PhieuxuatController:changePosition');
 $app->get('/phieuxuat/delete/{id}', 'PhieuxuatController:delete');
 $app->get('/phieuxuat/deleteProduct/{id}', 'PhieuxuatController:deleteProduct');
 //Tinh trang kho router
-$app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct');
+$app->get('/tinhtrangkho/fetchAllProduct', 'TinhtrangkhoController:fetchAllProduct')->setName('tinhtrangkho');
 $app->post('/tinhtrangkho/search', 'TinhtrangkhoController:search');
 $app->get('/tinhtrangkho/fetchProductInInventory', 'TinhtrangkhoController:fetchProductInInventory');
 //Nhân sự router
