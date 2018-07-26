@@ -126,7 +126,8 @@ class QuanlyQuytrinhSanxuat extends React.Component {
             quyTrinhSx: {
               ...this.props.mainState.quyTrinhSx,
               edit: json.newRecord,
-              openModal: false
+              openModal: false,
+              //refresh: true
             },
             ganttData: {
               links: [],
@@ -147,7 +148,8 @@ class QuanlyQuytrinhSanxuat extends React.Component {
     this.props.dispatch(updateStateData({
       quyTrinhSx: {
         ...this.props.mainState.quyTrinhSx,
-        edit: {}
+        edit: {},
+        refresh: true
       }
     }));
   }
@@ -174,7 +176,8 @@ class QuanlyQuytrinhSanxuat extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            phieunhap: {
+            quyTrinhSx: {
+              ...this.props.mainState.quyTrinhSx,
               refresh: false
             }
           }));
@@ -194,7 +197,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá quy trình sản xuất!', 3);
+          message.error( json.message || 'Có lỗi xảy ra khi xoá quy trình sản xuất!', 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -215,7 +218,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
     }
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.phieunhap;
+    let {refresh} = nextProps.mainState.quyTrinhSx;
     if(refresh) {
       return {
         dataUpToDate: null
@@ -321,6 +324,7 @@ class QuanlyQuytrinhSanxuat extends React.Component {
                     <div className="action-btns">
                     <Button.Group>
                       <Button 
+                        style={{marginRight: 10}}
                         onClick={this.back}
                         icon="left">Quay lại</Button>
                       <Button 

@@ -88,15 +88,15 @@ $app->get('/cdc/fetchCdc', 'CdcController:fetchCdc');
 $app->get('/cdc/fetchTotal', 'CdcController:fetchTotal');
 $app->post('/cdc/search', 'CdcController:search');
 //SX router
-$app->get('/sx/fetch', 'SXController:fetch');
-$app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList');
-$app->get('/sx/fetchSelectedProduct/{ma_sx}', 'SXController:fetchSelectedProduct');
-$app->get('/sx/fetchProductByCate/{cate_id}', 'SXController:fetchProductByCate');
-$app->post('/sx/update', 'SXController:update');
-$app->post('/sx/updateProduct', 'SXController:updateProduct');
+$app->get('/sx/fetch', 'SXController:fetch')->setName(Roles::roleAndRouter()['qlsx']['view']);
+$app->get('/sx/fetchProductDetailsList', 'SXController:fetchProductDetailsList')->setName(Roles::roleAndRouter()['qlsx']['view']);
+$app->get('/sx/fetchSelectedProduct/{ma_sx}', 'SXController:fetchSelectedProduct')->setName(Roles::roleAndRouter()['qlsx']['view']);
+$app->get('/sx/fetchProductByCate/{cate_id}', 'SXController:fetchProductByCate')->setName(Roles::roleAndRouter()['qlsx']['view']);
+$app->post('/sx/update', 'SXController:update')->setName(Roles::roleAndRouter()['qlsx']['add']);
+$app->post('/sx/updateProduct', 'SXController:updateProduct')->setName(Roles::roleAndRouter()['qlsx']['add']);
 $app->post('/sx/pheduyet', 'SXController:pheDuyet');
-$app->get('/sx/delete/{id}', 'SXController:delete');
-$app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
+$app->get('/sx/delete/{id}', 'SXController:delete')->setName(Roles::roleAndRouter()['qlsx']['delete']);
+$app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct')->setName(Roles::roleAndRouter()['qlsx']['delete']);
 //Quy trinh san xuat router
 $app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch')->setName(Roles::roleAndRouter()['quy_trinh_sx']['view']);
 $app->post('/quytrinhsx/update', 'QuytrinhSxController:update')->setName(Roles::roleAndRouter()['quy_trinh_sx']['add']);

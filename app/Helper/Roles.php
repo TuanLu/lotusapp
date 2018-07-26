@@ -40,6 +40,9 @@ class Roles {
         'edit' => 'qlkho__lotus_kho__edit',
         'delete' => 'qlkho__lotus_kho__delete',
       ],
+      'pheduyet_khsx' => [
+        'duyet' => 'duyet_khsx'
+      ]
     ];
   }
   static function getRoles() {
@@ -142,20 +145,24 @@ class Roles {
         'path' => 'qlkh',
         'parent' => 'other_group'
       ],
-      'full_quyen' => [
-        'label' => 'Chức vụ, phê duyệt', 
-        'icon' => 'team',
-        'path' => 'full_quyen',
-        'include_in_menu' => false,
-        'children' => [
-          array('title' => 'Kí duyệt KHSX', 'value' => 'duyet_khsx', 'key' => 'duyet_khsx'),
-          array('title' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl', 'key' => 'duyet_dbcl'),
-          array('title' => 'Giám đốc QLSX', 'value' => 'duyet_gd', 'key' => 'duyet_gd'),
-          array('title' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho', 'key' => 'nhom_thu_kho'),
-          array('title' => 'Nhóm QA', 'value' => 'nhomqa', 'key' => 'nhomqa'),
-          array('title' => 'Nhóm QC', 'value' => 'nhomqc', 'key' => 'nhomqc'),
-        ]
-      ],
+      // 'full_quyen' => [
+      //   'label' => 'Chức vụ, phê duyệt', 
+      //   'icon' => 'team',
+      //   'path' => 'full_quyen',
+      //   'include_in_menu' => false,
+      //   'children' => [
+      //     array(
+      //       'name' => 'Kí duyệt KHSX', 
+      //       'key' => 'duyet_khsx',
+      //       'permission' => Roles::roleAndRouter()['pheduyet_khsx']
+      //     ),
+      //     array('name' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl', 'key' => 'duyet_dbcl'),
+      //     array('name' => 'Giám đốc QLSX', 'value' => 'duyet_gd', 'key' => 'duyet_gd'),
+      //     array('name' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho', 'key' => 'nhom_thu_kho'),
+      //     array('name' => 'Nhóm QA', 'value' => 'nhomqa', 'key' => 'nhomqa'),
+      //     array('name' => 'Nhóm QC', 'value' => 'nhomqc', 'key' => 'nhomqc'),
+      //   ]
+      // ],
       'qlns' => [
         'label' => 'Nhân sự', 
         'icon' => 'team',

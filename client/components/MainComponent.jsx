@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { Layout, Menu, Icon, Button, message } from 'antd';
 const { Header, Sider, Content } = Layout;
-import { Row, Col } from 'antd';
+import { Row, Col, Alert } from 'antd';
 import SidebarMenu from './SidebarMenu'
 import QuanlyNPP from './Tables/QuanlyNPP'
 import UserManagement from './Tables/UserManagement'
@@ -187,7 +187,7 @@ class MainComponent extends React.Component {
           </Header>
           <div style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
             {!defaultRouter? 
-              <Loading/>
+              <Alert message="Xin lỗi. User chưa được phân quyền, liên hệ admin để phân quyền và tiếp tục sử dụng phầm mềm!" type="info" showIcon />
               : 
               this.renderContent(defaultRouter)
             }
