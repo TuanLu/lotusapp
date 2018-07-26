@@ -135,6 +135,20 @@ class GanttController extends BaseController {
 		echo json_encode($rsData);
 	}
 	/**
+	 * Tịnh tiến start date của từng task
+	 */
+	private function getFowardDateDiff($nsx, $collection) {
+		$dates = [];
+		foreach ($collection as $key => $task) {
+			$dates[] = $task['start_date'];
+		}
+		$minStartDate = min($dates);
+		$date1 = date_create($minStartDate);
+		$date2 = date_create($nsx);
+		$diff = date_diff($date1,$date2);
+		return $diff->format("%a");
+	}
+	/**
 	 * Clone task from quy trinh
 	 */
 	public function fetchTasksFromSample($request, $response, $args) {
@@ -144,14 +158,15 @@ class GanttController extends BaseController {
     );
 		$maSx = isset(	$args['ma_sx']) ? $args['ma_sx'] : '';
 		$quyTrinhId = isset(	$args['quy_trinh_id']) ? $args['quy_trinh_id'] : '';
-		$nsx = isset(	$args['nsx']) ? $args['nsx'] : '';
 		$date = new \DateTime();
-    $createOn = $date->format('Y-m-d H:i:s');
+		$createOn = $date->format('Y-m-d H:i:s');
+		$nsx = isset(	$args['nsx']) ? $args['nsx'] : $date->format('Y-m-d');
     $userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		$collection = $this->getTasksByQuytrinhId($quyTrinhId);
 		$oldAndNewTaskIds = [];
 		//Tao task ID moi
 		if(isset($collection['data']) && !empty($collection['data'])) {
+			$dayDiff = $this->getFowardDateDiff($nsx, $collection['data']);
 			foreach ($collection['data'] as $key => $task) {
 				$uuid1 = Uuid::uuid1();
       	$uuid = $uuid1->toString();
@@ -169,6 +184,12 @@ class GanttController extends BaseController {
 				//Update create date
 				$collection['data'][$key]['create_on'] = $createOn;
 				$collection['data'][$key]['create_by'] = $userId;
+				//Update start_date 
+				if($dayDiff > 0) {
+					$date = date_create($collection['data'][$key]['start_date']);
+					date_add($date,date_interval_create_from_date_string("$dayDiff days"));
+					$collection['data'][$key]['start_date'] = date_format($date,"Y-m-d");
+				}
 			}
 			//Update links if exists 
 			if(isset($collection['links']) && !empty($collection['links'])) {
@@ -187,9 +208,6 @@ class GanttController extends BaseController {
 					}
 				}
 			}
-			//echo "<pre>";
-			// print_r($collection);
-			// die;
 			//Insert Task
 			$resultTask = $this->db->insert($this->tableName, $collection['data']);
 			//Insert Link
