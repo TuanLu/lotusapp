@@ -432,9 +432,9 @@ class Gantt extends Component {
     };
     gantt.config.columns = [
       {name: "text", hide: true, tree: true},
-      {name: "start_date", hide: true},
-      {name: "duration", hide: false},
-      {name: "add", hide: false}
+      {name: "start_date", hide: true, align: "center"},
+      {name: "duration", hide: false, align: "center"},
+      {name: "add", hide: false, align: "center"}
     ];
     //gantt.config.show_grid = true;
     gantt.config.show_links = true;
@@ -449,8 +449,8 @@ class Gantt extends Component {
       //gantt.config.show_progress = false;
       gantt.config.columns = [
         {name: "text", hide: true, tree: true},
-        {name: "start_date", hide: true},
-        {name: "duration", hide: true},
+        {name: "start_date", hide: true, align: "center"},
+        {name: "duration", hide: true, align: "center"},
         //{name: "add", hide: true}
       ];
     }
