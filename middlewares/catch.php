@@ -36,7 +36,19 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
               $isAllow = false;
               $permission = $container['UserController']->getUserPermission($userId);
               if(!empty($permission)) {
+                //Check current router doing add or edit entry
+                if(strpos($name, '__add') || strpos($name, '__edit')) {
+                  //Check param has ID or not 
+                  $id = $request->getParam("id");
+                  if($id != "") {
+                    //This is a update request 
+                    $name = str_replace('__add', '__edit', $name);
+                  }
+                }
                 $allowedList = [];
+                // echo "<pre>";
+                // print_r($permission);
+                // echo $name;
                 foreach ($permission as $key => $router) {
                   $allowedList[] = $router['router_name'];
                   if(in_array($name, $allowedList)) {

@@ -98,9 +98,9 @@ $app->post('/sx/pheduyet', 'SXController:pheDuyet');
 $app->get('/sx/delete/{id}', 'SXController:delete');
 $app->get('/sx/deleteProduct/{id}', 'SXController:deleteProduct');
 //Quy trinh san xuat router
-$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch')->setName('quytrinhsx__quy_trinh_san_xuat__view');
-$app->post('/quytrinhsx/update', 'QuytrinhSxController:update')->setName('quytrinhsx__quy_trinh_san_xuat__update');
-$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete')->setName('quytrinhsx__quy_trinh_san_xuat__delete');
+$app->get('/quytrinhsx/fetch', 'QuytrinhSxController:fetch')->setName(Roles::roleAndRouter()['quy_trinh_sx']['view']);
+$app->post('/quytrinhsx/update', 'QuytrinhSxController:update')->setName(Roles::roleAndRouter()['quy_trinh_sx']['add']);
+$app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete')->setName(Roles::roleAndRouter()['quy_trinh_sx']['delete']);
 //Gantt router
 $app->post('/gantt/update', 'GanttController:update');
 $app->post('/gantt/updateLink', 'GanttController:updateLink');

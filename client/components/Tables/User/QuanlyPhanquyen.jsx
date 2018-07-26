@@ -7,6 +7,9 @@ import {
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 
+const allowLabel = "Có";
+const denyLabel = "Không";
+
 class UserPermission extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +30,7 @@ class UserPermission extends React.Component {
       {
         title: 'Quyền xem',
         dataIndex: 'view',
-        width: "15%",
+        width: "10%",
         render: (text, record) => {
           if(record && record.permission && record.permission.view) {
             return (
@@ -36,8 +39,8 @@ class UserPermission extends React.Component {
                   this.updateUserPermission(record.permission.view, value);
                 }} 
                 checked={this.state.allowed_router.indexOf(record.permission.view) !== -1 ? true : false} 
-                checkedChildren="Có quyền" 
-                unCheckedChildren={"Không có quyền"} />
+                checkedChildren={allowLabel}
+                unCheckedChildren={denyLabel} />
             )
           }
         }
@@ -45,14 +48,17 @@ class UserPermission extends React.Component {
       {
         title: 'Quyền thêm',
         dataIndex: 'add',
-        width: "15%",
+        width: "10%",
         render: (text, record) => {
           if(record && record.permission && record.permission.add) {
             return (
               <Switch 
+                onChange={(value) => {                  
+                  this.updateUserPermission(record.permission.add, value);
+                }}
                 checked={this.state.allowed_router.indexOf(record.permission.add) !== -1 ? true : false}
-                checkedChildren="Có quyền" 
-                unCheckedChildren="Không có quyền" />
+                checkedChildren={allowLabel} 
+                unCheckedChildren={denyLabel} />
             )
           }
         }
@@ -60,14 +66,17 @@ class UserPermission extends React.Component {
       {
         title: 'Quyền sửa',
         dataIndex: 'edit',
-        width: "15%",
+        width: "10%",
         render: (text, record) => {
           if(record && record.permission && record.permission.edit) {
             return (
               <Switch 
+                onChange={(value) => {                  
+                  this.updateUserPermission(record.permission.edit, value);
+                }}
                 checked={this.state.allowed_router.indexOf(record.permission.edit) !== -1 ? true : false} 
-                checkedChildren="Có quyền" 
-                unCheckedChildren="Không có quyền" />
+                checkedChildren={allowLabel} 
+                unCheckedChildren={denyLabel} />
             )
           }
         }
@@ -75,17 +84,25 @@ class UserPermission extends React.Component {
       {
         title: 'Quyền xóa',
         dataIndex: 'delete',
-        width: "15%",
+        width: "10%",
         render: (text, record) => {
           if(record && record.permission && record.permission.delete) {
             return (
               <Switch 
+                onChange={(value) => {                  
+                  this.updateUserPermission(record.permission.delete, value);
+                }}
                 checked={this.state.allowed_router.indexOf(record.permission.delete) !== -1 ? true : false} 
-                checkedChildren="Có quyền" 
-                unCheckedChildren="Không có quyền" />
+                checkedChildren={allowLabel} 
+                unCheckedChildren={denyLabel} />
             )
           }
         } 
+      },
+      {
+        title: 'Bao gồm',
+        dataIndex: 'include',
+        width: "20%",
       }
     ];
   }

@@ -4,26 +4,119 @@ namespace App\Helper;
 class Roles {
   static function roleAndRouter() {
     return [
-      'tinhtrangkho' => [
-        'view' => 'tinhtrangkho__view'
-      ],
       'quy_trinh_sx' => [
         'view' => 'quy_trinh_sx__quy_trinh_san_xuat__view',
         'add' => 'quy_trinh_sx__quy_trinh_san_xuat__add',
         'edit' => 'quy_trinh_sx__quy_trinh_san_xuat__edit',
         'delete' => 'quy_trinh_sx__quy_trinh_san_xuat__delete',
-      ]
+      ],
+      'qlsx' => [
+        'view' => 'qlsx__lotus_sanxuat__view',
+        'add' => 'qlsx__lotus_sanxuat__add',
+        'edit' => 'qlsx__lotus_sanxuat__edit',
+        'delete' => 'qlsx__lotus_sanxuat__delete',
+      ],
+      'khsx_daihan' => [
+        'view' => 'khsx_daihan__view'
+      ],
+      'tinhtrangkho' => [
+        'view' => 'tinhtrangkho__view'
+      ],
+      'qlphieunhap' => [
+        'view' => 'qlphieunhap__phieu_nhap_xuat_kho__view',
+        'add' => 'qlphieunhap__phieu_nhap_xuat_kho__add',
+        'edit' => 'qlphieunhap__phieu_nhap_xuat_kho__edit',
+        'delete' => 'qlphieunhap__phieu_nhap_xuat_kho__delete',
+      ],
+      'qlphieuxuat' => [
+        'view' => 'qlphieuxuat__phieu_nhap_xuat_kho__view',
+        'add' => 'qlphieuxuat__phieu_nhap_xuat_kho__add',
+        'edit' => 'qlphieuxuat__phieu_nhap_xuat_kho__edit',
+        'delete' => 'qlphieuxuat__phieu_nhap_xuat_kho__delete',
+      ],
+      'qlkho' => [
+        'view' => 'qlkho__lotus_kho__view',
+        'add' => 'qlkho__lotus_kho__add',
+        'edit' => 'qlkho__lotus_kho__edit',
+        'delete' => 'qlkho__lotus_kho__delete',
+      ],
     ];
   }
   static function getRoles() {
     //Parents: main_group, vattu_group, qlsx_group, chamcong_group, qluser_group, other_group
     return [
       [
+        'label' => 'Sản Xuất', 
+        'icon' => 'inbox',
+        'path' => 'qlsx',
+        'parent' => 'qlsx_group',
+        'permission' => Roles::roleAndRouter()['qlsx']
+      ],
+      [
+        'label' => 'Quy trình SX', 
+        'icon' => 'solution',
+        'path' => 'quy_trinh_sx',
+        'parent' => 'qlsx_group',
+        'permission' => Roles::roleAndRouter()['quy_trinh_sx']
+      ],
+      [
+        'label' => 'KHSX dài hạn', 
+        'icon' => 'solution',
+        'path' => 'khsx_daihan',
+        'parent' => 'qlsx_group',
+        'permission' => Roles::roleAndRouter()['khsx_daihan']
+      ],
+      [
+        'label' => 'Kho VT', 
+        'icon' => 'home',
+        'path' => 'qlkho',
+        'parent' => 'vattu_group',
+        'permission' => Roles::roleAndRouter()['qlkho']
+      ],
+      [
         'label' => 'Tình trạng kho', 
         'icon' => 'home',
         'path' => 'tinhtrangkho',
         'parent' => 'main_group',
         'permission' => Roles::roleAndRouter()['tinhtrangkho']
+      ],
+      [
+        'label' => 'Phiếu Nhập', 
+        'icon' => 'schedule',
+        'path' => 'qlphieunhap',
+        'parent' => 'vattu_group',
+        'permission' => Roles::roleAndRouter()['qlphieunhap']
+      ],
+      [
+        'label' => 'Phiếu Xuất', 
+        'icon' => 'schedule',
+        'path' => 'qlphieuxuat',
+        'parent' => 'vattu_group',
+        'permission' => Roles::roleAndRouter()['qlphieuxuat']
+      ],
+      'qlcate' => [
+        'label' => 'Danh mục vật tư', 
+        'icon' => 'table',
+        'path' => 'qlcate',
+        'parent' => 'vattu_group'
+      ],
+      'product' => [
+        'label' => 'Vật tư', 
+        'icon' => 'shop',
+        'path' => 'product',
+        'parent' => 'vattu_group'
+      ],
+      'qlvtkho' => [
+        'label' => 'Vị trí Kho', 
+        'icon' => 'home',
+        'path' => 'qlvtkho',
+        'parent' => 'vattu_group'
+      ],
+      'khvt' => [
+        'label' => 'Kế hoạch Vật tư', 
+        'icon' => 'schedule',
+        'path' => 'khvt',
+        'parent' => 'vattu_group'
       ],
       'qldh' => [
         'label' => 'Đơn hàng', 
@@ -42,54 +135,6 @@ class Roles {
         'icon' => 'user',
         'path' => 'qluser',
         'parent' => 'qluser_group'
-      ],
-      'qlsx' => [
-        'label' => 'Sản Xuất', 
-        'icon' => 'inbox',
-        'path' => 'qlsx',
-        'parent' => 'qlsx_group'
-      ],
-      'qlphieunhap' => [
-        'label' => 'Phiếu Nhập', 
-        'icon' => 'schedule',
-        'path' => 'qlphieunhap',
-        'parent' => 'vattu_group'
-      ],
-      'qlphieuxuat' => [
-        'label' => 'Phiếu Xuất', 
-        'icon' => 'schedule',
-        'path' => 'qlphieuxuat',
-        'parent' => 'vattu_group'
-      ],
-      'qlcate' => [
-        'label' => 'Danh mục vật tư', 
-        'icon' => 'table',
-        'path' => 'qlcate',
-        'parent' => 'vattu_group'
-      ],
-      'product' => [
-        'label' => 'Vật tư', 
-        'icon' => 'shop',
-        'path' => 'product',
-        'parent' => 'vattu_group'
-      ],
-      'qlkho' => [
-        'label' => 'Kho VT', 
-        'icon' => 'home',
-        'path' => 'qlkho',
-        'parent' => 'vattu_group'
-      ],
-      'qlvtkho' => [
-        'label' => 'Vị trí Kho', 
-        'icon' => 'home',
-        'path' => 'qlvtkho',
-        'parent' => 'vattu_group'
-      ],
-      'khvt' => [
-        'label' => 'Kế hoạch Vật tư', 
-        'icon' => 'schedule',
-        'path' => 'khvt',
-        'parent' => 'vattu_group'
       ],
       'qlkh' => [
         'label' => 'Khách Hàng', 
@@ -134,19 +179,6 @@ class Roles {
         'icon' => 'calculator',
         'path' => 'cdc',
         'parent' => 'chamcong_group'
-      ],
-      [
-        'label' => 'Quy trình SX', 
-        'icon' => 'solution',
-        'path' => 'quy_trinh_sx',
-        'parent' => 'qlsx_group',
-        'permission' => Roles::roleAndRouter()['quy_trinh_sx']
-      ],
-      'khsx_daihan' => [
-        'label' => 'KHSX dài hạn', 
-        'icon' => 'solution',
-        'path' => 'khsx_daihan',
-        'parent' => 'qlsx_group'
       ],
       'qlpb' => [
         'label' => 'Phòng ban', 
