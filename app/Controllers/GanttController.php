@@ -134,6 +134,79 @@ class GanttController extends BaseController {
 		}
 		echo json_encode($rsData);
 	}
+	/**
+	 * Clone task from quy trinh
+	 */
+	public function fetchTasksFromSample($request, $response, $args) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa load được dữ liệu từ quy trình mẫu!'
+    );
+		$maSx = isset(	$args['ma_sx']) ? $args['ma_sx'] : '';
+		$quyTrinhId = isset(	$args['quy_trinh_id']) ? $args['quy_trinh_id'] : '';
+		$nsx = isset(	$args['nsx']) ? $args['nsx'] : '';
+		$date = new \DateTime();
+    $createOn = $date->format('Y-m-d H:i:s');
+    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$collection = $this->getTasksByQuytrinhId($quyTrinhId);
+		$oldAndNewTaskIds = [];
+		//Tao task ID moi
+		if(isset($collection['data']) && !empty($collection['data'])) {
+			foreach ($collection['data'] as $key => $task) {
+				$uuid1 = Uuid::uuid1();
+      	$uuid = $uuid1->toString();
+				$oldAndNewTaskIds[$task['id']] = [
+					'old' => $task['id'],
+					'new' => $uuid
+				]; 
+				//Cap nhat task ID
+				$collection['data'][$key]['id'] = $uuid;	
+				//Thay the quy trinh id = ma_sx
+				unset($collection['data'][$key]['quy_trinh_id']);
+				$collection['data'][$key]['ma_sx'] = $maSx;
+				//Reset progress
+				$collection['data'][$key]['progress'] = 0;
+				//Update create date
+				$collection['data'][$key]['create_on'] = $createOn;
+				$collection['data'][$key]['create_by'] = $userId;
+			}
+			//Update links if exists 
+			if(isset($collection['links']) && !empty($collection['links'])) {
+				foreach ($collection['links'] as $key => $link) {
+					//$collection['links'][$key]['source'] = $oldAndNewTaskIds
+					if(isset($oldAndNewTaskIds[$collection['links'][$key]['source']]) 
+						&& isset($oldAndNewTaskIds[$collection['links'][$key]['target']])) {
+							$collection['links'][$key]['source'] = $oldAndNewTaskIds[$collection['links'][$key]['source']]['new'];
+							$collection['links'][$key]['target'] = $oldAndNewTaskIds[$collection['links'][$key]['target']]['new'];
+							//Unset ID 
+							unset($collection['links'][$key]['id']);
+							//Update ma_sx
+							$collection['links'][$key]['ma_sx'] = $maSx;
+							$collection['links'][$key]['create_on'] = $createOn;
+							$collection['links'][$key]['create_by'] = $userId;
+					}
+				}
+			}
+			//echo "<pre>";
+			// print_r($collection);
+			// die;
+			//Insert Task
+			$resultTask = $this->db->insert($this->tableName, $collection['data']);
+			//Insert Link
+			$resultLink = $this->db->insert($this->linkTable, $collection['links']);
+			if($resultTask->rowCount()) {
+				$collection = $this->getTasksByMaSx($maSx);
+				if(!empty($collection['data'])) {
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được load!';
+					$rsData['data'] = $collection;
+				} else {
+					$rsData = $this->getEmptyGanttChart();
+				}
+			}
+		}
+		echo json_encode($rsData);
+	}
   public function update($request, $response){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,

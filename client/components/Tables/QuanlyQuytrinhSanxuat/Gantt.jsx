@@ -103,6 +103,11 @@ class Gantt extends Component {
       case 'theo_lenh_sx':
         let maSX = this.getMaSx();
         fetchUrl = ISD_BASE_URL + 'gantt/fetchTasksByMaSx/' + maSX;
+        //Load tu quy trinh mau
+        // console.log(this.props.mainState.sx);
+        // if(this.props.mainState.sx && this.props.mainState.sx.quyTrinhMauId) {
+        //   fetchUrl += `/${this.props.mainState.sx.quyTrinhMauId}`;
+        // }
         break;
       default:
         let quyTrinhId = this.getQuyTrinhId();
@@ -194,6 +199,12 @@ class Gantt extends Component {
         resetEvents: true
       }
     }
+    //Cap nhat khi thay doi quy trinh mau, hoac khi co yeu cau thay doi
+    if(nextProps.mainState.refreshGantt) {
+      return {
+        resetEvents: true
+      }
+    }
     return null;
   }
   componentDidUpdate() {
@@ -202,6 +213,7 @@ class Gantt extends Component {
       this.clearAllEvents();
       this.initGanttEvents();
       this.setState({resetEvents: false});
+      this.renderGantt();
     }
   }
   saveData(task) {
@@ -402,6 +414,7 @@ class Gantt extends Component {
     );
     this.props.dispatch(updateStateData({
       ganttEvents: eventsList,
+      refreshGantt: false
     }));
   }
   componentDidMount() {

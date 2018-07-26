@@ -107,6 +107,7 @@ $app->post('/gantt/updateLink', 'GanttController:updateLink');
 $app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/fetchTasksByMaSx/{ma_sx}', 'GanttController:fetchTasksByMaSx');
+$app->get('/gantt/fetchTasksFromSample/{ma_sx}/{quy_trinh_id}/{nsx}', 'GanttController:fetchTasksFromSample');
 $app->get('/gantt/delete/{id}', 'GanttController:delete');
 $app->get('/gantt/allPlan', 'GanttController:getAllPlanData');
 $app->get('/gantt/users', 'GanttController:getUsers');

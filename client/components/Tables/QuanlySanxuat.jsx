@@ -305,6 +305,35 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  fetchQuyTrinhMau() {
+    fetch(ISD_BASE_URL + 'quytrinhsx/fetch', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            quyTrinhSx: {
+              ...this.props.mainState.quyTrinhSx,
+              listQuyTrinh: json.data
+            }
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu quy trình sản xuất!', 3);
+      console.log(error);
+    }); 
+  }
   delete = (record) => {
     if(record.id) {
       fetch(ISD_BASE_URL + fetchConfig.delete + record.id, {
@@ -349,6 +378,7 @@ class EditableTable extends React.Component {
   }
   componentDidMount() {
     this.fetchData();
+    this.fetchQuyTrinhMau();
   }
   render() {
     let {mainState} = this.props;

@@ -4,7 +4,7 @@ import FormThongTin from './FormThongtin'
 import FormSanpham from './FormSanpham'
 import FormNote from './FormNote'
 import Gantt from './../QuanlyQuytrinhSanxuat/Gantt'
-import { Row, Button, Col, Popconfirm,message } from 'antd';
+import { Row, Button, Col, Popconfirm, message, Select } from 'antd';
 import {getTokenHeader, blankGanttData} from 'ISD_API'
 import {updateStateData} from 'actions'
 
@@ -12,6 +12,7 @@ class FormPhieunhap extends React.Component {
   constructor(props) {
     super(props);
     this.openQTSX = this.openQTSX.bind(this);
+    this.loadQuyTrinhMau = this.loadQuyTrinhMau.bind(this);
   }
   handleSubmit = (e) => {
     e.preventDefault();
@@ -43,6 +44,35 @@ class FormPhieunhap extends React.Component {
         console.log('parsing failed', ex)
         message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
       });
+    }
+  }
+  loadQuyTrinhMau(quyTrinhId) {
+    let {sx} = this.props.mainState;
+    let ngaySanXuat = sx && sx.nsx ? sx.nsx : '';
+    let maSx = sx && sx.ma_sx ? sx.ma_sx : '';
+    if(maSx && quyTrinhId) {
+      fetch(ISD_BASE_URL + `gantt/fetchTasksFromSample/${maSx}/${quyTrinhId}/${ngaySanXuat}`, {
+        headers: getTokenHeader()
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        if(json.status == 'error') {
+          message.warning(json.message, 3);
+        } else {
+          if(json.data) {
+            this.props.dispatch(updateStateData({
+              ganttData: json.data,
+              refreshGantt: true
+            }));
+          }
+        }
+      })
+      .catch((error) => {
+        message.error('Có lỗi khi tải dữ liệu quy trình sản xuất!', 3);
+        console.log(error);
+      }); 
     }
   }
   validBeforeSave() {
@@ -83,7 +113,8 @@ class FormPhieunhap extends React.Component {
   }
 
   render() {
-    let {phieuAction, quyTrinhTheoLenh} = this.props.mainState;
+    let {phieuAction, quyTrinhTheoLenh, quyTrinhSx, ganttData} = this.props.mainState;
+    let quyTrinhMau = quyTrinhSx && quyTrinhSx.listQuyTrinh ? quyTrinhSx.listQuyTrinh : [];
     return (
       <div>
         {quyTrinhTheoLenh.showGantt ? 
@@ -95,6 +126,22 @@ class FormPhieunhap extends React.Component {
                 </Col>
                 <Col span={12}>
                   <div className="action-btns">
+                    {ganttData.data && !ganttData.data.length ? 
+                      <Select
+                        showSearch
+                        style={{ minWidth: 200 }}
+                        placeholder="Chọn quy trình mẫu"
+                        onChange={(value) => {
+                          if(value) {
+                            this.loadQuyTrinhMau(value);
+                          }
+                        }}>
+                        <Select.Option value="">Chọn quy trình mẫu</Select.Option>
+                        {quyTrinhMau.map((quytrinh) => {
+                          return  <Select.Option value={quytrinh.id} key={quytrinh.id}>{quytrinh.name}</Select.Option>
+                        })}
+                      </Select>
+                      : null}
                     <Button 
                       onClick={() => this.openQTSX(false)}
                       style={{marginLeft: 10}}
