@@ -386,7 +386,8 @@ class UserController extends BaseController {
       $rsData['message'] = 'Các chức năng đã load thành công!';
       $rsData['data'] = array(
         'roles' => $routerAndPermission['roles'],
-        'permission' => $routerAndPermission['permission']
+        'permission' => $routerAndPermission['permission'],
+        'include' => isset($routerAndPermission['include']) ? $routerAndPermission['include'] : []
       );
     }
     echo json_encode($rsData);
@@ -408,6 +409,10 @@ class UserController extends BaseController {
       }
       if(isset($value['permission'])) {
         $roleItem['permission'] = $value['permission'];
+      }
+      if(isset($value['limit_view'])) {
+        $entryData = $this->db->select($value['limit_view'], "*", ['status' => 1]);
+        $roleItem['include'] = $entryData;
       }
       $roleList[] = $roleItem;
     }

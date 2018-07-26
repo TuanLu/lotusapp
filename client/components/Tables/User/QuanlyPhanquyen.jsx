@@ -103,6 +103,12 @@ class UserPermission extends React.Component {
         title: 'Bao gồm',
         dataIndex: 'include',
         width: "20%",
+        render: (text, record) => {
+          // console.log(record.include);
+          // return (
+          //   <div>Include List</div>
+          // );
+        }
       }
     ];
   }

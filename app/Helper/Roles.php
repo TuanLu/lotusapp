@@ -74,6 +74,7 @@ class Roles {
         'icon' => 'home',
         'path' => 'qlkho',
         'parent' => 'vattu_group',
+        'limit_view' => 'lotus_kho',
         'permission' => Roles::roleAndRouter()['qlkho']
       ],
       [
