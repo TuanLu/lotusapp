@@ -21,9 +21,9 @@ $app->post('/npp/updateNpp', 'NppController:updateNpp');
 $app->get('/npp/deleteNpp/{id}', 'NppController:deleteNpp');
 $app->get('/', 'HomeController:index');
 //Cate router
-$app->get('/qlcate/fetchCate', 'CateController:fetchCate');
-$app->post('/qlcate/updateCate', 'CateController:updateCate');
-$app->get('/qlcate/deleteCate/{id}', 'CateController:deleteCate');
+$app->get('/qlcate/fetchCate', 'CateController:fetchCate')->setName(Roles::roleAndRouter()['qlcate']['view']);
+$app->post('/qlcate/updateCate', 'CateController:updateCate')->setName(Roles::roleAndRouter()['qlcate']['add']);
+$app->get('/qlcate/deleteCate/{id}', 'CateController:deleteCate')->setName(Roles::roleAndRouter()['qlcate']['delete']);
 //Kho router
 $app->get('/qlkho/fetchKho', 'KhoController:fetchKho');
 $app->get('/qlkho/fetchQl', 'KhoController:fetchQl');

@@ -42,6 +42,12 @@ class Roles {
       ],
       'pheduyet_khsx' => [
         'duyet' => 'duyet_khsx'
+      ],
+      'qlcate' => [
+        'view' => 'qlcate__view',
+        'add' => 'qlcate__add',
+        'edit' => 'qlcate__edit',
+        'delete' => 'qlcate__delete',
       ]
     ];
   }
@@ -98,11 +104,12 @@ class Roles {
         'parent' => 'vattu_group',
         'permission' => Roles::roleAndRouter()['qlphieuxuat']
       ],
-      'qlcate' => [
+      [
         'label' => 'Danh mục vật tư', 
         'icon' => 'table',
         'path' => 'qlcate',
-        'parent' => 'vattu_group'
+        'parent' => 'vattu_group',
+        'permission' => Roles::roleAndRouter()['qlcate']
       ],
       'product' => [
         'label' => 'Vật tư', 
