@@ -142,6 +142,7 @@ class PhongBanController extends BaseController
 			array('title' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho'),
 			array('title' => 'Nhóm QA', 'value' => 'nhomqa'),
 			array('title' => 'Nhóm QC', 'value' => 'nhomqc'),
+			array('title' => 'Nhóm Nhân viên', 'value' => 'nhomnv'),
 		];
 	}
 	public function fetchGroupRoles() {
