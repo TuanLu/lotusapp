@@ -5,6 +5,7 @@ import {
   Col, Button, message
 } from 'antd';
 import { getTokenHeader } from 'ISD_API';
+import Roles from './QuanlyPhongban/Roles'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -20,6 +21,15 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
+      case 'roles':
+        let roles = [];
+        if(this.props.record 
+          && this.props.record.roles
+          && this.props.record.roles != "") {
+          roles = this.props.record.roles.split(',')
+        }
+        return <Roles selectedRoles={roles}/>
+        break;
       default:
         return <Input />;
         break;
@@ -89,6 +99,13 @@ class EditableTable extends React.Component {
       {
         title: 'Thông tin mô tả',
         dataIndex: 'description',
+        //width: '40%',
+        editable: true,
+        required: false
+      },
+      {
+        title: 'Quyền',
+        dataIndex: 'roles',
         //width: '40%',
         editable: true,
         required: false

@@ -114,6 +114,7 @@ $app->get('/gantt/users', 'GanttController:getUsers');
 
 //Phòng ban router
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb');
+$app->get('/qlpb/fetchGroupRoles', 'PhongbanController:fetchGroupRoles');
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb');
 $app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb');
 //Kế hoạch vật tư router
