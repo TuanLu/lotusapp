@@ -22,7 +22,8 @@ class PhongBanController extends BaseController
 				'name',
 				'phone',
 				'address',
-				'description'
+				'description',
+				'roles'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
@@ -51,6 +52,20 @@ class PhongBanController extends BaseController
 		$phone = $request->getParam('phone');
 		$address = $request->getParam('address');
 		$description = $request->getParam('description');
+		$roles = $request->getParam('roles');
+    if(is_array($roles)) {
+      $roles = implode(',', $roles);
+		}
+		$date = new \DateTime();
+		$createOn = $date->format('Y-m-d H:i:s');
+		$itemData = [
+			'ma_pb' => $maPb,
+			'name' => $name,
+			'phone' => $phone,
+			'address' => $address,
+			'description' => $description,
+			'roles' => $roles
+		];
 		if(!$id) {
 			//Insert new data to db
 			if(!$maPb) {
@@ -63,15 +78,8 @@ class PhongBanController extends BaseController
 				echo json_encode($rsData);
 				die;
 			}
-			$date = new \DateTime();
-			$itemData = [
-				'ma_pb' => $maPb,
-				'name' => $name,
-				'phone' => $phone,
-				'address' => $address,
-				'description' => $address,
-				'create_on' => $date->format('Y-m-d H:i:s'),
-			];
+			$itemData['create_on'] = $createOn;
+			
 			$selectColumns = ['id', 'ma_pb'];
 			$where = ['ma_pb' => $itemData['ma_pb']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
@@ -86,19 +94,13 @@ class PhongBanController extends BaseController
 				$data = $this->db->select($this->tableName, $selectColumns, $where);
 				$rsData['data'] = $data[0];
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật trùng mã PB: ' . $maPb;
+				// echo "<pre>";
+				// print_r($result->errorInfo());
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
 			//update data base on $id
-			$date = new \DateTime();
-			$itemData = [
-				'ma_pb' => $maPb,
-				'name' => $name,
-				'phone' => $phone,
-				'address' => $address,
-				'description' => $address,
-				'update_on' => $date->format('Y-m-d H:i:s'),
-			];
+			$itemData['update_on'] = $createOn;
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
 				$this->superLog('Update KH', $itemData);
@@ -132,4 +134,37 @@ class PhongBanController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
+	public function roles() {
+		return [
+			array('title' => 'Kí duyệt KHSX', 'value' => 'duyet_khsx'),
+			array('title' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl'),
+			array('title' => 'Giám đốc QLSX', 'value' => 'duyet_gd'),
+			array('title' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho'),
+			array('title' => 'Nhóm QA', 'value' => 'nhomqa'),
+			array('title' => 'Nhóm QC', 'value' => 'nhomqc'),
+			array('title' => 'Nhóm Nhân viên', 'value' => 'nhomnv'),
+		];
+	}
+	public function fetchGroupRoles() {
+    $rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa load được quyền nào!'
+    );
+    $allRoles = $this->roles();
+    $roleList = [];
+    foreach ($allRoles as $key => $value) {
+      $roleItem = [
+        'label' => $value['title'],
+        'value' => $value['value'],
+        'key' => $value['value'],
+      ];
+      $roleList[] = $roleItem;
+    }
+    if(!empty($roleList)) {
+      $rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Các chức năng đã load thành công!';
+      $rsData['data'] = $roleList;
+    }
+    echo json_encode($rsData);
+  }
 }

@@ -116,6 +116,8 @@ $app->get('/gantt/users', 'GanttController:getUsers');
 $app->get('/qlpb/fetchPb', 'PhongbanController:fetchPb')->setName(Roles::roleAndRouter()['qlpb']['view']);
 $app->post('/qlpb/updatePb', 'PhongbanController:updatePb')->setName(Roles::roleAndRouter()['qlpb']['add']);
 $app->get('/qlpb/deletePb/{id}', 'PhongbanController:deletePb')->setName(Roles::roleAndRouter()['qlpb']['delete']);
+$app->get('/qlpb/fetchGroupRoles', 'PhongbanController:fetchGroupRoles')->setName(Roles::roleAndRouter()['qlpb']['view']);
+
 //Kế hoạch vật tư router
 $app->get('/khvt/fetchAllProduct', 'KHVTController:fetchAllProduct')->setName(Roles::roleAndRouter()['khvt']['view']);
 $app->post('/khvt/search', 'KHVTController:search')->setName(Roles::roleAndRouter()['khvt']['view']);
