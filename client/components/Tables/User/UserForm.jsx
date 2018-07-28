@@ -31,6 +31,7 @@ class RegistrationForm extends React.Component {
             }
           } else {
             message.success(json.message);
+            this.props.afterSave(json.data);
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
@@ -196,6 +197,16 @@ class RegistrationForm extends React.Component {
         >
           {getFieldDecorator('name', {
             initialValue: user.name
+          })(
+            <Input style={{ width: '100%' }} />
+          )}
+        </FormItem>
+        <FormItem
+          {...formItemLayout}
+          label="Mã nhân sự"
+        >
+          {getFieldDecorator('ma_ns', {
+            initialValue: user.ma_ns
           })(
             <Input style={{ width: '100%' }} />
           )}

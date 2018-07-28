@@ -217,6 +217,31 @@ class UserController extends BaseController {
     
     echo json_encode($rsData);
   }
+  private function getAllActiveUsers() {
+    // Columns to select.
+		$columns = [
+      'id',
+      'name',
+      'username',
+      //'hash',
+      'email',
+      'status',
+      'roles',
+      'group_user',
+      'ma_ns',
+      'to_hanh_chinh',
+      'phone',
+      'description'
+    ];
+    $collection = $this->db->select($this->tableName, $columns, [
+      "ORDER" => ["create_on" => "DESC"],
+      "status" => [0, 1]//2 is deleted status
+    ]);
+    if(!empty($collection)) {
+      return $collection;
+    }
+    return [];
+  }
   public function fetchUsers($request, $response){
 		//$this->logger->addInfo('Request Npp path');
 		$rsData = array(
@@ -233,10 +258,7 @@ class UserController extends BaseController {
         'status',
         'roles'
 		];
-		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["id" => "DESC"],
-			"status" => [0, 1]//2 is deleted status
-		]);
+		$collection = $this->getAllActiveUsers();
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';
@@ -252,42 +274,48 @@ class UserController extends BaseController {
 		);
 		// Get params and validate them here.
 		//$params = $request->getParams();
-		$id = $request->getParam('id');
-		$username = $request->getParam('username');
-		$name = $request->getParam('name');
-		$hash = $request->getParam('hash');
-    $status = $request->getParam('status');
-    $email = $request->getParam('email');
+    $id = $request->getParam('id');
     $roles = $request->getParam('roles');
     if(is_array($roles)) {
       $roles = implode(',', $roles);
     }
+    $date = new \DateTime();
+    $today = $date->format('Y-m-d H:i:s');
+    $itemData = [
+      'username' => $request->getParam('username'),
+      'name' => $request->getParam('name'),
+      'status' => 1,
+      'email' => $request->getParam('email'),
+      'phone' => $request->getParam('phone'),
+      'ma_ns' => $request->getParam('ma_ns'),
+      'description' => $request->getParam('description'),
+      'to_hanh_chinh' => $request->getParam('to_hanh_chinh'),
+      'group_user' => $request->getParam('group_user'),
+      'roles' => $roles ? : '',
+    ];
 		if(!$id) {
 			//Insert new data to db
-			if(!$username) {
+			if(!$itemData['username']) {
 				$rsData['message'] = 'Tên đăng nhập không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
-			if(!$hash) {
+			if(!$request->getParam('hash')) {
 				$rsData['message'] = 'Mật khẩu không được để trống!';
 				echo json_encode($rsData);
 				die;
 			}
-      $date = new \DateTime();
       //Create new uuid
       $uuid1 = Uuid::uuid1();
       $uuid = $uuid1->toString();
-			$itemData = [
-        'id' => $uuid,
-				'username' => $username,
-				'name' => $name,
-				'hash' => password_hash($hash, PASSWORD_DEFAULT),
-				'status' => $status,
-        'email' => $email,
-        'roles' => $roles,
-				'create_on' => $date->format('Y-m-d H:i:s'),
-      ];
+      $itemData['id'] = $uuid;
+      $itemData['hash'] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
+      $itemData['create_on'] = $today;
+
+      // echo "<pre>";
+      // print_r($itemData);
+      // return false;
+
       //Valid email format
       $isValidEmail = filter_var($itemData['email'], FILTER_VALIDATE_EMAIL);
       if(!$isValidEmail) {
@@ -300,23 +328,32 @@ class UserController extends BaseController {
         $rsData['message'] = 'Email đã tồn tại trong hệ thống!';
         echo json_encode($rsData);exit;
       }
+      //Check username exists
       $usernameExists = $this->db->select($this->tableName, ['username'], ['username' => $itemData['username']]);
       if(!empty($usernameExists)) {
         $rsData['message'] = 'Username đã tồn tại trong hệ thống!';
         echo json_encode($rsData);exit;
       }
+      //Check ma_ns exists
+      $maNsExists = $this->db->select($this->tableName, ['ma_ns'], ['ma_ns' => $itemData['ma_ns']]);
+      if(!empty($maNsExists)) {
+        $rsData['message'] = 'Mã nhân sự đã tồn tại trong hệ thống!';
+        echo json_encode($rsData);exit;
+      }
 			$result = $this->db->insert($this->tableName, $itemData);
-			$selectColumns = ['id','email'];
-			$where = ['email' => $itemData['email']];
+			
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm người dùng mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
-				$rsData['data'] = $data[0];
+				$data = $this->getAllActiveUsers();
+				$rsData['data'] = $data;
 			} else {
+        echo "<pre>";
+        print_r($result->errorInfo());
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
+      return;
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
