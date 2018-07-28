@@ -57,7 +57,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
       gantt.locale = {
           date: {
               month_full: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
-              month_short: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+              month_short: ["/01", "/02", "/03", "/ 04", "/ 05", "/ 06", "/ 07", "/ 08", "/ 09", "/ 10", "/ 11", "/ 12"],
               day_full: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"],
               day_short: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
           },

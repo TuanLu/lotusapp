@@ -121,7 +121,7 @@ class UserController extends BaseController {
       // ],
       [
         'label' => 'Cấu hình', 
-        'icon' => 'pushpin',
+        'icon' => 'tool',
         'path' => 'other_group',
         'children' => []
       ],

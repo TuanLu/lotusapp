@@ -221,7 +221,7 @@ class EditableTable extends React.Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá dữ liệu kho!', 3);
+          message.error(json.message, 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
