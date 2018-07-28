@@ -126,7 +126,7 @@ class RegistrationForm extends React.Component {
     //let {groupUser} = this.state;
     if(groupUser && groupUser.length) {
       phongBanOptions = groupUser.map((group) => {
-        return <Option value={group.ma_pb} key={group.ma_pb}>{group.name}</Option>
+        return <Option value={group.ma_pb} key={group.ma_pb}>{group.ma_pb} - {group.name}</Option>
       });
     }
     
