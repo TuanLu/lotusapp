@@ -355,11 +355,13 @@ class UserController extends BaseController {
         $itemData["hash"] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
       }
       //Check if ma_ns da ton tai voi user_id khac
-      $maNsExists = $this->db->select($this->tableName, ['ma_ns', 'id'], ['ma_ns' => $itemData['ma_ns']]);
-      if(!empty($maNsExists) && $maNsExists[0]['id'] != $id) {
-        $rsData['message'] = 'Mã nhân sự đã tồn tại trong hệ thống!';
-        echo json_encode($rsData);exit;
-      }
+      if($itemData['ma_ns'] != "") {
+        $maNsExists = $this->db->select($this->tableName, ['ma_ns', 'id'], ['ma_ns' => $itemData['ma_ns']]);
+        if(!empty($maNsExists) && $maNsExists[0]['id'] != $id) {
+          $rsData['message'] = 'Mã nhân sự đã tồn tại trong hệ thống!';
+          echo json_encode($rsData);exit;
+        }
+      } 
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
         $this->superLog('Update User', $itemData);
