@@ -80,10 +80,9 @@ let _designDefault = {
     quyTrinhTheoLenh: {
       showGantt: false
     },
-    // worker_and_users: {
-    //   workers: [],
-    //   check_users: []
-    // }
+    user: {
+      openUserModal: false
+    }
   },
   cloneState;
 

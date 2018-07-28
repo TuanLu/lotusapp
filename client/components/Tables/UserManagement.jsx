@@ -6,7 +6,8 @@ import {
 } from 'antd';
 import {getTokenHeader, statusOptions} from 'ISD_API'
 import {updateStateData} from 'actions'
-import Roles from './User/Roles'
+//import Roles from './User/Roles'
+import UserForm from './User/UserForm'
 import QuanlyPhanquyen from './User/QuanlyPhanquyen'
 
 const FormItem = Form.Item;
@@ -42,7 +43,7 @@ class EditableCell extends React.Component {
           && this.props.record.roles != "") {
           roles = this.props.record.roles.split(',')
         }
-        return <Roles selectedRoles={roles}/>
+        //return <Roles selectedRoles={roles}/>
         break;
       default:
         return <Input />;
@@ -204,7 +205,7 @@ class EditableTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
+                  <a href="javascript:;" onClick={() => this.edit(record)}>Sửa</a>  
                   {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn xoá?"
@@ -223,20 +224,8 @@ class EditableTable extends React.Component {
     ];
   }
   addNewRow() {
-    if(this.state.newitem == 0){
-      let rowItem = this.getDefaultFields();
-      rowItem = {
-        ...rowItem,
-        key: this.state.data.length + 1
-      };
-      this.setState({
-        data: [rowItem, ...this.state.data],
-        editingKey: rowItem.key
-      })
-      this.state.newitem = 1;
-    }else{
-      message.error('Bạn đang thêm mới người dùng rồi ...');
-    }
+    let rowItem = this.getDefaultFields();
+    this.edit(rowItem);
   }
   getDefaultFields() {
     return {
@@ -245,14 +234,22 @@ class EditableTable extends React.Component {
       name: "",
       hash: "",
       status: "1",
-      roles: []
+      ma_ns: "",
+      group_user: "",
+      to_hanh_chinh: "",
+      description: ""
     };
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
-  edit(key) {
-    this.setState({ editingKey: key });
+  edit(record) {
+    this.props.dispatch(updateStateData({
+      user: {
+        ...record,
+        openUserModal: true
+      }
+    }));
   }
   save(form, key) {
     form.validateFields((error, row) => {
@@ -390,6 +387,7 @@ class EditableTable extends React.Component {
     });
     let {mainState} = this.props;
     let openModal = mainState.phanquyen ? mainState.phanquyen.openModal : false;
+    let openUserModal = mainState.user ? mainState.user.openUserModal : false;
 
     return (
       <React.Fragment>
@@ -429,6 +427,25 @@ class EditableTable extends React.Component {
             footer={null}
             >
             <QuanlyPhanquyen mainState={this.props.mainState} dispatch={this.props.dispatch} />
+          </Modal>  
+        : null}
+        {openUserModal? 
+          <Modal
+            width={"60%"}
+            style={{top: 20}}
+            title="Form thành viên"
+            visible={openUserModal}
+            onCancel={() => {
+              this.props.dispatch(updateStateData({
+                user: {
+                  ...this.props.mainState.user,
+                  openUserModal: false
+                }
+              }));
+            }}
+            footer={null}
+            >
+            <UserForm mainState={this.props.mainState} dispatch={this.props.dispatch}/>
           </Modal>  
         : null}
         <Table
