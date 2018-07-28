@@ -298,3 +298,6 @@ td:hover .editable-cell-icon {
 #isd_app .gantt_side_content.gantt_right span{
   font-size: 12px;
 }
+.user-extra-info li {
+  list-style: none;
+}

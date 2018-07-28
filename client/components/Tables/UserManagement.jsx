@@ -34,16 +34,10 @@ class UserManage extends React.Component {
         //width: '15%',
         required: true
       },
-      // {
-      //   title: 'Mật khẩu',
-      //   dataIndex: 'hash',
-      //   editable: true,
-      //   width: '10%',
-      //   required: false, //edit mode dont required
-      //   render: (text, record) => {
-      //     return 'Đã mã hoá';
-      //   }
-      // },
+      {
+        title: 'Mã NS',
+        dataIndex: 'ma_ns',
+      },
       {
         title: 'Họ và tên',
         dataIndex: 'name',
@@ -269,7 +263,18 @@ class UserManage extends React.Component {
           bordered
           dataSource={this.state.data}
           columns={columns}
-          rowClassName="editable-row"
+          expandedRowRender={record => {
+            return (
+              <ul className="user-extra-info">
+                <li>Họ và tên: <b>{record.name}</b></li>
+                <li>Mã nhân sự: <b>{record.ma_ns}</b></li>
+                <li>Điện thoại: <b>{record.phone}</b></li>
+                <li>Tổ hành chính: <b>{record.to_hanh_chinh}</b></li>
+                <li>Thông tin: <b>{record.description}</b></li>
+                <li>Mã phòng ban: <b>{record.group_user}</b></li>
+              </ul>
+            );
+          }}
         />
       </React.Fragment>
     );
