@@ -221,6 +221,7 @@ class UserController extends BaseController {
     // Columns to select.
 		$columns = [
       'id',
+      'id(key)',//Unique key for React loop
       'name',
       'username',
       //'hash',
@@ -311,11 +312,6 @@ class UserController extends BaseController {
       $itemData['id'] = $uuid;
       $itemData['hash'] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
       $itemData['create_on'] = $today;
-
-      // echo "<pre>";
-      // print_r($itemData);
-      // return false;
-
       //Valid email format
       $isValidEmail = filter_var($itemData['email'], FILTER_VALIDATE_EMAIL);
       if(!$isValidEmail) {
@@ -348,42 +344,30 @@ class UserController extends BaseController {
 				$data = $this->getAllActiveUsers();
 				$rsData['data'] = $data;
 			} else {
-        echo "<pre>";
-        print_r($result->errorInfo());
+        // echo "<pre>";
+        // print_r($result->errorInfo());
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
-      return;
+      $itemData['update_on'] = $today;
 			//update data base on $id
-			$date = new \DateTime();
-			$itemData = [
-				'username' => $username,
-				'name' => $name,
-				//'hash' => password_hash($hash, PASSWORD_DEFAULT),
-				'status' => $status,
-        'email' => $email,
-        'roles' => $roles,
-				'update_on' => $date->format('Y-m-d H:i:s'),
-      ];
-      if($hash != "") {
-        $itemData["hash"] = password_hash($hash, PASSWORD_DEFAULT);
+      if($request->getParam('hash') != "") {
+        $itemData["hash"] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
+      }
+      //Check if ma_ns da ton tai voi user_id khac
+      $maNsExists = $this->db->select($this->tableName, ['ma_ns', 'id'], ['ma_ns' => $itemData['ma_ns']]);
+      if(!empty($maNsExists) && $maNsExists[0]['id'] != $id) {
+        $rsData['message'] = 'Mã nhân sự đã tồn tại trong hệ thống!';
+        echo json_encode($rsData);exit;
       }
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
         $this->superLog('Update User', $itemData);
-        $data = $this->db->select($this->tableName, 
-        [
-          'username',
-          'email',
-          'status',
-          'roles',
-          //'hash',
-          'name'
-        ], 
-        ['id' => $id]);
-				$rsData['data'] = $data[0];
+        
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+        $rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+        $data = $this->getAllActiveUsers();
+				$rsData['data'] = $data;
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
 			}

@@ -16,6 +16,10 @@ class RegistrationForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        //Get USER ID from mainstate
+        let {user} = this.props.mainState;
+        let userId = user && user.id ? user.id : '';
+        values.id = userId;
         fetch(ISD_BASE_URL + 'users/updateUser', {
           method: 'POST',
           headers: getTokenHeader(),
@@ -161,36 +165,69 @@ class RegistrationForm extends React.Component {
             <Input />
           )}
         </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Mật khẩu"
-        >
-          {getFieldDecorator('hash', {
-            rules: [{
-              required: true, message: 'Nhãy nhập mật khẩu!',
-            }, {
-              validator: this.validateToNextPassword,
-            }],
-          })(
-            <Input type="password" />
-          )}
-        </FormItem>
         {!user.id ? 
-          <FormItem
-            {...formItemLayout}
-            label="Nhập lại Mật khẩu"
-          >
-            {getFieldDecorator('confirm', {
-              rules: [{
-                required: true, message: 'Nhập lại mật khẩu!',
-              }, {
-                validator: this.compareToFirstPassword,
-              }],
-            })(
-              <Input type="password" onBlur={this.handleConfirmBlur} />
-            )}
-          </FormItem>
-          : null}
+          <React.Fragment>
+            <FormItem
+              {...formItemLayout}
+              label="Mật khẩu"
+            >
+              {getFieldDecorator('hash', {
+                rules: [{
+                  required: true, message: 'Nhãy nhập mật khẩu!',
+                }, {
+                  validator: this.validateToNextPassword,
+                }],
+              })(
+                <Input type="password" />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="Nhập lại mật khẩu"
+            >
+              {getFieldDecorator('confirm', {
+                rules: [{
+                  required: true, message: 'Nhập lại mật khẩu!',
+                }, {
+                  validator: this.compareToFirstPassword,
+                }],
+              })(
+                <Input type="password" onBlur={this.handleConfirmBlur} />
+              )}
+            </FormItem>
+          </React.Fragment>
+          : 
+          <React.Fragment>
+            <FormItem
+              {...formItemLayout}
+              label="Mật khẩu mới"
+            >
+              {getFieldDecorator('hash', {
+                rules: [{
+                  required: false, message: 'Nhãy nhập mật khẩu!',
+                }, {
+                  validator: this.validateToNextPassword,
+                }],
+              })(
+                <Input type="password" />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="Nhập lại mật khẩu mới"
+            >
+              {getFieldDecorator('confirm', {
+                rules: [{
+                  required: false, message: 'Nhập lại mật khẩu!',
+                }, {
+                  validator: this.compareToFirstPassword,
+                }],
+              })(
+                <Input type="password" onBlur={this.handleConfirmBlur} />
+              )}
+            </FormItem>
+          </React.Fragment>
+          }
         <FormItem
           {...formItemLayout}
           label="Họ và tên"
@@ -244,7 +281,7 @@ class RegistrationForm extends React.Component {
           label="Tổ"
         >
           {getFieldDecorator('to_hanh_chinh', {
-            initialValue: user.to
+            initialValue: user.to_hanh_chinh
           })(
             <Input style={{ width: '100%' }} />
           )}
