@@ -8,7 +8,7 @@ import QuanlyNPP from './Tables/QuanlyNPP'
 import UserManagement from './Tables/UserManagement'
 import LoginForm from './LoginForm'
 import UserInfo from './UserInfo'
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader , convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 import Loading from './Loading'
 import QuanlyKho from './Tables/QuanlyKho'
@@ -30,6 +30,8 @@ import QuanlyChuyendoicong from './Tables/QuanlyChuyendoicong'
 import QuanlyQuytrinhSanxuat from './Tables/QuanlyQuytrinhSanxuat'
 import KehoachSanxuatDaihan from './Tables/KehoachSanxuatDaihan'
 import QuanlyKiemke from './Tables/QuanlyKiemke'
+import QuanlyLanguage from './Tables/QuanlyLanguage'
+import QuanlyNote from './Tables/QuanlyNote'
 
 class MainComponent extends React.Component {
   state = {
@@ -81,6 +83,31 @@ class MainComponent extends React.Component {
       this.props.dispatch(updateStateData({
         defaultRouter: mainState.defaultRouter
       }));
+    }
+    if(mainState.language.length == 0) {
+        fetch(ISD_BASE_URL + 'fetchLang', {
+          headers: getTokenHeader()   
+        })
+        .then((response) => response.json())
+        .then((json) => {
+          if(json.status == "success") {
+            this.props.dispatch(updateStateData({
+              language: convertArrayObjectToObject(json.data, 'ma_text')
+            })); 
+          } else if(json.status == "error") {
+            message.error(json.message, 3);
+          }
+          this.setState({
+            loading: false
+          })
+        })
+        .catch((error) => {
+          console.warn(error);
+          this.setState({
+            loading: false
+          })
+        }); 
+      
     }
   }
   renderContent(router) {
@@ -149,6 +176,12 @@ class MainComponent extends React.Component {
       case 'kkvt':
         return <QuanlyKiemke dispatch={dispatch} mainState={mainState}/>
         break;
+      case 'lang':
+        return <QuanlyLanguage dispatch={dispatch} mainState={mainState}/>
+        break;
+      case 'note':
+        return <QuanlyNote dispatch={dispatch} mainState={mainState}/>
+        break;
       default:
         break;
     }
@@ -156,10 +189,11 @@ class MainComponent extends React.Component {
   render() {
     if(this.state.loading) {
       return <Loading/>
-    }
-    let {showLogin} = this.props.mainState; 
+    } 
+    let {showLogin} = this.props.mainState;  
     if(showLogin) return  <LoginForm dispatch={this.props.dispatch}/>;
     let {defaultRouter} = this.props.mainState;
+    let {language} = this.props.mainState; 
     return(
       <Layout>
         <Sider
@@ -187,7 +221,7 @@ class MainComponent extends React.Component {
           </Header>
           <div style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
             {!defaultRouter? 
-              <Alert message="Xin lỗi. User chưa được phân quyền, liên hệ admin để phân quyền và tiếp tục sử dụng phầm mềm!" type="info" showIcon />
+              <Alert message={language["sorry_role_not_valid"]} type="info" showIcon />
               : 
               this.renderContent(defaultRouter)
             }

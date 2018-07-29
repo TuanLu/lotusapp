@@ -31,7 +31,7 @@ class UserController extends BaseController {
     }    
     return false;
   }
-  public function token($request, $response) {
+  public function token($request, $response) { 
     $params = $request->getParsedBody() ?: [];
     $rsData = [
       "status" => "error",
@@ -90,7 +90,7 @@ class UserController extends BaseController {
   protected function appMenus($userId = "") {
     $menus = [
       [
-        'label' => 'Cảnh báo', 
+        'label' => 'Thông báo', 
         'icon' => 'safety',
         'path' => 'main_group',
         'children' => []

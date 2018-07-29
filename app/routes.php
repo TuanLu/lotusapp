@@ -9,6 +9,7 @@ use App\Helper\Roles;
 $app->post('/token', 'UserController:token')->setName('token');
 $app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
 $app->get('/fetchAllRoles/{user_id}', 'UserController:fetchAllRoles');// To assign to user
+$app->get('/fetchLang', 'LanguageController:fetchLang');//get language info
 
 $app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
 $app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
@@ -140,3 +141,11 @@ $app->get('/kkvt/deleteProduct/{id}', 'KiemkeController:deleteProduct')->setName
 $app->get('/qlpq/fetch', 'PhanquyenController:fetch')->setName(Roles::roleAndRouter()['qluser']['view']);
 $app->post('/qlpq/update', 'PhanquyenController:update')->setName(Roles::roleAndRouter()['qluser']['add']);
 $app->get('/qlpq/delete/{id}', 'PhanquyenController:delete')->setName(Roles::roleAndRouter()['qluser']['delete']);
+//Language router
+$app->get('/lang/fetchLang', 'LanguageController:fetchLang')->setName(Roles::roleAndRouter()['lang']['view']);
+$app->post('/lang/updateLang', 'LanguageController:updateLang')->setName(Roles::roleAndRouter()['lang']['add']);
+$app->get('/lang/deleteLang/{id}', 'LanguageController:deleteLang')->setName(Roles::roleAndRouter()['lang']['delete']);
+//Note router
+$app->get('/note/fetchNote', 'NoteController:fetchNote')->setName(Roles::roleAndRouter()['note']['view']);
+$app->post('/note/updateNote', 'NoteController:updateNote')->setName(Roles::roleAndRouter()['note']['add']);
+$app->get('/note/deleteNote/{id}', 'NoteController:deleteNote')->setName(Roles::roleAndRouter()['note']['delete']);

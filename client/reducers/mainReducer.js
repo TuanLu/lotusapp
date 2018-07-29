@@ -76,6 +76,8 @@ let _designDefault = {
       data:[],
 	    links:[]
     },
+    notes: [], 
+    language: [], 
     ganttEvents: [],//Truoc khi reset phai dung gantt xoa di tat ca su kien da attach vao gantt
     quyTrinhTheoLenh: {
       showGantt: false

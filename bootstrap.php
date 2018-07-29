@@ -104,6 +104,12 @@ $container['KiemkeController'] = function ($c) {
 $container['PhanquyenController'] = function ($c) {
   return new \App\Controllers\PhanquyenController($c);
 };
+$container['LanguageController'] = function ($c) {
+  return new \App\Controllers\LanguageController($c);
+};
+$container['NoteController'] = function ($c) {
+  return new \App\Controllers\NoteController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
