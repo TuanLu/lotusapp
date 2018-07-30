@@ -15,6 +15,10 @@ class UserInfo extends React.Component {
       <div className="admin-user-info">
         <span>Xin chào, <b>{this.showUserName()}</b></span>
         <Button 
+          style={{marginRight: 10}}
+          //onClick={() => this.addNewRow()}
+          type="primary" icon="mail">Góp ý, phản hồi</Button>
+        <Button 
           onClick={()=> {
             this.props.dispatch(updateStateData({
               showLogin: true

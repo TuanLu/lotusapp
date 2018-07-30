@@ -22,7 +22,10 @@ class SidebarMenu extends React.Component {
                     }));
                   }} 
                   key={child.path}>
-                    {child.icon ? <Icon type={child.icon} /> : <Icon type="api" />  }
+                    {child.icon ? 
+                      <Icon type={child.icon} />
+                    : 
+                    <Icon type="api" /> }
                     <span>{child.label}</span>
                 </Menu.Item>
               );
