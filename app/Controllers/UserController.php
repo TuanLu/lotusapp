@@ -135,6 +135,23 @@ class UserController extends BaseController {
         'children' => []
       ];
     }
+    $menus[] = [
+      'label' => 'Cá Nhân', 
+      'icon' => 'idcard',
+      'path' => 'my_account',
+      'children' => [
+        [
+          'label' => 'Thông tin', 
+          'icon' => 'profile',
+          'path' => 'my_info',
+        ],
+        [
+          'label' => 'Nhiệm vụ', 
+          'icon' => 'form',
+          'path' => 'my_mission',
+        ],
+      ]
+    ];
     return $menus;
 
   }
