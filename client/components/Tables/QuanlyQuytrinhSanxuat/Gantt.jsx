@@ -477,15 +477,15 @@ class Gantt extends Component {
       let workerOptions = [{key: "", label: "Người thực hiện"}];
       workerOptions = workerOptions.concat(workers.map((worker) => {
         return {
-          key: worker.ma_ns,
-          label: worker.ma_ns + '-' + worker.name
+          key: worker.id,
+          label: worker.ma_ns + ' - ' + worker.name
         }
       }));
       let checkUserOptions = [{key: "", label: "Người phê duyệt"}];
       checkUserOptions = checkUserOptions.concat(check_users.map((user) => {
         return {
           key: user.id,
-          label: user.name || user.username
+          label: user.ma_ns + ' - ' + (user.name || user.username)
         }
       }));
       gantt.config.lightbox.sections = [

@@ -505,4 +505,29 @@ class UserController extends BaseController {
     }
     return [];
   }
+  public function getWorkers() {
+    $allUser = $this->getAllActiveUsers();
+    //Loc lay cac user thuoc phong ban co roles LIKE "nhomnv"
+    $workers = [];
+    foreach ($allUser as $key => $user) {
+      $userRoles = explode(',', $user['roles']);
+      if(in_array('nhomnv', $userRoles)) {
+        $workers[] = $user;
+      }
+    }
+    return $workers;
+  }
+  // public function fetchWorkers() {
+  //   $rsData = array(
+	// 		'status' => self::ERROR_STATUS,
+	// 		'message' => 'Không có user nào thuộc nhóm nhân viên!'
+  //   );
+  //   $workers = $this->getWorkers();
+  //   if(!empty($workers)) {
+  //     $rsData['status'] = self::SUCCESS_STATUS;
+  //     $rsData['message'] = 'Đã load được nhóm nhân viên';
+  //     $rsData['data'] = $workers;
+  //   }
+  //   echo json_encode($rsData);
+  // }
 }

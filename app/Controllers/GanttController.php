@@ -485,9 +485,10 @@ class GanttController extends BaseController {
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
-    );
-		$nhancong = $this->db->select('lotus_nhansu', ['ma_ns', 'name'], ['status' => 1, 'ORDER' => 'name']);
-		$users = $this->db->select('users', ['id', 'name', 'username'], ['status' => 1, 'ORDER' => 'name']);
+		);
+		$workers = $this->UserController->getWorkers();
+		$nhancong = $workers;
+		$users = $workers;
 		if(!empty($nhancong) && !empty($users)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Đã load được nhân sự và người phê duyệt';
@@ -496,7 +497,7 @@ class GanttController extends BaseController {
 				'check_users' => $users
 			];
 		} else {
-			$rsData['message'] = 'Chưa có nhân sự hoặc chưa có người kiểm duyệt cho biểu đồ Gantt!';
+			$rsData['message'] = 'Chưa có user nào thuộc nhóm nhân sự! Hãy cập nhật phòng ban cho thành viên!';
 		}
 		
 		echo json_encode($rsData);
