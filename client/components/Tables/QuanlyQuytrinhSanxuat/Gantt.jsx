@@ -401,14 +401,14 @@ class Gantt extends Component {
           gantt.message({type: "error", text: "Hãy nhập mô tả công việc!"});
           return false;
         }
-        if (!item.user) {
-          gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
-          return false;
-        }
-        if (!item.check_user) {
-          gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
-          return false;
-        }
+        // if (!item.user) {
+        //   gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
+        //   return false;
+        // }
+        // if (!item.check_user) {
+        //   gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
+        //   return false;
+        // }
         return true;
       })
     );
