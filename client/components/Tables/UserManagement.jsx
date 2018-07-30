@@ -271,7 +271,7 @@ class UserManage extends React.Component {
                 <li>Điện thoại: <b>{record.phone}</b></li>
                 <li>Tổ hành chính: <b>{record.to_hanh_chinh}</b></li>
                 <li>Thông tin: <b>{record.description}</b></li>
-                <li>Mã phòng ban: <b>{record.group_user}</b></li>
+                <li>Phòng ban: <b>{record.ten_phong_ban}</b></li>
               </ul>
             );
           }}

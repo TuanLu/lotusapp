@@ -220,23 +220,28 @@ class UserController extends BaseController {
   private function getAllActiveUsers() {
     // Columns to select.
 		$columns = [
-      'id',
-      'id(key)',//Unique key for React loop
-      'name',
-      'username',
+      'users.id',
+      'users.id(key)',//Unique key for React loop
+      'users.name',
+      'users.username',
       //'hash',
-      'email',
-      'status',
-      'roles',
-      'group_user',
-      'ma_ns',
-      'to_hanh_chinh',
-      'phone',
-      'description'
+      'users.email',
+      'users.status',
+      'users.roles',
+      'users.group_user',
+      'users.ma_ns',
+      'users.to_hanh_chinh',
+      'users.phone',
+      'users.description',
+      'users.create_on',
+      'lotus_phongban.name(ten_phong_ban)',
+      'lotus_phongban.roles',
     ];
-    $collection = $this->db->select($this->tableName, $columns, [
+    $collection = $this->db->select($this->tableName,[
+      "[>]lotus_phongban" => ["group_user" => "ma_pb"],
+    ], $columns, [
       "ORDER" => ["create_on" => "DESC"],
-      "status" => [0, 1]//2 is deleted status
+      "users.status" => [0, 1]//2 is deleted status
     ]);
     if(!empty($collection)) {
       return $collection;
