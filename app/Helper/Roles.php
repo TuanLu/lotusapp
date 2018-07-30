@@ -283,7 +283,7 @@ class Roles {
         'label' => 'Phòng ban', 
         'icon' => 'team',
         'path' => 'qlpb',
-        'parent' => 'other_group',
+        'parent' => 'qluser_group',
         'permission' => Roles::roleAndRouter()['qlpb']
       ],
       'kkvt' => [
