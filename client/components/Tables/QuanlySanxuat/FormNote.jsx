@@ -60,7 +60,7 @@ class FormNote extends React.Component {
   }
   isNhomKHSX() {
     let {userInfo} = this.props.mainState;
-    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+    let roles = userInfo.roles ? userInfo.roles.split(',') : [];
     return roles.indexOf('duyet_khsx') !== -1;
   }
   isNhomDBCL() {
@@ -106,7 +106,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                 <label>P. KHSX</label><br />
                   <Switch
-                  disabled = {this.isNhomKHSX() ? false : true}
+                  //disabled = {this.isNhomKHSX() ? false : true}
                   checked = {sx.pkhsx ? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
@@ -118,7 +118,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                   P. ĐBCL<br />
                   <Switch
-                  disabled = {this.isNhomDBCL() ? false : true}
+                  //disabled = {this.isNhomDBCL() ? false : true}
                   checked = {sx.pdbcl? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
@@ -130,7 +130,7 @@ class FormNote extends React.Component {
             <Col className="align_center" span={8}>
                   Giám Đốc<br />
                   <Switch
-                  disabled = {this.isNhomGD() ? false : true}
+                  //disabled = {this.isNhomGD() ? false : true}
                   checked = {sx.gd? true : false}
                   checkedChildren="Đã ký"
                   unCheckedChildren="Chờ duyệt"
