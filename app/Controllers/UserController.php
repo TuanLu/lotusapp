@@ -135,6 +135,23 @@ class UserController extends BaseController {
         'children' => []
       ];
     }
+    $menus[] = [
+      'label' => 'Cá Nhân', 
+      'icon' => 'idcard',
+      'path' => 'my_account',
+      'children' => [
+        [
+          'label' => 'Thông tin', 
+          'icon' => 'profile',
+          'path' => 'my_info',
+        ],
+        [
+          'label' => 'Nhiệm vụ', 
+          'icon' => 'form',
+          'path' => 'my_mission',
+        ],
+      ]
+    ];
     return $menus;
 
   }
@@ -146,10 +163,7 @@ class UserController extends BaseController {
       foreach($allScopes as $router => $role) {
         $userRoles[] = $role;
       }
-      $userData = $this->db->select($this->tableName, ['roles', 'name','username','email'], [
-        'id' => $userId,
-        'status' => 1
-      ]);
+      $userData = $this->getAllActiveUsers($userId);
       $allAllowedRouter = [];
       $isSuperAdmin = $this->isSuperAdmin($userId);
       if(!$isSuperAdmin) {
@@ -217,27 +231,37 @@ class UserController extends BaseController {
     
     echo json_encode($rsData);
   }
-  private function getAllActiveUsers() {
+  private function getAllActiveUsers($userId = "") {
     // Columns to select.
 		$columns = [
-      'id',
-      'id(key)',//Unique key for React loop
-      'name',
-      'username',
+      'users.id',
+      'users.id(key)',//Unique key for React loop
+      'users.name',
+      'users.username',
       //'hash',
-      'email',
-      'status',
-      'roles',
-      'group_user',
-      'ma_ns',
-      'to_hanh_chinh',
-      'phone',
-      'description'
+      'users.email',
+      'users.status',
+      'users.roles',
+      'users.group_user',
+      'users.ma_ns',
+      'users.to_hanh_chinh',
+      'users.phone',
+      'users.description',
+      'users.create_on',
+      'lotus_phongban.name(ten_phong_ban)',
+      'lotus_phongban.roles',
     ];
-    $collection = $this->db->select($this->tableName, $columns, [
+    $where = [
       "ORDER" => ["create_on" => "DESC"],
-      "status" => [0, 1]//2 is deleted status
-    ]);
+      "users.status" => [0, 1]//2 is deleted status
+    ];
+    //Load user cu the theo ID 
+    if($userId) {
+      $where["users.id"] = $userId;
+    }
+    $collection = $this->db->select($this->tableName,[
+      "[>]lotus_phongban" => ["group_user" => "ma_pb"],
+    ], $columns, $where);
     if(!empty($collection)) {
       return $collection;
     }
@@ -349,7 +373,9 @@ class UserController extends BaseController {
         $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
+      $userId = isset($this->jwt->id) ? $this->jwt->id : '';
       $itemData['update_on'] = $today;
+      $itemData['update_by'] = $userId;
 			//update data base on $id
       if($request->getParam('hash') != "") {
         $itemData["hash"] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
@@ -375,6 +401,59 @@ class UserController extends BaseController {
 			}
 			
 		}
+		echo json_encode($rsData);
+  }
+  /**
+   * Chi cho phep user cap nhat mot so thong tin
+   */
+  public function updateUserByUser($request, $response)
+	{
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		//$params = $request->getParams();
+    $id = $request->getParam('id');   
+    $date = new \DateTime();
+    $today = $date->format('Y-m-d H:i:s');
+    $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+    $itemData = [
+      'name' => $request->getParam('name'),
+      'email' => $request->getParam('email'),
+      'phone' => $request->getParam('phone'),
+      'description' => $request->getParam('description'),
+    ];
+    $itemData['update_on'] = $today;
+    $itemData['update_by'] = $userId;
+    //Check user exists before insert 
+    $emailExists = $this->db->select($this->tableName, ['email', 'id'], ['email' => $itemData['email']]);
+    if(!empty($emailExists)) {
+      if($emailExists[0]['id'] != $id) {
+        $rsData['message'] = 'Email đã tồn tại trong hệ thống!';
+        echo json_encode($rsData);exit;
+      }
+    }
+    //update data base on $id
+    $changePassword = false;
+    if($request->getParam('hash') != "") {
+      $itemData["hash"] = password_hash($request->getParam('hash'), PASSWORD_DEFAULT);
+      $changePassword = true;
+    }
+    $result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+    if($result->rowCount()) {
+      $this->superLog('Update User By User', $itemData);
+      $rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+      $userData = $this->getAllActiveUsers($id);
+      $rsData['data'] = isset($userData[0]) ? $userData[0] : [];
+      if($changePassword) {
+        $rsData['update_pass'] = $changePassword;
+        $rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống! Mời bạn đăng nhập lại!';
+      }
+    } else {
+      $rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
+    }
 		echo json_encode($rsData);
   }
   public function deleteUser($request, $response, $args){
@@ -500,4 +579,29 @@ class UserController extends BaseController {
     }
     return [];
   }
+  public function getWorkers() {
+    $allUser = $this->getAllActiveUsers();
+    //Loc lay cac user thuoc phong ban co roles LIKE "nhomnv"
+    $workers = [];
+    foreach ($allUser as $key => $user) {
+      $userRoles = explode(',', $user['roles']);
+      if(in_array('nhomnv', $userRoles)) {
+        $workers[] = $user;
+      }
+    }
+    return $workers;
+  }
+  // public function fetchWorkers() {
+  //   $rsData = array(
+	// 		'status' => self::ERROR_STATUS,
+	// 		'message' => 'Không có user nào thuộc nhóm nhân viên!'
+  //   );
+  //   $workers = $this->getWorkers();
+  //   if(!empty($workers)) {
+  //     $rsData['status'] = self::SUCCESS_STATUS;
+  //     $rsData['message'] = 'Đã load được nhóm nhân viên';
+  //     $rsData['data'] = $workers;
+  //   }
+  //   echo json_encode($rsData);
+  // }
 }

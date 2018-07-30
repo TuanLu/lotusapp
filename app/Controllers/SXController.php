@@ -3,6 +3,7 @@ namespace App\Controllers;
 use \Medoo\Medoo;
 use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
+use App\Helper\Roles;
 
 class SXController extends BaseController
 {
@@ -317,6 +318,9 @@ class SXController extends BaseController
 		echo json_encode($rsData);
 	}
 	public function pheDuyet($request, $response) {
+		/**
+		 * Cho admin va nguoi co quyen edit router qlsx thuc hien phe duyet
+		 */
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
@@ -326,6 +330,23 @@ class SXController extends BaseController
 		$value = $request->getParam('value');
 		if($type && $maSx) {
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$isSuper = $this->UserController->isSuperAdmin($userId);
+			if(!$isSuper) {
+				//Check if user has edit permission
+				$userPermission = $this->UserController->getUserPermission($userId);
+				$allowedEditRoute = Roles::roleAndRouter()['qlsx']['edit'];
+				$isAllow = false;
+				foreach ($userPermission as $key => $router) {
+					if($router['router_name'] == $allowedEditRoute) {
+						$isAllow = true;
+						break;
+					}
+				}
+				if(!$isAllow) {
+					$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
+					echo json_encode($rsData);exit();
+				}
+			}
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
 			$updateData = [

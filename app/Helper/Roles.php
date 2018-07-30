@@ -147,21 +147,21 @@ class Roles {
     return [
       [
         'label' => 'Sản Xuất', 
-        'icon' => 'inbox',
+        //'icon' => 'inbox',
         'path' => 'qlsx',
         'parent' => 'qlsx_group',
         'permission' => Roles::roleAndRouter()['qlsx']
       ],
       [
         'label' => 'Quy trình SX', 
-        'icon' => 'solution',
+        //'icon' => 'solution',
         'path' => 'quy_trinh_sx',
         'parent' => 'qlsx_group',
         'permission' => Roles::roleAndRouter()['quy_trinh_sx']
       ],
       [
         'label' => 'KHSX dài hạn', 
-        'icon' => 'solution',
+        //'icon' => 'solution',
         'path' => 'khsx_daihan',
         'parent' => 'qlsx_group',
         'permission' => Roles::roleAndRouter()['khsx_daihan']
@@ -176,7 +176,7 @@ class Roles {
       ],
       [
         'label' => 'Tình trạng kho', 
-        'icon' => 'home',
+        //'icon' => 'home',
         'path' => 'tinhtrangkho',
         'parent' => 'main_group',
         'permission' => Roles::roleAndRouter()['tinhtrangkho']
@@ -283,7 +283,7 @@ class Roles {
         'label' => 'Phòng ban', 
         'icon' => 'team',
         'path' => 'qlpb',
-        'parent' => 'other_group',
+        'parent' => 'qluser_group',
         'permission' => Roles::roleAndRouter()['qlpb']
       ],
       'kkvt' => [

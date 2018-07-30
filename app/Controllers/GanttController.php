@@ -31,7 +31,7 @@ class GanttController extends BaseController {
 				'check_user'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
-				"ORDER" => ["start_date" => "ASC"],
+				//"ORDER" => ["start_date" => "ASC"],
 				"status" => 1,
 				"quy_trinh_id" => $quyTrinhId
 			]);
@@ -69,7 +69,7 @@ class GanttController extends BaseController {
 				'check_user'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
-				"ORDER" => ["start_date" => "ASC"],
+				//"ORDER" => ["start_date" => "ASC"],
 				"status" => 1,
 				"ma_sx" => $maSx
 			]);
@@ -225,6 +225,24 @@ class GanttController extends BaseController {
 		}
 		echo json_encode($rsData);
 	}
+	private function checkPermission($userId) {
+		$isSuper = $this->UserController->isSuperAdmin($userId);
+		$isAllow = false;
+		if(!$isSuper) {
+			//Check if user has edit permission
+			$userPermission = $this->UserController->getUserPermission($userId);
+			$allowedEditRoute = Roles::roleAndRouter()['qlsx']['edit'];
+			foreach ($userPermission as $key => $router) {
+				if($router['router_name'] == $allowedEditRoute) {
+					$isAllow = true;
+					break;
+				}
+			}
+		} else {
+			$isAllow = true;
+		}
+		return $isAllow;
+	}
   public function update($request, $response){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -297,16 +315,24 @@ class GanttController extends BaseController {
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData['update_on'] = $createOn;
-      
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
-			if($result->rowCount()) {
-        $this->superLog('Update Quy trinh', $itemData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+
+
+			//Nguoi co quyen sua se duoc cap nhat toan bo hoac admin
+			//Nguoi phe duyet se co quyen cap nhat progress
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$isAllow = $this->checkPermission($userId);
+			if(!$isAllow) {
+				$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+				if($result->rowCount()) {
+					$this->superLog('Update Quy trinh', $itemData);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				}
 			}
-			
 		}
 		//Load data after added or updated
 		if($quyTrinhId) {
@@ -417,6 +443,14 @@ class GanttController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Dữ liệu chưa được xoá thành công!'
 		);
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$isAllow = $this->checkPermission($userId);
+		if(!$isAllow) {
+			$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
+			echo json_encode($rsData);
+			exit;
+		}
+		
 		// Get params and validate them here.
 		$id = isset(	$args['id']) ? $args['id'] : '';
 		if($id != "") {
@@ -437,6 +471,13 @@ class GanttController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Dữ liệu chưa được xoá thành công!'
 		);
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$isAllow = $this->checkPermission($userId);
+		if(!$isAllow) {
+			$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
+			echo json_encode($rsData);
+			exit;
+		}
 		// Get params and validate them here.
 		$id = isset(	$args['id']) ? $args['id'] : '';
 		if($id != "") {
@@ -485,9 +526,10 @@ class GanttController extends BaseController {
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
-    );
-		$nhancong = $this->db->select('lotus_nhansu', ['ma_ns', 'name'], ['status' => 1, 'ORDER' => 'name']);
-		$users = $this->db->select('users', ['id', 'name', 'username'], ['status' => 1, 'ORDER' => 'name']);
+		);
+		$workers = $this->UserController->getWorkers();
+		$nhancong = $workers;
+		$users = $workers;
 		if(!empty($nhancong) && !empty($users)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Đã load được nhân sự và người phê duyệt';
@@ -496,7 +538,7 @@ class GanttController extends BaseController {
 				'check_users' => $users
 			];
 		} else {
-			$rsData['message'] = 'Chưa có nhân sự hoặc chưa có người kiểm duyệt cho biểu đồ Gantt!';
+			$rsData['message'] = 'Chưa có user nào thuộc nhóm nhân sự! Hãy cập nhật phòng ban cho thành viên!';
 		}
 		
 		echo json_encode($rsData);

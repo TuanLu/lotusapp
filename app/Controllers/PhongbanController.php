@@ -136,13 +136,13 @@ class PhongBanController extends BaseController
 	}
 	public function roles() {
 		return [
-			array('title' => 'Kí duyệt KHSX', 'value' => 'duyet_khsx'),
-			array('title' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl'),
-			array('title' => 'Giám đốc QLSX', 'value' => 'duyet_gd'),
+			//array('title' => 'Kí duyệt KHSX', 'value' => 'duyet_khsx'),
+			//array('title' => 'Kí duyệt ĐBCL', 'value' => 'duyet_dbcl'),
+			//array('title' => 'Giám đốc QLSX', 'value' => 'duyet_gd'),
+			array('title' => 'Nhóm Nhân viên', 'value' => 'nhomnv'),
 			array('title' => 'Nhóm quản lý kho', 'value' => 'nhom_thu_kho'),
 			array('title' => 'Nhóm QA', 'value' => 'nhomqa'),
 			array('title' => 'Nhóm QC', 'value' => 'nhomqc'),
-			array('title' => 'Nhóm Nhân viên', 'value' => 'nhomnv'),
 		];
 	}
 	public function fetchGroupRoles() {

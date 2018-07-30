@@ -13,6 +13,7 @@ $app->get('/fetchLang', 'LanguageController:fetchLang');//get language info
 
 $app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
 $app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
+$app->post('/users/updateUserByUser', 'UserController:updateUserByUser');
 $app->get('/users/deleteUser/{id}', 'UserController:deleteUser')->setName('users__users__delete');
 $app->post('/users/updatePermission', 'UserController:updatePermission');
 $app->get('/dashboard', 'HomeController:index');

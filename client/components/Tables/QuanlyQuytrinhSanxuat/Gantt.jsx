@@ -230,6 +230,7 @@ class Gantt extends Component {
         if(json.show_login) {
           this.props.dispatch(updateStateData({showLogin: true}));
         }
+        this.updateGanttDataToState(json.data);
       } else {
         if(json.data) {
           this.updateGanttDataToState(json.data);
@@ -322,13 +323,14 @@ class Gantt extends Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá quy trình!', 3);
+          this.props.dispatch(updateStateData({showLogin: true}));
+          message.error(json.message, 3);
         } else {
           message.success(json.message);
         }
       })
       .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
+        message.error('Có lỗi xảy ra khi xoá quy trình!', 3);
         console.log(error);
       });
     }
@@ -341,7 +343,8 @@ class Gantt extends Component {
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá quy trình!', 3);
+          message.error(json.message, 3);
+          this.props.dispatch(updateStateData({showLogin: true}));
         } else {
           message.success(json.message);
         }
@@ -401,14 +404,14 @@ class Gantt extends Component {
           gantt.message({type: "error", text: "Hãy nhập mô tả công việc!"});
           return false;
         }
-        if (!item.user) {
-          gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
-          return false;
-        }
-        if (!item.check_user) {
-          gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
-          return false;
-        }
+        // if (!item.user) {
+        //   gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
+        //   return false;
+        // }
+        // if (!item.check_user) {
+        //   gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
+        //   return false;
+        // }
         return true;
       })
     );
@@ -477,15 +480,15 @@ class Gantt extends Component {
       let workerOptions = [{key: "", label: "Người thực hiện"}];
       workerOptions = workerOptions.concat(workers.map((worker) => {
         return {
-          key: worker.ma_ns,
-          label: worker.ma_ns + '-' + worker.name
+          key: worker.id,
+          label: worker.ma_ns + ' - ' + worker.name
         }
       }));
       let checkUserOptions = [{key: "", label: "Người phê duyệt"}];
       checkUserOptions = checkUserOptions.concat(check_users.map((user) => {
         return {
           key: user.id,
-          label: user.name || user.username
+          label: user.ma_ns + ' - ' + (user.name || user.username)
         }
       }));
       gantt.config.lightbox.sections = [
