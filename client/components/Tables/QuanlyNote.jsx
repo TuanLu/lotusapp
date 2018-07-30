@@ -21,7 +21,7 @@ class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
       case 'create_by' :
-      
+        
       break;
       default:
         return <Input />;
