@@ -203,10 +203,10 @@ class UserController extends BaseController {
         }
       }
 
-      if(!empty($userRoles)) {
+      if(!empty($userRoles) && !empty($userData)) {
         return [
           'roles' => array_values($menus),
-          'userInfo' => $userData[0]
+          'userInfo' => isset($userData[0]) ? $userData[0] : [] 
         ];
       }
     }
