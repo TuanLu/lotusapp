@@ -18,6 +18,7 @@ class NoteForm extends React.Component {
       if (!err) {
         //Get USER ID from mainstate
         let {systemNote} = this.props.mainState;
+        values.id = systemNote.id ? systemNote.id : '';
         fetch(ISD_BASE_URL + 'note/updateNote', {
           method: 'POST',
           headers: getTokenHeader(),
@@ -143,13 +144,21 @@ class NoteForm extends React.Component {
       });
     }
     let selected_user = [];
-    if(this.props.record 
-      && this.props.record.assign_users
-      && this.props.record.assign_users != "") {
-        if(typeof this.props.record.assign_users == "string") {
-          selected_user = this.props.record.assign_users.split(',')
+    if( systemNote.assign_users
+      && systemNote.assign_users != "") {
+        if(typeof systemNote.assign_users == "string") {
+          selected_user = systemNote.assign_users.split(',')
         } else {
-          selected_user = this.props.record.assign_users;
+          selected_user = systemNote.assign_users;
+        }
+    }
+    let selected_group = [];
+    if( systemNote.assign_group
+      && systemNote.assign_group != "") {
+        if(typeof systemNote.assign_group == "string") {
+          selected_group = systemNote.assign_group.split(',')
+        } else {
+          selected_group = systemNote.assign_group;
         }
     }
     return (
@@ -190,7 +199,7 @@ class NoteForm extends React.Component {
             initialValue: selected_user
           })(
             <Select 
-              placeholder="Chọn phòng ban"
+              placeholder="Chọn người dùng"
               mode="multiple"
               onChange={(value) => {
                 console.log(value);
@@ -205,7 +214,7 @@ class NoteForm extends React.Component {
           label="Phòng ban nhận ghi chú"
         >
           {getFieldDecorator('assign_group', {
-            initialValue: systemNote.assign_group,
+            initialValue: selected_group,
             rules: [{ required: false, message: 'Hãy chọn phòng ban!' }],
           })(
             <Select 
