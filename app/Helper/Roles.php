@@ -304,7 +304,7 @@ class Roles {
         'label' => 'Thông báo', 
         'icon' => 'schedule',
         'path' => 'note',
-        'parent' => 'other_group',
+        'parent' => 'main_group',
         'permission' => Roles::roleAndRouter()['note']
       ]
     ];
