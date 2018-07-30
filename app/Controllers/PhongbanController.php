@@ -55,6 +55,8 @@ class PhongBanController extends BaseController
 		$roles = $request->getParam('roles');
     if(is_array($roles)) {
       $roles = implode(',', $roles);
+		} else {
+			$roles = '';
 		}
 		$date = new \DateTime();
 		$createOn = $date->format('Y-m-d H:i:s');

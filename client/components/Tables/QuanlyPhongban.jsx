@@ -26,7 +26,11 @@ class EditableCell extends React.Component {
         if(this.props.record 
           && this.props.record.roles
           && this.props.record.roles != "") {
-          roles = this.props.record.roles.split(',')
+            if(typeof this.props.record.roles == "string") {
+              roles = this.props.record.roles.split(',')
+            } else {
+              roles = this.props.record.roles;
+            }
         }
         return <Roles selectedRoles={roles}/>
         break;
