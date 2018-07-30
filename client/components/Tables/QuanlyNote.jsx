@@ -1,70 +1,14 @@
 import React from 'react'
 import { 
   Table, Input, Select, 
-  Popconfirm, Form, Row, 
+  Popconfirm, Form, Row, Modal,
   Col, Button, message
 } from 'antd';
-import { getTokenHeader } from 'ISD_API';
-
+import { getTokenHeader, ans_language } from 'ISD_API';
+import {updateStateData} from 'actions'
+import moment from 'moment'
+import NoteForm from './QuanlyNote/NoteForm'
 const FormItem = Form.Item;
-const EditableContext = React.createContext();
-
-const EditableRow = ({ form, index, ...props }) => (
-  <EditableContext.Provider value={form}>
-    <tr {...props} />
-  </EditableContext.Provider>
-);
-
-const EditableFormRow = Form.create()(EditableRow);
-
-class EditableCell extends React.Component {
-  getInput = () => {
-    switch (this.props.inputType) {
-      case 'create_by' :
-        
-      break;
-      default:
-        return <Input />;
-        break;
-    }
-    
-  };
-  render() {
-    const {
-      editing,
-      required,
-      dataIndex,
-      title,
-      inputType,
-      record,
-      index,
-      ...restProps
-    } = this.props;
-    return (
-      <EditableContext.Consumer>
-        {(form) => {
-          const { getFieldDecorator } = form;
-          return (
-            <td {...restProps}>
-              {editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(dataIndex, {
-                    rules: [{
-                      required: required,
-                      message: `Hãy nhập dữ liệu ô ${title}!`,
-                    }],
-                    initialValue: record[dataIndex],
-                    
-                  })(this.getInput())}
-                </FormItem>
-              ) : restProps.children}
-            </td>
-          );
-        }}
-      </EditableContext.Consumer>
-    );
-  }
-}
 
 class EditableTable extends React.Component {
   constructor(props) {
@@ -79,71 +23,57 @@ class EditableTable extends React.Component {
         title: 'Ngày tạo',
         dataIndex: 'create_on',
         //width: '15%',
-        editable: true,
-        required: true
+        editable: false,
+        required: true,
+        //render: {} Render phải return về cái gì đó
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
         title: 'Người tạo',
         dataIndex: 'create_by',
         //width: '40%',
         editable: true,
-        required: true
+        required: true,
+        //render: {}
       },
       {
-        title: 'Nội dung',
-        dataIndex: 'note',
+        title: 'Tiêu đề',
+        dataIndex: 'titles',
         //width: '40%',
         editable: true,
         required: true
+      },
+      {
+        title: 'Nhân viên liên quan',
+        dataIndex: 'assign_users',
+        //width: '40%',
+        editable: true,
+        required: true,
+        //render: {}
       },
       {
         title: 'Phòng liên quan',
-        dataIndex: 'assign',
+        dataIndex: 'assign_group',
         //width: '40%',
         editable: true,
-        required: true
+        required: true,
+        //render: {}
       },
       {
         title: 'Actions',
         dataIndex: 'operation',
         render: (text, record) => {
-          const editable = this.isEditing(record);
           return (
             <div style={{minWidth: 100}}>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a
-                        href="javascript:;"
-                        onClick={() => this.save(form, record.key)}
-                        style={{ marginRight: 8 }}
-                      >
-                        Lưu
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm
-                    title="Bạn thật sự muốn huỷ?"
-                    onConfirm={() => this.cancel(record)}
-                  >
-                    <a href="javascript:;">Huỷ</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
-                  {" | "}
-                  <Popconfirm
-                    title="Bạn thật sự muốn xoá?"
-                    okType="danger"
-                    onConfirm={() => this.delete(record)}
-                  >
-                    <a href="javascript:;">Xoá</a>  
-                  </Popconfirm>
-                </React.Fragment>
-                
-              )}
+              <a href="javascript:;" onClick={() => this.edit(record)}>Sửa</a>  
+              {" | "}
+              <Popconfirm
+                title="Bạn thật sự muốn xoá?"
+                okType="danger"
+                onConfirm={() => this.delete(record)}
+              >
+                <a href="javascript:;">Xoá</a>  
+              </Popconfirm>
             </div>
           );
         },
@@ -151,20 +81,8 @@ class EditableTable extends React.Component {
     ];
   }
   addNewRow() {
-    if(this.state.newitem == 0){
-      let rowItem = this.getDefaultFields();
-      rowItem = {
-        ...rowItem,
-        key: this.state.data.length + 1
-      };
-      this.setState({
-        data: [rowItem, ...this.state.data],
-        editingKey: rowItem.key
-      })
-      this.state.newitem  = 1 ;
-    }else{
-      message.error('Bạn đang thêm mới danh mục rồi ...');
-    }
+    let rowItem = this.getDefaultFields();
+    this.edit(rowItem);
   }
   getDefaultFields() {
     return {
@@ -172,11 +90,14 @@ class EditableTable extends React.Component {
       description: ""
     };
   }
-  isEditing = (record) => {
-    return record.key === this.state.editingKey;
-  };
-  edit(key) {
-    this.setState({ editingKey: key });
+
+  edit(record) {
+    this.props.dispatch(updateStateData({ // Thay đổi mainState cần action
+      systemNote: {
+        ...record, // Tách object thành các thuộc tính của systemNote (ES6) 
+        openModal: true
+      }
+    }));
   }
   save(form, key) {
     form.validateFields((error, row) => {
@@ -224,11 +145,7 @@ class EditableTable extends React.Component {
     });
   }
   cancel = (record) => {
-    this.setState({ editingKey: '' });
-    if(this.state.newitem == 1){
-      this.state.newitem = 0;
-      this.delete(record);
-    }
+    
   }
   delete = (record) => {
     if(record.id) {
@@ -286,29 +203,9 @@ class EditableTable extends React.Component {
     this.fetchData();
   }
   render() {
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell,
-      },
-    };
-    const columns = this.columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: this.isEditing(record),
-          required: col.required
-        }),
-      };
-    });
-
+    const columns = this.columns;
+    let {mainState} = this.props;
+    let openModal = mainState.systemNote ? mainState.systemNote.openModal : false;
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -325,8 +222,30 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
+        {openModal? 
+          <Modal
+            width={"95%"}
+            style={{top: 20}}
+            title="Tạo ghi chú cho phòng ban hoặc cá nhân"
+            visible={openModal}
+            onCancel={() => {
+              this.props.dispatch(updateStateData({
+                systemNote: {
+                  ...this.props.mainState.systemNote,
+                  openModal: false
+                }
+              }));
+            }}
+            onOk={() => {
+              
+            }}
+            footer={null}
+            >
+            {/* Call form Create or Edit Note */}
+            <NoteForm mainState={this.props.mainState} dispatch={this.props.dispatch} />
+          </Modal>  
+        : null}
         <Table
-          components={components}
           bordered
           dataSource={this.state.data}
           columns={columns}

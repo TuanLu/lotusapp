@@ -8,7 +8,7 @@ import QuanlyNPP from './Tables/QuanlyNPP'
 import UserManagement from './Tables/UserManagement'
 import LoginForm from './LoginForm'
 import UserInfo from './UserInfo'
-import {getTokenHeader , convertArrayObjectToObject} from 'ISD_API'
+import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 import Loading from './Loading'
 import QuanlyKho from './Tables/QuanlyKho'
@@ -93,7 +93,7 @@ class MainComponent extends React.Component {
         .then((json) => {
           if(json.status == "success") {
             this.props.dispatch(updateStateData({
-              language: convertArrayObjectToObject(json.data, 'ma_text')
+              language: json.data
             })); 
           } else if(json.status == "error") {
             message.error(json.message, 3);

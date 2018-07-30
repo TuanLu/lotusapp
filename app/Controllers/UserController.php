@@ -231,7 +231,7 @@ class UserController extends BaseController {
     
     echo json_encode($rsData);
   }
-  private function getAllActiveUsers($userId = "") {
+  public function getAllActiveUsers($userId = "") {
     // Columns to select.
 		$columns = [
       'users.id',

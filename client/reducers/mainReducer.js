@@ -78,12 +78,16 @@ let _designDefault = {
     },
     notes: [], 
     language: [], 
+    defaultLang: 'vi',
     ganttEvents: [],//Truoc khi reset phai dung gantt xoa di tat ca su kien da attach vao gantt
     quyTrinhTheoLenh: {
       showGantt: false
     },
     user: {
       openUserModal: false
+    },
+    systemNote: {
+      openModal : false,
     }
   },
   cloneState;
