@@ -1,7 +1,7 @@
 import React from 'react'
 import {updateStateData} from 'actions'
 import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, message } from 'antd';
-import {getTokenHeader , ans_language} from 'ISD_API'
+import {getTokenHeader} from 'ISD_API'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -129,7 +129,7 @@ class NoteForm extends React.Component {
       },
     };
 
-    let {systemNote, groupUser, language, defaultLang, userlist} = this.props.mainState;
+    let {systemNote, groupUser, ans_language, defaultLang, userlist} = this.props.mainState;
     let phongBanOptions = [];
     let usersOptions = [];
     //let {groupUser} = this.state;
@@ -140,7 +140,7 @@ class NoteForm extends React.Component {
     }
     if(userlist && userlist.length) {
       usersOptions = userlist.map((user) => {
-        return <Option value={user.id} key={user.id}>{user.id} - {user.name}</Option>
+        return <Option value={user.id} key={user.id}>{user.name}</Option>
       });
     }
     let selected_user = [];
@@ -168,7 +168,7 @@ class NoteForm extends React.Component {
           label={(
             <span>
               Tiêu đề : &nbsp;
-              <Tooltip title="Tiêu đề ghi chú!">
+              <Tooltip title="Tiêu đề ghi chú">
                 <Icon type="question-circle-o" />
               </Tooltip>
             </span>
@@ -229,7 +229,7 @@ class NoteForm extends React.Component {
           )}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">{language.ans_save || "Lưu"}</Button>
+          <Button type="primary" htmlType="submit">{ans_language.ans_save || "Lưu"}</Button>
         </FormItem>
       </Form>
     );
