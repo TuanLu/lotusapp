@@ -311,7 +311,7 @@ class PhieunhapController extends BaseController
 		);
 		// Get params and validate them here.
 		$params = $request->getParams();
-		if(isset($params['ids'])
+		if(isset($params['id'])
 			&& isset($params['type'])
 			&& isset($params['status'])) {
 
@@ -329,9 +329,9 @@ class PhieunhapController extends BaseController
 				$updateData['qa_id'] = $userId;
 			}
 			
-			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['ids']]);
+			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);
 			if($result->rowCount()) {
-				$this->superLog('Update SP theo phiếu', $updateData);
+				$this->superLog('Phe duyet SP theo phiếu', $updateData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {

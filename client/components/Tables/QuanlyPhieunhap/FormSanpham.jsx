@@ -4,7 +4,7 @@ import {
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
   Col, Button, message, Alert,
-  Menu, Dropdown, Icon, DatePicker
+  Menu, Dropdown, Icon, DatePicker, Switch
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -165,27 +165,29 @@ class EditableTable extends React.Component {
       {
         title: 'Quy cách',
         dataIndex: 'label',
-        width: 200,
+        width: 100,
         editable: true,
         required: true
       },
       {
-        title: 'Đơn vị tính',
+        title: 'Đv',
         dataIndex: 'unit',
-        width: 100,
+        //width: 100,
         editable: true,
       },
       {
-        title: 'SL theo chứng từ',
+        title: 'SL chứng từ',
         dataIndex: 'sl_chungtu',
         //width: '40%',
+        width: 100,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
-        title: 'SL thực nhập',
+        title: 'SL thực',
         dataIndex: 'sl_thucnhap',
         //width: '40%',
+        width: 100,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
@@ -215,26 +217,44 @@ class EditableTable extends React.Component {
         required: false,
         render: (text, record) => text? moment(text).format('DD/MM/YYYY') : ''
       },
-      // {
-      //   title: 'QC Duyệt',
-      //   dataIndex: 'qc_check',
-      //   editable: false,
-      //   width: 170,
-      //   show: false,
-      //   render: (text, record) => {
-      //     return this.showCheckStatus(text);
-      //   }
-      // },
-      // {
-      //   title: 'QA Duyệt',
-      //   dataIndex: 'qa_check',
-      //   editable: false,
-      //   width: 170,
-      //   show: false,
-      //   render: (text, record) => {
-      //     return this.showCheckStatus(text);
-      //   }
-      // },
+      {
+        title: 'QC Duyệt',
+        dataIndex: 'qc_check',
+        editable: false,
+        width: 150,
+        show: false,
+        render: (text, record) => {
+          return(
+            <Select
+              style={{width: 140}}
+              onChange={(value) => {this.changeStatus('qc_check', record.id, value);}}
+              value={text || '0'}>
+              {qcQAStatus.map((option) => {
+                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+              })}
+            </Select>
+          );
+        }
+      },
+      {
+        title: 'QA Duyệt',
+        dataIndex: 'qa_check',
+        editable: false,
+        width: 170,
+        show: false,
+        render: (text, record) => {
+          return(
+            <Select
+              style={{width: 140}}
+              onChange={(value) => {this.changeStatus('qa_check', record.id, value);}}
+              value={text || '0'}>
+              {qcQAStatus.map((option) => {
+                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+              })}
+            </Select>
+          );
+        }
+      },
       {
         title: 'Actions',
         dataIndex: 'operation',
@@ -289,11 +309,11 @@ class EditableTable extends React.Component {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
-  changeStatus = (status, type) => {
+  changeStatus = (type, id, status) => {
     this.setState({ loading: true });
     // ajax request after empty completing
     let statusData = {
-      ids: this.state.selectedRowKeys,
+      id: id,
       type,
       status
     };
@@ -572,58 +592,6 @@ class EditableTable extends React.Component {
     .catch((error) => {
       console.log(error);
     });
-  }
-  getStatusMenu(type) {
-    const menuItems = qcQAStatus.map((item) => {
-      return (
-        <Menu.Item key={item.id}>
-          <a 
-            onClick={() => {
-              this.changeStatus(item.id, type);
-            }}
-            rel="noopener noreferrer">{item ? item.text : ''}</a>
-        </Menu.Item>
-      );
-    });
-    const menu = (
-      <Menu>
-       {menuItems}
-      </Menu>
-    );
-    return menu;
-  }
-  getActionsByRoles() {
-    let {selectedRowKeys, loading} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ marginBottom: 16 }}>
-        {this.props.isQC? 
-        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-          <Button
-            type="primary"
-            //onClick={this.start}
-            loading={loading}
-          >
-            QC Phê duyệt
-          </Button>
-        </Dropdown>
-        : null}
-        {this.props.isQA? 
-          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-           <Button
-             type="primary"
-             //onClick={this.start}
-             loading={loading}
-           >
-             QA Phê duyệt
-           </Button>
-          </Dropdown>
-        : null} 
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-        </span>
-      </div>
-    );
   }
   componentDidMount() {
     let {products, phieunhap} = this.props.mainState;
