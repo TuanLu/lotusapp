@@ -343,23 +343,6 @@ class EditableTable extends React.Component {
       message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
     });
   }
-  showCheckStatus(text) {
-    if(text) {
-      let type = "info";
-      if(text == "2") type = "error";
-      if(text == "1") type = "success";
-      return (
-        <Alert 
-            message={checkStatusOptions[text]['text']} 
-            type={type}
-            showIcon />
-      );
-    }
-    return <Alert 
-            message={checkStatusOptions[0]['text']} 
-            type={"info"}
-            showIcon />
-  }
   addNewRow() {
     let {products} = this.props.mainState.phieunhap;
     let {editingKey} = this.props.mainState.phieuAction;
@@ -609,6 +592,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
+    let {phieuAction} = this.props.mainState;
     let products = this.props.mainState.products;
     let columns = this.columns.map((col) => {
       if (!col.editable) {
@@ -628,15 +612,12 @@ class EditableTable extends React.Component {
       };
     });
     //Show and hide some columns by roles
-    // columns = columns.filter((column) => {
-    //   if(this.props.isQA || this.props.isQC) {
-    //     if(column.dataIndex == 'operation') return false;
-    //     if(this.props.isQC) {
-    //       if(column.dataIndex == 'qa_check') return false;
-    //     }
-    //   }
-    //   return true;
-    // })
+    columns = columns.filter((column) => {
+      if(phieuAction.editingKey && phieuAction.editingKey != "") {
+        if(column.dataIndex == 'qa_check' || column.dataIndex == 'qc_check') return false;
+      }
+      return true;
+    })
     let selectedProducts = this.props.mainState.phieunhap.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
