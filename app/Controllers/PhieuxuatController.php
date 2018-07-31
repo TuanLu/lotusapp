@@ -108,6 +108,39 @@ class PhieuxuatController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
+	private function saveProductOfBill($products, $maPhieu, $createOn, $isEdit = false) {
+		
+		$validProducts = [];
+		if($isEdit) {
+			//Delete old product belong to bill 
+			$oldProducts = $this->db->select('san_pham_theo_phieu_xuat', ['id','ma_phieu'], ['ma_phieu' => $maPhieu]);
+			if(!empty($oldProducts)) {
+				$oldIds = [];
+				foreach ($oldProducts as $key => $item) {
+					$oldIds[] = $item['id'];
+				}
+				$this->db->update('san_pham_theo_phieu_xuat', ['status' => 2], ['id' => $oldIds]);
+			}
+		}
+		foreach($products as $product) {
+			$validProducts[] = array(
+				'ma_phieu' => $maPhieu,
+				'ma_phieu_nhap' => isset($product['ma_phieu']) ?  $product['ma_phieu'] : '',
+				'ma_lo' => isset($product['ma_lo']) ?  $product['ma_lo'] : '',
+				'product_id' => isset($product['product_id']) ?  $product['product_id'] : '',
+				'label' => isset($product['label']) ?  $product['label'] : '',
+				'unit' => isset($product['unit']) ?  $product['unit'] : '',
+				'sl_chungtu' => isset($product['sl_chungtu']) ?  $product['sl_chungtu'] : '',
+				'sl_thucnhap' => isset($product['sl_thucnhap']) ?  $product['sl_thucnhap'] : '',
+				'price' => isset($product['price']) ?  $product['price'] : '',
+				'create_on' => $createOn,
+				'ngay_san_xuat' => isset($product['ngay_san_xuat']) ?  $product['ngay_san_xuat'] : '',
+				'ngay_het_han' => isset($product['ngay_het_han']) ?  $product['ngay_het_han'] : '',
+			);
+		}
+		$result = $this->db->insert('san_pham_theo_phieu_xuat', $validProducts);
+		return $result;
+	}
 	public function update($request, $response)
 	{
 		$rsData = array(
@@ -132,51 +165,31 @@ class PhieuxuatController extends BaseController
 				echo json_encode($rsData);
 				die;
 		}
-		// if(!$nguoiGiaoDich) {
-		// 	$rsData['message'] = 'Tên người thực hiện giao dịch không được để trống!';
-		// 		echo json_encode($rsData);
-		// 		die;
-		// }
+
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$date = new \DateTime();
+		$createOn = $date->format('Y-m-d H:i:s');
+		$itemData = array(
+			'ma_phieu' => $maPhieu,
+			'ma_kho' => $maKho,
+			'type' => 2, // 1 => Nhập // 2 => Xuất
+			'nguoi_giao_dich' => $nguoiGiaoDich,
+			'note' => isset($params['note']) ? $params['note'] : '',
+			'address' => isset($params['address']) ? $params['address'] : '',
+			'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
+			'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '', // 2 => Chờ phê duyệt
+		);
 		if(!$id) {
 			$uuid1 = Uuid::uuid1();
 			$maPhieu = $uuid1->toString();
-			$date = new \DateTime();
-			$createOn = $date->format('Y-m-d H:i:s');
 			//Tao phieu 
-			$duLieuPhieu = array(
-				'ma_phieu' => $maPhieu,
-				'ma_kho' => $maKho,
-				'type' => 2, // 1 => Nhập // 2 => Xuất
-				'create_on' => $createOn,
-				'create_by' => $userId,
-				'nguoi_giao_dich' => $nguoiGiaoDich,
-				'note' => isset($params['note']) ? $params['note'] : '',
-				'address' => isset($params['address']) ? $params['address'] : '',
-				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
-				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '', // 2 => Chờ phê duyệt
-			);
-			$result = $this->db->insert($this->tableName, $duLieuPhieu);
+			$itemData['ma_phieu'] = $maPhieu;
+			$itemData['create_on'] = $createOn;
+			$itemData['create_by'] = $userId;
+			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				//San pham trong phieu
-				$validProducts = [];
-				foreach($products as $product) {
-					$validProducts[] = array(
-						'ma_phieu' => $maPhieu,
-						'ma_phieu_nhap' => $product['ma_phieu'],
-						'ma_lo' => $product['ma_lo'],
-						'product_id' => $product['product_id'],
-						'label' => $product['label'],
-						'unit' => $product['unit'],
-						'sl_chungtu' => $product['sl_chungtu'],
-						'sl_thucnhap' => $product['sl_thucnhap'],
-						'price' => $product['price'],
-						'create_on' => $createOn,
-						'ngay_san_xuat' => $product['ngay_san_xuat'],
-						'ngay_het_han' => $product['ngay_het_han'],
-					);
-				}
-				$productsNum = $this->db->insert('san_pham_theo_phieu_xuat', $validProducts);
+				$productsNum = $this->saveProductOfBill($products, $maPhieu, $createOn, false);
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
 					$columns = $this->getColumns();
@@ -189,27 +202,20 @@ class PhieuxuatController extends BaseController
 			}
 		} else {
 			//update data base on $id
-			$date = new \DateTime();
-			$itemData = [
-				'ma_phieu' => $maPhieu,
-				'ma_kho' => $maKho,
-				'type' => 2, // 1 => Nhập 2 => Xuất
-				'create_on' => $date->format('Y-m-d H:i:s'),
-				'create_by' => $userId,
-				'nguoi_giao_dich' => $nguoiGiaoDich,
-				'note' => isset($params['note']) ? $params['note'] : '',
-				'address' => isset($params['address']) ? $params['address'] : '',
-				'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '',
-				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
-				'update_on' => $date->format('Y-m-d H:i:s'),
-			];
+			$itemData['update_on'] = $createOn;
+			$itemData['update_by'] = $userId;
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update phiếu xuất', $itemData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				$this->superLog('Update SP phiếu xuất', $itemData);
+				$productsNum = $this->saveProductOfBill($products, $maPhieu, $createOn, true);
+				if($productsNum->rowCount()) {
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				} else {
+					$rsData['message'] = 'Chưa cập nhật được sản phẩm theo phiếu xuất!';
+				} 
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!!';
 			}
 			
 		}
