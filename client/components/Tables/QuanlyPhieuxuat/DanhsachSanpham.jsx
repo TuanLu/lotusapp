@@ -50,14 +50,14 @@ class VatTuPhieuXuat extends React.Component {
         editable: true,
         required: true,
       },
-      {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
-        width: 100,
-        //fixed: 'left',
-        editable: true,
-        required: true,
-      },
+      // {
+      //   title: 'Mã Lô',
+      //   dataIndex: 'ma_lo',
+      //   width: 100,
+      //   //fixed: 'left',
+      //   editable: true,
+      //   required: true,
+      // },
       {
         title: 'Quy cách',
         dataIndex: 'label',
@@ -80,15 +80,24 @@ class VatTuPhieuXuat extends React.Component {
       {
         title: 'SL',
         dataIndex: 'sl_thucnhap',
-        //width: '40%',
+        width: 100,
         editable: true,
       },
+      // {
+      //   title: 'Đơn giá',
+      //   dataIndex: 'price',
+      //   //width: '40%',
+      //   editable: true,
+      //   required: true
+      // },
       {
-        title: 'Đơn giá',
-        dataIndex: 'price',
+        title: 'Ngày Nhập Kho',
+        dataIndex: 'create_on',
+        width: '200px',
         //width: '40%',
         editable: true,
-        required: true
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
       {
         title: 'Ngày SX',
@@ -108,32 +117,6 @@ class VatTuPhieuXuat extends React.Component {
         required: true,
         render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
-      {
-        title: 'QC Duyệt',
-        dataIndex: 'qc_check',
-        editable: false,
-        filterable: true,
-        filters: qcQAStatus,
-        filterMultiple: false,
-        width: 130,
-        //fixed: 'right',
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      },
-      {
-        title: 'QA Duyệt',
-        dataIndex: 'qa_check',
-        editable: false,
-        filterable: true,
-        filters: qcQAStatus,
-        filterMultiple: false,
-        width: 130,
-        //fixed: 'right',
-        render: (text, record) => {
-          return this.showCheckStatus(text);
-        }
-      }
     ];
   }
   onInputChange = (e) => {
@@ -374,7 +357,7 @@ class VatTuPhieuXuat extends React.Component {
           dataSource={productsForExport}
           columns={columns}
           loading={this.state.loadProduct}
-          scroll={{ x: 1500, y: 250 }}
+          scroll={{ y: 250 }}
           pagination={{ pageSize: 50 }}
           onChange={this.handleChange}
         />
