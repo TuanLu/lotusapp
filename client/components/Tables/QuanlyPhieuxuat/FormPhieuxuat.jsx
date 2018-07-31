@@ -74,6 +74,41 @@ class FormPhieuxuat extends React.Component {
       }
     }));
   }
+  pheDuyet(value) {
+    this.setState({ loading: true });
+    let {phieuxuat} = this.props.mainState;
+    let pheDuyetData = {
+      value,
+      ma_phieu: phieuxuat.ma_phieu
+    };
+    fetch(ISD_BASE_URL + 'phieuxuat/pheduyet', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(pheDuyetData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          phieuxuat: {
+            ...this.props.mainState.phieuxuat,
+            refresh: true,
+            ...json.data
+          },
+        }));
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình phê duyệt!');
+    });
+  }
 
   render() {
     let {phieuXuatAction} = this.props.mainState;
@@ -175,6 +210,9 @@ class FormPhieuxuat extends React.Component {
             mainState={this.props.mainState}/>
         </Modal>
         <FormThongTin 
+          pheDuyet={(tinh_trang) => {
+            this.pheDuyet(tinh_trang);
+          }}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham

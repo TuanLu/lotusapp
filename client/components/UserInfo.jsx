@@ -15,6 +15,7 @@ class UserInfo extends React.Component {
       <div className="admin-user-info">
         <span>{ans_language.ans_xin_chao || "Xin chào" } <b>{this.showUserName()}</b></span>
         <Button 
+          ghost
           style={{marginRight: 10}}
           //onClick={() => this.addNewRow()}
           type="primary" icon="mail">Góp ý, phản hồi</Button>

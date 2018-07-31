@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment';
-import { Form, Select, Input, Button,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Button,Popconfirm,message, Switch } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
@@ -45,6 +45,7 @@ class FormThongtin extends React.Component {
   render() {
     let {phieuxuat, phieuXuatAction} = this.props.mainState;
     let readOnly = phieuXuatAction && phieuXuatAction.action == 'view' ? true : false;
+    let tinh_trang = phieuxuat.tinh_trang == 1 ? true : false;
     let options = '';
     let {kho} = this.props.mainState;
     if(kho.length) {
@@ -52,6 +53,18 @@ class FormThongtin extends React.Component {
     }
     return (
       <Form>
+        {phieuxuat.ma_phieu != "" ? 
+          <FormItem
+              label={'Phê duyệt'}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 12 }}
+            >
+              <Switch checkedChildren="Đã duyệt" unCheckedChildren="Chưa duyệt" checked ={tinh_trang} 
+                onChange={(tinh_trang) => {
+                  this.props.pheDuyet(tinh_trang);
+                }} />
+            </FormItem>
+        : null}
         <FormItem
           label={'Số chứng từ'}
           labelCol={{ span: 5 }}
