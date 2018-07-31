@@ -80,7 +80,7 @@ let _designDefault = {
 	    links:[]
     },
     notes: [], 
-    language: [], 
+    ans_language: [], 
     defaultLang: 'vi',
     ganttEvents: [],//Truoc khi reset phai dung gantt xoa di tat ca su kien da attach vao gantt
     quyTrinhTheoLenh: {

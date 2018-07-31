@@ -75,7 +75,7 @@ class EditableTable extends React.Component {
       {
         title: 'Mã ngôn ngữ',
         dataIndex: 'ma_text',
-        //width: '15%',
+        width: '15%',
         editable: true,
         required: true
       },

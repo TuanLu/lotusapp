@@ -10,10 +10,10 @@ class UserInfo extends React.Component {
     }
   }
   render() {
-    let {language} = this.props.mainState; 
+    let {ans_language} = this.props.mainState; 
     return (
       <div className="admin-user-info">
-        <span>{language.ans__xin_chao || "Xin chào" } <b>{this.showUserName()}</b></span>
+        <span>{ans_language.ans_xin_chao || "Xin chào" } <b>{this.showUserName()}</b></span>
         <Button 
           style={{marginRight: 10}}
           //onClick={() => this.addNewRow()}
@@ -24,7 +24,7 @@ class UserInfo extends React.Component {
               showLogin: true
             }));
           }}
-          type="primary" ghost>{language.ans_dang_xuat || "Đăng xuất" } </Button>
+          type="primary" ghost>{ans_language.ans_dang_xuat || "Đăng xuất" } </Button>
       </div>
     );
   }

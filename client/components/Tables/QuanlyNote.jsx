@@ -1,50 +1,51 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, Modal,
   Col, Button, message
 } from 'antd';
-import { getTokenHeader, ans_language } from 'ISD_API';
+import { getTokenHeader } from 'ISD_API';
 import {updateStateData} from 'actions'
 import moment from 'moment'
 import NoteForm from './QuanlyNote/NoteForm'
 const FormItem = Form.Item;
 
 class EditableTable extends React.Component {
-  constructor(props) {
+  constructor(props) { 
     super(props);
     this.state = { 
       data: [], 
       editingKey: '',
       newitem: 0
-    };
+    }; 
+    let {ans_language, userlist} = this.props.mainState; 
     this.columns = [
       {
-        title: 'Ngày tạo',
+        title: ans_language.ans_date_create || 'ans_date_create',
         dataIndex: 'create_on',
-        //width: '15%',
+        width: '120px',
         editable: false,
         required: true,
         //render: {} Render phải return về cái gì đó
-        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
+        render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
-        title: 'Người tạo',
+        title: ans_language.ans_create_by || 'ans_create_by',
         dataIndex: 'create_by',
         //width: '40%',
         editable: true,
         required: true,
-        //render: {}
+        render: (text, record) => record.name || text
       },
       {
-        title: 'Tiêu đề',
+        title: ans_language.ans_titles || 'ans_titles',
         dataIndex: 'titles',
-        //width: '40%',
+        width: '20%',
         editable: true,
         required: true
       },
       {
-        title: 'Nhân viên liên quan',
+        title: ans_language.ans_assign_user || 'ans_assign_user',
         dataIndex: 'assign_users',
         //width: '40%',
         editable: true,
@@ -52,7 +53,7 @@ class EditableTable extends React.Component {
         //render: {}
       },
       {
-        title: 'Phòng liên quan',
+        title: ans_language.ans_assign_group || 'ans_assign_group',
         dataIndex: 'assign_group',
         //width: '40%',
         editable: true,
@@ -60,19 +61,20 @@ class EditableTable extends React.Component {
         //render: {}
       },
       {
-        title: 'Actions',
+        title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
+        width: '150px',
         render: (text, record) => {
           return (
             <div style={{minWidth: 100}}>
-              <a href="javascript:;" onClick={() => this.edit(record)}>Sửa</a>  
+              <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
               {" | "}
               <Popconfirm
-                title="Bạn thật sự muốn xoá?"
+                title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
                 okType="danger"
                 onConfirm={() => this.delete(record)}
               >
-                <a href="javascript:;">Xoá</a>  
+                <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
               </Popconfirm>
             </div>
           );
@@ -90,7 +92,7 @@ class EditableTable extends React.Component {
       description: ""
     };
   }
-
+  
   edit(record) {
     this.props.dispatch(updateStateData({ // Thay đổi mainState cần action
       systemNote: {
@@ -135,7 +137,7 @@ class EditableTable extends React.Component {
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
-          message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
+          message.error(ans_language.ans_save_error || 'ans_save_error');
         });
         //End up data to server
       } else {
@@ -199,6 +201,28 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  fetchUserList() {
+    fetch(ISD_BASE_URL + 'users/fetchUsers', {
+      headers: getTokenHeader()
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      if(json.data) {
+        this.setState({
+          userlist: json.data
+        });
+        //Chi connect den server 1 lan
+        this.props.dispatch(updateStateData({
+          userlist: json.data
+        }));
+      } else {
+        console.warn(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
     this.fetchData();
   }
@@ -206,18 +230,19 @@ class EditableTable extends React.Component {
     const columns = this.columns;
     let {mainState} = this.props;
     let openModal = mainState.systemNote ? mainState.systemNote.openModal : false;
+    let {ans_language} = mainState;
     return (
       <React.Fragment>
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý Thông báo</h2>
+              <h2 className="head-title">{ans_language.ans_note_main_title || 'ans_note_main_title'}</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm mới</Button>
+                  type="primary" icon="plus">{ans_language.ans_add_new || 'ans_add_new'}</Button>
               </div>
             </Col>
           </Row>
@@ -226,7 +251,7 @@ class EditableTable extends React.Component {
           <Modal
             width={"95%"}
             style={{top: 20}}
-            title="Tạo ghi chú cho phòng ban hoặc cá nhân"
+            title={ans_language.ans_add_new_note || 'ans_add_new_note'}
             visible={openModal}
             onCancel={() => {
               this.props.dispatch(updateStateData({

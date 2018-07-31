@@ -85,7 +85,7 @@ class MainComponent extends React.Component {
         defaultRouter: mainState.defaultRouter
       }));
     }
-    if(mainState.language.length == 0) {
+    if(mainState.ans_language.length == 0) {
         fetch(ISD_BASE_URL + 'fetchLang', {
           headers: getTokenHeader()   
         })
@@ -93,7 +93,7 @@ class MainComponent extends React.Component {
         .then((json) => {
           if(json.status == "success") {
             this.props.dispatch(updateStateData({
-              language: json.data
+              ans_language: json.data
             })); 
           } else if(json.status == "error") {
             message.error(json.message, 3);
@@ -198,7 +198,7 @@ class MainComponent extends React.Component {
     let {showLogin} = this.props.mainState;  
     if(showLogin) return  <LoginForm dispatch={this.props.dispatch}/>;
     let {defaultRouter} = this.props.mainState;
-    let {language} = this.props.mainState; 
+    let {ans_language} = this.props.mainState; 
     return(
       <Layout>
         <Sider
@@ -226,7 +226,7 @@ class MainComponent extends React.Component {
           </Header>
           <div style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
             {!defaultRouter? 
-              <Alert message={language["sorry_role_not_valid"]} type="info" showIcon />
+              <Alert message={ans_language["sorry_role_not_valid"]} type="info" showIcon />
               : 
               this.renderContent(defaultRouter)
             }

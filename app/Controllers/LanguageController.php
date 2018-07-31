@@ -77,6 +77,16 @@ class LanguageController extends BaseController
 			}
 			$date = new \DateTime();
 			$itemData = [
+				'ma_text' => $ma_text
+			];
+			$selectColumns = ['id', 'ma_text'];
+			$where = ['ma_text' => $itemData['ma_text']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã language [". $itemData['ma_text'] ."] đã tồn tại: ";
+				echo json_encode($rsData); exit;
+			}
+			$itemData = [
 				'ma_text' => $ma_text,
 				'vi' => $vi,
 				'en' => $en,
