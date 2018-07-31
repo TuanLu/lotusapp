@@ -660,15 +660,15 @@ class EditableTable extends React.Component {
       };
     });
     //Show and hide some columns by roles
-    columns = columns.filter((column) => {
-      if(this.props.isQA || this.props.isQC) {
-        if(column.dataIndex == 'operation') return false;
-        if(this.props.isQC) {
-          if(column.dataIndex == 'qa_check') return false;
-        }
-      }
-      return true;
-    })
+    // columns = columns.filter((column) => {
+    //   if(this.props.isQA || this.props.isQC) {
+    //     if(column.dataIndex == 'operation') return false;
+    //     if(this.props.isQC) {
+    //       if(column.dataIndex == 'qa_check') return false;
+    //     }
+    //   }
+    //   return true;
+    // })
     let selectedProducts = this.props.mainState.phieunhap.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

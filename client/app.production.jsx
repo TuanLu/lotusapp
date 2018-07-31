@@ -15,3 +15,10 @@ ReactDOM.render(
   rootEl
 );
 
+//Alert user if reload a page
+window.onbeforeunload = function(e) {
+  var dialogText = 'Dialog text here';
+  e.returnValue = dialogText;
+  return dialogText;
+};
+
