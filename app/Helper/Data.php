@@ -60,4 +60,18 @@ class Data {
       }
     }
   }
+  public function getAllProductFromImportBill($verify = false) {
+    $verifySQL = "";
+    if($verify) {
+      $verifySQL = "AND (qc_check = 1 OR qa_check = 1)";
+    }
+    $sql = "SELECT `san_pham_theo_phieu`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,SUM(`san_pham_theo_phieu`.`sl_thucnhap`) as 'sl_thucnhap',`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`lotus_kho`.`ma_kho` 
+    FROM `san_pham_theo_phieu` 
+    LEFT JOIN `phieu_nhap_xuat_kho` 
+    ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` 
+    LEFT JOIN `lotus_kho` 
+    ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`ma_kho` 
+    WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 AND `phieu_nhap_xuat_kho`.`tinh_trang` = 1 $verifySQL GROUP BY product_id";
+    return $sql;
+  }
 }

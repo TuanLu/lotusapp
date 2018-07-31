@@ -3,6 +3,7 @@ namespace App\Controllers;
 use \Medoo\Medoo;
 use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
+use \App\Helper\Data;
 
 class KHVTController extends BaseController {
 
@@ -37,14 +38,14 @@ class KHVTController extends BaseController {
 		if(isset($filters['ngay_het_han']) && !empty($filters['ngay_het_han'])) {
 			$where .= " AND `ttkho`.`ngay_het_han` BETWEEN '{$filters['ngay_het_han'][0]}' AND '{$filters['ngay_het_han'][1]}'";
 		}
+		$helper = new Data();
 		$sql = "SELECT khvt.product_id, products.name, khvt.key, khvt.sl_nvl,khvt.status,ttkho.sl_thucnhap,ttkho.ma_kho,ttkho.ngay_san_xuat, ttkho.ngay_het_han
 						FROM (
 							SELECT lotus_spsx.ma_sx, lotus_sanxuat.ma,lotus_spsx.ma_maquet,lotus_spsx.product_id, lotus_spsx.product_id as 'key', lotus_spsx.cong_doan, lotus_spsx.sl_1000, lotus_spsx.unit, SUM(lotus_spsx.sl_nvl) as 'sl_nvl', lotus_spsx.status,lotus_spsx.hu_hao 
 							FROM lotus_spsx, lotus_sanxuat
 							WHERE lotus_sanxuat.ma_sx = lotus_spsx.ma_sx AND lotus_spsx.status = 1 AND lotus_sanxuat.status = 1 AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' GROUP BY product_id) 
 						AS khvt 
-						LEFT JOIN (
-							SELECT `san_pham_theo_phieu`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,SUM(`san_pham_theo_phieu`.`sl_thucnhap`) as 'sl_thucnhap',`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`lotus_kho`.`ma_kho` FROM `san_pham_theo_phieu` LEFT JOIN `phieu_nhap_xuat_kho` ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` LEFT JOIN `lotus_kho` ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`ma_kho` WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 AND `phieu_nhap_xuat_kho`.`tinh_trang` = 1 AND (qc_check = 1 OR (qc_check = 2 AND qa_check = 1)) GROUP BY product_id) 
+						LEFT JOIN (". $helper->getAllProductFromImportBill(true) .") 
 						AS ttkho 
 						ON ttkho.product_id = khvt.product_id
 						LEFT JOIN products
