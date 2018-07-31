@@ -436,7 +436,6 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: (col.dataIndex == "sl_chungtu" || col.dataIndex == "sl_thucnhap") ? true : false,
           required: col.required,
-          dispatch: this.props.dispatch
         }),
       };
     });

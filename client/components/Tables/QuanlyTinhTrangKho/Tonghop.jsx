@@ -4,7 +4,28 @@ import {
 } from 'antd';
 
 class Tonghop extends React.Component {
+  getProductStatus() {
+    let status = {
+      waitingVerifyProducts: 0,
+      refundProducts: 0,
+      tempStock: 0
+    };
+    let {phieunhap} = this.props.mainState;
+    let products = phieunhap.products ? phieunhap.products : [];
+    let stocks = [];
+    products.forEach((product) => {
+      if(product.qc_check == "2" && product.qa_check != "1") {
+        status.refundProducts += 1;
+      }
+      if(!product.qc_check || product.qc_check == "0") {
+        status.waitingVerifyProducts += 1;
+      }
+    });
+    return status;
+  }
   render() {
+    let {phieunhap} = this.props.mainState;
+    let productStatus = this.getProductStatus();
     return(
       <React.Fragment>
         <div className="table-operations no-margin">
@@ -24,23 +45,23 @@ class Tonghop extends React.Component {
         }}>
           <Row gutter={16}>
             <Col span={6}>
-              <Card title="Tổng sản phẩm trong kho" bordered={false}>
-                <div className="isd-status-number">1000</div>
+              <Card title="Vật tư trong kho" bordered={false}>
+                <div className="isd-status-number">{phieunhap.products && phieunhap.products.length ? phieunhap.products.length : 0}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Sản phẩm chờ duyệt" bordered={false}>
-                <div className="isd-status-number">200</div>
+              <Card title="Vật tư chờ duyệt" bordered={false}>
+                <div className="isd-status-number">{productStatus.waitingVerifyProducts}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Sản phẩm chờ trả hàng" bordered={false}>
-                <div className="isd-status-number">170</div>
+              <Card title="Vật tư chờ trả hàng" bordered={false}>
+                <div className="isd-status-number">{productStatus.refundProducts}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Sản phẩm chưa chuyển kho" bordered={false}>
-                <div className="isd-status-number">90</div>
+              <Card title="Vật tư chưa chuyển kho" bordered={false}>
+                <div className="isd-status-number">0</div>
               </Card>
             </Col>
           </Row>
