@@ -46,36 +46,42 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Mã KH',
-        dataIndex: 'ma',
-        width: 100,
-        //fixed: 'left',
-      },
-      {
-        title: 'Mã quet',
-        dataIndex: 'ma_maquet',
-        width: 100,
-        //fixed: 'left',
-      },
-      // {
-      //   title: 'SL cho 1000.000 viên/lọ/gói	',
-      //   dataIndex: 'sl_1000',
-      //   //width: '40%',
-      // },
-      {
         title: 'Số lượng NVL cần',
         dataIndex: 'sl_nvl',
         //width: '40%',
       },
       {
-        title: 'Hư hao',
-        dataIndex: 'hu_hao',
-        render: (text, record) => `${text}%`
+        title: 'Số lượng trong kho',
+        dataIndex: 'sl_thucnhap',
+        //width: '40%',
+        render: (text, record) => {
+          let status = "error";
+          if(record.sl_thucnhap && record.sl_nvl) {
+            if(parseFloat(record.sl_thucnhap) >= parseFloat(record.sl_nvl)) {
+              status = 'success';
+            }
+          }
+          return (
+            <Badge 
+              text={text} 
+              status={status}/>
+          );
+        }
       },
       {
-        title: 'Đơn vị tính',
-        dataIndex: 'unit',
+        title: 'Mã Kho',
+        dataIndex: 'ma_kho',
         //width: '40%',
+      },
+      {
+        title: 'Ngày sản xuất',
+        dataIndex: 'ngay_san_xuat',
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
+      },
+      {
+        title: 'Ngày hết hạn',
+        dataIndex: 'ngay_het_han',
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
     ];
   }
@@ -221,6 +227,7 @@ class EditableTable extends React.Component {
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
+          size="small"
           // scroll={{ x: 1500 }}
           //expandRowByClick={true}
           onChange={this.handleChange}

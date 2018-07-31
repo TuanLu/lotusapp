@@ -106,7 +106,7 @@ export const qcQAStatus = [
   {
     id: '1',
     value: '1',
-    text: 'Đã đạt'
+    text: 'Đạt'
   },
 ];
 

@@ -458,9 +458,9 @@ class EditableTable extends React.Component {
     columns = columns.filter((column) => {
       if(this.props.isQA || this.props.isQC) {
         if(column.dataIndex == 'operation') return false;
-        if(this.props.isQC) {
-          if(column.dataIndex == 'qa_check') return false;
-        }
+        // if(this.props.isQC) {
+        //   if(column.dataIndex == 'qa_check') return false;
+        // }
       }
       return true;
     });
