@@ -30,41 +30,25 @@ class VatTuPhieuXuat extends React.Component {
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
-        //fixed: 'left',
         width: 150,
-        editable: true,
-        required: true,
-        // render: (text, record) => {
-        //   let label = text;
-        //   if(this.state.productList && this.state.productList[text]) {
-        //     label = this.state.productList[text]['name'];
-        //   }
-        //   return <span>{label}</span>
-        // }
       },
       {
-        title: 'Mã Kho',
+        title: 'Các kho',
         dataIndex: 'ma_kho',
-        width: 100,
-        //fixed: 'left',
-        editable: true,
-        required: true,
+        width: 200,
       },
       // {
-      //   title: 'Mã Lô',
-      //   dataIndex: 'ma_lo',
-      //   width: 100,
-      //   //fixed: 'left',
-      //   editable: true,
-      //   required: true,
+      //   title: 'Vị trí kho',
+      //   dataIndex: 'vi_tri_kho',
+      //   width: 200,
       // },
-      {
-        title: 'Quy cách',
-        dataIndex: 'label',
-        width: 200,
-        editable: true,
-        required: true
-      },
+      // {
+      //   title: 'Quy cách',
+      //   dataIndex: 'label',
+      //   width: 200,
+      //   editable: true,
+      //   required: true
+      // },
       // {
       //   title: 'Đơn vị tính',
       //   dataIndex: 'unit',
@@ -78,9 +62,9 @@ class VatTuPhieuXuat extends React.Component {
       //   editable: true,
       // },
       {
-        title: 'SL',
+        title: 'Số lượng tồn',
         dataIndex: 'sl_thucnhap',
-        width: 100,
+        width: 150,
         editable: true,
       },
       // {
@@ -95,9 +79,16 @@ class VatTuPhieuXuat extends React.Component {
         dataIndex: 'create_on',
         width: '200px',
         //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
+        //editable: true,
+        //required: true,
+        render: (text, record) => {
+          let dates = text.split(',');
+          let dateArr = dates.map((date) =>  moment(date).format('DD/MM/YYYY'));
+          if(dateArr.length > 1) {
+            return dateArr.join(',');
+          }
+          return dateArr;
+        }
       },
       {
         title: 'Ngày SX',
@@ -178,7 +169,7 @@ class VatTuPhieuXuat extends React.Component {
   }
   fetchAllProduct() {
     this.setState({loadProduct: true});
-    fetch(ISD_BASE_URL + `tinhtrangkho/fetchAllProduct`, {
+    fetch(ISD_BASE_URL + `phieuxuat/fetchVerifyProducts`, {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())

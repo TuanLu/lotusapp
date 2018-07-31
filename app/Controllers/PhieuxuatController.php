@@ -3,6 +3,7 @@ namespace App\Controllers;
 use \Medoo\Medoo;
 use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
+use \App\Helper\Data;
 
 class PhieuxuatController extends BaseController
 {
@@ -89,6 +90,23 @@ class PhieuxuatController extends BaseController
 		header("Content-Type: application/json");
     echo json_encode($rsData, JSON_UNESCAPED_UNICODE);
     exit;
+	}
+	public function fetchVerifyProducts($request, $response) {
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa load được sản phẩm của phiếu!'
+		);
+		$helper = new Data();
+		$sql = $helper->getAllProductFromImportBill(true);
+		if($sql) {
+			$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+			if(!empty($collection)) {
+				$rsData['status'] = self::SUCCESS_STATUS;
+				$rsData['message'] = 'Dữ liệu đã được load!';
+				$rsData['data'] = $collection;
+			}
+		}
+		echo json_encode($rsData);
 	}
 	public function update($request, $response)
 	{
