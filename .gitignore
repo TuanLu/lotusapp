@@ -48,6 +48,7 @@ jspm_packages
 .node_repl_history
 public/bundle.js
 public/js/ishopdesign.min.js
+public/js/lotus.min.js
 public/ishopdesign.min.js
 public/js/ishopdesign.viewonly.min.js
 public/js/vendors.min.js
