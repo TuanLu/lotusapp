@@ -15,18 +15,18 @@ class QuanlyTinhTrangKho extends React.Component {
   constructor(props) {
     super(props);
   }
-  isQC() {
-    return true;
-    let {userInfo} = this.props.mainState;
-    let roles = userInfo.roles ? userInfo.roles.split(',') : [];   
-    return roles.indexOf('nhomqc') !== -1;
-  }
-  isQA() {
-    return true;
-    let {userInfo} = this.props.mainState;
-    let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
-    return roles.indexOf('nhomqa') !== -1;
-  }
+  // isQC() {
+  //   return true;
+  //   let {userInfo} = this.props.mainState;
+  //   let roles = userInfo.roles ? userInfo.roles.split(',') : [];   
+  //   return roles.indexOf('nhomqc') !== -1;
+  // }
+  // isQA() {
+  //   return true;
+  //   let {userInfo} = this.props.mainState;
+  //   let roles = userInfo.roles ? userInfo.roles.split(',') : [];     
+  //   return roles.indexOf('nhomqa') !== -1;
+  // }
   componentDidMount() {
 
   }
@@ -34,13 +34,13 @@ class QuanlyTinhTrangKho extends React.Component {
     return (
       <React.Fragment>
         <Tonghop
-          isQA={this.isQA()}
-          isQC={this.isQC()}
+          //isQA={this.isQA()}
+          //isQC={this.isQC()}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <TinhtrangSanpham
-          isQA={this.isQA()}
-          isQC={this.isQC()}
+          //isQA={this.isQA()}
+          //isQC={this.isQC()}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
       </React.Fragment>

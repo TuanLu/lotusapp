@@ -128,43 +128,22 @@ class EditableTable extends React.Component {
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
-        //fixed: 'left',
         width: 150,
-        editable: true,
-        required: true,
-        fixed: 'left',
-        // render: (text, record) => {
-        //   let label = text;
-        //   if(this.state.productList && this.state.productList[text]) {
-        //     label = this.state.productList[text]['name'];
-        //   }
-        //   return <span>{label}</span>
-        // }
+        //fixed: 'left',
       },
       {
         title: 'Mã Kho',
         dataIndex: 'ma_kho',
         width: 100,
         //fixed: 'left',
-        editable: true,
-        required: true,
-        fixed: 'left',
       },
-      {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
-        width:120,
-        //fixed: 'left',
-        editable: true,
-        required: true,
-      },
-      {
-        title: 'Quy cách',
-        dataIndex: 'label',
-        width: 200,
-        editable: true,
-        required: true
-      },
+      // {
+      //   title: 'Quy cách',
+      //   dataIndex: 'label',
+      //   width: 200,
+      //   editable: true,
+      //   required: true
+      // },
       // {
       //   title: 'Đơn vị tính',
       //   dataIndex: 'unit',
@@ -184,13 +163,13 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
       },
-      {
-        title: 'Đơn giá',
-        dataIndex: 'price',
-        width: 200,
-        editable: true,
-        required: true
-      },
+      // {
+      //   title: 'Đơn giá',
+      //   dataIndex: 'price',
+      //   width: 200,
+      //   editable: true,
+      //   required: true
+      // },
       {
         title: 'Ngày SX',
         dataIndex: 'ngay_san_xuat',
@@ -217,7 +196,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        fixed: 'right',
+        //fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
@@ -230,7 +209,7 @@ class EditableTable extends React.Component {
         filters: qcQAStatus,
         filterMultiple: false,
         width: 130,
-        fixed: 'right',
+        //fixed: 'right',
         render: (text, record) => {
           return this.showCheckStatus(text);
         }
@@ -391,40 +370,6 @@ class EditableTable extends React.Component {
     );
     return menu;
   }
-  getActionsByRoles() {
-    if(!this.props.isQA && !this.props.isQC) return false;
-    let {selectedRowKeys, loading} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ marginBottom: 16 }}>
-        {this.props.isQC? 
-        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-          <Button
-            type="primary"
-            //onClick={this.start}
-            loading={loading}
-          >
-            QC Phê duyệt
-          </Button>
-        </Dropdown>
-        : null}
-        {this.props.isQA? 
-          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-           <Button
-             type="primary"
-             //onClick={this.start}
-             loading={loading}
-           >
-             QA Phê duyệt
-           </Button>
-          </Dropdown>
-        : null} 
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-        </span>
-      </div>
-    );
-  }
   componentDidMount() {
     //let {products, phieunhap} = this.props.mainState;
     this.fetchAllProduct();
@@ -453,16 +398,6 @@ class EditableTable extends React.Component {
           products,
         }),
       };
-    });
-    //Show and hide some columns by roles
-    columns = columns.filter((column) => {
-      if(this.props.isQA || this.props.isQC) {
-        if(column.dataIndex == 'operation') return false;
-        // if(this.props.isQC) {
-        //   if(column.dataIndex == 'qa_check') return false;
-        // }
-      }
-      return true;
     });
     //Add filter 
     let {filteredInfo, searchText} = this.state;
@@ -555,16 +490,16 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        {this.getActionsByRoles()}
+        {/* {this.getActionsByRoles()} */}
         <Table
-          rowSelection={rowSelection}
+          //rowSelection={rowSelection}
           components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          scroll={{ x: 1500 }}
+          //scroll={{ x: 1500 }}
           //expandRowByClick={true}
           onChange={this.handleChange}
           title={() => {
