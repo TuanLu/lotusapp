@@ -6,10 +6,8 @@ import {
   Col, Button, message, Alert,
   Menu, Dropdown, Icon, DatePicker
 } from 'antd';
-import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
+import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
-
-const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -29,7 +27,6 @@ const fetchConfig = {
   fetch: 'phieuxuat/fetch',
   update: 'phieuxuat/updateProduct',
   delete: 'phieuxuat/deleteProduct/',
-  changeStatus: 'phieuxuat/changeStatus'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -196,23 +193,6 @@ class EditableTable extends React.Component {
   }
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
-  }
-  showCheckStatus(text) {
-    if(text) {
-      let type = "info";
-      if(text == "2") type = "error";
-      if(text == "1") type = "success";
-      return (
-        <Alert 
-            message={checkStatusOptions[text]['text']} 
-            type={type}
-            showIcon />
-      );
-    }
-    return <Alert 
-            message={checkStatusOptions[0]['text']} 
-            type={"info"}
-            showIcon />
   }
   openProductModal() {
     this.props.dispatch(updateStateData({
@@ -430,25 +410,6 @@ class EditableTable extends React.Component {
     .catch((error) => {
       console.log(error);
     });
-  }
-  getStatusMenu(type) {
-    const menuItems = qcQAStatus.map((item) => {
-      return (
-        <Menu.Item key={item.id}>
-          <a 
-            onClick={() => {
-              this.changeStatus(item.id, type);
-            }}
-            rel="noopener noreferrer">{item.text}</a>
-        </Menu.Item>
-      );
-    });
-    const menu = (
-      <Menu>
-       {menuItems}
-      </Menu>
-    );
-    return menu;
   }
   componentDidMount() {
     let {phieuxuat} = this.props.mainState;
