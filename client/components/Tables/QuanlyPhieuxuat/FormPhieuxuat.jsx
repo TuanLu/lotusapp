@@ -60,6 +60,10 @@ class FormPhieuxuat extends React.Component {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
     }
+    if(phieuxuat.ma_phieu != "" && !phieuxuat.editNote) {
+      message.error('Hãy nhập lý do sửa phiếu');
+      return false;
+    }
     return true;
   }
   cancel() {

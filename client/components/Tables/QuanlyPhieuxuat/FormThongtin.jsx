@@ -162,6 +162,26 @@ class FormThongtin extends React.Component {
             })}
           </Select>
         </FormItem> */}
+        {phieuxuat.ma_phieu != "" ?
+          <FormItem
+            label="Lý do sửa phiếu"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 12 }}
+          >
+            <Input.TextArea 
+              readOnly={readOnly}
+              autosize={{ minRows: 2, maxRows: 6 }}
+              onChange={(e) => {
+                this.props.dispatch(updateStateData({
+                  phieuxuat: {
+                    ...this.props.mainState.phieuxuat,
+                    editNote: e.target.value
+                  }
+                }));
+              }}
+              value={phieuxuat.editNote} />
+          </FormItem>
+        : null}
         <FormItem
           label={'Ngày tạo'}
           labelCol={{ span: 5 }}

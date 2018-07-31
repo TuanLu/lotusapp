@@ -8,6 +8,7 @@ use \App\Helper\Data;
 class PhieuxuatController extends BaseController
 {
 	private $tableName = 'phieu_nhap_xuat_kho';
+	private $editNoteTable = 'edit_note_phieu_nhap_xuat_kho';
 
 	private function getColumns() {
 		$columns = [
@@ -153,6 +154,7 @@ class PhieuxuatController extends BaseController
 		$maKho = isset($params['ma_kho']) ? $params['ma_kho'] : '';
 		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';
 		$nguoiGiaoDich = isset($params['nguoi_giao_dich']) ? $params['nguoi_giao_dich'] : '';
+		$editNote = isset($params['editNote']) ? $params['editNote'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
 		//Some validation 
 		if(empty($products)) {
@@ -162,6 +164,11 @@ class PhieuxuatController extends BaseController
 		}
 		if(!$maKho) {
 			$rsData['message'] = 'Mã kho không được để trống!';
+				echo json_encode($rsData);
+				die;
+		}
+		if($maPhieu && $editNote == '') {
+			$rsData['message'] = 'Hãy nhập lý do sửa phiếu!';
 				echo json_encode($rsData);
 				die;
 		}
@@ -201,23 +208,35 @@ class PhieuxuatController extends BaseController
 				}
 			}
 		} else {
-			//update data base on $id
-			$itemData['update_on'] = $createOn;
-			$itemData['update_by'] = $userId;
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
-			if($result->rowCount()) {
-				$this->superLog('Update SP phiếu xuất', $itemData);
-				$productsNum = $this->saveProductOfBill($products, $maPhieu, $createOn, true);
-				if($productsNum->rowCount()) {
-					$rsData['status'] = self::SUCCESS_STATUS;
-					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+			//Create edit note before update data
+			$editNoteData = array(
+				'user_id' => $userId,
+				'ma_phieu' => $maPhieu,
+				'note' => $editNote,
+				'create_on' => $createOn,
+			);
+			$createEditNote = $this->db->insert($this->editNoteTable, $editNoteData);
+			if($createEditNote->rowCount()) {
+				//update data base on $id
+				$itemData['update_on'] = $createOn;
+				$itemData['update_by'] = $userId;
+				$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+				if($result->rowCount()) {
+					$this->superLog('Update phiếu xuất', $itemData);
+					$productsNum = $this->saveProductOfBill($products, $maPhieu, $createOn, true);
+					if($productsNum->rowCount()) {
+						$this->superLog('Update SP phiếu xuất', $products);
+						$rsData['status'] = self::SUCCESS_STATUS;
+						$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+					} else {
+						$rsData['message'] = 'Chưa cập nhật được sản phẩm theo phiếu xuất!';
+					} 
 				} else {
-					$rsData['message'] = 'Chưa cập nhật được sản phẩm theo phiếu xuất!';
-				} 
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!!';
+				}
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!!';
+				$rsData['message'] = 'Chưa lưu được lý do sửa phiếu!';
 			}
-			
 		}
 		echo json_encode($rsData);
 	}
@@ -234,7 +253,7 @@ class PhieuxuatController extends BaseController
 				'status' => 2,
 			], ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Delete Ma Phieu', $id);
+				$this->superLog('Delete Ma Phieu xuat', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Đã xoá phiếu khỏi hệ thống!';
 				$rsData['data'] = $id;
