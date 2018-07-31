@@ -17,11 +17,6 @@ const tableConfig = {
   headTitle: 'Kế hoạch Vật Tư dài hạn',
   addNewTitle: 'Thêm vật tư'
 };
-const fetchConfig = {
-  changeStatus: 'phieunhap/changeStatus'
-}
-
-
 
 class EditableTable extends React.Component {
   constructor(props) {
@@ -62,11 +57,11 @@ class EditableTable extends React.Component {
         width: 100,
         //fixed: 'left',
       },
-      {
-        title: 'SL cho 1000.000 viên/lọ/gói	',
-        dataIndex: 'sl_1000',
-        //width: '40%',
-      },
+      // {
+      //   title: 'SL cho 1000.000 viên/lọ/gói	',
+      //   dataIndex: 'sl_1000',
+      //   //width: '40%',
+      // },
       {
         title: 'Số lượng NVL cần',
         dataIndex: 'sl_nvl',
@@ -106,55 +101,6 @@ class EditableTable extends React.Component {
   }
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
-  }
-  changeStatus = (status, type) => {
-    this.setState({ loading: true });
-    // ajax request after empty completing
-    let statusData = {
-      ids: this.state.selectedRowKeys,
-      type,
-      status
-    };
-    fetch(ISD_BASE_URL + fetchConfig.changeStatus, {
-      method: 'POST',
-      headers: getTokenHeader(),
-      body: JSON.stringify(statusData)
-    })
-    .then((response) => {
-      return response.json()
-    }).then((json) => {
-      if(json.status == 'error') {
-        message.error(json.message, 3);
-        if(json.show_login) {
-          this.props.dispatch(updateStateData({showLogin: true}));
-        }
-      } else {
-        this.fetchAllProduct();
-        message.success(json.message);
-      }
-      this.setState({
-        selectedRowKeys: [],
-        loading: false,
-      });
-    }).catch((ex) => {
-      console.log('parsing failed', ex)
-      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
-    });
-  }
-  showCheckStatus(text) {
-    if(text) {
-      let type = "processing";
-      if(text == "2") type = "error";
-      if(text == "1") type = "success";
-      return (
-        <Badge 
-            text={checkStatusOptions[text]['text']} 
-            status={type}/>
-      );
-    }
-    return <Badge 
-            text={checkStatusOptions[0]['text']} 
-            status={"processing"}/>
   }
   isReadOnly() {
     let {phieuAction} = this.props.mainState;

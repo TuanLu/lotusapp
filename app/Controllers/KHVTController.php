@@ -37,7 +37,7 @@ class KHVTController extends BaseController {
 		if(isset($filters['ma_maquet']) && !empty($filters['ma_maquet'])) {
 			$where .= " AND `lotus_spsx`.`ma_maquet` = '" . $filters['ma_maquet'] . "'";
 		}
-		$sql = "SELECT lotus_spsx.ma_sx, lotus_sanxuat.ma,lotus_spsx.ma_maquet,lotus_spsx.product_id, lotus_spsx.cong_doan, lotus_spsx.sl_1000, lotus_spsx.unit, lotus_spsx.sl_nvl, lotus_spsx.status,lotus_spsx.hu_hao FROM lotus_spsx, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = lotus_spsx.ma_sx AND lotus_spsx.status = 1 AND lotus_sanxuat.status = 1 AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' $where";
+		$sql = "SELECT lotus_spsx.ma_sx, lotus_sanxuat.ma,lotus_spsx.ma_maquet,lotus_spsx.product_id, lotus_spsx.product_id as 'key', lotus_spsx.cong_doan, lotus_spsx.sl_1000, lotus_spsx.unit, SUM(lotus_spsx.sl_nvl) as 'sl_nvl', lotus_spsx.status,lotus_spsx.hu_hao FROM lotus_spsx, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = lotus_spsx.ma_sx AND lotus_spsx.status = 1 AND lotus_sanxuat.status = 1 AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' GROUP BY lotus_spsx.product_id $where";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		return $collection;
 	}
