@@ -73,6 +73,13 @@ class EditableTable extends React.Component {
     };
     this.columns = [
       {
+        title: 'Mã danh mục',
+        dataIndex: 'ma_cate',
+        //width: '15%',
+        editable: true,
+        required: true
+      },
+      {
         title: 'Tên danh mục',
         dataIndex: 'name',
         //width: '15%',

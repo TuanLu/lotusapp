@@ -147,7 +147,7 @@ class AdvancedSearchForm extends React.Component {
   // To generate mock Form.Item
   getFields() {
     let {mainState} = this.props;
-    let {ans_language} = mainState;
+    let ans_lang = mainState.ans_language;
     let kho = mainState.kho || [];
     let cates = mainState.categories || [];
     let productInInventory = mainState.productInInventory || [];
@@ -155,7 +155,7 @@ class AdvancedSearchForm extends React.Component {
     return (
       <React.Fragment>
         <Col span={8}>
-          <FormItem label={ans_language.ans_filterby_cateid || 'ans_filterby_cateid'}>
+          <FormItem label={ans_lang.ans_filterby_cateid || 'ans_filterby_cateid'}>
             {getFieldDecorator(`ma_kho`, {
               rules: [{
                 required: false,
@@ -164,7 +164,7 @@ class AdvancedSearchForm extends React.Component {
               <Select 
                 showSearch
                 mode="multiple"
-                placeholder="Nhập mã kho">
+                placeholder={ans_lang.ans_pls_enter_cate_id || 'ans_pls_enter_cate_id'}>
                 {kho.map((kho) =><Option value={kho.ma_kho} key={kho.ma_kho}>{kho.name}</Option>)}
               </Select>
             )}
@@ -236,7 +236,7 @@ class AdvancedSearchForm extends React.Component {
         </Col>
         <Col span={8}>
           <FormItem label={`Lọc theo Danh mục vật tư`}>
-            {getFieldDecorator(`product_id`, {
+            {getFieldDecorator(`ma_cate`, {
               rules: [{
                 required: false,
               }],
@@ -245,7 +245,7 @@ class AdvancedSearchForm extends React.Component {
                 showSearch
                 mode="multiple"
                 placeholder="Nhập mã danh mục">
-                {cates.map((cate) =><Option value={cate.id} key={cate.id}>{cate.ma_kho ? cate.ma_kho +'-' : "" } {cate.name}</Option>)}
+                {cates.map((cate) =><Option value={cate.id} key={cate.id}>{cate.ma_cate ? cate.ma_cate +' -' : "" } {cate.name}</Option>)}
               </Select>
             )}
           </FormItem>
