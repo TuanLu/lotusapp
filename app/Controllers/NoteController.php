@@ -11,7 +11,7 @@ class NoteController extends BaseController
 	const SUCCESS_STATUS = 'success';
  
 	public function fetchNote($request){ 
-		//$this->logger->addInfo('Request Npp path');
+		//$this->logger->addtitles('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu thông báo từ hệ thống!'
@@ -20,8 +20,9 @@ class NoteController extends BaseController
 		$columns = [
 				'id',
 				'note',
-				'info',
-				'assign',
+				'titles',
+				'assign_users',
+				'assign_group',
 				'create_by',
 				'create_on',
 				'status'
@@ -47,8 +48,29 @@ class NoteController extends BaseController
 		// Get params and validate them here.
 		$id = $request->getParam('id');
 		$note = $request->getParam('note');
-		$info = $request->getParam('info') | "";
-		$assign = $request->getParam('assign');
+		$titles = $request->getParam('titles') | "";
+		$assign_group = $request->getParam('assign_group');
+		$assign_users = $request->getParam('assign_users');
+		if(is_array($assign_group)) {
+      $assign_group = implode(',', $assign_group);
+		}else{
+			$assign_group = '';
+		}
+		if(is_array($assign_users)) {
+      $assign_users = implode(',', $assign_users);
+		}else{
+			$assign_users = '';
+		}
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		$date = new \DateTime();
+		$today = $date->format('Y-m-d H:i:s');
+		$itemData = [
+			'note' => $note,
+			'titles' => $titles,
+			'assign_users' => $assign_users,
+			'assign_group' => $assign_group,
+			'status' => 1
+		];
 		if(!$id) {
 			//Insert new data to db
 			if(!$note) {
@@ -56,14 +78,8 @@ class NoteController extends BaseController
 				echo json_encode($rsData);
 				die;
 			}
-			$date = new \DateTime();
-			$itemData = [
-				'note' => $note,
-				'info' => $info,
-				'assign' => $assign,
-				'status' => 1,
-				'create_on' => $date->format('Y-m-d H:i:s'),
-			];
+			$itemData['create_on'] = $today;
+			$itemData['create_by'] = $userId;
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
@@ -76,17 +92,11 @@ class NoteController extends BaseController
 			}
 		} else {
 			//update data base on $id
-			$date = new \DateTime();
-			$itemData = [
-				'note' => $note,
-				'assign' => $assign,
-				'info' => $info,
-				'status' => 1,
-				'update_on' => $date->format('Y-m-d H:i:s'),
-			];
+			$itemData['update_on'] = $today;
+			$itemData['update_by'] = $userId;
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update Cate', $itemData);
+				$this->superLog('Update Notes ', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {

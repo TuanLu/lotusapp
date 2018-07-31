@@ -9,12 +9,8 @@ class LanguageController extends BaseController
 	private $tableName = 'lotus_language';
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
- 
-	public function fetchLang($request){
-		$rsData = array(
-			'status' => self::ERROR_STATUS,
-			'message' => 'Chưa có dữ liệu ngôn ngữ từ hệ thống!'
-		);
+
+	private function getAllLang(){
 		// Columns to select.
 		$columns = [
 				'id',
@@ -27,6 +23,32 @@ class LanguageController extends BaseController
 			"ORDER" => ["id" => "DESC"],
 			"status" => 1
 		]);
+		return $collection;
+	}
+	public function fetchLang($request){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu ngôn ngữ từ hệ thống!'
+		);
+		$collection = $this->getAllLang();
+		$languages = [];
+		$defaultLang = "vi";
+		foreach($collection as $key => $word) {
+			$languages[$word['ma_text']] = $word[$defaultLang];
+		}
+		if(!empty($collection)) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+			$rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $languages;
+		}
+		echo json_encode($rsData);
+	}
+	public function fetchListLang($request){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu ngôn ngữ từ hệ thống!'
+		);
+		$collection = $this->getAllLang();
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';

@@ -144,6 +144,7 @@ $app->post('/qlpq/update', 'PhanquyenController:update')->setName(Roles::roleAnd
 $app->get('/qlpq/delete/{id}', 'PhanquyenController:delete')->setName(Roles::roleAndRouter()['qluser']['delete']);
 //Language router
 $app->get('/lang/fetchLang', 'LanguageController:fetchLang')->setName(Roles::roleAndRouter()['lang']['view']);
+$app->get('/lang/fetchListLang', 'LanguageController:fetchListLang')->setName(Roles::roleAndRouter()['lang']['view']);
 $app->post('/lang/updateLang', 'LanguageController:updateLang')->setName(Roles::roleAndRouter()['lang']['add']);
 $app->get('/lang/deleteLang/{id}', 'LanguageController:deleteLang')->setName(Roles::roleAndRouter()['lang']['delete']);
 //Note router

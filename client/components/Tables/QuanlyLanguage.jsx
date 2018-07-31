@@ -250,7 +250,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
-    fetch(ISD_BASE_URL + 'lang/fetchLang', {
+    fetch(ISD_BASE_URL + 'lang/fetchListLang', {
       headers: getTokenHeader()
     })
     .then((response) => {
