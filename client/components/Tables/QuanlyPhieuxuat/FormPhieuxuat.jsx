@@ -141,6 +141,15 @@ class FormPhieuxuat extends React.Component {
           }}
           onOk={() => {
             let selectedProducts = this.props.mainState.productsForExport.filter((item) => this.state.selectedItems.indexOf(item.id) !== -1);
+            //Check selected products exist in phieuxuat state or not 
+            let {phieuxuat} = this.props.mainState;
+            let existsProductIds = [];
+            if(phieuxuat.products && phieuxuat.products.length) {
+              phieuxuat.products.forEach((product) => {
+                existsProductIds.push(product.product_id);
+              });
+            }
+            selectedProducts = selectedProducts.filter((newProduct) => existsProductIds.indexOf(newProduct.product_id) == -1);
             this.props.dispatch(updateStateData({
               phieuXuatAction: {
                 ...this.props.mainState.phieuXuatAction,

@@ -83,6 +83,20 @@ class ExportProduct extends React.Component {
         title: 'Đơn giá',
         dataIndex: 'price',
       },
+      {
+        title: 'Action',
+        dataIndex: 'delete',
+        render: (text, record) => {
+          return (
+            <Popconfirm
+              title="Bạn thật sự muốn xoá?"
+              onConfirm={() => this.delete(record)}>
+                <Button type="danger">Delete</Button>
+            </Popconfirm>
+            
+          );
+        }
+      },
       // {
       //   title: 'Ngày SX',
       //   dataIndex: 'ngay_san_xuat',
@@ -233,40 +247,13 @@ class ExportProduct extends React.Component {
     }));
   }
   delete = (record) => {
-    if(record.id) {
-      fetch(ISD_BASE_URL + fetchConfig.delete + record.id, {
-        headers: getTokenHeader()
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
-        } else {
-          let newData = this.props.mainState.phieuxuat.products.filter((item) => item.key != record.id);
-          this.props.dispatch(updateStateData({
-            phieuxuat: {
-              ...this.props.mainState.phieuxuat,
-              products: newData
-            }
-          }));
-          message.success(json.message);
-        }
-      })
-      .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
-        console.log(error);
-      });
-    } else {
-      if(record.key) {
-        let newData = this.props.mainState.phieuxuat.products.filter((item) => item.key != record.key);
-        this.props.dispatch(updateStateData({
-          phieuxuat: {
-            ...this.props.mainState.phieuxuat,
-            products: newData
-          }
-        }));
-      }  
-    }
+    let newData = this.props.mainState.phieuxuat.products.filter((item) => item.product_id != record.product_id);
+    this.props.dispatch(updateStateData({
+      phieuxuat: {
+        ...this.props.mainState.phieuxuat,
+        products: newData
+      }
+    }));
   }
   fetchSelectedProduct() {
     let {phieuxuat} = this.props.mainState;
