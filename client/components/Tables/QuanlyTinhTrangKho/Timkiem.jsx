@@ -78,6 +78,29 @@ class AdvancedSearchForm extends React.Component {
       console.log(error);
     }); 
   }
+  fetchCate() {
+    fetch(ISD_BASE_URL + 'qlcate/fetchCate', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            categories: json.data
+          }));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      console.log(error);
+    }); 
+  }
   search(searchData) {
     this.setState({
       loading: true
@@ -124,13 +147,15 @@ class AdvancedSearchForm extends React.Component {
   // To generate mock Form.Item
   getFields() {
     let {mainState} = this.props;
+    let {ans_language} = mainState;
     let kho = mainState.kho || [];
+    let cates = mainState.categories || [];
     let productInInventory = mainState.productInInventory || [];
     const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
         <Col span={8}>
-          <FormItem label={`Lọc theo mã kho`}>
+          <FormItem label={ans_language.ans_filterby_cateid || 'ans_filterby_cateid'}>
             {getFieldDecorator(`ma_kho`, {
               rules: [{
                 required: false,
@@ -209,15 +234,35 @@ class AdvancedSearchForm extends React.Component {
             )}
           </FormItem>
         </Col>
+        <Col span={8}>
+          <FormItem label={`Lọc theo Danh mục vật tư`}>
+            {getFieldDecorator(`product_id`, {
+              rules: [{
+                required: false,
+              }],
+            })(
+              <Select 
+                showSearch
+                mode="multiple"
+                placeholder="Nhập mã danh mục">
+                {cates.map((cate) =><Option value={cate.id} key={cate.id}>{cate.ma_kho ? cate.ma_kho +'-' : "" } {cate.name}</Option>)}
+              </Select>
+            )}
+          </FormItem>
+        </Col>
       </React.Fragment>
     );
   }
   componentDidMount() {
     let {mainState} = this.props;
     let kho = mainState.kho || [];
+    let cates = mainState.categories || [];
     let productInInventory = mainState.productInInventory || [];
     if(!kho.length) {
       this.fetchKho();
+    }
+    if(!cates.length) {
+      this.fetchCate();
     }
     if(!productInInventory.length) {
       this.fetchProductInInventory();
