@@ -20,6 +20,9 @@ let _designDefault = {
       products: [],
       editingKey: '',
     },
+    kehoachvt: {
+
+    },
     sx: {
       ma_sx: '',
       so: '',

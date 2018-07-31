@@ -127,8 +127,8 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            phieunhap: {
-              ...this.props.mainState.phieunhap,
+            kehoachvt: {
+              ...this.props.mainState.kehoachvt,
               products: json.data
             }
           }));          
@@ -143,7 +143,7 @@ class EditableTable extends React.Component {
     });
   }
   componentDidMount() {
-    //let {products, phieunhap} = this.props.mainState;
+    //let {products, kehoachvt} = this.props.mainState;
     this.fetchAllProduct();
   }
   render() {
@@ -186,7 +186,7 @@ class EditableTable extends React.Component {
       }
       return col;
     });
-    let selectedProducts = this.props.mainState.phieunhap.products || [];
+    let selectedProducts = this.props.mainState.kehoachvt.products || [];
     //Apply search if exists 
     const reg = new RegExp(searchText, 'gi');
     if(searchText) {

@@ -22,6 +22,7 @@ class SidebarMenu extends React.Component {
               return (
                 <Menu.Item className="menu_item_left"
                   onClick={() => {
+                    if(mainState.defaultRouter == child.path) return false;
                     this.props.dispatch(updateStateData({
                       defaultRouter: child.path
                     }));
@@ -41,6 +42,7 @@ class SidebarMenu extends React.Component {
         return (
           <Menu.Item
             onClick={() => {
+              if(mainState.defaultRouter == role.path) return false;
               this.props.dispatch(updateStateData({
                 defaultRouter: role.path
               }));
