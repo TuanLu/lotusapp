@@ -2,7 +2,7 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -120,7 +120,12 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: false,
         render: (text, record) => {
-          return trangThaiPhieuObj[text]['text'] || text;
+          let type = "processing";
+          if(text == "0") type = "error";
+          if(text == "1") type = "success";
+          return <Badge 
+            text={trangThaiPhieuObj[text]['text'] || text} 
+            status={type}/>
         }
       },
       {
