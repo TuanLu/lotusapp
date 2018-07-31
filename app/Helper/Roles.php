@@ -196,7 +196,7 @@ class Roles {
         'permission' => Roles::roleAndRouter()['qlphieuxuat']
       ],
       [
-        'label' => 'Danh mục vật tư', 
+        'label' => 'Danh mục VT', 
         'icon' => 'table',
         'path' => 'qlcate',
         'parent' => 'vattu_group',
@@ -217,7 +217,7 @@ class Roles {
         'permission' => Roles::roleAndRouter()['qlvtkho']
       ],
       'khvt' => [
-        'label' => 'Kế hoạch Vật tư', 
+        'label' => 'Kế hoạch VT', 
         'icon' => 'schedule',
         'path' => 'khvt',
         'parent' => 'vattu_group',
