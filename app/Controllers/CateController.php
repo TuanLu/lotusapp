@@ -20,6 +20,7 @@ class CateController extends BaseController
 		$columns = [
 				'id',
 				'name',
+				'ma_cate',
 				'description'
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
@@ -39,12 +40,12 @@ class CateController extends BaseController
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
 		);
-		
 		// Get params and validate them here.
 		//$params = $request->getParams();
 		$id = $request->getParam('id');
+		$ma_cate = $request->getParam('ma_cate');
 		$name = $request->getParam('name');
-		$address = $request->getParam('description');
+		$description = $request->getParam('description');
 		if(!$id) {
 			//Insert new data to db
 			if(!$name) {
@@ -55,9 +56,21 @@ class CateController extends BaseController
 			$date = new \DateTime();
 			$itemData = [
 				'name' => $name,
-				'description' => $address,
+				'ma_cate' => $ma_cate,
+				'description' => $description,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
+			//Valid mã cate
+			$itemData = [
+				'ma_cate' => $ma_cate
+			];
+			$selectColumns = ['id', 'ma_cate'];
+			$where = ['ma_cate' => $itemData['ma_cate']];
+			$data = $this->db->select($this->tableName, $selectColumns, $where);
+			if(!empty($data)) {
+				$rsData['message'] = "Mã danh mục [". $itemData['ma_cate'] ."] đã tồn tại: ";
+				echo json_encode($rsData); exit;
+			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
@@ -73,7 +86,8 @@ class CateController extends BaseController
 			$date = new \DateTime();
 			$itemData = [
 				'name' => $name,
-				'description' => $address,
+				'ma_cate' => $ma_cate,
+				'description' => $description,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);

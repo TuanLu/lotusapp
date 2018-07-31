@@ -115,7 +115,7 @@ td:hover .editable-cell-icon {
   float: right;
   margin-right: 16px;
 }
-.admin-user-info span {
+.admin-user-info > span {
   padding: 0 16px;
 }
 #isd_app .ant-layout-has-sider {
@@ -301,11 +301,11 @@ td:hover .editable-cell-icon {
 .user-extra-info li {
   list-style: none;
 }
-#isd_app .ant-menu-submenu-selected {
-  font-weight: bold;
-  color: #E91E63;
+#isd_app .ant-menu-submenu-selected, 
+#isd_app .ant-menu-item-selected i{
+  color: #AE0C5F;
 }
 #isd_app .ant-menu-submenu-selected .ant-menu-submenu-title {
-  border-bottom: 2px solid;
-  border-top: 2px solid;
+  border-bottom: 1px solid;
+  border-top: 1px solid;
 }

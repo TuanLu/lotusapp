@@ -62,12 +62,16 @@ class LanguageController extends BaseController
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
 		);
-		
 		// Get params and validate them here.
 		$id = $request->getParam('id');
 		$ma_text = $request->getParam('ma_text');
 		$vi = $request->getParam('vi');
 		$en = $request->getParam('en');
+		if(!$ma_text) {
+			$rsData['message'] = 'Mã ngôn ngữ không được để trống!';
+			echo json_encode($rsData);
+			die;
+		}
 		if(!$id) {
 			//Insert new data to db
 			if(!$ma_text) {
@@ -119,7 +123,7 @@ class LanguageController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn chưa có thay đổi gì!';
+				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể mã ngôn ngữ ['.$ma_text.'] đã bị trùng';
 			}
 			
 		}
