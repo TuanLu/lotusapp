@@ -10,13 +10,6 @@ import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
 
 const FormItem = Form.Item;
-const EditableContext = React.createContext();
-
-const EditableRow = ({ form, index, ...props }) => (
-  <EditableContext.Provider value={form}>
-    <tr {...props} />
-  </EditableContext.Provider>
-);
 
 const tableConfig = {
   headTitle: 'Vật tư của phiếu xuất',
@@ -29,84 +22,7 @@ const fetchConfig = {
   delete: 'phieuxuat/deleteProduct/',
 }
 
-const EditableFormRow = Form.create()(EditableRow);
-
-class EditableCell extends React.Component {
-  getInput = () => {
-    switch (this.props.inputType) {
-      case 'sl_thucnhap':
-      case 'sl_chungtu':
-      case 'price':
-        return <InputNumber onChange={(data) => {
-          console.log('value change',data, this.props);
-          if(this.props.id) {
-            console.log(this.props);
-          } else {
-            console.log(this.props.record);
-          }
-        }}/>
-        break;
-      case 'ngay_san_xuat':
-      case 'ngay_het_han':
-        return <DatePicker placeholder="Chọn ngày" format="DD/MM/YYYY"/>
-        break;
-      default:
-        return <Input />;
-        break;
-    }
-     
-  };
-  handleChange = (value) => { 
-    console.log(value)
-  }
-  render() {
-    const {
-      editing,
-      required,
-      dataIndex,
-      title,
-      inputType,
-      record,
-      index,
-      ...restProps
-    } = this.props;
-    return (
-      <EditableContext.Consumer>
-        {(form) => {
-          const { getFieldDecorator } = form;
-          let value;
-          if(record) {
-            value = record[dataIndex];
-            if(dataIndex == 'ngay_san_xuat' || dataIndex == 'ngay_het_han') {
-              value = moment(value);
-              if(!value.isValid()) {
-                value = null;// Might 	0000-00-00
-              }
-            }
-          }
-          return (
-            <td {...restProps}>
-              {editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(dataIndex, {
-                    rules: [{
-                      required: required,
-                      message: `Hãy nhập dữ liệu ô ${title}!`,
-                    }],
-                    initialValue: value,
-                    
-                  })(this.getInput())}
-                </FormItem>
-              ) : restProps.children}
-            </td>
-          );
-        }}
-      </EditableContext.Consumer>
-    );
-  }
-}
-
-class EditableTable extends React.Component {
+class ExportProduct extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -115,6 +31,7 @@ class EditableTable extends React.Component {
       loading: false,
       loadProduct: false
     };
+    this.updateQty = this.updateQty.bind(this);
     this.columns = [
       // {
       //   title: 'Mã Lô',
@@ -129,46 +46,56 @@ class EditableTable extends React.Component {
         dataIndex: 'product_id',
         //fixed: 'left',
         width: 150,
-        editable: false,
-        required: true,
-        // render: (text, record) => {
-        //   let label = text;
-        //   if(this.state.productList && this.state.productList[text]) {
-        //     label = this.state.productList[text]['name'];
-        //   }
-        //   return <span>{label}</span>
-        // }
       },
       {
         title: 'Quy cách',
         dataIndex: 'label',
         width: 200,
-        editable: false,
       },
       {
         title: 'Đơn vị tính',
         dataIndex: 'unit',
         width: 100,
-        editable: false,
       },
       {
         title: 'SL theo chứng từ',
         dataIndex: 'sl_chungtu',
-        //width: '40%',
-        editable: true,
+        render: (text, record) => {
+          return (
+            <InputNumber value={text} onChange={(value) => {
+              this.updateQty(record, 'sl_chungtu', value);
+            }}/>
+          )
+        }
       },
       {
         title: 'SL thực xuất',
         dataIndex: 'sl_thucnhap',
-        //width: '40%',
-        editable: true,
+        render: (text, record) => {
+          return (
+            <InputNumber value={text} onChange={(value) => {
+              this.updateQty(record, 'sl_thucnhap', value);
+            }}/>
+          )
+        }
       },
       {
         title: 'Đơn giá',
         dataIndex: 'price',
-        //width: '40%',
-        editable: false,
-        required: true
+      },
+      {
+        title: 'Action',
+        dataIndex: 'delete',
+        render: (text, record) => {
+          return (
+            <Popconfirm
+              title="Bạn thật sự muốn xoá?"
+              onConfirm={() => this.delete(record)}>
+                <Button type="danger">Delete</Button>
+            </Popconfirm>
+            
+          );
+        }
       },
       // {
       //   title: 'Ngày SX',
@@ -193,6 +120,24 @@ class EditableTable extends React.Component {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
+  updateQty(record, field, value) {
+    let productId = record.product_id;
+    let {phieuxuat} = this.props.mainState;
+    if(productId && phieuxuat.products && phieuxuat.products.length) {
+      let newProducts = phieuxuat.products.map((product) => {
+        if(product.product_id == productId) {
+          product[field] = value;
+        }
+        return product;
+      });
+      this.props.dispatch(updateStateData({
+        phieuxuat: {
+          ...this.props.mainState.phieuxuat,
+          products: newProducts
+        }
+      }))
+    }
+  }
   openProductModal() {
     this.props.dispatch(updateStateData({
       phieuXuatAction: {
@@ -201,46 +146,6 @@ class EditableTable extends React.Component {
       }
     }))
   }
-  addNewRow() {
-    let {products} = this.props.mainState.phieuxuat;
-    let {editingKey} = this.props.mainState.phieuXuatAction;
-    if(editingKey !== undefined && editingKey !== '') return false;
-    let rowItem = this.getDefaultFields();
-    rowItem = {
-      ...rowItem,
-      key: products.length + 1
-    };
-    
-    this.props.dispatch(updateStateData({
-      phieuxuat: {
-        ...this.props.mainState.phieuxuat,
-        products: [rowItem, ...products],
-      },
-      phieuXuatAction: {
-        ...this.props.mainState.phieuXuatAction,
-        editingKey: rowItem.key
-      }
-    }))
-  }
-  getDefaultFields() {
-    return {
-      ma_phieu: "",
-      ma_lo: "",
-      product_id: "",
-      label: "",
-      unit: "kg",
-      sl_chungtu: "1",
-      sl_thucnhap: "1",
-      price: 0,
-      qc_check: "0",
-      qa_check: "0",
-      ngay_het_han: "",
-      ngay_san_xuat: ""
-    };
-  }
-  isEditing = (record) => {
-    return record.key === this.props.mainState.phieuXuatAction.editingKey;
-  };
   isReadOnly() {
     let {phieuXuatAction} = this.props.mainState;
     return phieuXuatAction && phieuXuatAction.action == 'view' ? true : false;
@@ -342,40 +247,13 @@ class EditableTable extends React.Component {
     }));
   }
   delete = (record) => {
-    if(record.id) {
-      fetch(ISD_BASE_URL + fetchConfig.delete + record.id, {
-        headers: getTokenHeader()
-      })
-      .then((response) => response.json())
-      .then((json) => {
-        if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
-        } else {
-          let newData = this.props.mainState.phieuxuat.products.filter((item) => item.key != record.id);
-          this.props.dispatch(updateStateData({
-            phieuxuat: {
-              ...this.props.mainState.phieuxuat,
-              products: newData
-            }
-          }));
-          message.success(json.message);
-        }
-      })
-      .catch((error) => {
-        message.error('Có lỗi xảy ra khi xoá sản phẩm!', 3);
-        console.log(error);
-      });
-    } else {
-      if(record.key) {
-        let newData = this.props.mainState.phieuxuat.products.filter((item) => item.key != record.key);
-        this.props.dispatch(updateStateData({
-          phieuxuat: {
-            ...this.props.mainState.phieuxuat,
-            products: newData
-          }
-        }));
-      }  
-    }
+    let newData = this.props.mainState.phieuxuat.products.filter((item) => item.product_id != record.product_id);
+    this.props.dispatch(updateStateData({
+      phieuxuat: {
+        ...this.props.mainState.phieuxuat,
+        products: newData
+      }
+    }));
   }
   fetchSelectedProduct() {
     let {phieuxuat} = this.props.mainState;
@@ -417,38 +295,7 @@ class EditableTable extends React.Component {
     }
   }
   render() {
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell,
-      },
-    };
-    let columns = this.columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: (col.dataIndex == "sl_chungtu" || col.dataIndex == "sl_thucnhap") ? true : false,
-          required: col.required,
-        }),
-      };
-    });
-    //Show and hide some columns by roles
-    columns = columns.filter((column) => {
-      if(this.props.isQA || this.props.isQC) {
-        if(column.dataIndex == 'operation') return false;
-        if(this.props.isQC) {
-          if(column.dataIndex == 'qa_check') return false;
-        }
-      }
-      return true;
-    })
+    let columns = this.columns;
     let selectedProducts = this.props.mainState.phieuxuat.products || [];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -472,8 +319,6 @@ class EditableTable extends React.Component {
           </Row>
         </div>
         <Table
-          //rowSelection={rowSelection}
-          components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
@@ -486,4 +331,4 @@ class EditableTable extends React.Component {
   }
 }
 
-export default EditableTable
+export default ExportProduct

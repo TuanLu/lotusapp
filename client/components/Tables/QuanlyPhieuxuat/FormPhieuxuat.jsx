@@ -60,6 +60,10 @@ class FormPhieuxuat extends React.Component {
       message.error('Chưa có sản phẩm nào trong phiếu này.');
       return false;
     }
+    if(phieuxuat.ma_phieu != "" && !phieuxuat.editNote) {
+      message.error('Hãy nhập lý do sửa phiếu');
+      return false;
+    }
     return true;
   }
   cancel() {
@@ -69,6 +73,41 @@ class FormPhieuxuat extends React.Component {
         addNewItem: false
       }
     }));
+  }
+  pheDuyet(value) {
+    this.setState({ loading: true });
+    let {phieuxuat} = this.props.mainState;
+    let pheDuyetData = {
+      value,
+      ma_phieu: phieuxuat.ma_phieu
+    };
+    fetch(ISD_BASE_URL + 'phieuxuat/pheduyet', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(pheDuyetData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        message.success(json.message);
+        this.props.dispatch(updateStateData({
+          phieuxuat: {
+            ...this.props.mainState.phieuxuat,
+            refresh: true,
+            ...json.data
+          },
+        }));
+      }
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình phê duyệt!');
+    });
   }
 
   render() {
@@ -141,6 +180,15 @@ class FormPhieuxuat extends React.Component {
           }}
           onOk={() => {
             let selectedProducts = this.props.mainState.productsForExport.filter((item) => this.state.selectedItems.indexOf(item.id) !== -1);
+            //Check selected products exist in phieuxuat state or not 
+            let {phieuxuat} = this.props.mainState;
+            let existsProductIds = [];
+            if(phieuxuat.products && phieuxuat.products.length) {
+              phieuxuat.products.forEach((product) => {
+                existsProductIds.push(product.product_id);
+              });
+            }
+            selectedProducts = selectedProducts.filter((newProduct) => existsProductIds.indexOf(newProduct.product_id) == -1);
             this.props.dispatch(updateStateData({
               phieuXuatAction: {
                 ...this.props.mainState.phieuXuatAction,
@@ -162,6 +210,9 @@ class FormPhieuxuat extends React.Component {
             mainState={this.props.mainState}/>
         </Modal>
         <FormThongTin 
+          pheDuyet={(tinh_trang) => {
+            this.pheDuyet(tinh_trang);
+          }}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham

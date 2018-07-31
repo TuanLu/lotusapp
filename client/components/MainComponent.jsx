@@ -56,10 +56,14 @@ class MainComponent extends React.Component {
         .then((response) => response.json())
         .then((json) => {
           if(json.userInfo) {
+            let defaultRouter = '';
+            if(json.scopes[0] && json.scopes[0]['children'] && json.scopes[0]['children'].length) {
+              defaultRouter = json.scopes[0]['children'][0].path ? json.scopes[0]['children'][0].path : '';
+            }
             this.props.dispatch(updateStateData({
               showLogin: false,
               userRoles: json.scopes,
-              //defaultRouter: json.scopes[0] && json.scopes[0]['path'] ? json.scopes[0]['path'] : '',
+              defaultRouter: defaultRouter,
               userInfo: json.userInfo
             }));
           } else if(json.status == "error") {
