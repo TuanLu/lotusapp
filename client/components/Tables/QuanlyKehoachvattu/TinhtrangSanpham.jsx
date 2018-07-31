@@ -46,6 +46,11 @@ class EditableTable extends React.Component {
         // }
       },
       {
+        title: 'Tên VT',
+        dataIndex: 'name',
+        //width: '40%',
+      },
+      {
         title: 'Số lượng NVL cần',
         dataIndex: 'sl_nvl',
         //width: '40%',
@@ -63,7 +68,7 @@ class EditableTable extends React.Component {
           }
           return (
             <Badge 
-              text={text} 
+              text={text || 0} 
               status={status}/>
           );
         }
