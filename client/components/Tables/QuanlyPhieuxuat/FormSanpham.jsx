@@ -38,7 +38,7 @@ class EditableCell extends React.Component {
       case 'sl_chungtu':
       case 'price':
         return <InputNumber onChange={(data) => {
-          console.log('value change',data);
+          console.log('value change',data, this.props);
           if(this.props.id) {
             console.log(this.props);
           } else {
@@ -116,14 +116,14 @@ class EditableTable extends React.Component {
       loadProduct: false
     };
     this.columns = [
-      {
-        title: 'Mã Lô',
-        dataIndex: 'ma_lo',
-        width: 100,
-        //fixed: 'left',
-        editable: false,
-        required: true,
-      },
+      // {
+      //   title: 'Mã Lô',
+      //   dataIndex: 'ma_lo',
+      //   width: 100,
+      //   //fixed: 'left',
+      //   editable: false,
+      //   required: true,
+      // },
       {
         title: 'Mã VT',
         dataIndex: 'product_id',
@@ -144,7 +144,6 @@ class EditableTable extends React.Component {
         dataIndex: 'label',
         width: 200,
         editable: false,
-        required: true
       },
       {
         title: 'Đơn vị tính',
@@ -171,24 +170,24 @@ class EditableTable extends React.Component {
         editable: false,
         required: true
       },
-      {
-        title: 'Ngày SX',
-        dataIndex: 'ngay_san_xuat',
-        width: '200px',
-        //width: '40%',
-        editable: false,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      },
-      {
-        title: 'Ngày Hết Hạn',
-        dataIndex: 'ngay_het_han',
-        width: '200px',
-        //width: '40%',
-        editable: false,
-        required: true,
-        render: (text, record) => moment(text).format('DD/MM/YYYY')
-      }
+      // {
+      //   title: 'Ngày SX',
+      //   dataIndex: 'ngay_san_xuat',
+      //   width: '200px',
+      //   //width: '40%',
+      //   editable: false,
+      //   required: true,
+      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
+      // },
+      // {
+      //   title: 'Ngày Hết Hạn',
+      //   dataIndex: 'ngay_het_han',
+      //   width: '200px',
+      //   //width: '40%',
+      //   editable: false,
+      //   required: true,
+      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
+      // }
     ];
   }
   onSelectChange = (selectedRowKeys) => {
@@ -437,6 +436,7 @@ class EditableTable extends React.Component {
           title: col.title,
           editing: (col.dataIndex == "sl_chungtu" || col.dataIndex == "sl_thucnhap") ? true : false,
           required: col.required,
+          dispatch: this.props.dispatch
         }),
       };
     });
@@ -473,14 +473,14 @@ class EditableTable extends React.Component {
           </Row>
         </div>
         <Table
-          rowSelection={rowSelection}
+          //rowSelection={rowSelection}
           components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
-          scroll={{ x: 1500 }}
+          //scroll={{ x: 1500 }}
         />
       </React.Fragment>
     );

@@ -134,39 +134,6 @@ class VatTuPhieuXuat extends React.Component {
     this.setState({ selectedRowKeys });
     this.props.onRowSelection(selectedRowKeys);
   }
-  showCheckStatus(text) {
-    if(text) {
-      let type = "processing";
-      if(text == "2") type = "error";
-      if(text == "1") type = "success";
-      return (
-        <Badge 
-            text={checkStatusOptions[text]['text']} 
-            status={type}/>
-      );
-    }
-    return <Badge 
-            text={checkStatusOptions[0]['text']} 
-            status={"processing"}/>
-  }
-  getDefaultFields() {
-    return {
-      ma_phieu: "",
-      ma_lo: "",
-      product_id: "",
-      label: "",
-      unit: "kg",
-      sl_chungtu: "1",
-      sl_thucnhap: "1",
-      price: 0,
-      qc_check: "0",
-      qa_check: "0"
-    };
-  }
-  isReadOnly() {
-    let {phieuAction} = this.props.mainState;
-    return phieuAction && phieuAction.action == 'view' ? true : false;
-  }
   fetchAllProduct() {
     this.setState({loadProduct: true});
     fetch(ISD_BASE_URL + `phieuxuat/fetchVerifyProducts`, {
@@ -189,129 +156,15 @@ class VatTuPhieuXuat extends React.Component {
       console.log(error);
     });
   }
-  getStatusMenu(type) {
-    const menuItems = qcQAStatus.map((item) => {
-      return (
-        <Menu.Item key={item.id}>
-          <a 
-            onClick={() => {
-              this.changeStatus(item.id, type);
-            }}
-            rel="noopener noreferrer">{item.text}</a>
-        </Menu.Item>
-      );
-    });
-    const menu = (
-      <Menu>
-       {menuItems}
-      </Menu>
-    );
-    return menu;
-  }
-  getActionsByRoles() {
-    if(!this.props.isQA && !this.props.isQC) return false;
-    let {selectedRowKeys, loading} = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
-    return (
-      <div style={{ marginBottom: 16 }}>
-        {this.props.isQC? 
-        <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qc_check')} trigger={['click']} disabled={!hasSelected}>
-          <Button
-            type="primary"
-            //onClick={this.start}
-            loading={loading}
-            style={{marginRight: 10}}
-          >
-            QC Phê duyệt
-          </Button>
-        </Dropdown>
-        : null}
-        {this.props.isQA? 
-          <Dropdown className="qc_button_check" overlay={this.getStatusMenu('qa_check')} trigger={['click']} disabled={!hasSelected}>
-           <Button
-             type="primary"
-             //onClick={this.start}
-             loading={loading}
-           >
-             QA Phê duyệt
-           </Button>
-          </Dropdown>
-        : null} 
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Đã chọn ${selectedRowKeys.length} vật tư` : ''}
-        </span>
-      </div>
-    );
-  }
   componentDidMount() {
     //let {products, phieuxuat} = this.props.mainState;
     this.fetchAllProduct();
   }
   render() {
     let columns = this.columns;
-    //Show and hide some columns by roles
-    columns = columns.filter((column) => {
-      if(this.props.isQA || this.props.isQC) {
-        if(column.dataIndex == 'operation') return false;
-        if(this.props.isQC) {
-          if(column.dataIndex == 'qa_check') return false;
-        }
-      }
-      return true;
-    });
     //Add filter 
     let {filteredInfo, searchText} = this.state;
     filteredInfo = filteredInfo || {};
-    columns = columns.map((col) => {
-      if(col.filterable) {
-        switch (col.dataIndex) {
-          case 'qc_check':
-            return {
-              ...col,
-              filteredValue: filteredInfo.qc_check || null,
-              onFilter: (value, record) => {
-                return record.qc_check.includes(value)
-              },
-            }
-            break;
-          case 'qa_check':
-            return {
-              ...col,
-              filteredValue: filteredInfo.qa_check || null,
-              onFilter: (value, record) => {
-                return record.qa_check.includes(value)
-              },
-            }
-            break;
-        }
-      }
-      //Search by product ID
-      if(col.dataIndex == 'product_id') {
-        return {
-          ...col,
-          filterDropdown: (
-            <div className="custom-filter-dropdown">
-              <Input
-                ref={ele => this.searchInput = ele}
-                placeholder="Nhập mã vật tư"
-                value={this.state.searchText}
-                onChange={this.onInputChange}
-                onPressEnter={this.onSearch}
-              />
-              <Button type="primary" onClick={this.onSearch}>Tìm</Button>
-            </div>
-          ),
-          filterIcon: <Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />,
-          filterDropdownVisible: this.state.filterDropdownVisible,
-          onFilterDropdownVisibleChange: (visible) => {
-            this.setState({
-              filterDropdownVisible: visible,
-            }, () => this.searchInput && this.searchInput.focus());
-          },
-        }
-      }
-      return col;
-    });
     let productsForExport = this.props.mainState.productsForExport || [];
     //Apply search if exists 
     const reg = new RegExp(searchText, 'gi');
@@ -340,7 +193,6 @@ class VatTuPhieuXuat extends React.Component {
     };
     return (
       <React.Fragment>
-        {this.getActionsByRoles()}
         <Table
           size={"small"}
           rowSelection={rowSelection}
