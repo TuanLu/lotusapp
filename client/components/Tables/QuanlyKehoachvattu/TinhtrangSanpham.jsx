@@ -46,7 +46,7 @@ class EditableTable extends React.Component {
         // }
       },
       {
-        title: 'Tên VT',
+        title: 'Tên vật tư',
         dataIndex: 'name',
         //width: '40%',
       },

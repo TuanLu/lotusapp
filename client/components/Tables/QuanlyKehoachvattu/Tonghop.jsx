@@ -4,7 +4,33 @@ import {
 } from 'antd';
 
 class Tonghop extends React.Component {
+  getProductStatus() {
+    let status = {
+      inStock: 0,
+      outStock: 0,
+      stock: 0
+    };
+    let {kehoachvt} = this.props.mainState;
+    let products = kehoachvt.products ? kehoachvt.products : [];
+    let stocks = [];
+    products.forEach((product) => {
+      if(product.ma_kho) {
+        if(stocks.indexOf(product.ma_kho) == -1) {
+          stocks.push(product.ma_kho);
+        }
+      }
+      if(parseFloat(product.sl_thucnhap) >= parseFloat(product.sl_nvl)) {
+        status.inStock += 1;
+      } else {
+        status.outStock += 1;
+      }
+    });
+    status.stock = stocks.length;
+    return status;
+  }
   render() {
+    let {kehoachvt} = this.props.mainState;
+    let productStatus = this.getProductStatus();
     return(
       <React.Fragment>
         <div className="table-operations no-margin">
@@ -24,23 +50,23 @@ class Tonghop extends React.Component {
         }}>
           <Row gutter={16}>
             <Col span={6}>
-              <Card title="Tổng sản phẩm trong lệnh sản xuất" bordered={false}>
-                <div className="isd-status-number">344</div>
+              <Card title="Tổng vật tư cần" bordered={false}>
+                <div className="isd-status-number">{kehoachvt.products && kehoachvt.products.length ? kehoachvt.products.length : 0}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Tổng sản phẩm thiếu" bordered={false}>
-                <div className="isd-status-number">200</div>
+              <Card title="Vật tư khả dụng" bordered={false}>
+                <div className="isd-status-number">{productStatus.inStock}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Sản phẩm chờ trả hàng" bordered={false}>
-                <div className="isd-status-number">170</div>
+              <Card title="Vật tư thiếu" bordered={false}>
+                <div className="isd-status-number">{productStatus.outStock}</div>
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="Sản phẩm chưa chuyển kho" bordered={false}>
-                <div className="isd-status-number">90</div>
+              <Card title="Số kho liên quan" bordered={false}>
+                <div className="isd-status-number">{productStatus.stock}</div>
               </Card>
             </Col>
           </Row>

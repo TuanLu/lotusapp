@@ -25,17 +25,17 @@ class KHVTController extends BaseController {
 		//echo "<pre>";
 		//print_r($filters);
 		$where = "";
+		//Tim theo ma kho
+		if(isset($filters['ma_kho']) && !empty($filters['ma_kho'])) {
+			$where .= " AND `ttkho`.`ma_kho` = '" . $filters['ma_kho'] . "'";
+		}
 		//Tim theo ma vat tu
 		if(isset($filters['product_id']) && !empty($filters['product_id'])) {
-			$where .= " AND `lotus_spsx`.`product_id` = '" . $filters['product_id'] . "'";
+			$where .= " AND `khvt`.`product_id` = '" . $filters['product_id'] . "'";
 		}
-		//Tim theo ma khsx
-		if(isset($filters['ma']) && !empty($filters['ma'])) {
-			$where .= " AND `lotus_sanxuat`.`ma` = '" . $filters['ma'] . "'";
-		}
-		//Tim theo ma quet
-		if(isset($filters['ma_maquet']) && !empty($filters['ma_maquet'])) {
-			$where .= " AND `lotus_spsx`.`ma_maquet` = '" . $filters['ma_maquet'] . "'";
+		//Tim theo ngay het han
+		if(isset($filters['ngay_het_han']) && !empty($filters['ngay_het_han'])) {
+			$where .= " AND `ttkho`.`ngay_het_han` BETWEEN '{$filters['ngay_het_han'][0]}' AND '{$filters['ngay_het_han'][1]}'";
 		}
 		$sql = "SELECT khvt.product_id, products.name, khvt.key, khvt.sl_nvl,khvt.status,ttkho.sl_thucnhap,ttkho.ma_kho,ttkho.ngay_san_xuat, ttkho.ngay_het_han
 						FROM (
@@ -48,7 +48,8 @@ class KHVTController extends BaseController {
 						AS ttkho 
 						ON ttkho.product_id = khvt.product_id
 						LEFT JOIN products
-						ON khvt.product_id = products.product_id";
+						ON khvt.product_id = products.product_id
+						WHERE khvt.status = 1 $where";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 		return $collection;
 	}

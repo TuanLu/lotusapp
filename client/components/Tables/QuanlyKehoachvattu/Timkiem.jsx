@@ -50,8 +50,8 @@ class AdvancedSearchForm extends React.Component {
       } else {
         //message.success(json.message);
         this.props.dispatch(updateStateData({
-          phieunhap: {
-            ...this.props.mainState.phieunhap,
+          kehoachvt: {
+            ...this.props.mainState.kehoachvt,
             products: json.data
           }
         }));
@@ -93,24 +93,26 @@ class AdvancedSearchForm extends React.Component {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem label={`Lọc theo mã kế hoạch`}>
-            {getFieldDecorator(`ma`, {
+          <FormItem label={`Lọc theo mã kho`}>
+            {getFieldDecorator(`ma_kho`, {
               rules: [{
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập mã kế hoạch sản xuất" />
+              <Input placeholder="Nhập mã kho" />
             )}
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem label={`Lọc theo mã quet`}>
-            {getFieldDecorator(`ma_maquet`, {
+          <FormItem label={`Lọc theo ngày hết hạn`}>
+            {getFieldDecorator(`ngay_het_han`, {
               rules: [{
                 required: false,
               }],
             })(
-              <Input placeholder="Nhập mã quet" />
+              <RangePicker 
+                placeholder={['Từ Ngày', 'Đến Ngày']}
+                format="DD/MM/YYYY" />
             )}
           </FormItem>
         </Col>
