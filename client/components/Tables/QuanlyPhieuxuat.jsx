@@ -158,7 +158,7 @@ class EditableTable extends React.Component {
               ) : (
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
-                    <React.Fragment>
+                    {/* <React.Fragment>
                       {" | "}
                       <Popconfirm
                         title="Bạn thật sự muốn xoá?"
@@ -167,7 +167,7 @@ class EditableTable extends React.Component {
                       >
                         <a href="javascript:;">Xoá</a>  
                       </Popconfirm>
-                    </React.Fragment>
+                    </React.Fragment> */}
                 </React.Fragment>
                 
               )}
