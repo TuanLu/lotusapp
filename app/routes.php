@@ -61,6 +61,7 @@ $app->get('/phieunhap/deleteProduct/{id}', 'PhieunhapController:deleteProduct')-
 //Phieu xuat router
 $app->get('/phieuxuat/fetch', 'PhieuxuatController:fetch')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
 $app->get('/phieuxuat/fetchProductDetailsList', 'PhieuxuatController:fetchProductDetailsList')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
+$app->get('/phieuxuat/fetchVerifyProducts', 'PhieuxuatController:fetchVerifyProducts')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
 $app->get('/phieuxuat/fetchSelectedProduct/{ma_phieu}', 'PhieuxuatController:fetchSelectedProduct')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
 $app->post('/phieuxuat/update', 'PhieuxuatController:update')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
 $app->post('/phieuxuat/updateProduct', 'PhieuxuatController:updateProduct')->setName(Roles::roleAndRouter()['qlphieuxuat']['view']);
