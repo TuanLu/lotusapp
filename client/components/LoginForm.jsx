@@ -35,7 +35,7 @@ class NormalLoginForm extends React.Component {
           showLogin: false,
           userRoles: json.scopes || [],
           userInfo: json.userInfo,
-          defaultRouter: json.scopes[0] && json.scopes[0]['path'] ? json.scopes[0]['path'] : ''
+          //defaultRouter: json.scopes[0] && json.scopes[0]['path'] ? json.scopes[0]['path'] : ''
         }));
       } else {
         message.error(json.message, 5);

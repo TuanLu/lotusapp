@@ -301,3 +301,11 @@ td:hover .editable-cell-icon {
 .user-extra-info li {
   list-style: none;
 }
+#isd_app .ant-menu-submenu-selected {
+  font-weight: bold;
+  color: #E91E63;
+}
+#isd_app .ant-menu-submenu-selected .ant-menu-submenu-title {
+  border-bottom: 2px solid;
+  border-top: 2px solid;
+}
