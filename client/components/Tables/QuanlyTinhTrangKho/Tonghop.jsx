@@ -17,7 +17,12 @@ class Tonghop extends React.Component {
       if(product.qc_check == "0" && product.qa_check != "1") {
         status.refundProducts += 1;
       }
+      //Qc chua duyet
       if(!product.qc_check || product.qc_check == "2") {
+        status.waitingVerifyProducts += 1;
+      }
+      //Qc duyet khong dat, nhung qa chua duyet
+      if(product.qc_check == "0" && product.qa_check == "2") {
         status.waitingVerifyProducts += 1;
       }
     });
