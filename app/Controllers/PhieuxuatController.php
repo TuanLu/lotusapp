@@ -185,7 +185,6 @@ class PhieuxuatController extends BaseController
 			'note' => isset($params['note']) ? $params['note'] : '',
 			'address' => isset($params['address']) ? $params['address'] : '',
 			'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
-			'tinh_trang' => isset($params['tinh_trang']) ? $params['tinh_trang'] : '', // 2 => Chờ phê duyệt
 		);
 		if(!$id) {
 			$uuid1 = Uuid::uuid1();
@@ -193,6 +192,7 @@ class PhieuxuatController extends BaseController
 			//Tao phieu 
 			$itemData['ma_phieu'] = $maPhieu;
 			$itemData['create_on'] = $createOn;
+			$itemData['tinh_trang'] = 2;//Default value = 2: 2 => Chờ phê duyệt
 			$itemData['create_by'] = $userId;
 			$result = $this->db->insert($this->tableName, $itemData);
 			if($result->rowCount()) {
