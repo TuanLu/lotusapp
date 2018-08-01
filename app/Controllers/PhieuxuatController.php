@@ -4,6 +4,7 @@ use \Medoo\Medoo;
 use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
 use \App\Helper\Data;
+use \App\Helper\Roles;
 
 class PhieuxuatController extends BaseController
 {
@@ -304,27 +305,42 @@ class PhieuxuatController extends BaseController
 		$maPhieu = $request->getParam('ma_phieu');
 		if($maPhieu) {
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			//Validate if user has permission to do this
+			$isSuper = $this->UserController->isSuperAdmin($userId);
+			if(!$isSuper) {
+				//Check if user has edit permission
+				$userPermission = $this->UserController->getUserPermission($userId);
+				$allowedEditRoute = Roles::roleAndRouter()['qlphieuxuat']['edit'];
+				$isAllow = false;
+				foreach ($userPermission as $key => $router) {
+					if($router['router_name'] == $allowedEditRoute) {
+						$isAllow = true;
+						break;
+					}
+				}
+				if(!$isAllow) {
+					$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
+					echo json_encode($rsData);exit();
+				}
+			}
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
 			$updateData = [
 				'update_on' => $createOn,
-				'update_by' => $userId
+				'verify_by' => $userId,
 			];
-			if($value != "") {
-				$value = 1;
-			} else {
-				$value = 2;
-			}
-			$updateData['tinh_trang'] = $value;
-			$result = $this->db->update($this->tableName, $updateData, ['ma_phieu' => $maPhieu]);
-			if($result->rowCount()) {
-				$this->superLog('Phe duyet phiếu xuất', $updateData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-				$data = $this->db->select($this->tableName, ['ma_phieu', 'tinh_trang'], ['ma_phieu' => $maPhieu]);
-				$rsData['data'] = isset($data[0]) ? $data[0] : [];
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+			if($value == 1) {
+				$updateData['tinh_trang'] = $value;
+				$result = $this->db->update($this->tableName, $updateData, ['ma_phieu' => $maPhieu]);
+				if($result->rowCount()) {
+					$this->superLog('Phê duyệt phiếu xuất', $updateData);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+					$data = $this->db->select($this->tableName, ['ma_phieu', 'tinh_trang'], ['ma_phieu' => $maPhieu]);
+					$rsData['data'] = isset($data[0]) ? $data[0] : [];
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				}
 			}
 		}
 		echo json_encode($rsData);

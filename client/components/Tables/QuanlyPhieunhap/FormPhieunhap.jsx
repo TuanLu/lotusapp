@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import FormThongTin from './FormThongtin'
 import FormSanpham from './FormSanpham'
-import { Row, Button, Col, Popconfirm,message } from 'antd';
+import { Row, Button, Col, Popconfirm,message,Badge} from 'antd';
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 
@@ -101,7 +101,7 @@ class FormPhieunhap extends React.Component {
 
   render() {
     let {phieuAction, phieunhap} = this.props.mainState;
-    let tinh_trang = phieunhap.tinh_trang || '';
+    let tinh_trang = phieunhap.tinh_trang == 1 ? true : false;
     return (
       <div>
         <div className="table-operations">
@@ -111,81 +111,77 @@ class FormPhieunhap extends React.Component {
             </Col>
             <Col span={12}>
               <div className="action-btns">
-                {phieuAction && phieuAction.action == 'edit'? 
-                <React.Fragment>
-                 <Button 
-                  onClick={this.handleSubmit}
-                  type="primary"
-                  htmlType="button" 
-                  icon="save">Lưu</Button>
-                <Popconfirm
-                  title="Bạn thật sự muốn huỷ?"
-                  onConfirm={() => this.cancel()}
-                >
-                  <Button 
-                    style={{marginLeft: 10}}
-                    type="danger">Huỷ</Button>
-                </Popconfirm> 
-                </React.Fragment>
-                :
-                <React.Fragment>
-                  {(this.props.isInventoryOwner )? 
-                    <React.Fragment>
-                      {tinh_trang == 1? 
-                        <Button 
-                          onClick={() => this.pheDuyet(0)}
-                          style={{marginRight: 10}}
-                          icon="exclamation-circle"
-                          type="danger">
-                          Huỷ phê duyệt
-                      </Button>
-                      : 
-                      <Button 
-                        onClick={() => this.pheDuyet(1)}
-                        style={{marginRight: 10}}
-                        icon="check-circle"
-                        type="primary">
-                        Phê duyệt
-                      </Button>
-                      }
-                    </React.Fragment>
-                  : null}
-                  {(this.props.isInventoryOwner )? 
+                {tinh_trang != 1 ? 
                   <React.Fragment>
                     <Popconfirm
-                    title="Bạn thật sự muốn xoá phiếu này?"
-                    onConfirm={() => this.props.onDelete()}
-                  >
-                    <Button 
-                      style={{marginRight: 10}}
-                      icon="close-circle"
-                      type="danger">
-                          Xoá
-                      </Button>
-                  </Popconfirm>
-                    <Button 
-                    onClick={() => {
-                      this.props.dispatch(updateStateData({
-                        phieuAction: {
-                          ...this.props.mainState.phieuAction,
-                          action: 'edit'
-                        }
-                      }));
-                    }}
-                    type="primary"
-                    htmlType="button" 
-                    icon="edit">Sửa</Button>
+                      title="Bạn chắc chắn muốn duyệt?"
+                      onConfirm={() => this.pheDuyet(1)}>
+                        <Button 
+                          style={{marginRight: 10}}
+                          icon="check-circle"
+                          type="primary">
+                          Phê duyệt
+                        </Button>
+                    </Popconfirm>
+                    {phieuAction && phieuAction.action == 'edit'? 
+                    <React.Fragment>
+                      <Button 
+                        onClick={this.handleSubmit}
+                        type="primary"
+                        htmlType="button" 
+                        icon="save">Lưu</Button>
+                      <Popconfirm
+                        title="Bạn thật sự muốn huỷ?"
+                        onConfirm={() => this.cancel()}
+                      >
+                        <Button 
+                          style={{marginLeft: 10}}
+                          type="danger">Huỷ</Button>
+                      </Popconfirm> 
                     </React.Fragment>
-                    : null}
-                    <Button 
-                        onClick={() => this.cancel()}
-                        style={{marginLeft: 10}}
-                        icon="left"
-                        type="default">
-                        Quay lại
-                    </Button>
-                </React.Fragment>
-                }
+                    :
+                    <React.Fragment>
+                      {(this.props.isInventoryOwner )? 
+                      <React.Fragment>
+                        <Popconfirm
+                          title="Bạn thật sự muốn xoá phiếu này?"
+                          onConfirm={() => this.props.onDelete()}>
+                          <Button 
+                            style={{marginRight: 10}}
+                            icon="close-circle"
+                            type="danger">
+                                Xoá
+                            </Button>
+                        </Popconfirm>
+                        <Button 
+                          onClick={() => {
+                            this.props.dispatch(updateStateData({
+                              phieuAction: {
+                                ...this.props.mainState.phieuAction,
+                                action: 'edit'
+                              }
+                            }));
+                          }}
+                          type="primary"
+                          htmlType="button" 
+                          icon="edit">Sửa</Button>
+                      </React.Fragment>
+                        : 
+                        <Button ghost disabled><Badge status="success" text="Đã duyệt" /></Button>
+                        }
+                    </React.Fragment>
+                    }
+                  </React.Fragment>
+                  : 
+                  <Button ghost disabled><Badge status="success" text="Đã duyệt" /></Button>
+                  }
+                <Button 
+                    onClick={() => this.cancel()}
+                    style={{marginLeft: 10}}
+                    icon="left"
+                    type="default">
+                    Quay lại
+                </Button>
               </div>
             </Col>
           </Row>
@@ -198,6 +194,7 @@ class FormPhieunhap extends React.Component {
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham
+          tinh_trang={tinh_trang}
           isQA={this.props.isQA}
           isQC={this.props.isQC}
           dispatch={this.props.dispatch} 

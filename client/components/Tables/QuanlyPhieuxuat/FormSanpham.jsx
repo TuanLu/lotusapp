@@ -87,6 +87,8 @@ class ExportProduct extends React.Component {
         title: 'Action',
         dataIndex: 'delete',
         render: (text, record) => {
+          let isReadOnly = this.isReadOnly();
+          if(isReadOnly) return '';
           return (
             <Popconfirm
               title="Bạn thật sự muốn xoá?"

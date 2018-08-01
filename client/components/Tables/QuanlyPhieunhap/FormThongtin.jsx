@@ -55,59 +55,6 @@ class FormThongtin extends React.Component {
       <Form>
         <Row>
           <Col span={12}>
-            {this.props.isInventoryOwner? 
-            <FormItem
-              label="Trạng Thái"
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Switch checkedChildren="Đã duyệt" unCheckedChildren="Chưa duyệt" checked ={tinh_trang} 
-                onChange={(tinh_trang) => {
-                  this.props.pheDuyet(tinh_trang);
-                }} />
-              {/* <Select 
-                disabled={readOnly}
-                onChange={(tinh_trang) => {
-                  this.props.dispatch(updateStateData({
-                    phieunhap: {
-                      ...this.props.mainState.phieunhap,
-                      tinh_trang
-                    }
-                  }));
-                }}
-                defaultValue={phieunhap.tinh_trang} placeholder="Chọn trạng thái">
-                {trangThaiPhieu.map((status) =>{
-                  return <Option value={status.value} key={status.value}>{status.text}</Option>
-                })}
-              </Select> */}
-            </FormItem>
-            : null}
-            </Col>
-            <Col span={12}>
-            {phieunhap.ma_phieu != "" ?
-              <FormItem
-                label="Lý do sửa phiếu"
-                labelCol={{ span: 5 }}
-                wrapperCol={{ span: 16 }}
-              >
-                <Input.TextArea 
-                  readOnly={readOnly}
-                  autosize={{ minRows: 2, maxRows: 6 }}
-                  onChange={(e) => {
-                    this.props.dispatch(updateStateData({
-                      phieunhap: {
-                        ...this.props.mainState.phieunhap,
-                        editNote: e.target.value
-                      }
-                    }));
-                  }}
-                  value={phieunhap.editNote} />
-              </FormItem>
-            : null}
-            </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
             <FormItem
               label={'Số chứng từ'}
               labelCol={{ span: 5 }}
@@ -229,6 +176,44 @@ class FormThongtin extends React.Component {
               value={phieunhap.address} />
             </FormItem>
           </Col>
+        </Row>
+        <Row>
+          {/* <Col span={12}>
+            {this.props.isInventoryOwner? 
+            <FormItem
+              label="Trạng Thái"
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 16 }}
+            >
+              <Switch checkedChildren="Đã duyệt" unCheckedChildren="Chưa duyệt" checked ={tinh_trang} 
+                onChange={(tinh_trang) => {
+                  this.props.pheDuyet(tinh_trang);
+                }} />
+            </FormItem>
+            : null}
+            </Col> */}
+            <Col span={12}>
+            {phieunhap.ma_phieu != "" ?
+              <FormItem
+                label="Lý do sửa phiếu"
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
+              >
+                <Input.TextArea 
+                  readOnly={readOnly}
+                  autosize={{ minRows: 2, maxRows: 6 }}
+                  onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      phieunhap: {
+                        ...this.props.mainState.phieunhap,
+                        editNote: e.target.value
+                      }
+                    }));
+                  }}
+                  value={phieunhap.editNote} />
+              </FormItem>
+            : null}
+            </Col>
         </Row>
         
       </Form>

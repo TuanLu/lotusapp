@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import FormThongTin from './FormThongtin'
 import FormSanpham from './FormSanpham'
 import DanhsachSanpham from './DanhsachSanpham'
-import { Row, Button, Col, Popconfirm,message,Modal } from 'antd';
+import { Row, Button, Col, Popconfirm,message,Modal,Badge } from 'antd';
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 
@@ -111,7 +111,8 @@ class FormPhieuxuat extends React.Component {
   }
 
   render() {
-    let {phieuXuatAction} = this.props.mainState;
+    let {phieuXuatAction, phieuxuat} = this.props.mainState;
+    let tinh_trang = phieuxuat.tinh_trang == 1 ? true : false;
     return (
       <div>
         <div className="table-operations">
@@ -121,44 +122,54 @@ class FormPhieuxuat extends React.Component {
             </Col>
             <Col span={12}>
               <div className="action-btns">
-                {phieuXuatAction && phieuXuatAction.action == 'edit'? 
-                <React.Fragment>
-                 <Button 
-                  onClick={this.handleSubmit}
-                  type="primary"
-                  htmlType="button" 
-                  icon="save">Lưu</Button>
-                <Popconfirm
-                  title="Bạn thật sự muốn huỷ?"
-                  onConfirm={() => this.cancel()}
-                >
-                  <Button 
-                    style={{marginLeft: 10}}
-                    type="danger">Huỷ</Button>
-                </Popconfirm> 
-                </React.Fragment>
-                :
-                <React.Fragment>
-                    <Button 
-                    onClick={() => {
-                      this.props.dispatch(updateStateData({
-                        phieuXuatAction: {
-                          ...this.props.mainState.phieuXuatAction,
-                          action: 'edit'
-                        }
-                      }));
-                    }}
-                    type="primary"
-                    htmlType="button" 
-                    icon="edit">Sửa</Button>
-                <Button 
-                    onClick={() => this.cancel()}
-                    style={{marginLeft: 10}}
-                    icon="left"
-                    type="default">Quay lại</Button>
-                </React.Fragment>
-                }
-               
+                {tinh_trang != 1 ? 
+                  <React.Fragment>
+                    <Popconfirm
+                      title="Bạn chắc chắn muốn duyệt?"
+                      onConfirm={() => this.pheDuyet(1)}>
+                        <Button style={{marginRight: 10}} type="danger" ghost disabled={tinh_trang}>Phê duyệt</Button>
+                    </Popconfirm>
+                    {phieuXuatAction && phieuXuatAction.action == 'edit'? 
+                    <React.Fragment>
+                      <Button 
+                        onClick={this.handleSubmit}
+                        type="primary"
+                        htmlType="button" 
+                        icon="save">Lưu</Button>
+                      <Popconfirm
+                        title="Bạn thật sự muốn huỷ?"
+                        onConfirm={() => this.cancel()}
+                      >
+                        <Button 
+                          style={{marginLeft: 10}}
+                          type="danger">Huỷ</Button>
+                      </Popconfirm> 
+                    </React.Fragment>
+                    :
+                    <React.Fragment>
+                        <Button 
+                        onClick={() => {
+                          this.props.dispatch(updateStateData({
+                            phieuXuatAction: {
+                              ...this.props.mainState.phieuXuatAction,
+                              action: 'edit'
+                            }
+                          }));
+                        }}
+                        type="primary"
+                        htmlType="button" 
+                        icon="edit">Sửa</Button>
+                    </React.Fragment>
+                    }
+                    </React.Fragment>
+                  : 
+                  <Button ghost disabled><Badge status="success" text="Đã duyệt" /></Button>
+                  }
+               <Button 
+                  onClick={() => this.cancel()}
+                  style={{marginLeft: 10}}
+                  icon="left"
+                  type="default">Quay lại</Button>
                 
               </div>
             </Col>
@@ -210,9 +221,9 @@ class FormPhieuxuat extends React.Component {
             mainState={this.props.mainState}/>
         </Modal>
         <FormThongTin 
-          pheDuyet={(tinh_trang) => {
-            this.pheDuyet(tinh_trang);
-          }}
+          // pheDuyet={(tinh_trang) => {
+          //   this.pheDuyet(tinh_trang);
+          // }}
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham

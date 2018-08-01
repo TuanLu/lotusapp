@@ -613,7 +613,7 @@ class EditableTable extends React.Component {
     });
     //Show and hide some columns by roles
     columns = columns.filter((column) => {
-      if(phieuAction.editingKey && phieuAction.editingKey != "") {
+      if((phieuAction.editingKey && phieuAction.editingKey != "") || this.props.tinh_trang == 1) {
         if(column.dataIndex == 'qa_check' || column.dataIndex == 'qc_check') return false;
       }
       return true;
