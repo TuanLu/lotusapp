@@ -596,17 +596,14 @@ class UserController extends BaseController {
     }
     return $workers;
   }
-  // public function fetchWorkers() {
-  //   $rsData = array(
-	// 		'status' => self::ERROR_STATUS,
-	// 		'message' => 'Không có user nào thuộc nhóm nhân viên!'
-  //   );
-  //   $workers = $this->getWorkers();
-  //   if(!empty($workers)) {
-  //     $rsData['status'] = self::SUCCESS_STATUS;
-  //     $rsData['message'] = 'Đã load được nhóm nhân viên';
-  //     $rsData['data'] = $workers;
-  //   }
-  //   echo json_encode($rsData);
-  // }
+  public function getUserGroupByUserId($userId) {
+    $userGroup = "";
+    $collection = $this->db->select($this->tableName, [
+      "[>]lotus_phongban" => ["group_user" => "ma_pb"],
+    ], ["users.id", "lotus_phongban.roles"], ["users.id" => $userId]);
+    if(isset($collection[0]['roles']) && $collection[0]['roles']) {
+      $userGroup = $collection[0]['roles'];
+    }
+    return $userGroup;
+  }
 }

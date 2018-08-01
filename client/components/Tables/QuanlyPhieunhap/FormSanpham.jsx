@@ -229,12 +229,12 @@ class SanphamPhieunhap extends React.Component {
             case "1":
               return <Button><Badge status="success" text={`Đạt`} /></Button>
               break;
-            case "2": 
+            case "0": 
               return <Button><Badge status="error" text={`Không đạt`} /></Button>
               break;
-            case "0":
+            case "2":
               return <Button 
-              type="primary"
+              //type="primary"
               onClick={() => {
                 this.props.dispatch(updateStateData({
                   phieunhap: {
@@ -263,10 +263,10 @@ class SanphamPhieunhap extends React.Component {
             case "1":
               return <Button><Badge status="success" text={`Đạt`} /></Button>
               break;
-            case "2": 
+            case "0": 
               return <Button><Badge status="error" text={`Không đạt`} /></Button>
               break;
-            case "0":
+            case "2":
               return <Button 
               //type="primary"
               onClick={() => {
@@ -404,6 +404,7 @@ class SanphamPhieunhap extends React.Component {
         }
       } else {
         this.fetchSelectedProduct();
+        this.closeVerifyModal();
         message.success(json.message);
       }
       this.setState({
@@ -446,8 +447,8 @@ class SanphamPhieunhap extends React.Component {
       sl_chungtu: "1",
       sl_thucnhap: "1",
       price: 0,
-      qc_check: "0",
-      qa_check: "0",
+      qc_check: "2",
+      qa_check: "2",
       ngay_het_han: "",
       ngay_san_xuat: ""
     };
@@ -648,6 +649,17 @@ class SanphamPhieunhap extends React.Component {
       console.log(error);
     });
   }
+  closeVerifyModal() {
+    this.props.dispatch(updateStateData({
+      phieunhap: {
+        ...this.props.mainState.phieunhap,
+        pheduyet: {
+          ...this.props.mainState.phieunhap.phieunhap,
+          openModal: false
+        }
+      }
+    }));
+  }
   componentDidMount() {
     let {products, phieunhap} = this.props.mainState;
     if(!products.length) {
@@ -721,15 +733,7 @@ class SanphamPhieunhap extends React.Component {
             title={"Form phê duyệt sản phẩm"}
             visible={pheduyet.openModal}
             onCancel={() => {
-              this.props.dispatch(updateStateData({
-                phieunhap: {
-                  ...this.props.mainState.phieunhap,
-                  pheduyet: {
-                    ...this.props.mainState.phieunhap.phieunhap,
-                    openModal: false
-                  }
-                }
-              }));
+              this.closeVerifyModal();
             }}
             onOk={() => {
               

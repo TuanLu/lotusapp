@@ -9,6 +9,8 @@ class PhieunhapController extends BaseController
 {
 	private $tableName = 'phieu_nhap_xuat_kho';
 	private $editNoteTable = 'edit_note_phieu_nhap_xuat_kho';
+	const QC_GROUP = 'nhomqc';
+	const QA_GROUP = 'nhomqa';
 
 	private function getColumns() {
 		$columns = [
@@ -166,6 +168,8 @@ class PhieunhapController extends BaseController
 						'create_on' => $createOn,
 						'ngay_san_xuat' => $product['ngay_san_xuat'],
 						'ngay_het_han' => $product['ngay_het_han'],
+						'qc_check' => 2,
+						'qa_check' => 2
 					);
 				}
 				$productsNum = $this->db->insert('san_pham_theo_phieu', $validProducts);
@@ -321,6 +325,26 @@ class PhieunhapController extends BaseController
 			}
 
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			//Validate if user has permission to do this
+			$isSuper = $this->UserController->isSuperAdmin($userId);
+			if(!$isSuper) {
+				//Check if user has edit permission
+				$userGroup = $this->UserController->getUserGroupByUserId($userId);
+				$isAllow = false;
+				if($params['type'] == 'qc_check') {
+					if($userGroup == self::QC_GROUP) {
+						$isAllow = true;
+					}
+				} elseif($params['type'] == 'qa_check') {
+					if($userGroup == self::QA_GROUP) {
+						$isAllow = true;
+					}
+				}
+				if(!$isAllow) {
+					$rsData['message'] = 'Bạn không có quyền thực hiện tác vụ này';
+					echo json_encode($rsData);exit();
+				}
+			}
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
 			$updateData = [

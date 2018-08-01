@@ -70,7 +70,7 @@ class FormPheduyet extends React.Component {
           </Popconfirm>
           <Popconfirm
             title="Bạn chắc chắn muốn duyệt?"
-            onConfirm={() => this.verifyProduct(2)}>
+            onConfirm={() => this.verifyProduct(0)}>
               <Button type="danger" ghost>
                 <Icon type="exclamation-circle" /> Phê Duyệt Không Đạt         
               </Button>
