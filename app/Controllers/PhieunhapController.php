@@ -106,9 +106,9 @@ class PhieunhapController extends BaseController
 		$nguoiGiaoDich = isset($params['nguoi_giao_dich']) ? $params['nguoi_giao_dich'] : '';
 		$editNote = isset($params['editNote']) ? $params['editNote'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
-		$tinh_trang = isset($params['tinh_trang']) ? $params['tinh_trang'] : 2;
+		//$tinh_trang = isset($params['tinh_trang']) ? $params['tinh_trang'] : 2;
 		$userId = isset($params['create_by']) ? $params['create_by'] : '';
-		if($tinh_trang) {$tinh_trang = 1;}else{$tinh_trang = 2;}
+		//if($tinh_trang) {$tinh_trang = 1;}else{$tinh_trang = 2;}
 		//Some validation 
 		if(empty($products)) {
 			$rsData['message'] = 'Không có sản phẩm nào trong phiếu nhập!';
@@ -147,7 +147,7 @@ class PhieunhapController extends BaseController
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
-				'tinh_trang' => $tinh_trang, // 2 => Chờ phê duyệt
+				'tinh_trang' => 2, // 2 => Chờ phê duyệt
 			);
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
 			if($result->rowCount()) {
@@ -198,7 +198,6 @@ class PhieunhapController extends BaseController
 				'nguoi_giao_dich' => $nguoiGiaoDich,
 				'note' => isset($params['note']) ? $params['note'] : '',
 				'address' => isset($params['address']) ? $params['address'] : '',
-				'tinh_trang' => $tinh_trang,
 				'so_chung_tu' => isset($params['so_chung_tu']) ? $params['so_chung_tu'] : '',
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
@@ -315,6 +314,11 @@ class PhieunhapController extends BaseController
 		if(isset($params['id'])
 			&& isset($params['type'])
 			&& isset($params['status'])) {
+			$note = isset($params['note']) ? $params['note'] : '';
+			$file = isset($params['file']) ? $params['file'] : '';
+			if($note && $file) {
+				$rsData['message'] = 'Không có lý do duyệt hoặc không có file đính kèm';
+			}
 
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 			$date = new \DateTime();
@@ -325,9 +329,13 @@ class PhieunhapController extends BaseController
 			if($params['type'] == 'qc_check') {
 				$updateData['qc_check'] = $params['status'];
 				$updateData['qc_id'] = $userId;
+				$updateData['qc_note'] = $note;
+				$updateData['qc_file'] = $file;
 			} else {
 				$updateData['qa_check'] = $params['status'];
 				$updateData['qa_id'] = $userId;
+				$updateData['qa_note'] = $note;
+				$updateData['qa_file'] = $file;
 			}
 			
 			$result = $this->db->update('san_pham_theo_phieu', $updateData, ['id' => $params['id']]);

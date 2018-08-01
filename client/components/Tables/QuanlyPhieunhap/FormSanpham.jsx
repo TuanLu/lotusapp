@@ -4,10 +4,11 @@ import {
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
   Col, Button, message, Alert,
-  Menu, Dropdown, Icon, DatePicker, Modal
+  Menu, Dropdown, Icon, DatePicker, Modal, Badge
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
+import FormPheduyet from './FormPheduyet';
 
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
@@ -138,6 +139,7 @@ class SanphamPhieunhap extends React.Component {
       loading: false,
       loadProduct: false
     };
+    this.changeStatus = this.changeStatus.bind(this);
     this.columns = [
       {
         title: 'Mã Lô',
@@ -224,16 +226,31 @@ class SanphamPhieunhap extends React.Component {
         width: 150,
         show: false,
         render: (text, record) => {
-          return(
-            <Select
-              style={{width: 140}}
-              onChange={(value) => {this.changeStatus('qc_check', record.id, value);}}
-              value={text || '0'}>
-              {qcQAStatus.map((option) => {
-                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
-              })}
-            </Select>
-          );
+          switch (record.qc_check) {
+            case "1":
+              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              break;
+            case "2": 
+              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              break;
+            case "0":
+              return <Button 
+              type="primary"
+              onClick={() => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      id: record.id,
+                      verifyType: 'qc_check',
+                      openModal: true
+                    }
+                  }
+                }));
+              }}>Phê duyệt</Button>
+              break;
+          }
         }
       },
       {
@@ -309,13 +326,15 @@ class SanphamPhieunhap extends React.Component {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
-  changeStatus = (type, id, status) => {
+  changeStatus = (type, id, status, note, file) => {
     this.setState({ loading: true });
     // ajax request after empty completing
     let statusData = {
       id: id,
       type,
-      status
+      status,
+      note,
+      file
     };
     fetch(ISD_BASE_URL + fetchConfig.changeStatus, {
       method: 'POST',
@@ -592,7 +611,8 @@ class SanphamPhieunhap extends React.Component {
         cell: EditableCell,
       },
     };
-    let {phieuAction} = this.props.mainState;
+    let {phieuAction, phieunhap} = this.props.mainState;
+    let pheduyet = phieunhap.pheduyet || {};
     let products = this.props.mainState.products;
     let columns = this.columns.map((col) => {
       if (!col.editable) {
@@ -641,9 +661,34 @@ class SanphamPhieunhap extends React.Component {
             : null}
           </Row>
         </div>
-        {/* { (this.props.isQA || this.props.isQC) ?
-          this.getActionsByRoles() : null
-        } */}
+        {pheduyet.openModal? 
+          <Modal
+            width={"60%"}
+            style={{top: 20}}
+            title={"Form phê duyệt sản phẩm"}
+            visible={pheduyet.openModal}
+            onCancel={() => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  pheduyet: {
+                    ...this.props.mainState.phieunhap.phieunhap,
+                    openModal: false
+                  }
+                }
+              }));
+            }}
+            onOk={() => {
+              
+            }}
+            footer={null}
+            >
+            <FormPheduyet 
+              changeStatus={this.changeStatus}
+              mainState={this.props.mainState} 
+              dispatch={this.props.dispatch} />
+          </Modal>  
+        : null}
         <Table
           rowSelection={rowSelection}
           components={components}

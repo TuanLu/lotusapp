@@ -30,6 +30,7 @@ class FormUpload extends React.Component {
       },
       onSuccess: (response) => {
         //console.log('onSuccess', response);
+        let fileUrl = ISD_BASE_URL + 'upload/' + response.data.filename;
         this.setState({
           loading: false,
           fileList: [
@@ -37,11 +38,12 @@ class FormUpload extends React.Component {
               uid: -1,
               name: response.data.filename,
               status: 'done',
-              url: ISD_BASE_URL + 'upload/' + response.data.filename,
+              url: fileUrl,
             }
           ]
         });
         message.success(response.message);
+        this.props.onDone(response.data.filename);
       },
       onError: (err) => {
         message.error(error.message || 'Không upload được file!');
