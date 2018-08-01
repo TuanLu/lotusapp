@@ -93,31 +93,33 @@ class TinhtrangSanpham extends React.Component {
         width: 130,
         //fixed: 'right',
         render: (text, record) => {
+          let btnStatus;
           switch (record.qc_check) {
             case "1":
-              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              btnStatus = <Badge status="success" text={`Đạt`} />;
               break;
             case "0": 
-              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              btnStatus = <Badge status="error" text={`Không đạt`} />;
               break;
             case "2":
-              return <Button 
-              //type="primary"
-              onClick={() => {
-                this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
-                    pheduyet: {
-                      ...this.props.mainState.phieunhap.pheduyet,
-                      id: record.id,
-                      verifyType: 'qc_check',
-                      openModal: true
-                    }
-                  }
-                }));
-              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+              btnStatus = <Badge status="processing" text={`Phê duyệt`} />;
               break;
           }
+          return <Button 
+            //type="primary"
+            onClick={() => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  pheduyet: {
+                    ...this.props.mainState.phieunhap.pheduyet,
+                    ...record,
+                    verifyType: 'qc_check',
+                    openModal: true
+                  }
+                }
+              }));
+            }}>{btnStatus}</Button>
         }
       },
       {
@@ -130,33 +132,35 @@ class TinhtrangSanpham extends React.Component {
         width: 130,
         //fixed: 'right',
         render: (text, record) => {
+          let btnStatus;
           switch (record.qa_check) {
             case "1":
-              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              btnStatus = <Badge status="success" text={`Đạt`} />;
               break;
             case "0": 
-              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              btnStatus = <Badge status="error" text={`Không đạt`} />;
               break;
             case "2":
-              return <Button 
-              //type="primary"
-              onClick={() => {
-                this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
-                    pheduyet: {
-                      ...this.props.mainState.phieunhap.pheduyet,
-                      id: record.id,
-                      verifyType: 'qa_check',
-                      openModal: true
-                    }
-                  }
-                }));
-              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+              btnStatus = <Badge status="processing" text={`Phê duyệt`} />;
               break;
           }
+          return <Button 
+            //type="primary"
+            onClick={() => {
+              this.props.dispatch(updateStateData({
+                phieunhap: {
+                  ...this.props.mainState.phieunhap,
+                  pheduyet: {
+                    ...this.props.mainState.phieunhap.pheduyet,
+                    ...record,
+                    verifyType: 'qa_check',
+                    openModal: true
+                  }
+                }
+              }));
+            }}>{btnStatus}</Button>
         }
-      }
+      },
     ];
   }
   onInputChange = (e) => {
