@@ -14,10 +14,10 @@ class Tonghop extends React.Component {
     let products = phieunhap.products ? phieunhap.products : [];
     let stocks = [];
     products.forEach((product) => {
-      if(product.qc_check == "2" && product.qa_check != "1") {
+      if(product.qc_check == "0" && product.qa_check != "1") {
         status.refundProducts += 1;
       }
-      if(!product.qc_check || product.qc_check == "0") {
+      if(!product.qc_check || product.qc_check == "2") {
         status.waitingVerifyProducts += 1;
       }
     });

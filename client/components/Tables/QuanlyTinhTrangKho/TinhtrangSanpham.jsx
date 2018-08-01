@@ -4,23 +4,17 @@ import {
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
   Col, Button, message,
-  Menu, Dropdown, Icon, Badge
+  Menu, Dropdown, Icon, Badge, Modal
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
 import FormChuyenViTri from './FormChuyenViTri'
 import Timkiem from './Timkiem'
+import FormPheduyet from './FormPheduyet'
 
 const checkStatusOptions = convertArrayObjectToObject(qcQAStatus);
 
 const FormItem = Form.Item;
-const EditableContext = React.createContext();
-
-const EditableRow = ({ form, index, ...props }) => (
-  <EditableContext.Provider value={form}>
-    <tr {...props} />
-  </EditableContext.Provider>
-);
 
 const tableConfig = {
   headTitle: 'Vật tư trong kho',
@@ -31,87 +25,7 @@ const fetchConfig = {
   changeStatus: 'phieunhap/changeStatus'
 }
 
-const EditableFormRow = Form.create()(EditableRow);
-
-class EditableCell extends React.Component {
-  getInput = () => {
-    switch (this.props.inputType) {
-      case 'product_id':
-        let products = this.props.products;
-        return (
-          <Select 
-            showSearch
-            optionFilterProp="children"
-            onChange={(value, option) => {
-              let unit = option.props.children.split('-');
-              if(unit && unit[3]) {
-                unit = unit[3].trim();
-              }
-              console.log(unit, this.props);
-              return false;
-            }}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            style={{ width: 200 }}
-            placeholder="Chọn VT">
-           {products.map((product) => {
-              return <Select.Option 
-              key={product.product_id} 
-              value={product.product_id}> 
-                {`${product.product_id} - ${product.name} - ${product.unit} `}
-              </Select.Option>
-           })}
-          </Select>
-        );
-        break;
-      case 'sl_thucnhap':
-      case 'sl_chungtu':
-      case 'price':
-        return <InputNumber/>
-        break;
-      default:
-        return <Input />;
-        break;
-    }
-     
-  };
-  render() {
-    const {
-      editing,
-      required,
-      dataIndex,
-      title,
-      inputType,
-      record,
-      index,
-      ...restProps
-    } = this.props;
-    return (
-      <EditableContext.Consumer>
-        {(form) => {
-          const { getFieldDecorator } = form;
-          return (
-            <td {...restProps}>
-              {editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {getFieldDecorator(dataIndex, {
-                    rules: [{
-                      required: required,
-                      message: `Hãy nhập dữ liệu ô ${title}!`,
-                    }],
-                    initialValue: record[dataIndex],
-                    
-                  })(this.getInput())}
-                </FormItem>
-              ) : restProps.children}
-            </td>
-          );
-        }}
-      </EditableContext.Consumer>
-    );
-  }
-}
-
-class EditableTable extends React.Component {
+class TinhtrangSanpham extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -179,7 +93,31 @@ class EditableTable extends React.Component {
         width: 130,
         //fixed: 'right',
         render: (text, record) => {
-          return this.showCheckStatus(text);
+          switch (record.qc_check) {
+            case "1":
+              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              break;
+            case "0": 
+              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              break;
+            case "2":
+              return <Button 
+              //type="primary"
+              onClick={() => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      id: record.id,
+                      verifyType: 'qc_check',
+                      openModal: true
+                    }
+                  }
+                }));
+              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+              break;
+          }
         }
       },
       {
@@ -192,7 +130,31 @@ class EditableTable extends React.Component {
         width: 130,
         //fixed: 'right',
         render: (text, record) => {
-          return this.showCheckStatus(text);
+          switch (record.qa_check) {
+            case "1":
+              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              break;
+            case "0": 
+              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              break;
+            case "2":
+              return <Button 
+              //type="primary"
+              onClick={() => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      id: record.id,
+                      verifyType: 'qa_check',
+                      openModal: true
+                    }
+                  }
+                }));
+              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+              break;
+          }
         }
       }
     ];
@@ -237,40 +199,6 @@ class EditableTable extends React.Component {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
-  changeStatus = (status, type) => {
-    this.setState({ loading: true });
-    // ajax request after empty completing
-    let statusData = {
-      ids: this.state.selectedRowKeys,
-      type,
-      status
-    };
-    fetch(ISD_BASE_URL + fetchConfig.changeStatus, {
-      method: 'POST',
-      headers: getTokenHeader(),
-      body: JSON.stringify(statusData)
-    })
-    .then((response) => {
-      return response.json()
-    }).then((json) => {
-      if(json.status == 'error') {
-        message.error(json.message, 3);
-        if(json.show_login) {
-          this.props.dispatch(updateStateData({showLogin: true}));
-        }
-      } else {
-        this.fetchAllProduct();
-        message.success(json.message);
-      }
-      this.setState({
-        selectedRowKeys: [],
-        loading: false,
-      });
-    }).catch((ex) => {
-      console.log('parsing failed', ex)
-      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
-    });
-  }
   showCheckStatus(text) {
     if(text) {
       let type = "processing";
@@ -286,23 +214,6 @@ class EditableTable extends React.Component {
             text={checkStatusOptions[0]['text']} 
             status={"processing"}/>
   }
-  getDefaultFields() {
-    return {
-      ma_phieu: "",
-      ma_lo: "",
-      product_id: "",
-      label: "",
-      unit: "kg",
-      sl_chungtu: "1",
-      sl_thucnhap: "1",
-      price: 0,
-      qc_check: "0",
-      qa_check: "0"
-    };
-  }
-  isEditing = (record) => {
-    return record.key === this.props.mainState.phieuAction.editingKey;
-  };
   isReadOnly() {
     let {phieuAction} = this.props.mainState;
     return phieuAction && phieuAction.action == 'view' ? true : false;
@@ -332,54 +243,62 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
-  getStatusMenu(type) {
-    const menuItems = qcQAStatus.map((item) => {
-      return (
-        <Menu.Item key={item.id}>
-          <a 
-            onClick={() => {
-              this.changeStatus(item.id, type);
-            }}
-            rel="noopener noreferrer">{item.text}</a>
-        </Menu.Item>
-      );
+  changeStatus = (type, id, status, note, file) => {
+    this.setState({ loading: true });
+    // ajax request after empty completing
+    let statusData = {
+      id: id,
+      type,
+      status,
+      note,
+      file
+    };
+    fetch(ISD_BASE_URL + fetchConfig.changeStatus, {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(statusData)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        this.fetchAllProduct();
+        this.closeVerifyModal();
+        message.success(json.message);
+      }
+      this.setState({
+        selectedRowKeys: [],
+        loading: false,
+      });
+    }).catch((ex) => {
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình lưu hoặc chỉnh sửa!');
     });
-    const menu = (
-      <Menu>
-       {menuItems}
-      </Menu>
-    );
-    return menu;
+  }
+  closeVerifyModal() {
+    this.props.dispatch(updateStateData({
+      phieunhap: {
+        ...this.props.mainState.phieunhap,
+        pheduyet: {
+          ...this.props.mainState.phieunhap.phieunhap,
+          openModal: false
+        }
+      }
+    }));
   }
   componentDidMount() {
     //let {products, phieunhap} = this.props.mainState;
     this.fetchAllProduct();
   }
   render() {
-    const components = {
-      body: {
-        row: EditableFormRow,
-        cell: EditableCell,
-      },
-    };
-    let products = this.props.mainState.products;
-    let columns = this.columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: record => ({
-          record,
-          inputType: col.dataIndex,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          editing: this.isEditing(record),
-          required: col.required,
-          products,
-        }),
-      };
-    });
+    let {products, phieunhap} = this.props.mainState;
+    let pheduyet = phieunhap.pheduyet || {};
+    let columns = this.columns;
     //Add filter 
     let {filteredInfo, searchText} = this.state;
     filteredInfo = filteredInfo || {};
@@ -455,10 +374,6 @@ class EditableTable extends React.Component {
         };
       }).filter(record => !!record)
     }
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
     return (
       <React.Fragment>
         <div className="table-operations no-margin">
@@ -471,15 +386,35 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        {/* {this.getActionsByRoles()} */}
+        {pheduyet.openModal? 
+          <Modal
+            width={"60%"}
+            style={{top: 20}}
+            title={"Form phê duyệt sản phẩm"}
+            visible={pheduyet.openModal}
+            onCancel={() => {
+              this.closeVerifyModal();
+            }}
+            onOk={() => {
+              
+            }}
+            footer={null}
+            >
+            <FormPheduyet 
+              changeStatus={this.changeStatus}
+              mainState={this.props.mainState} 
+              dispatch={this.props.dispatch} />
+          </Modal>  
+        : null}
         <Table
           //rowSelection={rowSelection}
-          components={components}
+          //components={components}
           bordered
           dataSource={selectedProducts}
           columns={columns}
           rowClassName="editable-row"
           loading={this.state.loadProduct}
+          size="small"
           //scroll={{ x: 1500 }}
           //expandRowByClick={true}
           onChange={this.handleChange}
@@ -505,4 +440,4 @@ class EditableTable extends React.Component {
   }
 }
 
-export default EditableTable
+export default TinhtrangSanpham
