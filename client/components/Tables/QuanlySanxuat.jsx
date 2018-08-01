@@ -1,6 +1,6 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, 
   Col, Button, message, Badge
 } from 'antd';
@@ -90,12 +90,6 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
-        title: 'Công đoạn',
-        dataIndex: 'cong_doan',
-        //width: '40%',
-        editable: false,
-      },
-      {
         title: 'Sản phẩm',
         dataIndex: 'ma_sp',
         //width: '40%',
@@ -167,6 +161,20 @@ class EditableTable extends React.Component {
       //   }
       // },
       {
+        title: 'Quy trình',
+        dataIndex: 'quy_trinh',
+        //width: '40%',
+        editable: false,
+        render: (text) => {
+          return (
+            <div>
+              <Icon type="form" />
+              Quy trình
+            </div>  
+          )
+        }
+      },
+      {
         title: 'Actions',
         dataIndex: 'operation',
         render: (text, record) => {
@@ -195,7 +203,7 @@ class EditableTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
+                  <a href="javascript:;" onClick={() => this.view(record)}><Icon type="profile" /> Chi tiết</a> 
                   {
                     // <React.Fragment>
                     //   {" | "}

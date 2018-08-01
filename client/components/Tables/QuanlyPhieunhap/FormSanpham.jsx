@@ -140,6 +140,7 @@ class SanphamPhieunhap extends React.Component {
       loadProduct: false
     };
     this.changeStatus = this.changeStatus.bind(this);
+    let lang = this.props.mainState.ans_language; 
     this.columns = [
       {
         title: 'Mã Lô',
@@ -174,29 +175,27 @@ class SanphamPhieunhap extends React.Component {
       {
         title: 'Đv',
         dataIndex: 'unit',
-        //width: 100,
+        width: 80,
         editable: true,
       },
       {
         title: 'SL chứng từ',
         dataIndex: 'sl_chungtu',
-        //width: '40%',
-        width: 100,
+        width: 150,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'SL thực',
         dataIndex: 'sl_thucnhap',
-        //width: '40%',
-        width: 100,
+        width: 150,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Đơn giá',
         dataIndex: 'price',
-        //width: '40%',
+        width: 150,
         editable: true,
         required: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -208,7 +207,7 @@ class SanphamPhieunhap extends React.Component {
         //width: '40%',
         editable: true,
         required: false,
-        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : 'ans_do_not_enter'
       },
       {
         title: 'Ngày Hết Hạn',
@@ -248,7 +247,7 @@ class SanphamPhieunhap extends React.Component {
                     }
                   }
                 }));
-              }}>Phê duyệt</Button>
+              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
               break;
           }
         }
@@ -260,23 +259,76 @@ class SanphamPhieunhap extends React.Component {
         width: 170,
         show: false,
         render: (text, record) => {
-          return(
-            <Select
-              style={{width: 140}}
-              onChange={(value) => {this.changeStatus('qa_check', record.id, value);}}
-              value={text || '0'}>
-              {qcQAStatus.map((option) => {
-                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
-              })}
-            </Select>
-          );
+          switch (record.qa_check) {
+            case "1":
+              return <Button><Badge status="success" text={`Đạt`} /></Button>
+              break;
+            case "2": 
+              return <Button><Badge status="error" text={`Không đạt`} /></Button>
+              break;
+            case "0":
+              return <Button 
+              //type="primary"
+              onClick={() => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      id: record.id,
+                      verifyType: 'qa_check',
+                      openModal: true
+                    }
+                  }
+                }));
+              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+              break;
+          }
         }
       },
+      // {
+      //   title: 'QC Duyệt',
+      //   dataIndex: 'qc_check',
+      //   editable: false,
+      //   width: 150,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return(
+      //       <Select
+      //         style={{width: 140}}
+      //         onChange={(value) => {this.changeStatus('qc_check', record.id, value);}}
+      //         value={text || '0'}>
+      //         {qcQAStatus.map((option) => {
+      //           return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+      //         })}
+      //       </Select>
+      //     );
+      //   }
+      // },
+      // {
+      //   title: 'QA Duyệt',
+      //   dataIndex: 'qa_check',
+      //   editable: false,
+      //   width: 170,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return(
+      //       <Select
+      //         style={{width: 140}}
+      //         onChange={(value) => {this.changeStatus('qa_check', record.id, value);}}
+      //         value={text || '0'}>
+      //         {qcQAStatus.map((option) => {
+      //           return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+      //         })}
+      //       </Select>
+      //     );
+      //   }
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
         //fixed: 'right',
-        width: 100,
+        width: 150,
         render: (text, record) => {
           let isReadOnly = this.isReadOnly();
           if(isReadOnly) return '';
@@ -292,27 +344,28 @@ class SanphamPhieunhap extends React.Component {
                         onClick={() => this.save(form, record.key)}
                         style={{ marginRight: 8 }}
                       >
-                        Lưu
+                        <Icon type="save" />{lang.ans_save || 'ans_save'}
                       </a>
                     )}
                   </EditableContext.Consumer>
+                  {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn huỷ?"
                     onConfirm={() => this.cancel(record.key)}
                   >
-                    <a href="javascript:;">Huỷ</a>
+                    <a href="javascript:;"><Icon type="close" />{lang.ans_cancel || 'ans_cancel'}</a>
                   </Popconfirm>
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
+                  <a href="javascript:;" onClick={() => this.edit(record.key)}><Icon type="edit" />{lang.ans_edit || 'ans_edit'}</a>  
                   {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn xoá?"
                     okType="danger"
                     onConfirm={() => this.delete(record)}
                   >
-                    <a href="javascript:;">Xoá</a>  
+                    <a href="javascript:;"><Icon type="delete" />{lang.ans_delete || 'ans_delete'}</a>  
                   </Popconfirm>
                 </React.Fragment>
                 

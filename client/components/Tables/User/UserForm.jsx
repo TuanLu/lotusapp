@@ -243,7 +243,10 @@ class RegistrationForm extends React.Component {
           label="Mã nhân sự"
         >
           {getFieldDecorator('ma_ns', {
-            initialValue: user.ma_ns
+            initialValue: user.ma_ns,
+            rules: [{
+              required: true, message: 'Hãy nhập mã nhân viên!',
+            }],
           })(
             <Input style={{ width: '100%' }} />
           )}

@@ -247,9 +247,9 @@ class EditableTable extends React.Component {
             </Col>
           </Row>
         </div>
-        {openModal? 
+        {openModal?
           <Modal
-            width={"95%"}
+            width={"80%"}
             style={{top: 20}}
             title={ans_language.ans_add_new_note || 'ans_add_new_note'}
             visible={openModal}
