@@ -99,7 +99,7 @@ class PhieuxuatController extends BaseController
 			'message' => 'Chưa load được sản phẩm của phiếu!'
 		);
 		$helper = new Data();
-		$sql = $helper->getAllProductFromImportBill(true);
+		$sql = $helper->getAllProductForExport();
 		if($sql) {
 			$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 			if(!empty($collection)) {

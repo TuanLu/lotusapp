@@ -33,7 +33,12 @@ class VatTuPhieuXuat extends React.Component {
         width: 150,
       },
       {
-        title: 'Các kho',
+        title: 'Tên VT',
+        dataIndex: 'name',
+        width: 200,
+      },
+      {
+        title: 'Mã kho',
         dataIndex: 'ma_kho',
         width: 200,
       },
