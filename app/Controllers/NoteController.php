@@ -18,18 +18,21 @@ class NoteController extends BaseController
 		);
 		// Columns to select.
 		$columns = [
-				'id',
-				'note',
-				'titles',
-				'assign_users',
-				'assign_group',
-				'create_by',
-				'create_on',
-				'status'
+				'lotus_notes.id',
+				'lotus_notes.note',
+				'lotus_notes.titles',
+				'lotus_notes.assign_users',
+				'lotus_notes.assign_group',
+				'lotus_notes.create_by',
+				'lotus_notes.create_on',
+				'lotus_notes.status',
+				'users.name'
 		];
-		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["id" => "DESC"],
-			"status" => 1
+		$collection = $this->db->select($this->tableName, [
+			"[>]users" => ["create_by" => "id"],
+		], $columns, [
+			"ORDER" => ["lotus_notes.id" => "DESC"],
+			"lotus_notes.status" => 1
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;

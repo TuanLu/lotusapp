@@ -31,7 +31,7 @@ class EditableTable extends React.Component {
       },
       {
         title: ans_language.ans_create_by || 'ans_create_by',
-        dataIndex: 'create_by',
+        dataIndex: 'name',
         //width: '40%',
         editable: true,
         required: true,

@@ -203,11 +203,11 @@ class NoteForm extends React.Component {
           <Col span={12}>
             <FormItem
               {...form50Layout}
-              label="Phòng ban tiếp nhận"
+              label={ans_language.ans_group_assign || 'ans_group_assign'}
             > 
             {getFieldDecorator('assign_group', {
               initialValue: selected_group,
-              rules: [{ required: false, message: 'Chọn phòng ban!' }],
+              rules: [{ required: false, message: ans_language.ans_choose_team || 'ans_choose_team' }],
             })(
               <Select 
                 placeholder="Chọn phòng ban"
@@ -216,7 +216,7 @@ class NoteForm extends React.Component {
                   console.log(value);
                 }}
               >
-              <Option value="all">Tất cả phòng ban</Option>
+              <Option value="all">{ans_language.ans_all_team || 'ans_all_team' }</Option>
               {phongBanOptions}
               </Select>
             )}
@@ -225,19 +225,19 @@ class NoteForm extends React.Component {
           <Col span={12}>
             <FormItem
               {...form50Layout}
-              label="Người tiếp nhận"
+              label={ans_language.ans_user_assign || 'ans_user_assign'}
             >
               {getFieldDecorator('assign_users', {
                 initialValue: selected_user
               })(
                 <Select 
-                  placeholder="Chọn người tiếp nhận"
+                  placeholder={ans_language.ans_user_assign_note || 'ans_user_assign_note'}
                   mode="multiple"
                   onChange={(value) => {
                     console.log(value);
                   }}
                 >
-                <Option value="all">Tất cả nhân viên</Option>
+                <Option value="all">{ans_language.ans_assign_all_user || 'ans_assign_all_user'}</Option>
                 {usersOptions}
                 </Select>
               )}
@@ -269,7 +269,7 @@ class NoteForm extends React.Component {
             })( // Need function upload
               <Upload name="logo" action="/upload" listType="picture">
                 <Button>
-                  <Icon type="upload" /> File đính kèm ...
+                  <Icon type="upload" /> {ans_language.ans_attach_file || 'ans_attach_file' }
                 </Button>
               </Upload>
             )}
