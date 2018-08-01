@@ -1,6 +1,6 @@
 import React from 'react'
 import {updateStateData} from 'actions'
-import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, message } from 'antd';
+import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, Upload, message } from 'antd';
 import {getTokenHeader} from 'ISD_API'
 
 const FormItem = Form.Item;
@@ -102,18 +102,34 @@ class NoteForm extends React.Component {
       this.fetchUserList();
     }
   }
-
+  normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
+        // xs: { span: 24 },
+        // sm: { span: 24 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 24 },
+      },
+    };
+    const form50Layout = {
+      labelCol: {
+        // xs: { span: 24 },
+        // sm: { span: 24 },
+      },
+      wrapperCol: {
+        xs: { span: 20 },
+        sm: { span: 20 },
       },
     };
     const tailFormItemLayout = {
@@ -129,7 +145,7 @@ class NoteForm extends React.Component {
       },
     };
 
-    let {systemNote, groupUser, ans_language, defaultLang, userlist} = this.props.mainState;
+    let {systemNote, groupUser, ans_language, userlist} = this.props.mainState;
     let phongBanOptions = [];
     let usersOptions = [];
     //let {groupUser} = this.state;
@@ -163,75 +179,111 @@ class NoteForm extends React.Component {
     }
     return (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem
-          {...formItemLayout}
-          label={(
-            <span>
-              Tiêu đề : &nbsp;
-              <Tooltip title="Tiêu đề ghi chú">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          )}
-        >
-          {getFieldDecorator('titles', {
-            initialValue: systemNote.titles,
-            rules: [{ required: true, message: 'Hãy nhập tiêu đề!', whitespace: true }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Nội dung"
-        >
-          {getFieldDecorator('note', {
-            initialValue: systemNote.note
-          })(
-            <Input.TextArea style={{ width: '100%' }} />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Người nhận ghi chú"
-        >
-          {getFieldDecorator('assign_users', {
-            initialValue: selected_user
-          })(
-            <Select 
-              placeholder="Chọn người dùng"
-              mode="multiple"
-              onChange={(value) => {
-                console.log(value);
-              }}
+        <Row>
+          <Col span="24">
+            <FormItem
+              {...formItemLayout}
+              label={(
+                <span>
+                  {ans_language.ans_note_titles || 'ans_note_titles'} &nbsp;
+                  <Tooltip title={ans_language.ans_note_titles_note || 'ans_note_titles_note' }>
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>
+              )}
             >
-             {usersOptions}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Phòng ban nhận ghi chú"
-        >
-          {getFieldDecorator('assign_group', {
-            initialValue: selected_group,
-            rules: [{ required: false, message: 'Hãy chọn phòng ban!' }],
-          })(
-            <Select 
-              placeholder="Chọn phòng ban"
-              mode="multiple"
-              onChange={(value) => {
-                console.log(value);
-              }}
+            {getFieldDecorator('titles', {
+              initialValue: systemNote.titles,
+              rules: [{ required: true, message: ans_language.ans_pls_enter_title || 'ans_pls_enter_title' , whitespace: true }],
+            })(
+              <Input />
+            )}
+          </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              {...form50Layout}
+              label="Phòng ban tiếp nhận"
+            > 
+            {getFieldDecorator('assign_group', {
+              initialValue: selected_group,
+              rules: [{ required: false, message: 'Chọn phòng ban!' }],
+            })(
+              <Select 
+                placeholder="Chọn phòng ban"
+                mode="multiple"
+                onChange={(value) => {
+                  console.log(value);
+                }}
+              >
+              <Option value="all">Tất cả phòng ban</Option>
+              {phongBanOptions}
+              </Select>
+            )}
+          </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              {...form50Layout}
+              label="Người tiếp nhận"
             >
-             {phongBanOptions}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">{ans_language.ans_save || "Lưu"}</Button>
-        </FormItem>
-      </Form>
+              {getFieldDecorator('assign_users', {
+                initialValue: selected_user
+              })(
+                <Select 
+                  placeholder="Chọn người tiếp nhận"
+                  mode="multiple"
+                  onChange={(value) => {
+                    console.log(value);
+                  }}
+                >
+                <Option value="all">Tất cả nhân viên</Option>
+                {usersOptions}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <FormItem
+              {...formItemLayout}
+              label="Nội dung"
+              >
+                {getFieldDecorator('note', {
+                  initialValue: systemNote.note
+                })(
+                  <Input.TextArea style={{ width: '100%' }} />
+                )}
+              </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem
+            {...formItemLayout}
+            label="Upload"
+            extra=""
+            >
+            {getFieldDecorator('upload', {
+              valuePropName: 'fileList',
+              getValueFromEvent: this.normFile,
+            })( // Need function upload
+              <Upload name="logo" action="/upload" listType="picture">
+                <Button>
+                  <Icon type="upload" /> File đính kèm ...
+                </Button>
+              </Upload>
+            )}
+          </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+              <FormItem {...tailFormItemLayout}>
+                <Button type="primary" htmlType="submit">{ans_language.ans_send || 'ans_send'}</Button>
+              </FormItem>
+          </Col>
+        </Row>
+        </Form>
     );
   }  
 }

@@ -311,7 +311,7 @@ class UserController extends BaseController {
       'name' => $request->getParam('name'),
       'status' => 1,
       'email' => $request->getParam('email'),
-      'phone' => $request->getParam('phone'),
+      'phone' => $request->getParam('phone') || '',
       'ma_ns' => $request->getParam('ma_ns'),
       'description' => $request->getParam('description'),
       'to_hanh_chinh' => $request->getParam('to_hanh_chinh'),
@@ -322,6 +322,11 @@ class UserController extends BaseController {
 			//Insert new data to db
 			if(!$itemData['username']) {
 				$rsData['message'] = 'Tên đăng nhập không được để trống!';
+				echo json_encode($rsData);
+				die;
+      }
+      if(!$itemData['ma_ns']) {
+				$rsData['message'] = 'Mã nhân viên không được để trống';
 				echo json_encode($rsData);
 				die;
 			}
@@ -567,7 +572,7 @@ class UserController extends BaseController {
           'permission' => $routerAndPermission['permission']
         );
 			} else {
-        $rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
+        $rsData['message'] = 'Phân quyền nhân sự chưa được cập nhật vào CSDL!';
 			}
 		}
 		echo json_encode($rsData);

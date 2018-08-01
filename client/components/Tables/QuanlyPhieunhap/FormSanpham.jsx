@@ -138,6 +138,7 @@ class EditableTable extends React.Component {
       loading: false,
       loadProduct: false
     };
+    let lang = this.props.mainState.ans_language; 
     this.columns = [
       {
         title: 'Mã Lô',
@@ -172,29 +173,27 @@ class EditableTable extends React.Component {
       {
         title: 'Đv',
         dataIndex: 'unit',
-        //width: 100,
+        width: 80,
         editable: true,
       },
       {
         title: 'SL chứng từ',
         dataIndex: 'sl_chungtu',
-        //width: '40%',
-        width: 100,
+        width: 150,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'SL thực',
         dataIndex: 'sl_thucnhap',
-        //width: '40%',
-        width: 100,
+        width: 150,
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
       {
         title: 'Đơn giá',
         dataIndex: 'price',
-        //width: '40%',
+        width: 150,
         editable: true,
         required: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -206,7 +205,7 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: false,
-        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : 'ans_do_not_enter'
       },
       {
         title: 'Ngày Hết Hạn',
@@ -215,51 +214,51 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: false,
-        render: (text, record) => text? moment(text).format('DD/MM/YYYY') : ''
+        render: (text, record) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
-      {
-        title: 'QC Duyệt',
-        dataIndex: 'qc_check',
-        editable: false,
-        width: 150,
-        show: false,
-        render: (text, record) => {
-          return(
-            <Select
-              style={{width: 140}}
-              onChange={(value) => {this.changeStatus('qc_check', record.id, value);}}
-              value={text || '0'}>
-              {qcQAStatus.map((option) => {
-                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
-              })}
-            </Select>
-          );
-        }
-      },
-      {
-        title: 'QA Duyệt',
-        dataIndex: 'qa_check',
-        editable: false,
-        width: 170,
-        show: false,
-        render: (text, record) => {
-          return(
-            <Select
-              style={{width: 140}}
-              onChange={(value) => {this.changeStatus('qa_check', record.id, value);}}
-              value={text || '0'}>
-              {qcQAStatus.map((option) => {
-                return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
-              })}
-            </Select>
-          );
-        }
-      },
+      // {
+      //   title: 'QC Duyệt',
+      //   dataIndex: 'qc_check',
+      //   editable: false,
+      //   width: 150,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return(
+      //       <Select
+      //         style={{width: 140}}
+      //         onChange={(value) => {this.changeStatus('qc_check', record.id, value);}}
+      //         value={text || '0'}>
+      //         {qcQAStatus.map((option) => {
+      //           return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+      //         })}
+      //       </Select>
+      //     );
+      //   }
+      // },
+      // {
+      //   title: 'QA Duyệt',
+      //   dataIndex: 'qa_check',
+      //   editable: false,
+      //   width: 170,
+      //   show: false,
+      //   render: (text, record) => {
+      //     return(
+      //       <Select
+      //         style={{width: 140}}
+      //         onChange={(value) => {this.changeStatus('qa_check', record.id, value);}}
+      //         value={text || '0'}>
+      //         {qcQAStatus.map((option) => {
+      //           return <Select.Option value={option.value} key={option.id}>{option.text}</Select.Option>
+      //         })}
+      //       </Select>
+      //     );
+      //   }
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',
         //fixed: 'right',
-        width: 100,
+        width: 150,
         render: (text, record) => {
           let isReadOnly = this.isReadOnly();
           if(isReadOnly) return '';
@@ -275,27 +274,28 @@ class EditableTable extends React.Component {
                         onClick={() => this.save(form, record.key)}
                         style={{ marginRight: 8 }}
                       >
-                        Lưu
+                        <Icon type="save" />{lang.ans_save || 'ans_save'}
                       </a>
                     )}
                   </EditableContext.Consumer>
+                  {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn huỷ?"
                     onConfirm={() => this.cancel(record.key)}
                   >
-                    <a href="javascript:;">Huỷ</a>
+                    <a href="javascript:;"><Icon type="close" />{lang.ans_cancel || 'ans_cancel'}</a>
                   </Popconfirm>
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
+                  <a href="javascript:;" onClick={() => this.edit(record.key)}><Icon type="edit" />{lang.ans_edit || 'ans_edit'}</a>  
                   {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn xoá?"
                     okType="danger"
                     onConfirm={() => this.delete(record)}
                   >
-                    <a href="javascript:;">Xoá</a>  
+                    <a href="javascript:;"><Icon type="delete" />{lang.ans_delete || 'ans_delete'}</a>  
                   </Popconfirm>
                 </React.Fragment>
                 
