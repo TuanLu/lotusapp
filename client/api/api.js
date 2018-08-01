@@ -68,6 +68,14 @@ export const getTokenHeader = () => {
     };
   }
 }
+export const getUploadTokenHeader = () => {
+  let token = sessionStorage.getItem('ISD_TOKEN');
+  if(token != "" && token != null) {
+    return {
+      'Authorization': 'Bearer ' + token,
+    };
+  }
+}
 
 export const statusOptions = [
   {value: '0', text: 'Ngừng kích hoạt'},

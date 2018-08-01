@@ -4,7 +4,7 @@ import {
   Table, Input, InputNumber, Select, 
   Popconfirm, Form, Row, 
   Col, Button, message, Alert,
-  Menu, Dropdown, Icon, DatePicker
+  Menu, Dropdown, Icon, DatePicker, Modal
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -129,7 +129,7 @@ class EditableCell extends React.Component {
   }
 }
 
-class EditableTable extends React.Component {
+class SanphamPhieunhap extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -659,4 +659,4 @@ class EditableTable extends React.Component {
   }
 }
 
-export default EditableTable
+export default SanphamPhieunhap

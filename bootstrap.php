@@ -110,6 +110,9 @@ $container['LanguageController'] = function ($c) {
 $container['NoteController'] = function ($c) {
   return new \App\Controllers\NoteController($c);
 };
+$container['UploadController'] = function ($c) {
+  return new \App\Controllers\UploadController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

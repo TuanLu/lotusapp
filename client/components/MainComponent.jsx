@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { Layout, Menu, Icon, Button, message } from 'antd';
+import { Layout, Menu, Icon, Button, message, Upload } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { Row, Col, Alert } from 'antd';
 import SidebarMenu from './SidebarMenu'
@@ -63,7 +63,7 @@ class MainComponent extends React.Component {
             this.props.dispatch(updateStateData({
               showLogin: false,
               userRoles: json.scopes,
-              defaultRouter: defaultRouter,
+              //defaultRouter: defaultRouter,
               userInfo: json.userInfo
             }));
           } else if(json.status == "error") {

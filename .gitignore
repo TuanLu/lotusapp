@@ -58,6 +58,7 @@ public/ishopdesign.firebase.min.js
 public/ishopdesign.firebase.read.min.js
 public/ishopdesign.viewonly.firebase.min.js
 public/bundle.js.map
+public/upload/*
 .DS_Store
 .vscode
 bash.exe.stackdump

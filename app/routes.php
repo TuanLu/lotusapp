@@ -11,6 +11,9 @@ $app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
 $app->get('/fetchAllRoles/{user_id}', 'UserController:fetchAllRoles');// To assign to user
 $app->get('/fetchLang', 'LanguageController:fetchLang');//get language info
 
+//Upload router
+$app->post('/uploadFile', 'UploadController:uploadFile');
+//User routers
 $app->get('/users/fetchUsers', 'UserController:fetchUsers')->setName('users__users__view');
 $app->post('/users/updateUser', 'UserController:updateUser')->setName('users__users__update');
 $app->post('/users/updateUserByUser', 'UserController:updateUserByUser');
