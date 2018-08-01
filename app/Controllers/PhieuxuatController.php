@@ -331,19 +331,16 @@ class PhieuxuatController extends BaseController
 			];
 			if($value == 1) {
 				$updateData['tinh_trang'] = $value;
-			}
-			
-			
-
-			$result = $this->db->update($this->tableName, $updateData, ['ma_phieu' => $maPhieu]);
-			if($result->rowCount()) {
-				$this->superLog('Phê duyệt phiếu xuất', $updateData);
-				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-				$data = $this->db->select($this->tableName, ['ma_phieu', 'tinh_trang'], ['ma_phieu' => $maPhieu]);
-				$rsData['data'] = isset($data[0]) ? $data[0] : [];
-			} else {
-				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				$result = $this->db->update($this->tableName, $updateData, ['ma_phieu' => $maPhieu]);
+				if($result->rowCount()) {
+					$this->superLog('Phê duyệt phiếu xuất', $updateData);
+					$rsData['status'] = self::SUCCESS_STATUS;
+					$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+					$data = $this->db->select($this->tableName, ['ma_phieu', 'tinh_trang'], ['ma_phieu' => $maPhieu]);
+					$rsData['data'] = isset($data[0]) ? $data[0] : [];
+				} else {
+					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
+				}
 			}
 		}
 		echo json_encode($rsData);

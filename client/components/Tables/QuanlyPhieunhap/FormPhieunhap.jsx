@@ -113,13 +113,16 @@ class FormPhieunhap extends React.Component {
               <div className="action-btns">
                 {tinh_trang != 1 ? 
                   <React.Fragment>
-                    <Button 
-                      onClick={() => this.pheDuyet(1)}
-                      style={{marginRight: 10}}
-                      icon="check-circle"
-                      type="primary">
-                      Phê duyệt
-                    </Button>
+                    <Popconfirm
+                      title="Bạn chắc chắn muốn duyệt?"
+                      onConfirm={() => this.pheDuyet(1)}>
+                        <Button 
+                          style={{marginRight: 10}}
+                          icon="check-circle"
+                          type="primary">
+                          Phê duyệt
+                        </Button>
+                    </Popconfirm>
                     {phieuAction && phieuAction.action == 'edit'? 
                     <React.Fragment>
                       <Button 
@@ -169,7 +172,9 @@ class FormPhieunhap extends React.Component {
                     </React.Fragment>
                     }
                   </React.Fragment>
-                  : null}
+                  : 
+                  <Button ghost disabled><Badge status="success" text="Đã duyệt" /></Button>
+                  }
                 <Button 
                     onClick={() => this.cancel()}
                     style={{marginLeft: 10}}
@@ -189,6 +194,7 @@ class FormPhieunhap extends React.Component {
           dispatch={this.props.dispatch} 
           mainState={this.props.mainState}/>
         <FormSanpham
+          tinh_trang={tinh_trang}
           isQA={this.props.isQA}
           isQC={this.props.isQC}
           dispatch={this.props.dispatch} 
