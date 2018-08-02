@@ -31,7 +31,7 @@ class GanttController extends BaseController {
 				'check_user'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
-				//"ORDER" => ["start_date" => "ASC"],
+				"ORDER" => ["create_on" => "ASC"],
 				"status" => 1,
 				"quy_trinh_id" => $quyTrinhId
 			]);
