@@ -32,7 +32,7 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_create_by || 'ans_create_by',
         dataIndex: 'name',
-        //width: '40%',
+        width: 150,
         editable: true,
         required: true,
         render: (text, record) => record.name || text
@@ -134,6 +134,12 @@ class EditableTable extends React.Component {
             this.setState({ data: newData, editingKey: '' });
             message.success(json.message);
             this.state.newitem = 0;
+            this.props.dispatch(updateStateData({ // Thay đổi mainState cần action
+              systemNote: {
+                ...record, // Tách object thành các thuộc tính của systemNote (ES6) 
+                openModal: false
+              }
+            }));
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
