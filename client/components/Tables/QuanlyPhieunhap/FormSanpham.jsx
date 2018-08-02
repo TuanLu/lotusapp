@@ -218,74 +218,74 @@ class SanphamPhieunhap extends React.Component {
         required: false,
         render: (text, record) => text? moment(text).format('DD/MM/YYYY') : ''
       },
-      {
-        title: 'QC Duyệt',
-        dataIndex: 'qc_check',
-        editable: false,
-        width: 150,
-        show: false,
-        render: (text, record) => {
-          switch (record.qc_check) {
-            case "1":
-              return <Button><Badge status="success" text={`Đạt`} /></Button>
-              break;
-            case "0": 
-              return <Button><Badge status="error" text={`Không đạt`} /></Button>
-              break;
-            case "2":
-              return <Button 
-              //type="primary"
-              onClick={() => {
-                this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
-                    pheduyet: {
-                      ...this.props.mainState.phieunhap.pheduyet,
-                      id: record.id,
-                      verifyType: 'qc_check',
-                      openModal: true
-                    }
-                  }
-                }));
-              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
-              break;
-          }
-        }
-      },
-      {
-        title: 'QA Duyệt',
-        dataIndex: 'qa_check',
-        editable: false,
-        width: 170,
-        show: false,
-        render: (text, record) => {
-          switch (record.qa_check) {
-            case "1":
-              return <Button><Badge status="success" text={`Đạt`} /></Button>
-              break;
-            case "0": 
-              return <Button><Badge status="error" text={`Không đạt`} /></Button>
-              break;
-            case "2":
-              return <Button 
-              //type="primary"
-              onClick={() => {
-                this.props.dispatch(updateStateData({
-                  phieunhap: {
-                    ...this.props.mainState.phieunhap,
-                    pheduyet: {
-                      ...this.props.mainState.phieunhap.pheduyet,
-                      id: record.id,
-                      verifyType: 'qa_check',
-                      openModal: true
-                    }
-                  }
-                }));
-              }}><Badge status="processing" text={`Phê duyệt`} /></Button>
-              break;
-          }
-        }
-      },
+      // {
+      //   title: 'QC Duyệt',
+      //   dataIndex: 'qc_check',
+      //   editable: false,
+      //   width: 150,
+      //   show: false,
+      //   render: (text, record) => {
+      //     switch (record.qc_check) {
+      //       case "1":
+      //         return <Button><Badge status="success" text={`Đạt`} /></Button>
+      //         break;
+      //       case "0": 
+      //         return <Button><Badge status="error" text={`Không đạt`} /></Button>
+      //         break;
+      //       case "2":
+      //         return <Button 
+      //         //type="primary"
+      //         onClick={() => {
+      //           this.props.dispatch(updateStateData({
+      //             phieunhap: {
+      //               ...this.props.mainState.phieunhap,
+      //               pheduyet: {
+      //                 ...this.props.mainState.phieunhap.pheduyet,
+      //                 id: record.id,
+      //                 verifyType: 'qc_check',
+      //                 openModal: true
+      //               }
+      //             }
+      //           }));
+      //         }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+      //         break;
+      //     }
+      //   }
+      // },
+      // {
+      //   title: 'QA Duyệt',
+      //   dataIndex: 'qa_check',
+      //   editable: false,
+      //   width: 170,
+      //   show: false,
+      //   render: (text, record) => {
+      //     switch (record.qa_check) {
+      //       case "1":
+      //         return <Button><Badge status="success" text={`Đạt`} /></Button>
+      //         break;
+      //       case "0": 
+      //         return <Button><Badge status="error" text={`Không đạt`} /></Button>
+      //         break;
+      //       case "2":
+      //         return <Button 
+      //         //type="primary"
+      //         onClick={() => {
+      //           this.props.dispatch(updateStateData({
+      //             phieunhap: {
+      //               ...this.props.mainState.phieunhap,
+      //               pheduyet: {
+      //                 ...this.props.mainState.phieunhap.pheduyet,
+      //                 id: record.id,
+      //                 verifyType: 'qa_check',
+      //                 openModal: true
+      //               }
+      //             }
+      //           }));
+      //         }}><Badge status="processing" text={`Phê duyệt`} /></Button>
+      //         break;
+      //     }
+      //   }
+      // },
       // {
       //   title: 'QC Duyệt',
       //   dataIndex: 'qc_check',
