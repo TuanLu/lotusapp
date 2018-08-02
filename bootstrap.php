@@ -113,6 +113,9 @@ $container['NoteController'] = function ($c) {
 $container['UploadController'] = function ($c) {
   return new \App\Controllers\UploadController($c);
 };
+$container['OptionsController'] = function ($c) {
+  return new \App\Controllers\OptionsController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.

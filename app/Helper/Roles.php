@@ -138,6 +138,12 @@ class Roles {
         'add'     => 'note__add',
         'edit'    => 'note__edit',
         'delete'  => 'note__delete',
+      ],
+      'options' => [
+        'view'    => 'options__view',
+        'add'     => 'options__add',
+        'edit'    => 'options__edit',
+        'delete'  => 'options__delete',
       ]
     ];
   }
@@ -227,14 +233,14 @@ class Roles {
         'label' => 'Đơn hàng', 
         'icon' => 'shopping-cart',
         'path' => 'qldh',
-        'parent' => 'other_group',
+        'parent' => 'khachhang_group',
         'permission' => Roles::roleAndRouter()['qldh']
       ],
       'npp' => [
         'label' => 'Nhà cung cấp', 
         'icon' => 'solution',
         'path' => 'npp',
-        'parent' => 'other_group',
+        'parent' => 'khachhang_group',
         'permission' => Roles::roleAndRouter()['npp']
       ],
       'qluser' => [
@@ -248,7 +254,7 @@ class Roles {
         'label' => 'Khách Hàng', 
         'icon' => 'team',
         'path' => 'qlkh',
-        'parent' => 'other_group',
+        'parent' => 'khachhang_group',
         'permission' => Roles::roleAndRouter()['qlkh']
       ],
       'qlns' => [
@@ -306,6 +312,13 @@ class Roles {
         'path' => 'note',
         'parent' => 'main_group',
         'permission' => Roles::roleAndRouter()['note']
+      ],
+      'options' => [
+        'label' => 'Cấu hình', 
+        'icon' => 'tool',
+        'path' => 'options',
+        'parent' => 'other_group',
+        'permission' => Roles::roleAndRouter()['options']
       ]
     ];
   }

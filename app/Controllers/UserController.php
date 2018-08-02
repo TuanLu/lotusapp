@@ -96,7 +96,13 @@ class UserController extends BaseController {
         'children' => []
       ],
       [
-        'label' => 'Kho vật tư', 
+        'label' => 'Khách hàng', 
+        'icon' => 'team',
+        'path' => 'khachhang_group',
+        'children' => []
+      ],
+      [
+        'label' => 'Quản lý kho', 
         'icon' => 'home',
         'path' => 'vattu_group',
         'children' => []
@@ -119,17 +125,11 @@ class UserController extends BaseController {
       //   'path' => 'qluser_group',
       //   'children' => []
       // ],
-      [
-        'label' => 'Cấu hình', 
-        'icon' => 'tool',
-        'path' => 'other_group',
-        'children' => []
-      ],
     ];
     //Check is_supper admin
     if($this->isSuperAdmin($userId)) {
       $menus[] = [
-        'label' => 'Thành viên', 
+        'label' => 'Người dùng', 
         'icon' => 'team',
         'path' => 'qluser_group',
         'children' => []
@@ -152,6 +152,14 @@ class UserController extends BaseController {
         ],
       ]
     ];
+    if($this->isSuperAdmin($userId)) {
+      $menus[] = [
+        'label' => 'Cài đặt', 
+        'icon' => 'tool',
+        'path' => 'other_group',
+        'children' => []
+      ];
+    }
     return $menus;
 
   }

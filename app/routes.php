@@ -156,3 +156,7 @@ $app->get('/lang/deleteLang/{id}', 'LanguageController:deleteLang')->setName(Rol
 $app->get('/note/fetchNote', 'NoteController:fetchNote')->setName(Roles::roleAndRouter()['note']['view']);
 $app->post('/note/updateNote', 'NoteController:updateNote')->setName(Roles::roleAndRouter()['note']['add']);
 $app->get('/note/deleteNote/{id}', 'NoteController:deleteNote')->setName(Roles::roleAndRouter()['note']['delete']);
+//Options router
+$app->get('/opts/fetchOpts', 'OptionsController:fetchOpts')->setName(Roles::roleAndRouter()['options']['view']);
+$app->post('/opts/updateOpts', 'OptionsController:updateOpts')->setName(Roles::roleAndRouter()['options']['add']);
+$app->get('/opts/deleteOpts/{id}', 'OptionsController:deleteOpts')->setName(Roles::roleAndRouter()['options']['delete']);

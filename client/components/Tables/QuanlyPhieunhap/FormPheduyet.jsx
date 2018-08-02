@@ -16,11 +16,12 @@ class FormPheduyet extends React.Component {
   }
   render() {
     let {phieunhap} = this.props.mainState;
+    let {ans_language} = this.props.mainState;
     let pheduyet = phieunhap.pheduyet || {};
     return (
       <Form>
         <FormItem
-          label="Nội dung phê duyệt"
+          label={ans_language.ans_approval_content || 'ans_approval_content'}
           //labelCol={{ span: 12 }}
           //wrapperCol={{ span: 12 }}
         >
@@ -40,7 +41,7 @@ class FormPheduyet extends React.Component {
             value={pheduyet.note} />
         </FormItem>
         <FormItem
-          label="File đính kèm (nếu có)"
+          label={ans_language.ans_attach_file_option || 'ans_attach_file_option'}
           //labelCol={{ span: 12 }}
           //wrapperCol={{ span: 12 }}
         >
@@ -62,17 +63,17 @@ class FormPheduyet extends React.Component {
         </FormItem>
         <FormItem>
           <Popconfirm
-            title="Bạn chắc chắn muốn duyệt?"
+            title={ans_language.ans_confirm_approval || 'ans_confirm_approval'}
             onConfirm={() => this.verifyProduct(1)}>
               <Button type="primary" style={{marginRight: 10}}>
-              <Icon type="check-circle" /> Phê Duyệt Đạt         
+              <Icon type="check-circle" /> {ans_language.ans_approval || 'ans_approval'}     
             </Button>
           </Popconfirm>
           <Popconfirm
-            title="Bạn chắc chắn muốn duyệt?"
+            title={ans_language.ans_confirm_approval || 'ans_confirm_approval'}
             onConfirm={() => this.verifyProduct(0)}>
               <Button type="danger" ghost>
-                <Icon type="exclamation-circle" /> Phê Duyệt Không Đạt         
+                <Icon type="exclamation-circle" />{ans_language.ans_not_approval || 'ans_not_approval'}        
               </Button>
           </Popconfirm>
         </FormItem>

@@ -28,6 +28,7 @@ class FormPheduyet extends React.Component {
   }
   render() {
     let {phieunhap} = this.props.mainState;
+    let {ans_language} = this.props.mainState;
     let pheduyet = phieunhap.pheduyet || {};
     let qcFile,
         qaFile;
@@ -54,7 +55,7 @@ class FormPheduyet extends React.Component {
         {pheduyet.verifyType == QC_Check ? 
         <React.Fragment>
           <FormItem
-            label="Nội dung phê duyệt">
+            label={ans_language.ans_approval_content || 'ans_approval_content'}>
             <Input.TextArea 
               autosize={{ minRows: 2, maxRows: 6 }}
               onChange={(e) => {
@@ -71,7 +72,7 @@ class FormPheduyet extends React.Component {
               value={pheduyet.qc_note} />
           </FormItem>
           <FormItem
-            label="File đính kèm (nếu có)">
+            label={ans_language.ans_attach_file_option || 'ans_attach_file_option'}>
             <UploadFile
               fileList={qcFile ? qcFile : []}
               onDone={(filename) => {
@@ -92,7 +93,7 @@ class FormPheduyet extends React.Component {
         : 
         <React.Fragment>
           <FormItem
-            label="Nội dung phê duyệt">
+            label={ans_language.ans_approval_content || 'ans_approval_content'}>
             <Input.TextArea 
               autosize={{ minRows: 2, maxRows: 6 }}
               onChange={(e) => {
@@ -109,7 +110,7 @@ class FormPheduyet extends React.Component {
               value={pheduyet.qa_note} />
           </FormItem>
           <FormItem
-            label="File đính kèm (nếu có)">
+            label={ans_language.ans_attach_file_option || 'ans_attach_file_option'}>
             <UploadFile
               fileList={qaFile ? qaFile : []}
               onDone={(filename) => {
@@ -130,17 +131,17 @@ class FormPheduyet extends React.Component {
         }
         <FormItem>
           <Popconfirm
-            title="Bạn chắc chắn muốn duyệt?"
+            title={ans_language.ans_confirm_approval || 'ans_confirm_approval'}
             onConfirm={() => this.verifyProduct(1)}>
               <Button type="primary" style={{marginRight: 10}}>
-              <Icon type="check-circle" /> Phê Duyệt Đạt         
+              <Icon type="check-circle" />{ans_language.ans_approval || 'ans_approval'}      
             </Button>
           </Popconfirm>
           <Popconfirm
-            title="Bạn chắc chắn muốn duyệt?"
+            title={ans_language.ans_confirm_approval || 'ans_confirm_approval'}
             onConfirm={() => this.verifyProduct(0)}>
               <Button type="danger" ghost>
-                <Icon type="exclamation-circle" /> Phê Duyệt Không Đạt         
+                <Icon type="exclamation-circle" />{ans_language.ans_approval || 'ans_not_approval'}      
               </Button>
           </Popconfirm>
         </FormItem>

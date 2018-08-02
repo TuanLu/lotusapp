@@ -1,15 +1,13 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, 
   Col, Button, message
 } from 'antd';
-import { getTokenHeader, convertArrayObjectToObject } from 'ISD_API';
-import {updateStateData} from 'actions'
+import { getTokenHeader } from 'ISD_API';
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
-
 const EditableRow = ({ form, index, ...props }) => (
   <EditableContext.Provider value={form}>
     <tr {...props} />
@@ -21,22 +19,6 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
-      case 'quanly' :
-        let quanly = this.props.quanly || [];
-        return (
-          <Select 
-            style={{ maxWidth: 200 }}
-            placeholder="Chọn user">
-          {quanly.map((quanly) => {
-              return <Select.Option 
-              key={quanly.id} 
-              value={quanly.username}>
-                {`${quanly.username} - ${quanly.name}`}
-              </Select.Option>
-          })}
-          </Select>
-        );
-      break;
       default:
         return <Input />;
         break;
@@ -65,7 +47,7 @@ class EditableCell extends React.Component {
                   {getFieldDecorator(dataIndex, {
                     rules: [{
                       required: required,
-                      message: `Hãy nhập dữ liệu ô ${title}!`,
+                      message:`Hãy nhập dữ liệu ô ${title}!`,
                     }],
                     initialValue: record[dataIndex],
                     
@@ -88,37 +70,31 @@ class EditableTable extends React.Component {
       editingKey: '',
       newitem: 0
     };
+    let {ans_language} = this.props.mainState;
     this.columns = [
       {
-        title: 'Mã Kho',
-        dataIndex: 'ma_kho',
-        width: '10%',
-        editable: true,
-        required: true,
-      },
-      {
-        title: 'Tên',
-        dataIndex: 'name',
-        //width: '15%',
+        title: ans_language.ans_config_title || 'ans_config_title',
+        dataIndex: 'ma_opt',
+        width: '15%',
         editable: true,
         required: true
       },
       {
-        title: 'Quản lý',
-        dataIndex: 'quanly',
-        width: 120,
-        editable: true,
-        required: false
-      },
-      {
-        title: 'Thông tin',
-        dataIndex: 'description',
+        title: ans_language.ans_config_default_title || 'ans_config_default_title',
+        dataIndex: 'defaultconfig',
         //width: '40%',
         editable: true,
         required: true
       },
       {
-        title: 'Actions',
+        title: ans_language.ans_config_custom_title || 'ans_config_custom_title',
+        dataIndex: 'config',
+        //width: '40%',
+        editable: true,
+        required: true
+      },
+      {
+        title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
         render: (text, record) => {
           const editable = this.isEditing(record);
@@ -133,27 +109,28 @@ class EditableTable extends React.Component {
                         onClick={() => this.save(form, record.key)}
                         style={{ marginRight: 8 }}
                       >
-                        Lưu
+                        <Icon type="save" />{ans_language.ans_save || 'ans_save'}
                       </a>
                     )}
                   </EditableContext.Consumer>
                   <Popconfirm
-                    title="Bạn thật sự muốn huỷ?"
+                    title={ans_language.ans_confirm_cancel || 'ans_confirm_cancel'}
                     onConfirm={() => this.cancel(record)}
                   >
-                    <a href="javascript:;">Huỷ</a>
+                  {" | "}  
+                  <a href="javascript:;"><Icon type="close" />{ans_language.ans_cancel || 'ans_cancel'}</a>
                   </Popconfirm>
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
+                  <a href="javascript:;" onClick={() => this.edit(record.key)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
                   {" | "}
                   <Popconfirm
-                    title="Bạn thật sự muốn xoá?"
+                    title={ans_language.ans_confirm_delete || 'ans_confirm_delete'}
                     okType="danger"
                     onConfirm={() => this.delete(record)}
                   >
-                    <a href="javascript:;">Xoá</a>  
+                    <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
                   </Popconfirm>
                 </React.Fragment>
                 
@@ -177,12 +154,11 @@ class EditableTable extends React.Component {
       })
       this.state.newitem  = 1 ;
     }else{
-      message.error('Bạn đang thêm mới kho rồi ...');
+      message.error('Bạn đang thêm mới cấu hình rồi ...');
     }
   }
   getDefaultFields() {
     return {
-      ma_kho: "",
       name: "",
       description: ""
     };
@@ -207,7 +183,7 @@ class EditableTable extends React.Component {
           ...item,
           ...row,
         };
-        fetch(ISD_BASE_URL + 'qlkho/updateKho', {
+        fetch(ISD_BASE_URL + 'opts/updateOpts', {
           method: 'POST',
           headers: getTokenHeader(),
           body: JSON.stringify(newItemData)
@@ -247,13 +223,13 @@ class EditableTable extends React.Component {
   }
   delete = (record) => {
     if(record.id) {
-      fetch(ISD_BASE_URL + 'qlkho/deleteKho/' + record.id, {
+      fetch(ISD_BASE_URL + 'opts/deleteOpts/' + record.id, {
         headers: getTokenHeader()
       })
       .then((response) => response.json())
       .then((json) => {
         if(json.status == 'error') {
-          message.error('Có lỗi xảy ra khi xoá dữ liệu kho!', 3);
+          message.error(json.message, 3);
         } else {
           let newData = this.state.data.filter((item) => item.id != json.data);
           this.setState({data: newData});
@@ -275,7 +251,7 @@ class EditableTable extends React.Component {
     }
   }
   fetchData() {
-    fetch(ISD_BASE_URL + 'qlkho/fetchKho', {
+    fetch(ISD_BASE_URL + 'opts/fetchOpts', {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -293,38 +269,12 @@ class EditableTable extends React.Component {
       }
     })
     .catch((error) => {
-      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      message.error('Có lỗi khi tải dữ liệu dữ liệu cấu hình !', 3);
       console.log(error);
     }); 
   }
-  fetchQuanly() {
-    fetch(ISD_BASE_URL + 'qlkho/fetchQl', {
-      headers: getTokenHeader()
-    })
-    .then((resopnse) => resopnse.json())
-    .then((json) => {
-      if(json.data) {
-        if(json.data) {
-          this.props.dispatch(updateStateData({
-            quanly: json.data
-          }));
-          this.setState({
-            //quanly: json.data
-            quanly: convertArrayObjectToObject(json.data, 'username')
-          });
-          
-        }
-      } else {
-        message.error(json.message);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
   componentDidMount() {
     this.fetchData();
-    this.fetchQuanly();
   }
   render() {
     const components = {
@@ -333,25 +283,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
-    let quanly = this.props.quanly || [];
+    let {ans_language} = this.props.mainState;
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -364,8 +296,7 @@ class EditableTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          required: col.required,
-          quanly
+          required: col.required
         }),
       };
     });
@@ -375,13 +306,13 @@ class EditableTable extends React.Component {
         <div className="table-operations">
           <Row>
             <Col span={12}>
-              <h2 className="head-title">Quản lý kho</h2>
+              <h2 className="head-title">{ans_language.ans_options_title || 'ans_options_title'}</h2>
             </Col>
             <Col span={12}>
               <div className="action-btns">
                 <Button 
                   onClick={() => this.addNewRow()}
-                  type="primary" icon="plus">Thêm kho mới</Button>
+                  type="primary" icon="plus">{ans_language.ans_add_new || 'ans_add_new'}</Button>
               </div>
             </Col>
           </Row>
