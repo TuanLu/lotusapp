@@ -18,7 +18,7 @@ class EditableTable extends React.Component {
       editingKey: '',
       newitem: 0
     }; 
-    let {ans_language, userlist} = this.props.mainState; 
+    let {ans_language} = this.props.mainState; 
     this.columns = [
       {
         title: ans_language.ans_date_create || 'ans_date_create',
@@ -231,12 +231,15 @@ class EditableTable extends React.Component {
   }
   componentDidMount() {
     this.fetchData();
+    this.fetchUserList();
   }
   render() {
     const columns = this.columns;
+    
     let {mainState} = this.props;
     let openModal = mainState.systemNote ? mainState.systemNote.openModal : false;
     let {ans_language} = mainState;
+    let userlist = this.state.userlist;  // log đã có, làm sao gọi nó vào columns ???
     return (
       <React.Fragment>
         <div className="table-operations">

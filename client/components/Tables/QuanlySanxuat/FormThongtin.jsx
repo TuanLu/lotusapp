@@ -1,11 +1,12 @@
 import React from 'react'
 import moment from 'moment';
-import { Form, Select, Input, Row, Col, DatePicker, Button,Popconfirm,message } from 'antd';
+import { Form, Select, Input, Row, Col, DatePicker, Radio, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const dateFormat = 'YYYY/MM/DD';
+const RadioGroup = Radio.Group;
 
 const formInfo = {
   person: 'Người giao hàng'
@@ -68,7 +69,7 @@ class FormThongtin extends React.Component {
     this.fetchProductbyCate();
   }
   render() {
-    let {sx, phieuAction} = this.props.mainState;
+    let {sx, phieuAction, ans_language} = this.props.mainState;
     let hsd = sx.hd;
     hsd = moment(hsd);
     let productListbyCate = this.state.productListbyCateList || [];
@@ -86,7 +87,7 @@ class FormThongtin extends React.Component {
         <Row>
             <Col span={12}>
             <FormItem
-              label={'SỐ'}
+              label={ans_language.ans_number_lsx || 'ans_number_lsx' }
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -105,7 +106,7 @@ class FormThongtin extends React.Component {
             </Col>
             <Col span={12}>
             <FormItem
-              label={'CÔNG ĐOẠN'}
+              label={ans_language.ans_cong_doan || 'ans_cong_doan'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -125,79 +126,60 @@ class FormThongtin extends React.Component {
         </Row>
         <Row>
             <Col span={12}>
-            <FormItem
-              label={'MÃ'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      ma: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.ma} />
-            </FormItem>
+              <FormItem
+                label={ans_language.ans_product || 'ans_product'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+                <Select 
+                  defaultValue={sx.ma_sp}
+                  showSearch
+                  optionFilterProp="children"
+                  onChange={(value, option) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        ma_sp: value
+                      }
+                    }));
+                  }}
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  //style={{ width: 200 }}
+                  placeholder={ans_language.ans_choose_product || 'ans_choose_product'}>
+                  {productListbyCate.map((product) => {
+                    return <Select.Option 
+                    key={product.product_id} 
+                    value={product.product_id}> 
+                      {`${product.product_id} - ${product.name} - ${product.unit} `}
+                  </Select.Option>
+                })}
+                </Select>
+              </FormItem>
             </Col>
             <Col span={12}>
-            <FormItem
-              label={'SẢN PHẨM'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Select 
-              defaultValue={sx.ma_sp}
-              showSearch
-              optionFilterProp="children"
-              onChange={(value, option) => {
-                this.props.dispatch(updateStateData({
-                  sx: {
-                    ...this.props.mainState.sx,
-                    ma_sp: value
-                  }
-                }));
-              }}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              //style={{ width: 200 }}
-              placeholder="Chọn VT">
-              {productListbyCate.map((product) => {
-                return <Select.Option 
-                key={product.product_id} 
-                value={product.product_id}> 
-                  {`${product.product_id} - ${product.name} - ${product.unit} `}
-              </Select.Option>
-             })}
-            </Select>
-            </FormItem>
+              <FormItem
+                  label={ans_language.ans_co_lo || 'ans_co_lo'}
+                  labelCol={{ span: 5 }}
+                  wrapperCol={{ span: 12 }}
+                >
+                <Input 
+                    readOnly={readOnly}
+                    onChange={(e) => {
+                      this.props.dispatch(updateStateData({
+                        sx: {
+                          ...this.props.mainState.sx,
+                          co_lo: e.target.value
+                        }
+                      }));
+                    }}
+                    value={sx.co_lo} />
+                </FormItem>
             </Col>
             </Row>
             <Row>
             <Col span={12}>
-              <FormItem
-                label={'CỠ LÔ'}
-                labelCol={{ span: 5 }}
-                wrapperCol={{ span: 12 }}
-              >
-              <Input 
-                  readOnly={readOnly}
-                  onChange={(e) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        co_lo: e.target.value
-                      }
-                    }));
-                  }}
-                  value={sx.co_lo} />
-              </FormItem>
-            </Col>
-            <Col span={12}>
             <FormItem
-              label={'SĐK'}
+              label={ans_language.ans_so_dang_ky || 'ans_so_dang_ky'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -214,11 +196,30 @@ class FormThongtin extends React.Component {
                 value={sx.so_dk} />
             </FormItem>
             </Col>
+            <Col span={12}>
+              <FormItem
+                label={ans_language.ans_order || 'ans_order'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+              <Input 
+                  readOnly={readOnly}
+                  onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        dh: e.target.value
+                      }
+                    }));
+                  }}
+                  value={sx.dh} />
+              </FormItem>
+            </Col>
         </Row>
         <Row>
             <Col span={12}>
             <FormItem
-              label={'SỐ LÔ'}
+              label={ans_language.ans_so_lo || 'ans_so_lo'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -237,7 +238,7 @@ class FormThongtin extends React.Component {
             </Col>
             <Col span={12}>
             <FormItem
-              label={'QCĐG'}
+              label={ans_language.ans_quy_cach_dong_goi || 'ans_quy_cach_dong_goi'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -258,7 +259,7 @@ class FormThongtin extends React.Component {
         <Row>
             <Col span={12}>
               <FormItem
-                label={'NSX'}
+                label={ans_language.ans_date_of_manufacture || 'ans_date_of_manufacture'}
                 labelCol={{ span: 5 }}
                 wrapperCol={{ span: 12 }}
               >
@@ -279,87 +280,68 @@ class FormThongtin extends React.Component {
             </Col>
             <Col span={12}>
               <FormItem
-                label={'HSD'}
+                label={ans_language.ans_expiry_date || 'ans_expiry_date'}
                 labelCol={{ span: 5 }}
                 wrapperCol={{ span: 12 }}
               >
-              <DatePicker defaultValue={hsd} onChange={(date) => {
-                if(date != null){
-                  date = date.format('YYYY-MM-DD');
-                }else{ 
-                  date = '';
-                }
-                this.props.dispatch(updateStateData({
-                  sx: {
-                    ...this.props.mainState.sx,
-                    hd: date
-                  }
-                }));
-              }} placeholder="Chọn ngày" format="DD/MM/YYYY"/>
+                <RadioGroup onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        hd: e.target.value
+                      }}));
+                    }
+                  } 
+                  disabled={readOnly}
+                  name="hd" defaultValue={sx.hd || 2}>
+                  {/* <Radio value={1}>{ans_language.ans_expiry_date_6mon || 'ans_expiry_date_6mon'}</Radio> */}
+                  <Radio value={1}>{ans_language.ans_expiry_date_1yr || 'ans_expiry_date_1yr'}</Radio>
+                  <Radio value={2}>{ans_language.ans_expiry_date_2yr || 'ans_expiry_date_2yr'}</Radio>
+                  <Radio value={3}>{ans_language.ans_expiry_date_3yr || 'ans_expiry_date_3yr'}</Radio>
+                </RadioGroup>
               </FormItem>
             </Col>
             </Row>
             <Row>
-            <Col span={12}>
-            <FormItem
-              label={'ĐH'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      dh: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.dh} />
-            </FormItem>
-            </Col>
-            <Col span={12}>
-            <FormItem
-              label={'DẠNG BÀO CHẾ'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      dang_bao_che: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.dang_bao_che} />
-            </FormItem>
-            </Col>
+              <Col span={12}>
+                <FormItem
+                  label={ans_language.ans_tttb_kltb || 'ans_tttb_kltb'}
+                  labelCol={{ span: 5 }}
+                  wrapperCol={{ span: 12 }}
+                >
+                <Input 
+                    readOnly={readOnly}
+                    onChange={(e) => {
+                      this.props.dispatch(updateStateData({
+                        sx: {
+                          ...this.props.mainState.sx,
+                          tttb_kltb: e.target.value
+                        }
+                      }));
+                    }}
+                    value={sx.tttb_kltb} />
+                </FormItem>
+              </Col>
+              <Col span={12}>
+              <FormItem
+                label={ans_language.ans_dang_bao_che || 'ans_dang_bao_che'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+              <Input 
+                  readOnly={readOnly}
+                  onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      sx: {
+                        ...this.props.mainState.sx,
+                        dang_bao_che: e.target.value
+                      }
+                    }));
+                  }}
+                  value={sx.dang_bao_che} />
+              </FormItem>
+              </Col>
             </Row>
-            <Row>
-            <Col span={12}>
-            <FormItem
-              label={'TTTB/KLTB'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      tttb_kltb: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.tttb_kltb} />
-            </FormItem>
-            </Col>
-        </Row>
       </Form>
     );
   }
