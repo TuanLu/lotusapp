@@ -59,6 +59,7 @@ public/ishopdesign.firebase.read.min.js
 public/ishopdesign.viewonly.firebase.min.js
 public/bundle.js.map
 public/upload/*
+public/export/*
 public/.htaccess
 public/css/responsive.css
 .DS_Store

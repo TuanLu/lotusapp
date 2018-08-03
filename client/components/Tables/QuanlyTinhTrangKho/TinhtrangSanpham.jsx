@@ -295,6 +295,36 @@ class TinhtrangSanpham extends React.Component {
       }
     }));
   }
+  export() {
+    let {phieunhap} = this.props.mainState;
+    let dataset = phieunhap.products ? phieunhap.products : [];
+    if(dataset.length) {
+      let exportData = {
+        dataset,
+        title: 'Export Title',
+        filename: 'Export Filename'
+      };
+      fetch(ISD_BASE_URL + 'export', {
+        method: 'POST',
+        headers: getTokenHeader(),
+        body: JSON.stringify(exportData)
+      })
+      .then((response) => {
+        return response.json()
+      }).then((json) => {
+        if(json.status == 'error') {
+          message.error(json.message, 3);
+        } else {
+          message.success(json.message);
+        }
+      }).catch((ex) => {
+        console.log('parsing failed', ex)
+        message.error('Có lỗi xảy ra trong quá trình export!');
+      });
+    } else {
+      message.error('Không có dữ liệu để export!');
+    }
+  }
   componentDidMount() {
     //let {products, phieunhap} = this.props.mainState;
     this.fetchAllProduct();
@@ -386,7 +416,13 @@ class TinhtrangSanpham extends React.Component {
               <h2 className="head-title">{tableConfig.headTitle}</h2>
             </Col>
             <Col span={12}>
-              
+              <div className="action-btns">
+                <Form>
+                  <Button onClick={() => {
+                    this.export();
+                  }} type="primary"> <Icon type="file-excel" />Xuất Excel</Button>
+                </Form>
+              </div>
             </Col>
           </Row>
         </div>

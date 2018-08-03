@@ -6,7 +6,6 @@ use App\Helper\Roles;
 
 //User router
 //$app->get('/login', 'UserController:index');
-$app->get('/test', 'HomeController:test');
 $app->post('/token', 'UserController:token')->setName('token');
 $app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
 $app->get('/fetchAllRoles/{user_id}', 'UserController:fetchAllRoles');// To assign to user
@@ -157,3 +156,4 @@ $app->get('/lang/deleteLang/{id}', 'LanguageController:deleteLang')->setName(Rol
 $app->get('/note/fetchNote', 'NoteController:fetchNote')->setName(Roles::roleAndRouter()['note']['view']);
 $app->post('/note/updateNote', 'NoteController:updateNote')->setName(Roles::roleAndRouter()['note']['add']);
 $app->get('/note/deleteNote/{id}', 'NoteController:deleteNote')->setName(Roles::roleAndRouter()['note']['delete']);
+$app->post('/export', 'ExportController:export');

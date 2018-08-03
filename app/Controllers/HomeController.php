@@ -14,6 +14,7 @@ class HomeController extends BaseController {
     return $this->view->render($response, 'home.phtml', $data);
   }
   public function test($request, $response) {
+    die('test');
     // Create new Spreadsheet object
     $products = $this->db->select("products", "*");
     $this->exportExcel($products, "My TItle", "My_filename.xlsx");
