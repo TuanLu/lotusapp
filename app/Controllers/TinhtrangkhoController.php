@@ -188,7 +188,14 @@ class TinhtrangkhoController extends BaseController {
 		if(isset($filters['ma_cate']) && !empty($filters['ma_cate'])) {
 			$where .= " AND `products`.`category_id` IN ('" . implode("', '", $filters['ma_cate']) . "')";
 			}
-		$sql = "SELECT `san_pham_theo_phieu`.`id`, `san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,`san_pham_theo_phieu`.`ma_lo`,`san_pham_theo_phieu`.`label`,`san_pham_theo_phieu`.`unit`,`san_pham_theo_phieu`.`price`,`san_pham_theo_phieu`.`sl_chungtu`,`san_pham_theo_phieu`.`sl_thucnhap`,`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`san_pham_theo_phieu`.`qc_note`,`san_pham_theo_phieu`.`qa_note`,`san_pham_theo_phieu`.`qc_file`,`san_pham_theo_phieu`.`qa_file`,`lotus_kho`.`ma_kho`, `products`.`category_id` FROM `san_pham_theo_phieu` LEFT JOIN `phieu_nhap_xuat_kho` ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` LEFT JOIN `products` ON `products`.`product_id` = `san_pham_theo_phieu`.`product_id` LEFT JOIN `lotus_kho` ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`ma_kho` WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 AND `phieu_nhap_xuat_kho`.`tinh_trang` = 1 ". $where ." ORDER BY `san_pham_theo_phieu`.`id` DESC"; 
+		$sql = "SELECT `san_pham_theo_phieu`.`id`, `san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,`san_pham_theo_phieu`.`ma_lo`,`san_pham_theo_phieu`.`label`,`san_pham_theo_phieu`.`unit`,`san_pham_theo_phieu`.`price`,`san_pham_theo_phieu`.`sl_chungtu`,`san_pham_theo_phieu`.`sl_thucnhap`,`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`san_pham_theo_phieu`.`qc_note`,`san_pham_theo_phieu`.`qa_note`,`san_pham_theo_phieu`.`qc_file`,`san_pham_theo_phieu`.`qa_file`,`lotus_kho`.`ma_kho`, `lotus_kho`.`name` AS ten_kho, `products`.`category_id` 
+		FROM `san_pham_theo_phieu` 
+		LEFT JOIN `phieu_nhap_xuat_kho` 
+		ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` 
+		LEFT JOIN `products` 
+		ON `products`.`product_id` = `san_pham_theo_phieu`.`product_id` 
+		LEFT JOIN `lotus_kho` 
+		ON `phieu_nhap_xuat_kho`.`ma_kho` = `lotus_kho`.`ma_kho` WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 AND `phieu_nhap_xuat_kho`.`tinh_trang` = 1 ". $where ." ORDER BY `san_pham_theo_phieu`.`id` DESC"; 
 		 $collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC); 
 		return $collection;
 	}

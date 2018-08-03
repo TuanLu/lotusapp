@@ -52,6 +52,12 @@ class TinhtrangSanpham extends React.Component {
         //fixed: 'left',
       },
       {
+        title: 'Tên Kho',
+        dataIndex: 'ten_kho',
+        width: 200,
+        //fixed: 'left',
+      },
+      {
         title: 'SL',
         dataIndex: 'sl_thucnhap',
         width: 120,
@@ -299,10 +305,23 @@ class TinhtrangSanpham extends React.Component {
     let {phieunhap} = this.props.mainState;
     let dataset = phieunhap.products ? phieunhap.products : [];
     if(dataset.length) {
+      //Format dataset before export 
+      dataset = dataset.map((item) => {
+        return {
+          ["Mã SP"]: item.product_id,
+          ["Tên Kho"]: item.ten_kho,
+          ["Số lượng"]: item.sl_thucnhap,
+          ["Ngày sản xuất"]: item.ngay_san_xuat,
+          ["Ngày hết hạn"]: item.ngay_het_han,
+          ["QC Kiểm tra"]: item.qc_check == 1 ? 'Đạt' : 'Không đạt',
+          ["QA Kiểm tra"]: item.qa_check == 1 ? 'Đạt' : 'Không đạt'
+        }
+      });
+      //End format 
       let exportData = {
         dataset,
-        title: 'Export Title',
-        filename: 'Export Filename'
+        title: 'Tình trạng kho',
+        filename: 'Tình trạng kho'
       };
       fetch(ISD_BASE_URL + 'exportExcel', {
         method: 'POST',
