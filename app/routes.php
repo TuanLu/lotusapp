@@ -156,4 +156,4 @@ $app->get('/lang/deleteLang/{id}', 'LanguageController:deleteLang')->setName(Rol
 $app->get('/note/fetchNote', 'NoteController:fetchNote')->setName(Roles::roleAndRouter()['note']['view']);
 $app->post('/note/updateNote', 'NoteController:updateNote')->setName(Roles::roleAndRouter()['note']['add']);
 $app->get('/note/deleteNote/{id}', 'NoteController:deleteNote')->setName(Roles::roleAndRouter()['note']['delete']);
-$app->post('/export', 'ExportController:export');
+$app->post('/exportExcel', 'ExportController:export');

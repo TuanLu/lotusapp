@@ -295,7 +295,7 @@ class TinhtrangSanpham extends React.Component {
       }
     }));
   }
-  export() {
+  exportExcel() {
     let {phieunhap} = this.props.mainState;
     let dataset = phieunhap.products ? phieunhap.products : [];
     if(dataset.length) {
@@ -304,7 +304,7 @@ class TinhtrangSanpham extends React.Component {
         title: 'Export Title',
         filename: 'Export Filename'
       };
-      fetch(ISD_BASE_URL + 'export', {
+      fetch(ISD_BASE_URL + 'exportExcel', {
         method: 'POST',
         headers: getTokenHeader(),
         body: JSON.stringify(exportData)
@@ -316,6 +316,9 @@ class TinhtrangSanpham extends React.Component {
           message.error(json.message, 3);
         } else {
           message.success(json.message);
+          if(json.filename) {
+            window.location.href = ISD_BASE_URL + `export/${json.filename}`;
+          }
         }
       }).catch((ex) => {
         console.log('parsing failed', ex)
@@ -418,9 +421,7 @@ class TinhtrangSanpham extends React.Component {
             <Col span={12}>
               <div className="action-btns">
                 <Form>
-                  <Button onClick={() => {
-                    this.export();
-                  }} type="primary"> <Icon type="file-excel" />Xuất Excel</Button>
+                  <Button onClick={() => this.exportExcel()} type="primary"> <Icon type="file-excel" />Xuất Excel</Button>
                 </Form>
               </div>
             </Col>

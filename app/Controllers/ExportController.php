@@ -1,7 +1,5 @@
 <?php 
 namespace App\Controllers;
-use \Slim\Views\PhpRenderer;
-use \App\Helper\Data;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -10,7 +8,7 @@ class ExportController extends BaseController {
     $rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Xin lỗi! Không export được file!'
-		);
+    );
     $params = $request->getParams();
     $dataset = isset($params['dataset']) ? $params['dataset'] : [];
     if(!empty($dataset)) {
@@ -23,7 +21,7 @@ class ExportController extends BaseController {
         $rsData['filename'] = $result;
       }
     }
-    echo json_encode($rsData);
+    echo json_encode($rsData);exit();
   }
   private function getExportDir() {
     $baseDir = $this->baseDir();
@@ -101,5 +99,6 @@ class ExportController extends BaseController {
     if(file_exists($filePath)) {
       return $filename;
     }
+    return false;
   }
 }
