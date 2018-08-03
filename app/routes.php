@@ -6,6 +6,7 @@ use App\Helper\Roles;
 
 //User router
 //$app->get('/login', 'UserController:index');
+$app->get('/test', 'HomeController:test');
 $app->post('/token', 'UserController:token')->setName('token');
 $app->get('/fetchRoles', 'UserController:fetchRoles');//Per User
 $app->get('/fetchAllRoles/{user_id}', 'UserController:fetchAllRoles');// To assign to user
