@@ -35,13 +35,14 @@ class KhoController extends BaseController
 		}
 		echo json_encode($rsData);
 	}
-	public function fetchQl($request){
+	public function fetchQl(){
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu users từ hệ thống!'
 		);
-		$sql = 'SELECT `id`,`username`,`email`,`name`,`roles` FROM users WHERE `status` = 1 AND `roles` LIKE "%qlkho%"';
+		$sql = "SELECT `id`,`username`,`email`,`name`, `router_name` FROM `users` LEFT JOIN `user_permission` ON `user_permission`.`user_id` = `users`.`id` AND user_permission.router_name LIKE '%lotus_kho__edit' WHERE `status` = 1 AND `user_permission`.router_name IS NOT NULL";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+		//echo '<pre>'; print_r($collection);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';

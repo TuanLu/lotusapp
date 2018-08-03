@@ -116,6 +116,9 @@ $container['UploadController'] = function ($c) {
 $container['ExportController'] = function ($c) {
   return new \App\Controllers\ExportController($c);
 };
+$container['OptionsController'] = function ($c) {
+  return new \App\Controllers\OptionsController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
