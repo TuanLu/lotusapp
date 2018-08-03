@@ -311,8 +311,8 @@ class TinhtrangSanpham extends React.Component {
           ["Mã SP"]: item.product_id,
           ["Tên Kho"]: item.ten_kho,
           ["Số lượng"]: item.sl_thucnhap,
-          ["Ngày sản xuất"]: item.ngay_san_xuat,
-          ["Ngày hết hạn"]: item.ngay_het_han,
+          ["Ngày sản xuất"]: item.ngay_san_xuat ?  moment(item.ngay_san_xuat).format('DD/MM/YYYY') : '',
+          ["Ngày hết hạn"]: item.ngay_het_han ?  moment(item.ngay_het_han).format('DD/MM/YYYY') : '',
           ["QC Kiểm tra"]: item.qc_check == 1 ? 'Đạt' : 'Không đạt',
           ["QA Kiểm tra"]: item.qa_check == 1 ? 'Đạt' : 'Không đạt'
         }
