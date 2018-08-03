@@ -102,13 +102,13 @@ export const trangThaiPhieu = [
 
 export const qcQAStatus = [
   {
-    id: '0',
-    value: '0',
+    id: '2',
+    value: '2',
     text: 'Chờ duyệt'
   },
   {
-    id: '2',
-    value: '2',
+    id: '0',
+    value: '0',
     text: 'Không đạt'
   },
   {

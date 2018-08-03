@@ -3,7 +3,7 @@ import { Form, Row, Col, Input, Button,
   Icon, message, Select, DatePicker
 } from 'antd';
 const {RangePicker} = DatePicker;
-import {getTokenHeader} from 'ISD_API'
+import {getTokenHeader, qcQAStatus} from 'ISD_API'
 import {updateStateData} from 'actions'
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -246,6 +246,34 @@ class AdvancedSearchForm extends React.Component {
                 mode="multiple"
                 placeholder="Nhập mã danh mục">
                 {cates.map((cate) =><Option value={cate.id} key={cate.id}>{cate.ma_cate ? cate.ma_cate +' -' : "" } {cate.name}</Option>)}
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem label={`Lọc theo QC duyệt`}>
+            {getFieldDecorator(`qc_check`, {
+              rules: [{
+                required: false,
+              }],
+            })(
+              <Select 
+                placeholder="QC Duyệt">
+                {qcQAStatus.map((option) =><Option value={option.id} key={option.value}>{option.text}</Option>)}
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem label={`Lọc theo QA duyệt`}>
+            {getFieldDecorator(`qa_check`, {
+              rules: [{
+                required: false,
+              }],
+            })(
+              <Select 
+                placeholder="QA Duyệt">
+                {qcQAStatus.map((option) =><Option value={option.id} key={option.value}>{option.text}</Option>)}
               </Select>
             )}
           </FormItem>

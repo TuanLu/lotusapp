@@ -188,6 +188,14 @@ class TinhtrangkhoController extends BaseController {
 		if(isset($filters['ma_cate']) && !empty($filters['ma_cate'])) {
 			$where .= " AND `products`.`category_id` IN ('" . implode("', '", $filters['ma_cate']) . "')";
 			}
+		//Tim theo QC duỵet
+		if(isset($filters['qc_check'])) {
+			$where .= " AND `san_pham_theo_phieu`.`qc_check` = '" . $filters['qc_check'] . "'";
+		}
+		//Tim theo QA duỵet
+		if(isset($filters['qa_check'])) {
+			$where .= " AND `san_pham_theo_phieu`.`qa_check` = '" . $filters['qa_check'] . "'";
+		}
 		$sql = "SELECT `san_pham_theo_phieu`.`id`, `san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,`san_pham_theo_phieu`.`ma_lo`,`san_pham_theo_phieu`.`label`,`san_pham_theo_phieu`.`unit`,`san_pham_theo_phieu`.`price`,`san_pham_theo_phieu`.`sl_chungtu`,`san_pham_theo_phieu`.`sl_thucnhap`,`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`,`san_pham_theo_phieu`.`qc_note`,`san_pham_theo_phieu`.`qa_note`,`san_pham_theo_phieu`.`qc_file`,`san_pham_theo_phieu`.`qa_file`,`lotus_kho`.`ma_kho`, `lotus_kho`.`name` AS ten_kho, `products`.`category_id` 
 		FROM `san_pham_theo_phieu` 
 		LEFT JOIN `phieu_nhap_xuat_kho` 
