@@ -5,22 +5,21 @@ use \Monolog\Logger;
 use \Ramsey\Uuid\Uuid;
 use App\Helper\Roles;
 
-class SXController extends BaseController
+class RNDController extends BaseController
 {
-	private $tableName = 'lotus_sanxuat';
+	private $tableName = 'lotus_rnd';
 
 	private function getColumns() {
 		$columns = [
 			'id',
-			'ma_sx',
-			'so',
+			'ma_rnd',
+			'ma_nc',
 			'cong_doan',
-			'ma_sp',
+			'orderid',
 			'co_lo',
 			'so_lo',
 			'nsx',
 			'hd',
-			'so_dk',
 			'dang_bao_che',
 			'qcdg',
 			'dh',
@@ -35,7 +34,7 @@ class SXController extends BaseController
 		return $columns;
 	}
  
-	public function fetch($request){
+	public function fetchRnd($request){
 		//$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -62,12 +61,12 @@ class SXController extends BaseController
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa load được sản phẩm của phiếu!'
 		);
-		$ma_sx = isset(	$args['ma_sx']) ? $args['ma_sx'] : '';
+		$ma_rnd = isset(	$args['ma_rnd']) ? $args['ma_rnd'] : '';
 		// Columns to select.
 		$columns = [
 			'id',
 			'id(key)',//For unique react item
-			'ma_sx',
+			'ma_rnd',
 			'ma_maquet',
 			'product_id',
 			'cong_doan',
@@ -77,9 +76,9 @@ class SXController extends BaseController
 			'hu_hao',
 			'create_on'
 		];
-		$collection = $this->db->select('lotus_spsx', $columns, [
+		$collection = $this->db->select('lotus_sprnd', $columns, [
 			"status" => 1,
-			"ma_sx" => $ma_sx
+			"ma_rnd" => $ma_rnd
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -99,75 +98,62 @@ class SXController extends BaseController
 		// Get params and validate them here.
 		$id = $request->getParam('id');
 		$params = $request->getParams();
-		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';
-		$ma = isset($params['ma']) ? $params['ma'] : '';
-		$so = isset($params['so']) ? $params['so'] : '';
+		$ma_rnd = isset($params['ma_rnd']) ? $params['ma_rnd'] : '';
+		$ma_nc = isset($params['ma_nc']) ? $params['ma_nc'] : '';
 		$cong_doan = isset($params['cong_doan']) ? $params['cong_doan'] : '';
 		$ma_sp = isset($params['ma_sp']) ? $params['ma_sp'] : '';
 		$co_lo = isset($params['co_lo']) ? $params['co_lo'] : '';
 		$so_lo = isset($params['so_lo']) ? $params['so_lo'] : '';
 		$nsx = isset($params['nsx']) ? $params['nsx'] : '';
 		$hd = isset($params['hd']) ? $params['hd'] : '';
-		$so_dk = isset($params['so_dk']) ? $params['so_dk'] : '';
 		$dang_bao_che = isset($params['dang_bao_che']) ? $params['dang_bao_che'] : '';
 		$qcdg = isset($params['qcdg']) ? $params['qcdg'] : '';
 		$dh = isset($params['dh']) ? $params['dh'] : '';
-		//$pkhsx = isset($params['pkhsx']) ? $params['pkhsx'] : '';
-		//$pdbcl = isset($params['pdbcl']) ? $params['pdbcl'] : '';
-		//$gd = isset($params['gd']) ? $params['gd'] : '';
-		// if($pkhsx) {$pkhsx = 1;}else{$pkhsx = 0;}
-		// if($pdbcl) {$pdbcl = 1;}else{$pdbcl = 0;}
-		// if($gd) {$gd = 1;}else{$gd = 0;}
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
 		$note = isset($params['note']) ? $params['note'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
 		//Some validation 
 		if(empty($products)) {
-			$rsData['message'] = 'Không có VT nào trong lệnh sản xuất!';
+			$rsData['message'] = 'Không có VT nào trong nghiên cứu!';
 				echo json_encode($rsData);
 				die;
 		}
-		if(!$so) {
-			$rsData['message'] = 'Mã sản xuất không được để trống!';
+		if(!$ma_nc) {
+			$rsData['message'] = 'Mã nghiên cứu không được để trống!';
 				echo json_encode($rsData);
 				die;
 		}
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		if(!$id) {
 			$uuid1 = Uuid::uuid1();
-			$ma_sx = $uuid1->toString();
+			$ma_rnd = $uuid1->toString();
 			$date = new \DateTime();
 			$createOn = $date->format('Y-m-d H:i:s');
 			//Tao phieu 
 			$duLieuPhieu = array(
-				'ma_sx' => $ma_sx,
-				'so' => $so,
-				'ma' => $ma,
+				'ma_rnd' => $ma_rnd,
+				'ma_nc' => $ma_nc,
 				'ma_sp' => $ma_sp,
 				'co_lo' => $co_lo,
 				'so_lo' => $so_lo,
 				'cong_doan' => $cong_doan,
 				'nsx' => $nsx,
 				'hd' => $hd,
-				'so_dk' => $so_dk,
 				'dang_bao_che' => $dang_bao_che,
 				'qcdg' => $qcdg,
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
 				'status' => 1,
-				//'pkhsx' => $pkhsx,
-				//'pdbcl' => $pdbcl,
-				//'gd' => $gd,
 				'create_on' => $createOn,
 				'create_by' => $userId,
 				'update_by' => $userId,
 			);
-			$selectColumns = ['id', 'so'];
-			$where = ['so' => $itemData['so']];
+			$selectColumns = ['id', 'ma_nc'];
+			$where = ['ma_nc' => $duLieuPhieu['ma_nc']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
-				$rsData['message'] = "Mã sản xuất [". $itemData['so'] ."] đã tồn tại: ";
+				$rsData['message'] = "Mã nghiên cứu [". $duLieuPhieu['ma_nc'] ."] đã tồn tại: ";
 				echo json_encode($rsData);exit;
 			}
 			$result = $this->db->insert($this->tableName, $duLieuPhieu);
@@ -176,7 +162,7 @@ class SXController extends BaseController
 				$validProducts = [];
 				foreach($products as $product) {
 					$validProducts[] = array(
-						'ma_sx' => $ma_sx,
+						'ma_rnd' => $ma_rnd,
 						'ma_maquet' => $product['ma_maquet'],
 						'product_id' => $product['product_id'],
 						'cong_doan' => $product['cong_doan'],
@@ -186,13 +172,13 @@ class SXController extends BaseController
 						'create_on' => $createOn
 					);
 				}
-				$productsNum = $this->db->insert('lotus_spsx', $validProducts);
+				$productsNum = $this->db->insert('lotus_sprnd', $validProducts);
 				if($productsNum->rowCount()) {
 					$rsData['status'] = 'success';
 					$columns = $this->getColumns();
-					$data = $this->db->select('lotus_sanxuat', $columns, ['ma_sx' => $ma_sx]);
+					$data = $this->db->select('lotus_rnd', $columns, ['ma_rnd' => $ma_rnd]);
 					$rsData['data'] = $data[0];
-					$rsData['message'] = 'Đã thêm lệnh sản xuất thành công!';
+					$rsData['message'] = 'Đã thêm lệnh nghiên cứu thành công!';
 				} else {
 					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 				}
@@ -205,25 +191,20 @@ class SXController extends BaseController
 			//update data base on $id
 			$date = new \DateTime();
 			$itemData = [
-				'ma_sx' => $ma_sx,
-				'ma' => $ma,
-				'so' => $so,
+				'ma_rnd' => $ma_rnd,
+				'ma_nc' => $ma_nc,
 				'cong_doan' => $cong_doan,
 				'ma_sp' => $ma_sp,
 				'co_lo' => $co_lo,
 				'so_lo' => $so_lo,
 				'nsx' => $nsx,
 				'hd' => $hd,
-				'so_dk' => $so_dk,
 				'dang_bao_che' => $dang_bao_che,
 				'qcdg' => $qcdg,
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
 				'status' => 1,
-				//'pkhsx' => $pkhsx,
-				//'pdbcl' => $pdbcl,
-				//'gd' => $gd,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 				'update_by' => $userId
 			];
@@ -254,13 +235,13 @@ class SXController extends BaseController
 		$id = $request->getParam('id');
 		$params = $request->getParams();
 		$maSp = isset($params['product_id']) ? $params['product_id'] : '';
-		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';	
+		$ma_rnd = isset($params['ma_rnd']) ? $params['ma_rnd'] : '';	
 		$date = new \DateTime();
 		$createOn = isset($params['create_on']) ? $params['create_on'] : $date->format('Y-m-d H:i:s');
 		$updateOn = $date->format('Y-m-d H:i:s');
 		//Some validation 
-		if(!$ma_sx) {
-			$rsData['message'] = 'Mã sản xuất không được để trống!';
+		if(!$ma_rnd) {
+			$rsData['message'] = 'Mã nghiên cứukhông được để trống!';
 				echo json_encode($rsData);
 				die;
 		}
@@ -272,7 +253,7 @@ class SXController extends BaseController
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		if(!$id) {
 			$itemData = array(
-				'ma_sx' => $ma_sx,
+				'ma_rnd' => $ma_rnd,
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
 				'product_id' => $maSp,
 				'cong_doan' => isset($params['cong_doan']) ? $params['cong_doan'] : '',
@@ -281,19 +262,19 @@ class SXController extends BaseController
 				'hu_hao' => isset($params['hu_hao']) ? $params['hu_hao'] : '',
 				'create_on' => $createOn
 			);
-			$result = $this->db->insert('lotus_spsx', $itemData);
+			$result = $this->db->insert('lotus_sprnd', $itemData);
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$id = $this->db->id();
 				$rsData['data'] = array('id' => $id);
-				$rsData['message'] = 'Đã thêm sản phẩm vào sản xuất thành công!';
+				$rsData['message'] = 'Đã thêm sản phẩm vào nghiên cứuthành công!';
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 			}
 		} else {
 			//update data base on $id
 			$itemData = [
-				'ma_sx' => $ma_sx,
+				'ma_rnd' => $ma_rnd,
 				'ma_maquet' => isset($params['ma_maquet']) ? $params['ma_maquet'] : '',
 				'product_id' => isset($params['product_id']) ? $params['product_id'] : '',
 				'sl_1000' => isset($params['sl_1000']) ? $params['sl_1000'] : '',
@@ -303,9 +284,9 @@ class SXController extends BaseController
 				'create_on' => $createOn,
 				'update_on' => $updateOn
 			];
-			$result = $this->db->update('lotus_spsx', $itemData, ['id' => $id]);
+			$result = $this->db->update('lotus_sprnd', $itemData, ['id' => $id]);
 			if($result->rowCount()) {
-				$this->superLog('Update SP theo mã sản xuất ', $itemData);
+				$this->superLog('Update SP theo mã nghiên cứu', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
@@ -323,9 +304,9 @@ class SXController extends BaseController
 			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
 		);
 		$type = $request->getParam('type');
-		$maSx = $request->getParam('ma_sx');
+		$maNc = $request->getParam('ma_rnd');
 		$value = $request->getParam('value');
-		if($type && $maSx) {
+		if($type && $maNc) {
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 			$isSuper = $this->UserController->isSuperAdmin($userId);
 			if(!$isSuper) {
@@ -355,12 +336,12 @@ class SXController extends BaseController
 				$value = "";
 			}
 			$updateData[$type] = $value;
-			$result = $this->db->update($this->tableName, $updateData, ['ma_sx' => $maSx]);
+			$result = $this->db->update($this->tableName, $updateData, ['ma_rnd' => $maNc]);
 			if($result->rowCount()) {
 				$this->superLog('Phe duyet lenh sx', $updateData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
-				$data = $this->db->select($this->tableName, [$type, 'ma_sx'], ['ma_sx' => $maSx]);
+				$data = $this->db->select($this->tableName, [$type, 'ma_rnd'], ['ma_rnd' => $maNc]);
 				$rsData['data'] = isset($data[0]) ? $data[0] : [];
 			} else {
 				// echo "<pre>";
@@ -385,7 +366,7 @@ class SXController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Ma SX', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá mã sản xuất khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá mã nghiên cứukhỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {
@@ -401,7 +382,7 @@ class SXController extends BaseController
 		// Get params and validate them here.
 		$id = isset(	$args['id']) ? $args['id'] : '';
 		if($id != "") {
-			$result = $this->db->update('lotus_spsx',[
+			$result = $this->db->update('lotus_sprnd',[
 				'status' => 2,
 			], ['id' => $id]);
 			if($result->rowCount()) {

@@ -34,6 +34,7 @@ import QuanlyLanguage from './Tables/QuanlyLanguage'
 import QuanlyNote from './Tables/QuanlyNote'
 import QuanlyCanhan from './Tables/QuanlyCanhan'
 import QuanlyOptions from './Tables/QuanlyOptions'
+import QuanlyRnd from './Tables/QuanlyRnd'
 
 class MainComponent extends React.Component {
   state = {
@@ -190,6 +191,9 @@ class MainComponent extends React.Component {
         break;
       case 'options':
         return <QuanlyOptions dispatch={dispatch} mainState={mainState}/>
+        break;
+      case 'rnd':
+        return <QuanlyRnd dispatch={dispatch} mainState={mainState}/>
         break;
       case 'my_info':
         //console.log('my info page');

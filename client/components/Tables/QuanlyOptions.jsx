@@ -124,14 +124,14 @@ class EditableTable extends React.Component {
               ) : (
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.edit(record.key)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
-                  {" | "}
+                  {/* {" | "}
                   <Popconfirm
                     title={ans_language.ans_confirm_delete || 'ans_confirm_delete'}
                     okType="danger"
                     onConfirm={() => this.delete(record)}
                   >
                     <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
-                  </Popconfirm>
+                  </Popconfirm> */}
                 </React.Fragment>
                 
               )}

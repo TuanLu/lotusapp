@@ -161,3 +161,13 @@ $app->post('/exportExcel', 'ExportController:export');
 $app->get('/opts/fetchOpts', 'OptionsController:fetchOpts')->setName(Roles::roleAndRouter()['options']['view']);
 $app->post('/opts/updateOpts', 'OptionsController:updateOpts')->setName(Roles::roleAndRouter()['options']['add']);
 $app->get('/opts/deleteOpts/{id}', 'OptionsController:deleteOpts')->setName(Roles::roleAndRouter()['options']['delete']);
+//Nghiên cứu định mức router
+$app->get('/rnd/fetchRnd', 'RNDController:fetchRnd')->setName(Roles::roleAndRouter()['rnd']['view']);
+$app->get('/rnd/fetchProductDetailsList', 'RNDController:fetchProductDetailsList')->setName(Roles::roleAndRouter()['rnd']['view']);
+$app->get('/rnd/fetchSelectedProduct/{ma_rnd}', 'RNDController:fetchSelectedProduct')->setName(Roles::roleAndRouter()['rnd']['view']);
+$app->get('/rnd/fetchProductByCate/{cate_id}', 'RNDController:fetchProductByCate')->setName(Roles::roleAndRouter()['rnd']['view']);
+$app->post('/rnd/update', 'RNDController:update')->setName(Roles::roleAndRouter()['rnd']['add']);
+$app->post('/rnd/updateProduct', 'RNDController:updateProduct')->setName(Roles::roleAndRouter()['rnd']['add']);
+$app->post('/rnd/pheduyet', 'RNDController:pheDuyet');
+$app->get('/rnd/delete/{id}', 'RNDController:delete')->setName(Roles::roleAndRouter()['rnd']['delete']);
+$app->get('/rnd/deleteProduct/{id}', 'RNDController:deleteProduct')->setName(Roles::roleAndRouter()['rnd']['delete']);

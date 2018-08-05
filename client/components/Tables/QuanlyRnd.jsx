@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject, trangThaiPhieu, blankGanttData} from 'ISD_API'
 import {updateStateData} from 'actions'
-import FormLenhSx from './QuanlySanxuat/FormLenhSx'
+import FormRnd from './QuanlyRnd/FormRnd'
 const trangThaiPhieuObj = convertArrayObjectToObject(trangThaiPhieu);
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -17,14 +17,9 @@ const EditableRow = ({ form, index, ...props }) => (
   </EditableContext.Provider>
 );
 
-const tableConfig = {
-  headTitle: 'Quản lý sản xuất',
-  addNewTitle: 'Thêm lệnh sản xuất'
-};
-
 const fetchConfig = {
-  fetch: 'sx/fetch',
-  delete: 'sx/delete/'
+  fetch: 'rnd/fetchRnd',
+  delete: 'rnd/delete/'
 }
 
 const EditableFormRow = Form.create()(EditableRow);
@@ -82,100 +77,78 @@ class EditableTable extends React.Component {
       data: [], 
       addNewItem: false,
     };
+    let {ans_language} = this.props.mainState;
     this.columns = [
       {
-        title: 'Mã sản xuất',
-        dataIndex: 'so',
+        title: ans_language.ans_order || 'ans_order',
+        dataIndex: 'orderid',
         //width: '15%',
         editable: false,
       },
       {
-        title: 'Sản phẩm',
+        title: ans_language.ans_product || 'ans_product',
         dataIndex: 'ma_sp',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'Cỡ lô',
+        title: ans_language.ans_co_lo || 'ans_co_lo',
         dataIndex: 'co_lo',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'Số lô',
-        dataIndex: 'so_lo',
+        title: ans_language.ans_user_do_it || 'ans_user_do_it',
+        dataIndex: 'userid',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'NSX',
-        dataIndex: 'nsx',
+        title: ans_language.ans_date_create || 'ans_date_create',
+        dataIndex: 'create_on',
         //width: '40%',
         editable: false,
       },
       {
-        title: 'Phê duyệt',
+        title: ans_language.ans_approval_title || 'ans_approval_title',
         children: [
           {
-            title: 'PKHSX',
-            dataIndex: 'pkhsx',
+            title: ans_language.ans_manager || 'ans_manager',
+            dataIndex: 'manager',
             render: (text, record) => {
               return (
                 <Badge 
-                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                text={!text ? ans_language.ans_unapproved || 'ans_unapproved' : ans_language.ans_approved || 'ans_approved'} 
                 status={!text ? "error" : "success"}/>
               );
             }
           },
           {
-            title: 'PĐBCL',
+            title: ans_language.ans_quality_assurance || 'ans_quality_assurance',
             dataIndex: 'pdbcl',
             render: (text, record) => {
               return (
                 <Badge 
-                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                text={!text ? ans_language.ans_unapproved || 'ans_unapproved' : ans_language.ans_approved || 'ans_approved'} 
                 status={!text ? "error" : "success"}/>
               );
             }
           },
           {
-            title: 'Giám đốc',
+            title: ans_language.ans_director || 'ans_director',
             dataIndex: 'gd',
             render: (text, record) => {
               return (
                 <Badge 
-                text={!text ? "Chưa duyệt" : "Đã duyệt"} 
+                text={!text ? ans_language.ans_unapproved || 'ans_unapproved' : ans_language.ans_approved || 'ans_approved'} 
                 status={!text ? "error" : "success"}/>
               );
             }
           },
         ]
       },
-      // {
-      //   title: 'Tình trạng',
-      //   dataIndex: 'status',
-      //   //width: '40%',
-      //   editable: false,
-      //   render: (text, record) => {
-      //     return trangThaiPhieuObj[text]['text'] || text;
-      //   }
-      // },
       {
-        title: 'Quy trình',
-        dataIndex: 'quy_trinh',
-        //width: '40%',
-        editable: false,
-        render: (text) => {
-          return (
-            <div>
-              <Icon type="form" />
-              Quy trình
-            </div>  
-          )
-        }
-      },
-      {
-        title: 'Actions',
+        title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
         render: (text, record) => {
           const editable = this.isEditing(record);
@@ -190,7 +163,7 @@ class EditableTable extends React.Component {
                         onClick={() => this.save(form, record.key)}
                         style={{ marginRight: 8 }}
                       >
-                        Lưu
+                         <Icon type="save" />{ans_language.ans_save || 'ans_save'}
                       </a>
                     )}
                   </EditableContext.Consumer>
@@ -198,12 +171,12 @@ class EditableTable extends React.Component {
                     title="Bạn thật sự muốn huỷ?"
                     onConfirm={() => this.cancel(record.key)}
                   >
-                    <a href="javascript:;">Huỷ</a>
+                    <a href="javascript:;"><Icon type="cancel" />{ans_language.ans_cancel || 'ans_cancel'}</a>
                   </Popconfirm>
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.view(record)}><Icon type="profile" /> Chi tiết</a> 
+                  <a href="javascript:;" onClick={() => this.view(record)}><Icon type="profile" />{ans_language.ans_detail || 'ans_detail'}</a> 
                   {
                     // <React.Fragment>
                     //   {" | "}
@@ -228,12 +201,13 @@ class EditableTable extends React.Component {
   getDefaultFields() {
     return {
       id: '',
-      ma_sx: '',
-      ma: '',
-      so: '',
-      cong_doan: '',
-      ma_sp: '',
-      co_lo: '',
+      ma_rnd: '',
+      ma_nc: '',
+      orderid: '',
+      product_id: '',
+      user_id: '',
+      create_on: '',
+      create_by: '',
       so_lo: '',
       nsx: '',
       hd: '',
@@ -241,9 +215,6 @@ class EditableTable extends React.Component {
       so_dk: '',
       qcdg: '',
       dh: '',
-      //pkhsx: '',
-      //pdbcl: '',
-      //gd: '',
       tttb_kltb: '',
       products: [],
       status: '',
@@ -257,18 +228,18 @@ class EditableTable extends React.Component {
         action: 'edit',
         editingKey: '',
       },
-      sx: this.getDefaultFields()
+      rnd: this.getDefaultFields()
     }));
   }
   isEditing = (record) => {
     return record.key === this.state.editingKey;
   };
   view(phieu) {
-    let {sx, phieuAction} = this.props.mainState;
-    if(phieu && phieu.ma_sx && phieu.id) {
+    let {rnd, phieuAction} = this.props.mainState;
+    if(phieu && phieu.ma_rnd && phieu.id) {
       this.props.dispatch(updateStateData({
-        sx: {
-          ...sx,
+        rnd: {
+          ...rnd,
           ...phieu
         },
         phieuAction: {
@@ -314,7 +285,7 @@ class EditableTable extends React.Component {
     }); 
   }
   fetchQuyTrinhMau() {
-    fetch(ISD_BASE_URL + 'quytrinhsx/fetch', {
+    fetch(ISD_BASE_URL + 'rnd/fetchRnd', {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -390,6 +361,7 @@ class EditableTable extends React.Component {
   }
   render() {
     let {mainState} = this.props;
+    let ans_language = mainState.ans_language;
     const components = {
       body: {
         row: EditableFormRow,
@@ -417,24 +389,23 @@ class EditableTable extends React.Component {
     return (
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
-          <FormLenhSx
+          <FormRnd
             dispatch={this.props.dispatch}
             mainState={this.props.mainState}
           />
           : 
           <React.Fragment>
-
             <div className="table-operations">
               <Row>
                 <Col span={12}>
-                  <h2 className="head-title">{tableConfig.headTitle}</h2>
+                  <h2 className="head-title">{ans_language.ans_rnd_title || 'ans_rnd_title'}</h2>
                 </Col>
                 <Col span={12}>
                   <div className="action-btns">
                     {
                      <Button 
                      onClick={() => this.addNewRow()}
-                     type="primary" icon="plus">{tableConfig.addNewTitle}</Button>
+                     type="primary" icon="plus">{ans_language.ans_add_new || 'ans_add_new'}</Button>
                     }
                   </div>
                 </Col>

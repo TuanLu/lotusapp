@@ -21,7 +21,6 @@ let _designDefault = {
       editingKey: '',
     },
     kehoachvt: {
-
     },
     sx: {
       ma_sx: '',
@@ -42,6 +41,23 @@ let _designDefault = {
       pkhsx: '',
       pdbcl: '',
       gd: '',
+      products: []
+    },
+    rnd: {
+      ma_rnd: '',
+      ma_nc: '',
+      orderid: '',
+			cong_doan: '',
+			ma_sp: '',
+			co_lo: '',
+			so_lo: '',
+			nsx: '',
+			hd: '',
+			dang_bao_che: '',
+			qcdg: '',
+			dh: '',
+      tttb_kltb: '',
+      note: '',
       products: []
     },
     phieuAction: {

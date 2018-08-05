@@ -8,10 +8,6 @@ const Option = Select.Option;
 const dateFormat = 'YYYY/MM/DD';
 const RadioGroup = Radio.Group;
 
-const formInfo = {
-  person: 'Người giao hàng'
-}
-
 class FormThongtin extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +16,7 @@ class FormThongtin extends React.Component {
     }
   }
   fetchData() {
-    fetch(ISD_BASE_URL + 'sx/fetchKho', {
+    fetch(ISD_BASE_URL + 'rnd/fetchKho', {
       headers: getTokenHeader()
     })
     .then((response) => {
@@ -43,7 +39,7 @@ class FormThongtin extends React.Component {
   //Get product list by cate_id
   fetchProductbyCate() {
     let cateId = 19;
-    fetch(ISD_BASE_URL + `sx/fetchProductByCate/${cateId}`, {
+    fetch(ISD_BASE_URL + `rnd/fetchProductByCate/${cateId}`, {
       headers: getTokenHeader()
     })
     .then((resopnse) => resopnse.json())
@@ -69,26 +65,23 @@ class FormThongtin extends React.Component {
     this.fetchProductbyCate();
   }
   render() {
-    let {sx, phieuAction, ans_language} = this.props.mainState;
+    let {rnd, phieuAction, ans_language} = this.props.mainState;
     let productListbyCate = this.state.productListbyCateList || [];
-    if(!sx.hd) {
-      sx.hd = 2;
+    if(!rnd.hd) {
+      rnd.hd = 2;
     }
-    let nsx = sx.nsx;
+    let nsx = rnd.nsx;
     nsx = moment(nsx);
       if(!nsx.isValid()) {
         nsx = null;// Might 	0000-00-00
     }
-    // if(sx.so == ''){
-    //   sx.so = '01.082018/LSX';
-    // }
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
     return (
       <Form>
         <Row>
             <Col span={12}>
             <FormItem
-              label={ans_language.ans_number_lsx || 'ans_number_lsx' }
+              label={ans_language.ans_number_rnd || 'ans_number_rnd' }
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
             >
@@ -96,13 +89,13 @@ class FormThongtin extends React.Component {
                 readOnly={readOnly}
                 onChange={(e) => {
                   this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      so: e.target.value
+                    rnd: {
+                      ...this.props.mainState.rnd,
+                      ma_nc: e.target.value
                     }
                   }));
                 }}
-                value={sx.so} />
+                value={rnd.ma_nc} />
             </FormItem>
             </Col>
             <Col span={12}>
@@ -115,13 +108,13 @@ class FormThongtin extends React.Component {
                 readOnly={readOnly}
                 onChange={(e) => {
                   this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
+                    rnd: {
+                      ...this.props.mainState.rnd,
                       cong_doan: e.target.value
                     }
                   }));
                 }}
-                value={sx.cong_doan} />
+                value={rnd.cong_doan} />
             </FormItem>
             </Col>
         </Row>
@@ -133,13 +126,13 @@ class FormThongtin extends React.Component {
                 wrapperCol={{ span: 12 }}
               >
                 <Select 
-                  defaultValue={sx.ma_sp}
+                  defaultValue={rnd.ma_sp}
                   showSearch
                   optionFilterProp="children"
                   onChange={(value, option) => {
                     this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
+                      rnd: {
+                        ...this.props.mainState.rnd,
                         ma_sp: value
                       }
                     }));
@@ -167,35 +160,14 @@ class FormThongtin extends React.Component {
                     readOnly={readOnly}
                     onChange={(e) => {
                       this.props.dispatch(updateStateData({
-                        sx: {
-                          ...this.props.mainState.sx,
+                        rnd: {
+                          ...this.props.mainState.rnd,
                           co_lo: e.target.value
                         }
                       }));
                     }}
-                    value={sx.co_lo} />
+                    value={rnd.co_lo} />
                 </FormItem>
-            </Col>
-            </Row>
-            <Row>
-            <Col span={12}>
-            <FormItem
-              label={ans_language.ans_so_dang_ky || 'ans_so_dang_ky'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      so_dk: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.so_dk} />
-            </FormItem>
             </Col>
             <Col span={12}>
               <FormItem
@@ -207,54 +179,33 @@ class FormThongtin extends React.Component {
                   readOnly={readOnly}
                   onChange={(e) => {
                     this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
+                      rnd: {
+                        ...this.props.mainState.rnd,
                         dh: e.target.value
                       }
                     }));
                   }}
-                  value={sx.dh} />
+                  value={rnd.dh} />
               </FormItem>
             </Col>
-        </Row>
-        <Row>
             <Col span={12}>
-            <FormItem
-              label={ans_language.ans_so_lo || 'ans_so_lo'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      so_lo: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.so_lo} />
-            </FormItem>
-            </Col>
-            <Col span={12}>
-            <FormItem
-              label={ans_language.ans_quy_cach_dong_goi || 'ans_quy_cach_dong_goi'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      qcdg: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.qcdg} />
-            </FormItem>
+              <FormItem
+                label={ans_language.ans_quy_cach_dong_goi || 'ans_quy_cach_dong_goi'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}
+              >
+              <Input 
+                  readOnly={readOnly}
+                  onChange={(e) => {
+                    this.props.dispatch(updateStateData({
+                      rnd: {
+                        ...this.props.mainState.rnd,
+                        qcdg: e.target.value
+                      }
+                    }));
+                  }}
+                  value={rnd.qcdg} />
+              </FormItem>
             </Col>
         </Row>
         <Row>
@@ -271,60 +222,15 @@ class FormThongtin extends React.Component {
                   date = '';
                 }
                 this.props.dispatch(updateStateData({
-                  sx: {
-                    ...this.props.mainState.sx,
-                    nsx: date
+                  rnd: {
+                    ...this.props.mainState.rnd,
+                    nrnd: date
                   }
                 }));
               }} placeholder="Chọn ngày"  format="DD/MM/YYYY"/>
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem
-                label={ans_language.ans_expiry_date || 'ans_expiry_date'}
-                labelCol={{ span: 5 }}
-                wrapperCol={{ span: 12 }}
-              >
-                <RadioGroup onChange={(e) => {
-                    this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
-                        hd: e.target.value
-                      }}));
-                    }
-                  } 
-                  disabled={readOnly}
-                  name="hd" 
-                  defaultValue={parseInt(sx.hd)}>
-                  {/* <Radio value={1}>{ans_language.ans_expiry_date_6mon || 'ans_expiry_date_6mon'}</Radio> */}
-                  <Radio value={1}>{ans_language.ans_expiry_date_1yr || 'ans_expiry_date_1yr'}</Radio>
-                  <Radio value={2}>{ans_language.ans_expiry_date_2yr || 'ans_expiry_date_2yr'}</Radio>
-                  <Radio value={3}>{ans_language.ans_expiry_date_3yr || 'ans_expiry_date_3yr'}</Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem
-                  label={ans_language.ans_tttb_kltb || 'ans_tttb_kltb'}
-                  labelCol={{ span: 5 }}
-                  wrapperCol={{ span: 12 }}
-                >
-                <Input 
-                    readOnly={readOnly}
-                    onChange={(e) => {
-                      this.props.dispatch(updateStateData({
-                        sx: {
-                          ...this.props.mainState.sx,
-                          tttb_kltb: e.target.value
-                        }
-                      }));
-                    }}
-                    value={sx.tttb_kltb} />
-                </FormItem>
-              </Col>
-              <Col span={12}>
               <FormItem
                 label={ans_language.ans_dang_bao_che || 'ans_dang_bao_che'}
                 labelCol={{ span: 5 }}
@@ -334,13 +240,13 @@ class FormThongtin extends React.Component {
                   readOnly={readOnly}
                   onChange={(e) => {
                     this.props.dispatch(updateStateData({
-                      sx: {
-                        ...this.props.mainState.sx,
+                      rnd: {
+                        ...this.props.mainState.rnd,
                         dang_bao_che: e.target.value
                       }
                     }));
                   }}
-                  value={sx.dang_bao_che} />
+                  value={rnd.dang_bao_che} />
               </FormItem>
               </Col>
             </Row>

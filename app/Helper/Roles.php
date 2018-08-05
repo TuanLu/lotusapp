@@ -144,6 +144,12 @@ class Roles {
         'add'     => 'options__add',
         'edit'    => 'options__edit',
         'delete'  => 'options__delete',
+      ],
+      'rnd' => [
+        'view'    => 'rnd__view',
+        'add'     => 'rnd__add',
+        'edit'    => 'rnd__edit',
+        'delete'  => 'rnd__delete',
       ]
     ];
   }
@@ -152,11 +158,18 @@ class Roles {
     // Cần phân tích để clear phase 2. Chưa có group cha con và tự động linh hoạt theo chuẩn mô hình 
     return [
       [
-        'label' => 'Sản Xuất', 
+        'label' => 'Lệnh Sản Xuất', 
         //'icon' => 'inbox',
         'path' => 'qlsx',
         'parent' => 'qlsx_group',
         'permission' => Roles::roleAndRouter()['qlsx']
+      ],
+      [
+        'label' => 'NC định mức', 
+        //'icon' => 'solution',
+        'path' => 'rnd',
+        'parent' => 'qlsx_group',
+        'permission' => Roles::roleAndRouter()['rnd']
       ],
       [
         'label' => 'Quy trình SX', 

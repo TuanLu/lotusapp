@@ -119,6 +119,9 @@ $container['ExportController'] = function ($c) {
 $container['OptionsController'] = function ($c) {
   return new \App\Controllers\OptionsController($c);
 };
+$container['RNDController'] = function ($c) {
+  return new \App\Controllers\RNDController($c);
+};
 //Add more controllers
 
 // Get an instance of Slim.
