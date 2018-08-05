@@ -224,7 +224,7 @@ class FormThongtin extends React.Component {
                 this.props.dispatch(updateStateData({
                   rnd: {
                     ...this.props.mainState.rnd,
-                    nrnd: date
+                    nsx: date
                   }
                 }));
               }} placeholder="Chọn ngày"  format="DD/MM/YYYY"/>

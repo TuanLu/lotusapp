@@ -25,7 +25,7 @@ class FormNote extends React.Component {
     let pheDuyetData = {
       type,
       value,
-      ma_nc: rnd.ma_nc
+      ma_rnd: rnd.ma_rnd
     };
     fetch(ISD_BASE_URL + 'rnd/pheduyet', {
       method: 'POST',

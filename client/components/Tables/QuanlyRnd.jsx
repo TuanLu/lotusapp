@@ -114,7 +114,7 @@ class EditableTable extends React.Component {
         children: [
           {
             title: ans_language.ans_manager || 'ans_manager',
-            dataIndex: 'manager',
+            dataIndex: 'pkhsx',
             render: (text, record) => {
               return (
                 <Badge 

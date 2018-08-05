@@ -18,6 +18,7 @@ class RNDController extends BaseController
 			'orderid',
 			'co_lo',
 			'so_lo',
+			'ma_sp',
 			'nsx',
 			'hd',
 			'dang_bao_che',
@@ -308,7 +309,7 @@ class RNDController extends BaseController
 		$value = $request->getParam('value');
 		if($type && $maNc) {
 			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
-			$isSuper = $this->UserController->isSuperAdmin($userId);
+			$isSuper = $this->UserController->isSuperAdmin($userId); 
 			if(!$isSuper) {
 				//Check if user has edit permission
 				$userPermission = $this->UserController->getUserPermission($userId);
