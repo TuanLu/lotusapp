@@ -2,7 +2,7 @@ import React from 'react'
 import { 
   Table, Input, Select, 
   Popconfirm, Form, Row, 
-  Col, Button, message
+  Col, Button, message, Icon
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -98,7 +98,12 @@ class EditableTable extends React.Component {
       data: [], 
       editingKey: '',
       categoryList: {},
-      newitem: 0
+      newitem: 0,
+      searchText: '',
+      //filteredInfo: null,
+      //sortedInfo: null,
+      //filterDropdownVisible: false,
+      //filtered: false,
     };
     this.columns = [
       {
@@ -357,6 +362,24 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value });
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+    });
+  }
+  handleChange = (pagination, filters, sorter) => {
+    //console.log('Various parameters', pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters,
+      sortedInfo: sorter,
+    });
+  }
   componentDidMount() {
     this.fetchCategories();
     this.fetchData();
@@ -405,6 +428,24 @@ class EditableTable extends React.Component {
       };
     });
 
+    let {searchText} = this.state;
+    let data = [...this.state.data];
+    //Apply search if exists 
+    const reg = new RegExp(searchText, 'gi');
+    if(searchText) {
+      data = data.map((record) => {
+        //Search by product_id , name
+        let fullText = `${record.product_id}${record.name}`;
+        const match = fullText.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+    }
+
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -424,8 +465,30 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
-          dataSource={this.state.data}
+          dataSource={data}
           columns={columns}
+          onChange={this.handleChange}
+          title={() => {
+            return (
+              <div className="search-form">
+                <Row>
+                  <Col span={6}>
+                    <label>Tìm kiếm Vật tư</label>
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      ref={ele => this.searchInput = ele}
+                      prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder="Nhập mã vật tư hoặc tên vật tư"
+                      value={this.state.searchText}
+                      onChange={this.onInputChange}
+                      onPressEnter={this.onSearch}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            );
+          }}
           rowClassName="editable-row"
         />
       </React.Fragment>
