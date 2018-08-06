@@ -71,7 +71,7 @@ class EditableCell extends React.Component {
           const { getFieldDecorator } = form;
           return (
             <td {...restProps}>
-              {editing ? (
+              {editing && ((dataIndex != "product_id") || (dataIndex == "product_id" && !this.props.record.id))  ? (
                 <FormItem style={{ margin: 0 }}>
                   {getFieldDecorator(dataIndex, {
                     rules: [{
