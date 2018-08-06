@@ -157,7 +157,8 @@ class Gantt extends Component {
          this.props.dispatch(updateStateData({
             worker_and_users: {
               workers: json.data.workers,
-              check_users: json.data.check_users
+              check_users: json.data.check_users,
+              group_users: json.data.group_users
            }
          }));
          this.addControlToLightBox();
@@ -285,7 +286,9 @@ class Gantt extends Component {
       parent: task.parent,
       progress: task.progress || 0,
       user: task.user,
-      check_user: task.check_user
+      check_user: task.check_user,
+      group_user: task.group_user,
+      note: task.note
     };
     //Luu theo quy trinh hoac luu theo lenh san xuat
     if(this.props.type == "theo_lenh_sx") {
@@ -476,6 +479,7 @@ class Gantt extends Component {
     if(worker_and_users) {
       let workers = worker_and_users.workers || [];
       let check_users = worker_and_users.check_users || [];
+      let group_users = worker_and_users.group_users || [];
 
       let workerOptions = [{key: "", label: "Người thực hiện"}];
       workerOptions = workerOptions.concat(workers.map((worker) => {
@@ -491,31 +495,42 @@ class Gantt extends Component {
           label: user.ma_ns + ' - ' + (user.name || user.username)
         }
       }));
+      let groupUserOptions = [{key: "", label: "Phòng ban"}];
+      groupUserOptions = groupUserOptions.concat(group_users.map((group) => {
+        return {
+          key: group.ma_pb,
+          label: group.ma_pb + ' - ' + group.name
+        }
+      }));
       gantt.config.lightbox.sections = [
         {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
+        {name: "group_user", height: 25, map_to: "group_user", type: "select", options: groupUserOptions},
         {name: "user", height: 25, map_to: "user", type: "select", options: workerOptions},
         {name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
-        {
-          name: "progress", height: 25, map_to: "progress", type: "select", options: [
-            {key: 0, label: "Chưa bắt đầu"},
-            {key: "0.1", label: "10%"},
-            {key: "0.2", label: "20%"},
-            {key: "0.3", label: "30%"},
-            {key: "0.4", label: "40%"},
-            {key: "0.5", label: "50%"},
-            {key: "0.6", label: "60%"},
-            {key: "0.7", label: "70%"},
-            {key: "0.8", label: "80%"},
-            {key: "0.9", label: "90%"},
-            {key: "1", label: "Hoàn thành"}
-          ]
-        },
+        // {
+        //   name: "progress", height: 25, map_to: "progress", type: "select", options: [
+        //     {key: 0, label: "Chưa bắt đầu"},
+        //     {key: "0.1", label: "10%"},
+        //     {key: "0.2", label: "20%"},
+        //     {key: "0.3", label: "30%"},
+        //     {key: "0.4", label: "40%"},
+        //     {key: "0.5", label: "50%"},
+        //     {key: "0.6", label: "60%"},
+        //     {key: "0.7", label: "70%"},
+        //     {key: "0.8", label: "80%"},
+        //     {key: "0.9", label: "90%"},
+        //     {key: "1", label: "Hoàn thành"}
+        //   ]
+        // },
+        {name: "note", height: 38, map_to: "note", type: "textarea"},
         {name: "time", type: "duration", map_to: "auto"},
       ];
     
+      gantt.locale.labels["section_group_user"] = "Phòng ban";
       gantt.locale.labels["section_user"] = "Người thực hiện";
       gantt.locale.labels["section_check_user"] = "Người phê duyệt";
       gantt.locale.labels["section_progress"] = "Số % hoàn thành";
+      gantt.locale.labels["section_note"] = "Ghi chú";
     } else {
       this.fetchUsers();
     }

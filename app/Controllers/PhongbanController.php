@@ -4,31 +4,36 @@ use \Medoo\Medoo;
 use \Monolog\Logger;
 //use \Ramsey\Uuid\Uuid;
 
-class PhongBanController extends BaseController
+class PhongbanController extends BaseController
 {
 	private $tableName = 'lotus_phongban';
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
+
+	public function getGroupUser() {
+		$columns = [
+			'id',
+			'ma_pb',
+			'name',
+			'phone',
+			'address',
+			'description',
+			'roles'
+		];
+		$collection = $this->db->select($this->tableName, $columns, [
+			"ORDER" => ["id" => "DESC"],
+			"status" => 1
+		]);
+		return $collection;
+	}
  
 	public function fetchPb($request){ 
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
-		// Columns to select.
-		$columns = [
-				'id',
-				'ma_pb',
-				'name',
-				'phone',
-				'address',
-				'description',
-				'roles'
-		];
-		$collection = $this->db->select($this->tableName, $columns, [
-			"ORDER" => ["id" => "DESC"],
-			"status" => 1
-		]);
+		
+		$collection = $this->getGroupUser();
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';

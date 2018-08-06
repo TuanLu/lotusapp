@@ -28,7 +28,9 @@ class GanttController extends BaseController {
 				'parent',
 				'quy_trinh_id',
 				'user',
-				'check_user'
+				'check_user',
+				'group_user',
+				'note'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
 				"ORDER" => ["create_on" => "ASC"],
@@ -66,7 +68,9 @@ class GanttController extends BaseController {
 				'parent',
 				'ma_sx',
 				'user',
-				'check_user'
+				'check_user',
+				'group_user',
+				'note'
 			];
 			$collection = $this->db->select($this->tableName, $columns, [
 				//"ORDER" => ["start_date" => "ASC"],
@@ -261,6 +265,8 @@ class GanttController extends BaseController {
 		$maSx = $request->getParam('ma_sx');
 		$worker = $request->getParam('user');
 		$check_user = $request->getParam('check_user');
+		$group_user = $request->getParam('group_user');
+		$note = $request->getParam('note');
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
     $userId = isset($this->jwt->id) ? $this->jwt->id : '';
@@ -273,7 +279,9 @@ class GanttController extends BaseController {
 			'progress' => $progress,
 			'parent' => $parent,
 			'user' => $worker,
-			'check_user' => $check_user
+			'check_user' => $check_user,
+			'group_user' => $group_user,
+			'note' => $note,
     ];
 		if(!$id) {
 			//Insert new data to db
@@ -530,12 +538,15 @@ class GanttController extends BaseController {
 		$workers = $this->UserController->getWorkers();
 		$nhancong = $workers;
 		$users = $workers;
+		//Get group users
+		$groupUsers = $this->PhongbanController->getGroupUser();
 		if(!empty($nhancong) && !empty($users)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Đã load được nhân sự và người phê duyệt';
 			$rsData['data'] = [
 				'workers' => $nhancong,
-				'check_users' => $users
+				'check_users' => $users,
+				'group_users' => $groupUsers
 			];
 		} else {
 			$rsData['message'] = 'Chưa có user nào thuộc nhóm nhân sự! Hãy cập nhật phòng ban cho thành viên!';
