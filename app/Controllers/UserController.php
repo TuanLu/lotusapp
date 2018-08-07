@@ -604,7 +604,7 @@ class UserController extends BaseController {
     }
     return $workers;
   }
-  public function getUserGroupByUserId($userId) {
+  public function getUserGroupRolesByUserId($userId) {
     $userGroup = "";
     $collection = $this->db->select($this->tableName, [
       "[>]lotus_phongban" => ["group_user" => "ma_pb"],
@@ -613,5 +613,8 @@ class UserController extends BaseController {
       $userGroup = $collection[0]['roles'];
     }
     return $userGroup;
+  }
+  public function getUserById($userId) {
+    return $this->db->select($this->tableName, "*", ["id" => $userId]);
   }
 }

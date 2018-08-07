@@ -329,7 +329,7 @@ class PhieunhapController extends BaseController
 			$isSuper = $this->UserController->isSuperAdmin($userId);
 			if(!$isSuper) {
 				//Check if user has edit permission
-				$userGroup = $this->UserController->getUserGroupByUserId($userId);
+				$userGroup = $this->UserController->getUserGroupRolesByUserId($userId);
 				$isAllow = false;
 				if($params['type'] == 'qc_check') {
 					if($userGroup == self::QC_GROUP) {

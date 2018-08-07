@@ -32,11 +32,26 @@ class GanttController extends BaseController {
 				'group_user',
 				'note'
 			];
-			$collection = $this->db->select($this->tableName, $columns, [
+			//Will not filter by group user or user for sample tasks
+			$where = [
 				"ORDER" => ["create_on" => "ASC"],
 				"status" => 1,
 				"quy_trinh_id" => $quyTrinhId
-			]);
+			];
+			// $userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			// $userInfo = $this->UserController->getUserById($userId);
+			// //var_dump($userInfo);
+			// //Skip if admin
+			// $isSuper = $this->UserController->isSuperAdmin($userId);
+			// if(!$isSuper) {
+			// 	$where["OR"] = [
+			// 		"user" => [$userId],
+			// 		"group_user" => [$userInfo[0]['group_user']],
+			// 		"create_by" => [$userId],
+			// 	];
+			// }
+			
+			$collection = $this->db->select($this->tableName, $columns, $where);
 			//Get links
       $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
 				"status" => 1,
@@ -72,11 +87,25 @@ class GanttController extends BaseController {
 				'group_user',
 				'note'
 			];
-			$collection = $this->db->select($this->tableName, $columns, [
-				//"ORDER" => ["start_date" => "ASC"],
+			$where = [
+				"ORDER" => ["create_on" => "ASC"],
 				"status" => 1,
 				"ma_sx" => $maSx
-			]);
+			];
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$userInfo = $this->UserController->getUserById($userId);
+			//var_dump($userInfo);
+			//Skip if admin
+			$isSuper = $this->UserController->isSuperAdmin($userId);
+			if(!$isSuper) {
+				$where["OR"] = [
+					"user" => [$userId],
+					"group_user" => [$userInfo[0]['group_user']],
+					"create_by" => [$userId],
+				];
+			}
+			
+			$collection = $this->db->select($this->tableName, $columns, $where);
 			//Get links
       $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
 				"status" => 1,
@@ -91,8 +120,20 @@ class GanttController extends BaseController {
 		}
 		return $tasks;
 	}
-
+	private function checkUser() {
+		//Filter task by user or user group 
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		if(!$userId) {
+			$rsData = array(
+				'status' => self::ERROR_STATUS,
+				'message' => 'Không tìm thấy user hoặc user không có quyền!'
+			);
+			echo json_encode($rsData);
+			die;
+		}
+	}
   public function fetchTasks($request, $response, $args){
+		$this->checkUser();
     //$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -103,7 +144,7 @@ class GanttController extends BaseController {
       $rsData['message'] = 'Không tìm thấy mã quy trình!';
       echo json_encode($rsData);
       die;
-    };
+		};
 		
 		$collection = $this->getTasksByQuytrinhId($quyTrinhId);
 		if(!empty($collection['data'])) {
@@ -116,6 +157,7 @@ class GanttController extends BaseController {
 		echo json_encode($rsData);
 	}
   public function fetchTasksByMaSx($request, $response, $args){
+		$this->checkUser();
     //$this->logger->addInfo('Request Npp path');
 		$rsData = array(
 			'status' => self::ERROR_STATUS,
@@ -126,7 +168,7 @@ class GanttController extends BaseController {
       $rsData['message'] = 'Không tìm thấy mã sx!';
       echo json_encode($rsData);
       die;
-    };
+		};
 		
 		$collection = $this->getTasksByMaSx($maSx);
 		if(!empty($collection['data'])) {
@@ -193,6 +235,12 @@ class GanttController extends BaseController {
 					$date = date_create($collection['data'][$key]['start_date']);
 					date_add($date,date_interval_create_from_date_string("$dayDiff days"));
 					$collection['data'][$key]['start_date'] = date_format($date,"Y-m-d");
+				}
+			}
+			//Update task parent 
+			foreach ($collection['data'] as $key => $task) {
+				if(isset($oldAndNewTaskIds[$collection['data'][$key]['parent']])) {
+					$collection['data'][$key]['parent'] = $oldAndNewTaskIds[$collection['data'][$key]['parent']]['new'];
 				}
 			}
 			//Update links if exists 
