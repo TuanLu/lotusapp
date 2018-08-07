@@ -423,6 +423,25 @@ class Gantt extends Component {
       refreshGantt: false
     }));
   }
+  taskClass() {
+    gantt.templates.task_class = function (start, end, task) {
+      let taskClass = "";
+      let percentDone = parseFloat(task.progress) || 0;
+      if(percentDone == 0) {
+        taskClass += " not_started";
+      } else if(percentDone < 0.5) {
+        taskClass += " high";
+      } else if(percentDone < 0.8) {
+        taskClass += " medium";
+      } else if(percentDone < 0.9) {
+        taskClass += " low";
+      } else if(percentDone == 1) {
+        taskClass += " task_done";
+      }
+      taskClass += task.$level == 0 ? " gantt_project" : "";
+      return taskClass;
+    };
+  }
   componentDidMount() {
     let {mainState} = this.props;
     let {ganttData} = mainState;
@@ -430,9 +449,9 @@ class Gantt extends Component {
     gantt.config.date_grid = "%d-%m-%Y";
     gantt.config.grid_width = 450;
     //Detect Project Level - Level 0
-    gantt.templates.task_class = function (st, end, item) {
-      return item.$level == 0 ? "gantt_project" : ""
-    };
+    // gantt.templates.task_class = function (st, end, item) {
+    //   return item.$level == 0 ? "gantt_project" : ""
+    // };
     gantt.templates.rightside_text = function (start, end, task) {
       return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
     };
@@ -471,6 +490,7 @@ class Gantt extends Component {
     gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);
     this.addControlToLightBox();
+    this.taskClass();
     gantt.parse(ganttData);
     this.fetchTasks();
   }
