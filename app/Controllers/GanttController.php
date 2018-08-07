@@ -100,7 +100,7 @@ class GanttController extends BaseController {
 			if(!$isSuper) {
 				$where["OR"] = [
 					"user" => [$userId],
-					"group_user" => [$userInfo[0]['group_user']],
+					"group_user" => [$userInfo[0]['group_user'], 'ALL_PB'],
 					"create_by" => [$userId],
 				];
 			}
@@ -588,13 +588,14 @@ class GanttController extends BaseController {
 		$users = $workers;
 		//Get group users
 		$groupUsers = $this->PhongbanController->getGroupUser();
+		$allGroups = array_merge([['ma_pb' => 'ALL_PB', 'name' => 'Tất cả phòng ban']], $groupUsers);
 		if(!empty($nhancong) && !empty($users)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Đã load được nhân sự và người phê duyệt';
 			$rsData['data'] = [
 				'workers' => $nhancong,
 				'check_users' => $users,
-				'group_users' => $groupUsers
+				'group_users' => $allGroups
 			];
 		} else {
 			$rsData['message'] = 'Chưa có user nào thuộc nhóm nhân sự! Hãy cập nhật phòng ban cho thành viên!';
