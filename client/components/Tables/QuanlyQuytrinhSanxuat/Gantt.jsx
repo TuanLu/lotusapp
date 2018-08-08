@@ -30,6 +30,7 @@ class Gantt extends Component {
     this.expandAllTask = this.expandAllTask.bind(this);
     this.addControlToLightBox = this.addControlToLightBox.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
+    this.todayMarker = null;
     this.state = {
       loading: false,
       resetEvents: false,
@@ -492,7 +493,26 @@ class Gantt extends Component {
     this.addControlToLightBox();
     this.taskClass();
     gantt.parse(ganttData);
+
+    //console.log(gantt.posFromDate(new Date("2018-08-08")));
+
+
+
+    // gantt.attachEvent("onGanttReady",  () => {
+    //     this.todayMarker = document.createElement("div");
+    //     this.todayMarker.className = "today_marker";
+    //     gantt.$task_data.appendChild(this.todayMarker);
+    //     this.todayMarker.style.left = gantt.posFromDate(new Date("2018-08-08")) + "px";
+    // });
+    // window.onresize = () => {
+    //     setTimeout( () => {
+    //       this.todayMarker.style.left = gantt.posFromDate(new Date()) + "px";
+    //     }, 500);
+    // };
     this.fetchTasks();
+  }
+  setPosition() {
+    this.todayMarker.style.left = gantt.posFromDate(new Date("2018-08-08")) + "px";
   }
   addControlToLightBox() {
     let {worker_and_users} = this.props.mainState;
