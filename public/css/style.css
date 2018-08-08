@@ -326,3 +326,10 @@ td:hover .editable-cell-icon {
 #isd_app .low .gantt_task_progress {
   background: #23964d;
 }
+#isd_app .today_marker{
+  height: 100%;
+  width: 2px;
+  top:0;
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.4);
+}

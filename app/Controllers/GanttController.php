@@ -312,7 +312,7 @@ class GanttController extends BaseController {
 		$quyTrinhId = $request->getParam('quy_trinh_id');
 		$maSx = $request->getParam('ma_sx');
 		$worker = $request->getParam('user');
-		$check_user = $request->getParam('check_user');
+		//$check_user = $request->getParam('check_user');
 		$group_user = $request->getParam('group_user');
 		$note = $request->getParam('note');
     $date = new \DateTime();
@@ -327,7 +327,7 @@ class GanttController extends BaseController {
 			'progress' => $progress,
 			'parent' => $parent,
 			'user' => $worker,
-			'check_user' => $check_user,
+			//'check_user' => $check_user,
 			'group_user' => $group_user,
 			'note' => $note,
     ];
