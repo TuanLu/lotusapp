@@ -367,7 +367,6 @@ class EditableTable extends React.Component {
   }
   onSearch = () => {
     const { searchText } = this.state;
-    const reg = new RegExp(searchText, 'gi');
     this.setState({
       filterDropdownVisible: false,
       filtered: !!searchText,
@@ -431,13 +430,12 @@ class EditableTable extends React.Component {
     let {searchText} = this.state;
     let data = [...this.state.data];
     //Apply search if exists 
-    const reg = new RegExp(searchText, 'gi');
-    if(searchText) {
+    if(searchText) {      
       data = data.map((record) => {
         //Search by product_id , name
         let fullText = `${record.product_id}${record.name}`;
-        const match = fullText.match(reg);
-        if (!match) {
+        const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
+        if (match == -1) {
           return null;
         }
         return {

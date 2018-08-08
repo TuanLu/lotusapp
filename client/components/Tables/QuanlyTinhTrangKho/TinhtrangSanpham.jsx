@@ -174,7 +174,6 @@ class TinhtrangSanpham extends React.Component {
   }
   onSearch = () => {
     const { searchText } = this.state;
-    const reg = new RegExp(searchText, 'gi');
     this.setState({
       filterDropdownVisible: false,
       filtered: !!searchText,
@@ -410,23 +409,23 @@ class TinhtrangSanpham extends React.Component {
     });
     let selectedProducts = this.props.mainState.phieunhap.products || [];
     //Apply search if exists 
-    const reg = new RegExp(searchText, 'gi');
     if(searchText) {
       selectedProducts = selectedProducts.map((record) => {
-        const match = record.product_id.match(reg);
-        if (!match) {
+        let fullText = `${record.product_id}`;
+        const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
+        if (match == -1) {
           return null;
         }
         return {
           ...record,
-          product_id: (
-            <span>
-              {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
-                text.toLowerCase() === searchText.toLowerCase() ?
-                  <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
-              ))}
-            </span>
-          ),
+          // product_id: (
+          //   <span>
+          //     {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
+          //       text.toLowerCase() === searchText.toLowerCase() ?
+          //         <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
+          //     ))}
+          //   </span>
+          // ),
         };
       }).filter(record => !!record)
     }
