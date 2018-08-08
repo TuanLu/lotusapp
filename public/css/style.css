@@ -251,7 +251,7 @@ td:hover .editable-cell-icon {
   position: absolute;
 }
 .gantt_cal_light {
-  min-height: 520px!important;
+  min-height: 455px!important;
 }
 .gantt_duration input {
   line-height: 1;

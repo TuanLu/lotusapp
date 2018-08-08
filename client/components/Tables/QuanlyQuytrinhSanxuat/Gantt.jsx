@@ -508,13 +508,13 @@ class Gantt extends Component {
           label: worker.ma_ns + ' - ' + worker.name
         }
       }));
-      let checkUserOptions = [{key: "", label: "Người phê duyệt"}];
-      checkUserOptions = checkUserOptions.concat(check_users.map((user) => {
-        return {
-          key: user.id,
-          label: user.ma_ns + ' - ' + (user.name || user.username)
-        }
-      }));
+      // let checkUserOptions = [{key: "", label: "Người phê duyệt"}];
+      // checkUserOptions = checkUserOptions.concat(check_users.map((user) => {
+      //   return {
+      //     key: user.id,
+      //     label: user.ma_ns + ' - ' + (user.name || user.username)
+      //   }
+      // }));
       let groupUserOptions = [{key: "", label: "Phòng ban"}];
       groupUserOptions = groupUserOptions.concat(group_users.map((group) => {
         return {
@@ -526,7 +526,7 @@ class Gantt extends Component {
         {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
         {name: "group_user", height: 25, map_to: "group_user", type: "select", options: groupUserOptions},
         {name: "user", height: 25, map_to: "user", type: "select", options: workerOptions},
-        {name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
+        //{name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
         // {
         //   name: "progress", height: 25, map_to: "progress", type: "select", options: [
         //     {key: 0, label: "Chưa bắt đầu"},
@@ -548,7 +548,7 @@ class Gantt extends Component {
     
       gantt.locale.labels["section_group_user"] = "Phòng ban";
       gantt.locale.labels["section_user"] = "Người thực hiện";
-      gantt.locale.labels["section_check_user"] = "Người phê duyệt";
+      //gantt.locale.labels["section_check_user"] = "Người phê duyệt";
       gantt.locale.labels["section_progress"] = "Số % hoàn thành";
       gantt.locale.labels["section_note"] = "Ghi chú";
     } else {

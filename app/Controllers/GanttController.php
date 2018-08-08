@@ -583,7 +583,8 @@ class GanttController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
-		$workers = $this->UserController->getWorkers();
+		//$allUser = $this->getAllActiveUsers();
+		$workers = $this->UserController->getAllActiveUsers();
 		$nhancong = $workers;
 		$users = $workers;
 		//Get group users
