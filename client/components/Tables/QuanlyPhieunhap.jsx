@@ -1,6 +1,6 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, 
   Col, Button, message, Badge
 } from 'antd';
@@ -316,6 +316,17 @@ class EditableTable extends React.Component {
       this.fetchData();
     }
   }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value }); 
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+    });
+  }
   componentDidMount() {
     this.fetchData();
   }
@@ -327,7 +338,6 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -344,7 +354,22 @@ class EditableTable extends React.Component {
         }),
       };
     });
-
+    let {searchText} = this.state; 
+    let data = [...this.state.data]; 
+    //Apply search if exists 
+    const reg = new RegExp( searchText, 'gi');
+    if(searchText) { 
+      data = data.map((record) => {
+        let fullText = `${record.ma_kho}${record.nguoi_giao_dich}${record.note}${record.create_on}${record.username}`;
+        const match = fullText.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+    }
     return (
       <React.Fragment>
         {mainState.phieuAction.addNewItem ? 
@@ -376,8 +401,29 @@ class EditableTable extends React.Component {
             <Table
               components={components}
               bordered
-              dataSource={this.state.data}
+              dataSource={data}
               columns={columns}
+              title={() => {
+                return (
+                  <div className="search-form">
+                    <Row>
+                      <Col span={6}>
+                        <label>Tìm kiếm</label>
+                      </Col>
+                      <Col span={12}>
+                        <Input
+                          ref={ele => this.searchInput = ele}
+                          prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          placeholder="Tìm kiếm"
+                          value={this.state.searchText}
+                          onChange={this.onInputChange}
+                          onPressEnter={this.onSearch}
+                        />
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              }}
               rowClassName="editable-row"
             />
           </React.Fragment>
