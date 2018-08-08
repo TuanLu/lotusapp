@@ -307,6 +307,17 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value }); 
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+    });
+  }
   componentDidMount() {
     this.fetchData();
   }
@@ -317,24 +328,6 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-
-    /**
-      title?: React.ReactNode;
-      key?: string;
-      dataIndex?: string;
-      render?: (text: any, record: T, index: number) => React.ReactNode;
-      filters?: { text: string; value: string }[];
-      onFilter?: (value: any, record: T) => boolean;
-      filterMultiple?: boolean;
-      filterDropdown?: React.ReactNode;
-      sorter?: boolean | ((a: any, b: any) => number);
-      colSpan?: number;
-      width?: string | number;
-      className?: string;
-      fixed?: boolean | ('left' | 'right');
-      filteredValue?: any[];
-      sortOrder?: boolean | ('ascend' | 'descend');
-    */
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -351,7 +344,22 @@ class EditableTable extends React.Component {
         }),
       };
     });
-
+    let {searchText} = this.state; 
+    let data = [...this.state.data]; 
+    //Apply search if exists 
+    const reg = new RegExp(searchText, 'gi');
+    if(searchText) { 
+      data = data.map((record) => {
+        let fullText = `${record.ma_npp}${record.name}${record.address}${record.phone}${record.ranking}`;
+        const match = fullText.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+    }
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -371,8 +379,29 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
-          dataSource={this.state.data}
+          dataSource={data}
           columns={columns}
+          title={() => {
+            return (
+              <div className="search-form">
+                <Row>
+                  <Col span={6}>
+                    <label>Tìm kiếm</label>
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      ref={ele => this.searchInput = ele}
+                      prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder="Tìm kiếm"
+                      value={this.state.searchText}
+                      onChange={this.onInputChange}
+                      onPressEnter={this.onSearch}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            );
+          }}
           rowClassName="editable-row"
         />
       </React.Fragment>
