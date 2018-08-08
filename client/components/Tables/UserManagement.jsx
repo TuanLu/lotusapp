@@ -1,6 +1,6 @@
 import React from 'react'
 import { 
-  Table, Input, Select, 
+  Table, Input, Select, Icon,
   Popconfirm, Form, Row, 
   Col, Button, message, Modal
 } from 'antd';
@@ -193,12 +193,48 @@ class UserManage extends React.Component {
   componentDidMount() {
     this.fetchData();
   }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value }); 
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+    });
+  }
+  handleChange = (pagination, filters, sorter) => {
+    this.setState({
+      filteredInfo: filters,
+      sortedInfo: sorter,
+    });
+  }
+  componentDidMount() {
+    this.fetchData();
+  }
   render() {
     const columns = this.columns;
     let {mainState} = this.props;
     let openModal = mainState.phanquyen ? mainState.phanquyen.openModal : false;
     let openUserModal = mainState.user ? mainState.user.openUserModal : false;
-
+    let {searchText} = this.state; 
+    let data = [...this.state.data]; 
+    //Apply search if exists 
+    const reg = new RegExp(searchText, 'gi');
+    if(searchText) { 
+      data = data.map((record) => {
+        //Search by product_id , name
+        let fullText = `${record.username}${record.email}${record.name}${record.ma_ns}`;
+        const match = fullText.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+    }
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -261,8 +297,9 @@ class UserManage extends React.Component {
         : null}
         <Table
           bordered
-          dataSource={this.state.data}
+          dataSource={data}
           columns={columns}
+          onChange={this.handleChange}
           expandedRowRender={record => {
             return (
               <ul className="user-extra-info">
@@ -273,6 +310,27 @@ class UserManage extends React.Component {
                 <li>Thông tin: <b>{record.description}</b></li>
                 <li>Phòng ban: <b>{record.ten_phong_ban}</b></li>
               </ul>
+            );
+          }}
+          title={() => {
+            return (
+              <div className="search-form">
+                <Row>
+                  <Col span={6}>
+                    <label>Tìm kiếm</label>
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      ref={ele => this.searchInput = ele}
+                      prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder="Tìm kiếm"
+                      value={this.state.searchText}
+                      onChange={this.onInputChange}
+                      onPressEnter={this.onSearch}
+                    />
+                  </Col>
+                </Row>
+              </div>
             );
           }}
         />

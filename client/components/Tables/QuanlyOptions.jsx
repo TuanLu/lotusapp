@@ -76,14 +76,14 @@ class EditableTable extends React.Component {
         title: ans_language.ans_config_title || 'ans_config_title',
         dataIndex: 'ma_opt',
         width: '15%',
-        editable: true,
+        editable: false,
         required: true
       },
       {
         title: ans_language.ans_config_default_title || 'ans_config_default_title',
         dataIndex: 'defaultconfig',
         //width: '40%',
-        editable: true,
+        editable: false,
         required: true
       },
       {
@@ -276,6 +276,24 @@ class EditableTable extends React.Component {
   componentDidMount() {
     this.fetchData();
   }
+  onInputChange = (e) => {
+    this.setState({ searchText: e.target.value }); 
+  }
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, 'gi');
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchText,
+    });
+  }
+  handleChange = (pagination, filters, sorter) => {
+    //console.log('Various parameters', pagination, filters, sorter);
+    this.setState({
+      filteredInfo: filters,
+      sortedInfo: sorter,
+    });
+  }
   render() {
     const components = {
       body: {
@@ -300,7 +318,23 @@ class EditableTable extends React.Component {
         }),
       };
     });
-
+    let {searchText} = this.state; 
+    let data = [...this.state.data]; 
+    //Apply search if exists 
+    const reg = new RegExp(searchText, 'gi');
+    if(searchText) { 
+      data = data.map((record) => {
+        //Search by product_id , name
+        let fullText = `${record.ma_opt}${record.defaultconfig}${record.config}`;
+        const match = fullText.match(reg);
+        if (!match) {
+          return null;
+        }
+        return {
+          ...record,
+        };
+      }).filter(record => !!record)
+    }
     return (
       <React.Fragment>
         <div className="table-operations">
@@ -320,8 +354,30 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
-          dataSource={this.state.data}
+          dataSource={data}
           columns={columns}
+          onChange={this.handleChange}
+          title={() => {
+            return (
+              <div className="search-form">
+                <Row>
+                  <Col span={6}>
+                    <label>Tìm kiếm</label>
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      ref={ele => this.searchInput = ele}
+                      prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder="Tìm kiếm"
+                      value={this.state.searchText}
+                      onChange={this.onInputChange}
+                      onPressEnter={this.onSearch}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            );
+          }}
           rowClassName="editable-row"
         />
       </React.Fragment>

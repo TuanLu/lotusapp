@@ -81,7 +81,7 @@ class EditableTable extends React.Component {
     this.columns = [
       {
         title: ans_language.ans_order || 'ans_order',
-        dataIndex: 'orderid',
+        dataIndex: 'dh',
         //width: '15%',
         editable: false,
       },
