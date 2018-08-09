@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import {getTokenHeader, convertArrayObjectToObject} from 'ISD_API'
 import {updateStateData} from 'actions'
+// import OrderForm from './QuanlyOrder/OrderForm'
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -437,12 +438,11 @@ class EditableTable extends React.Component {
     let {searchText} = this.state; 
     let data = [...this.state.data]; 
     //Apply search if exists 
-    const reg = new RegExp(searchText, 'gi');
     if(searchText) { 
       data = data.map((record) => {
         //Search by product_id , name
         let fullText = `${record.ma_order}${record.ma_kh}${record.product_id}${record.date_delive}`;
-        const match = fullText.match(reg);
+        const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
         if (!match) {
           return null;
         }

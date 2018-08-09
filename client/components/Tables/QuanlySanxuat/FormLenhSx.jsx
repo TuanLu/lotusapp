@@ -77,12 +77,8 @@ class FormPhieunhap extends React.Component {
   }
   validBeforeSave() {
     let {sx} = this.props.mainState;
-    if(!sx.ma) {
-      message.error('Mã sản xuất không được để trống');
-      return false;
-    }
     if(!sx.so) {
-      message.error('Số sản xuất không được để trống');
+      message.error('Mã sản xuất không được để trống');
       return false;
     }
     // if(!sx.products.length) {
