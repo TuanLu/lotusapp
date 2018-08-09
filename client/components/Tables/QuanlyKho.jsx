@@ -22,16 +22,16 @@ class EditableCell extends React.Component {
   getInput = () => {
     switch (this.props.inputType) {
       case 'quanly' :
-        let quanly = this.props.quanly || [];
+        let quanly = this.props.quanly || []; 
         return (
           <Select 
             style={{ maxWidth: 200 }}
             placeholder="Chọn user">
-          {quanly.map((quanly) => {
+            {quanly.map((ql) => {
               return <Select.Option 
-              key={quanly.id} 
-              value={quanly.username}>
-                {`${quanly.username} - ${quanly.name}`}
+              key={ql.id} 
+              value={ql.username}>
+                {`${ql.username} - ${ql.name}`}
               </Select.Option>
           })}
           </Select>
@@ -306,11 +306,10 @@ class EditableTable extends React.Component {
       if(json.data) {
         if(json.data) {
           this.props.dispatch(updateStateData({
-            quanly: json.data
+            //quanly: json.data
           }));
           this.setState({
-            //quanly: json.data
-            quanly: convertArrayObjectToObject(json.data, 'username')
+            quanly: json.data
           });
           
         }
@@ -343,7 +342,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-    let quanly = this.props.quanly || [];
+    let {quanly} = this.state || []; 
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -368,7 +367,7 @@ class EditableTable extends React.Component {
       data = data.map((record) => {
         let fullText = `${record.ma_kho}${record.name}${record.quanly}${record.description}`;
         const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
-        if (!match) {
+        if (match == -1) {
           return null;
         }
         return {
@@ -395,6 +394,7 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
+          quanly={quanly}
           dataSource={data}
           columns={columns}
           title={() => {
