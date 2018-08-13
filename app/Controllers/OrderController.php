@@ -28,7 +28,7 @@ class OrderController extends BaseController
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
-			"status" => 1
+			//"status" => 1
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;

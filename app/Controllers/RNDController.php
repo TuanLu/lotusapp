@@ -183,6 +183,11 @@ class RNDController extends BaseController
 				} else {
 					$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu!';
 				}
+				//Cập nhật trạng thái đơn hàng
+				$dh_data[] = array(
+					'status' => 2
+				);
+				$result = $this->db->update('lotus_orders', $dh_data, ['ma_order' => $dh]);
 			} else {
 				// echo "<pre>";
 				// print_r($result->errorInfo());
@@ -209,11 +214,16 @@ class RNDController extends BaseController
 				'update_on' => $date->format('Y-m-d H:i:s'),
 				'update_by' => $userId
 			];
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]); 
+			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
 			if($result->rowCount()) {
 				$this->superLog('Update phiếu nhập', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				//Cập nhật trạng thái đơn hàng
+				$dh_data = array(
+					'status' => 2
+				);
+				$result = $this->db->update('lotus_orders', $dh_data, ['ma_order' => $dh]); 
 			} else {
 				//$errors = $result->errorInfo();
 				$message = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';

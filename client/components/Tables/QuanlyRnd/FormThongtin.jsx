@@ -61,12 +61,37 @@ class FormThongtin extends React.Component {
       console.log(error);
     });
   }
+  fetchDonhang() {
+    fetch(ISD_BASE_URL + `order/fetchDh`, {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            orderList: json.data
+          }));
+          this.setState({
+            orderList: json.data
+          });
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
     this.fetchProductbyCate();
+    this.fetchDonhang();
   }
   render() {
     let {rnd, phieuAction, ans_language} = this.props.mainState;
     let productListbyCate = this.state.productListbyCateList || [];
+    let orderList = this.state.orderList || [];
     if(!rnd.hd) {
       rnd.hd = 2;
     }
@@ -175,17 +200,29 @@ class FormThongtin extends React.Component {
                 labelCol={{ span: 5 }}
                 wrapperCol={{ span: 12 }}
               >
-              <Input 
-                  readOnly={readOnly}
-                  onChange={(e) => {
+                <Select 
+                  defaultValue={rnd.dh}
+                  showSearch
+                  optionFilterProp="children"
+                  onChange={(value, option) => {
                     this.props.dispatch(updateStateData({
                       rnd: {
                         ...this.props.mainState.rnd,
-                        dh: e.target.value
+                        dh: value
                       }
                     }));
                   }}
-                  value={rnd.dh} />
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  //style={{ width: 200 }}
+                  placeholder={ans_language.ans_choose_order || 'ans_choose_order'}>
+                  {orderList.map((order) => {
+                    return <Select.Option 
+                    key={order.ma_order} 
+                    value={order.ma_order}> 
+                      {`${order.ma_order} - ${order.ma_kh} - ${order.qty} `}
+                  </Select.Option>
+                })}
+                </Select>
               </FormItem>
             </Col>
             <Col span={12}>

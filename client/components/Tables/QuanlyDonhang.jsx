@@ -311,6 +311,20 @@ class EditableTable extends React.Component {
         //render: {}
       },
       {
+        title: ans_language.ans_status || 'ans_status',
+        dataIndex: 'status',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text) => {
+          return (
+            <div>
+              {text}
+            </div>
+          )
+        }
+      },
+      {
         title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
         width: '150px',
@@ -318,14 +332,14 @@ class EditableTable extends React.Component {
           return (
             <div style={{minWidth: 100}}>
               <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
-              {" | "}
+              {/* {" | "}
               <Popconfirm
                 title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
                 okType="danger"
                 onConfirm={() => this.delete(record)}
               >
                 <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
-              </Popconfirm>
+              </Popconfirm> */}
             </div>
           );
         },
