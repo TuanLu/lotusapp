@@ -312,12 +312,11 @@ class EditableTable extends React.Component {
     let {searchText} = this.state; 
     let data = [...this.state.data]; 
     //Apply search if exists 
-    const reg = new RegExp(searchText, 'gi');
     if(searchText) { 
       data = data.map((record) => {
         let fullText = `${record.ma_cate}${record.name}${record.description}`;
-        const match = fullText.match(reg);
-        if (!match) {
+        const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
+        if (match == -1) {
           return null;
         }
         return {

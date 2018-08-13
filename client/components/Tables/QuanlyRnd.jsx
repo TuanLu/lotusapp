@@ -76,9 +76,18 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       addNewItem: false,
+      productListbyCateList: []
     };
+    let productListbyCateList = this.state.productListbyCateList;
+    console.log(productListbyCateList);
     let {ans_language} = this.props.mainState;
     this.columns = [
+      {
+        title: ans_language.ans_rnd_id || 'ans_rnd_id',
+        dataIndex: 'ma_nc',
+        //width: '15%',
+        editable: false,
+      },
       {
         title: ans_language.ans_order || 'ans_order',
         dataIndex: 'dh',
@@ -97,12 +106,12 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: false,
       },
-      {
-        title: ans_language.ans_user_do_it || 'ans_user_do_it',
-        dataIndex: 'userid',
-        //width: '40%',
-        editable: false,
-      },
+      // {
+      //   title: ans_language.ans_user_do_it || 'ans_user_do_it',
+      //   dataIndex: 'create_by',
+      //   //width: '40%',
+      //   editable: false,
+      // },
       {
         title: ans_language.ans_date_create || 'ans_date_create',
         dataIndex: 'create_on',
@@ -341,6 +350,29 @@ class EditableTable extends React.Component {
       }  
     }
   }
+  fetchProductListbyCate(cateId){
+    fetch(ISD_BASE_URL + `rnd/fetchProductByCate/${cateId}`, {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            productListbyCateList: convertArrayObjectToObject(json.data, 'product_id')
+          }));
+          this.setState({
+            productListbyCateList: convertArrayObjectToObject(json.data, 'product_id')
+          });
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   static getDerivedStateFromProps(nextProps, prevState) {
     let {refresh} = nextProps.mainState.sx;
     if(refresh) {
@@ -358,6 +390,10 @@ class EditableTable extends React.Component {
   componentDidMount() {
     this.fetchData();
     this.fetchQuyTrinhMau();
+    let productListbyCateList = this.state.productListbyCateList || [];
+    if(productListbyCateList.length == 0){
+      this.fetchProductListbyCate(19);
+    }
   }
   render() {
     let {mainState} = this.props;

@@ -5,6 +5,7 @@ import {cloneDeep} from 'lodash'
 let _designDefault = {
     showLogin: true,
     defaultRouter: 'khsx_daihan',
+    customers: [],
     userRoles: [],
     userlist: [],
     categories: [],
@@ -104,6 +105,9 @@ let _designDefault = {
     },
     user: {
       openUserModal: false
+    },
+    systemOrder: {
+      openModal : false,
     },
     systemNote: {
       openModal : false,

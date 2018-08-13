@@ -124,15 +124,15 @@ class EditableTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <a href="javascript:;" onClick={() => this.edit(record.key)}>Sửa</a>  
-                  {" | "}
+                  <a href="javascript:;" onClick={() => this.edit(record.key)}><Icon type="edit" />Sửa</a>  
+                  {/* {" | "}
                   <Popconfirm
                     title="Bạn thật sự muốn xoá?"
                     okType="danger"
                     onConfirm={() => this.delete(record)}
                   >
                     <a href="javascript:;">Xoá</a>  
-                  </Popconfirm>
+                  </Popconfirm> */}
                 </React.Fragment>
                 
               )}
@@ -320,10 +320,8 @@ class EditableTable extends React.Component {
     let {searchText} = this.state; 
     let data = [...this.state.data]; 
     //Apply search if exists 
-    //const reg = new RegExp(searchText, 'gi');
     if(searchText) { 
       data = data.map((record) => {
-        //Search by product_id , name
         let fullText = `${record.ma_text}${record.vi}${record.en}`;
         const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
         if (match == -1) {

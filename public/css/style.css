@@ -18,6 +18,12 @@
 .menu_item_left {
  
 }
+.ans_input_80 {
+  width: 80%;
+}
+.ans_row_margin_10 .ant-form-item {
+  margin: 0 0 10px 0;
+}
 .menu_item_left .anticon {
   margin: 0 5px 0 0;
   color: lightskyblue;

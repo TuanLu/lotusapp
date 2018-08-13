@@ -9,7 +9,8 @@ const Option = Select.Option;
 class OrderForm extends React.Component {
   state = {
     confirmDirty: false,
-    groupUser: []
+    groupUser: [],
+    productListbyCateList: []
   };
 
   handleSubmit = (e) => {
@@ -17,9 +18,9 @@ class OrderForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         //Get USER ID from mainstate
-        let {systemNote} = this.props.mainState;
-        values.id = systemNote.id ? systemNote.id : '';
-        fetch(ISD_BASE_URL + 'note/updateNote', {
+        let {systemOrder} = this.props.mainState;
+        values.id = systemOrder.id ? systemOrder.id : '';
+        fetch(ISD_BASE_URL + 'order/updateDh', {
           method: 'POST',
           headers: getTokenHeader(),
           body: JSON.stringify(values)
@@ -47,7 +48,6 @@ class OrderForm extends React.Component {
     const value = e.target.value;
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   }
-
   fetchGroupUser() {
     fetch(ISD_BASE_URL + 'qlpb/fetchPb', {
       headers: getTokenHeader()
@@ -145,115 +145,130 @@ class OrderForm extends React.Component {
       },
     };
 
-    let {systemNote, groupUser, ans_language, userlist} = this.props.mainState;
-    let phongBanOptions = [];
-    let usersOptions = [];
-    //let {groupUser} = this.state;
-    if(groupUser && groupUser.length) {
-      phongBanOptions = groupUser.map((group) => {
-        return <Option value={group.ma_pb} key={group.ma_pb}>{group.ma_pb} - {group.name}</Option>
+    let {systemOrder, groupUser, ans_language, customers} = this.props.mainState;
+    let productListbyCateList = this.state.productListbyCateList; 
+    let customerOptions = [];
+    if(customers && customers.length) {
+      customerOptions = customers.map((user) => {
+        return <Option value={user.ma_kh} key={user.ma_kh}>{user.ma_kh} - {user.name}</Option>
       });
     }
-    if(userlist && userlist.length) {
-      usersOptions = userlist.map((user) => {
-        return <Option value={user.id} key={user.id}>{user.name}</Option>
+    let productOptions = [];
+    if(productListbyCateList && productListbyCateList.length) {
+      customerOptions = productListbyCateList.map((product) => {
+        return <Option value={product.product_id} key={product.product_id}>{product.product_id} - {product.name}</Option>
       });
-    }
-    let selected_user = [];
-    if( systemNote.assign_users
-      && systemNote.assign_users != "") {
-        if(typeof systemNote.assign_users == "string") {
-          selected_user = systemNote.assign_users.split(',')
-        } else {
-          selected_user = systemNote.assign_users;
-        }
-    }
-    let selected_group = [];
-    if( systemNote.assign_group
-      && systemNote.assign_group != "") {
-        if(typeof systemNote.assign_group == "string") {
-          selected_group = systemNote.assign_group.split(',')
-        } else {
-          selected_group = systemNote.assign_group;
-        }
     }
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Row>
-          <Col span="24">
+        <Row className="ans_row_margin_10">
+          <Col span="12">
+              <FormItem
+                {...formItemLayout}
+                label={(
+                  <span>
+                    {ans_language.ans_order_titles || 'ans_order_titles'} &nbsp;
+                    <Tooltip title={ans_language.ans_order_titles_note || 'ans_order_titles_note' }>
+                      <Icon type="question-circle-o" />
+                    </Tooltip>
+                  </span>
+                )}
+              >
+              {getFieldDecorator('ma_order', {
+                initialValue: systemOrder.ma_order,
+                rules: [{ required: true, message: ans_language.ans_pls_enter_title || 'ans_pls_enter_title' , whitespace: true }],
+              })(
+                <Input className="ans_input_80" />
+              )}
+            </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem
+                {...formItemLayout}
+                label={(
+                  <span>
+                    {ans_language.ans_customer_titles || 'ans_customer_titles'} &nbsp;
+                    <Tooltip title={ans_language.ans_customer_titles_note || 'ans_customer_titles_note' }>
+                      <Icon type="question-circle-o" />
+                    </Tooltip>
+                  </span>
+                )}
+                >
+                {getFieldDecorator('ma_kh', {
+                  initialValue: systemOrder.titles,
+                  rules: [{ required: true, message: ans_language.ans_pls_enter_title || 'ans_pls_enter_title' , whitespace: true }],
+                })(
+                  <Select 
+                    placeholder="Chọn khách hàng"
+                    mode=""
+                    onChange={(value) => {
+                      console.log(value);
+                    }}
+                  >
+                  {customerOptions}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+        </Row>
+        <Row className="ans_row_margin_10">
+          <Col span={12}>
+            <FormItem
+              {...form50Layout}
+              label={ans_language.ans_product_name || 'ans_product_name'}
+            > 
+            {getFieldDecorator('product_id', {
+              //initialValue: selected_product,
+              rules: [{ required: false, message: ans_language.ans_choose_product || 'ans_choose_product' }],
+            })(
+              <Select 
+                placeholder="Chọn sản phẩm"
+                mode=""
+                onChange={(value) => {
+                  console.log(value);
+                }}
+              >
+              {productOptions}
+              </Select>
+            )}
+          </FormItem>
+          </Col>
+          <Col span="12">
             <FormItem
               {...formItemLayout}
               label={(
                 <span>
-                  {ans_language.ans_note_titles || 'ans_note_titles'} &nbsp;
-                  <Tooltip title={ans_language.ans_note_titles_note || 'ans_note_titles_note' }>
+                  {ans_language.ans_qty_titles || 'ans_qty_titles'} &nbsp;
+                  <Tooltip title={ans_language.ans_qty_titles_note || 'ans_qty_titles_note' }>
                     <Icon type="question-circle-o" />
                   </Tooltip>
                 </span>
               )}
             >
-            {getFieldDecorator('titles', {
-              initialValue: systemNote.titles,
+            {getFieldDecorator('qty', {
+              initialValue: systemOrder.qty,
               rules: [{ required: true, message: ans_language.ans_pls_enter_title || 'ans_pls_enter_title' , whitespace: true }],
             })(
               <Input />
             )}
           </FormItem>
           </Col>
-          <Col span={12}>
-            <FormItem
-              {...form50Layout}
-              label={ans_language.ans_group_assign || 'ans_group_assign'}
-            > 
-            {getFieldDecorator('assign_group', {
-              initialValue: selected_group,
-              rules: [{ required: false, message: ans_language.ans_choose_team || 'ans_choose_team' }],
-            })(
-              <Select 
-                placeholder="Chọn phòng ban"
-                mode="multiple"
-                onChange={(value) => {
-                  console.log(value);
-                }}
-              >
-              <Option value="all">{ans_language.ans_all_team || 'ans_all_team' }</Option>
-              {phongBanOptions}
-              </Select>
-            )}
-          </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem
-              {...form50Layout}
-              label={ans_language.ans_user_assign || 'ans_user_assign'}
-            >
-              {getFieldDecorator('assign_users', {
-                initialValue: selected_user
-              })(
-                <Select 
-                  placeholder={ans_language.ans_user_assign_note || 'ans_user_assign_note'}
-                  mode="multiple"
-                  onChange={(value) => {
-                    console.log(value);
-                  }}
-                >
-                <Option value="all">{ans_language.ans_assign_all_user || 'ans_assign_all_user'}</Option>
-                {usersOptions}
-                </Select>
-              )}
-            </FormItem>
+        </Row>
+        <Row>
+          <Col span="12">
+          
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <FormItem
               {...formItemLayout}
-              label="Nội dung"
+              label="Nội dung ghi chú cho đơn hàng"
               >
                 {getFieldDecorator('note', {
-                  initialValue: systemNote.note
+                  initialValue: systemOrder.note
                 })(
-                  <Input.TextArea style={{ width: '100%' }} />
+                  <Input.TextArea style={{ width: '100%', minHeight: '200px' }} />
                 )}
               </FormItem>
           </Col>
