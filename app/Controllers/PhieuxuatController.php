@@ -69,6 +69,7 @@ class PhieuxuatController extends BaseController
 			'san_pham_theo_phieu.id(key)',//For unique react item
 			'san_pham_theo_phieu_xuat.ma_phieu',
 			'san_pham_theo_phieu.product_id',
+			'products.name',
 			//'item_id',
 			'san_pham_theo_phieu_xuat.sl_thucnhap',
 			'san_pham_theo_phieu.ngay_san_xuat',
@@ -77,6 +78,7 @@ class PhieuxuatController extends BaseController
 		$collection = $this->db->select('san_pham_theo_phieu_xuat', 
 			[
 				"[>]san_pham_theo_phieu" => ["item_id" => "id"],
+				"[>]products" => ["san_pham_theo_phieu.product_id" => "product_id"],
 			], $columns, [
 			"san_pham_theo_phieu_xuat.status" => 1,
 			"san_pham_theo_phieu_xuat.ma_phieu" => $maPhieu

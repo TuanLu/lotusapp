@@ -47,6 +47,12 @@ class ExportProduct extends React.Component {
         //fixed: 'left',
         width: 150,
       },
+      {
+        title: 'Tên VT',
+        dataIndex: 'name',
+        //fixed: 'left',
+        width: 150,
+      },
       // {
       //   title: 'Quy cách',
       //   dataIndex: 'label',
