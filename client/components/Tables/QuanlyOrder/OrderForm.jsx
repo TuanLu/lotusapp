@@ -1,7 +1,9 @@
 import React from 'react'
+import moment from 'moment'
 import {updateStateData} from 'actions'
-import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, Upload, message } from 'antd';
+import { Form, Input, Tooltip, Icon, DatePicker, Select, Row, Col, Checkbox, Button, Upload, message } from 'antd';
 import {getTokenHeader} from 'ISD_API'
+const { MonthPicker } = DatePicker;
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -48,44 +50,23 @@ class OrderForm extends React.Component {
     const value = e.target.value;
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   }
-  fetchGroupUser() {
-    fetch(ISD_BASE_URL + 'qlpb/fetchPb', {
+  fetchProductListbyCate(cateId){
+    fetch(ISD_BASE_URL + `rnd/fetchProductByCate/${cateId}`, {
       headers: getTokenHeader()
     })
-    .then((response) => response.json())
+    .then((resopnse) => resopnse.json())
     .then((json) => {
       if(json.data) {
-        this.setState({
-          groupUser: json.data
-        });
-        //Chi connect den server 1 lan
-        this.props.dispatch(updateStateData({
-          groupUser: json.data
-        }));
+        if(json.data) {
+          this.props.dispatch(updateStateData({
+            productListbyCateList: json.data
+          }));
+          this.setState({
+            productListbyCateList: json.data
+          });
+        }
       } else {
-        console.warn(json.message);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  fetchUserList() {
-    fetch(ISD_BASE_URL + 'users/fetchUsers', {
-      headers: getTokenHeader()
-    })
-    .then((response) => response.json())
-    .then((json) => {
-      if(json.data) {
-        this.setState({
-          userlist: json.data
-        });
-        //Chi connect den server 1 lan
-        this.props.dispatch(updateStateData({
-          userlist: json.data
-        }));
-      } else {
-        console.warn(json.message);
+        message.error(json.message);
       }
     })
     .catch((error) => {
@@ -93,13 +74,9 @@ class OrderForm extends React.Component {
     });
   }
   componentDidMount() {
-    let {groupUser} = this.props.mainState; 
-    if(!groupUser || !groupUser.length) {
-      this.fetchGroupUser();
-    }
-    let {userlist} = this.props.mainState; 
-    if(!userlist || !userlist.length) {
-      this.fetchUserList();
+    let productListbyCateList = this.state.productListbyCateList || [];
+    if(productListbyCateList.length == 0){
+      this.fetchProductListbyCate(19);
     }
   }
   normFile = (e) => {
@@ -145,9 +122,13 @@ class OrderForm extends React.Component {
       },
     };
 
-    let {systemOrder, groupUser, ans_language, customers} = this.props.mainState;
+    let {systemOrder, ans_language, customers} = this.props.mainState;
     let productListbyCateList = this.state.productListbyCateList; 
     let customerOptions = [];
+    let date_delive = moment(systemOrder.date_delive);
+    if(!date_delive.isValid()) {
+      date_delive = null;// Might 	0000-00-00
+    } 
     if(customers && customers.length) {
       customerOptions = customers.map((user) => {
         return <Option value={user.ma_kh} key={user.ma_kh}>{user.ma_kh} - {user.name}</Option>
@@ -155,7 +136,7 @@ class OrderForm extends React.Component {
     }
     let productOptions = [];
     if(productListbyCateList && productListbyCateList.length) {
-      customerOptions = productListbyCateList.map((product) => {
+      productOptions = productListbyCateList.map((product) => {
         return <Option value={product.product_id} key={product.product_id}>{product.product_id} - {product.name}</Option>
       });
     }
@@ -195,7 +176,7 @@ class OrderForm extends React.Component {
                 )}
                 >
                 {getFieldDecorator('ma_kh', {
-                  initialValue: systemOrder.titles,
+                  initialValue: systemOrder.ma_kh,
                   rules: [{ required: true, message: ans_language.ans_pls_enter_title || 'ans_pls_enter_title' , whitespace: true }],
                 })(
                   <Select 
@@ -218,7 +199,7 @@ class OrderForm extends React.Component {
               label={ans_language.ans_product_name || 'ans_product_name'}
             > 
             {getFieldDecorator('product_id', {
-              //initialValue: selected_product,
+              initialValue: systemOrder.product_id,
               rules: [{ required: false, message: ans_language.ans_choose_product || 'ans_choose_product' }],
             })(
               <Select 
@@ -256,7 +237,31 @@ class OrderForm extends React.Component {
         </Row>
         <Row>
           <Col span="12">
-          
+              <FormItem
+                {...formItemLayout}
+                  label={(
+                    <span>
+                      {ans_language.ans_date_delive || 'ans_date_delive'} &nbsp;
+                      <Tooltip title={ans_language.ans_date_delive_note || 'ans_date_delive_note' }>
+                        <Icon type="question-circle-o" />
+                      </Tooltip>
+                    </span>
+                  )}
+                >
+                <DatePicker defaultValue={date_delive} onChange={(date) => {
+                  if(date != null){
+                    date = date.format('YYYY-MM-DD');
+                  }else{ 
+                    date = '';
+                  }
+                  this.props.dispatch(updateStateData({
+                    systemOrder: {
+                      ...this.props.mainState.systemOrder,
+                      date_delive: date
+                    }
+                  }));
+                }}  placeholder="Chọn ngày" format="DD-MM-YYYY"/>
+              </FormItem>
           </Col>
         </Row>
         <Row>

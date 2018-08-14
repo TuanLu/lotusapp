@@ -36,8 +36,6 @@ class KiemkeController extends BaseController
 		);
 		// Columns to select.
 		$columns = $this->getColumns();
-		//echo "<pre>";
-		//print_r($columns);die;
 		$collection = $this->db->select($this->tableName,[
 			"[>]users" => ["create_by" => "id"],
 		] ,$columns, [

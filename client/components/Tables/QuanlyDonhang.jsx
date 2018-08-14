@@ -170,7 +170,7 @@ class EditableTable extends React.Component {
         });
         //Chi connect den server 1 lan
         this.props.dispatch(updateStateData({
-          customers: convertArrayObjectToObject(json.data, 'id')
+          customers: json.data
         }));
       } else {
         console.warn(json.message);
@@ -267,37 +267,40 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_order_id || 'ans_order_id',
         dataIndex: 'ma_order',
-        width: '20%',
+        width: '150px',
         editable: true,
         required: true
       },
       {
         title: ans_language.ans_customer_name || 'ans_customer_name',
         dataIndex: 'ma_kh',
-        width: 150,
+        width: '200px',
         editable: true,
         required: true,
-        render: (text, record) => record.name || text
+        render: (text, record) => { 
+          return (
+          <div>
+            {text} - {record.kh_name}
+          </div>
+        )}
       },
       {
         title: ans_language.ans_product_name || 'ans_product_name',
         dataIndex: 'product_id',
-        //width: '40%',
+        width: '200px',
         editable: true,
         required: true,
-        render: (text) => {
-          let product_id = text;
+        render: (text, record)=> {
           return (
-            <div>
-              {product_id}
-            </div>
-          )
-        }
+          <div>
+            {text} - {record.product_name}
+          </div>
+        )}
       },
       {
         title: ans_language.ans_qty || 'ans_qty',
         dataIndex: 'qty',
-        //width: '40%',
+        width: '120px',
         editable: true,
         required: true,
         //render: {}
@@ -313,13 +316,19 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_status || 'ans_status',
         dataIndex: 'status',
-        //width: '40%',
+        width: '150px',
         editable: true,
         required: true,
         render: (text) => {
+          let status = ans_language.ans_pending_check || 'ans_pending_check';
+          switch (text) {
+            case '1' : status = ans_language.ans_order_checked || 'ans_order_checked'; break;
+            case '2' : status = ans_language.ans_order_doing ||  'ans_order_doing'; break;
+            default : break;
+          }
           return (
             <div>
-              {text}
+              {status}
             </div>
           )
         }
@@ -327,7 +336,7 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
-        width: '150px',
+        width: '100px',
         render: (text, record) => {
           return (
             <div style={{minWidth: 100}}>

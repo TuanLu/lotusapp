@@ -342,19 +342,6 @@ class EditableTable extends React.Component {
               }}/>
             );
           }}
-          // footer={() => 
-          //   <Row>
-          //     <Col span={3}> Tổng công </Col>
-          //     <Col span={3}> HS 1: {this.state.total.heso1}</Col>
-          //     <Col span={3}> HS 1.2: {this.state.total.heso12}</Col>
-          //     <Col span={3}> HS 1.3: {this.state.total.heso13}</Col>
-          //     <Col span={3}> HSOT 1: {this.state.total.heso1}</Col>
-          //     <Col span={3}> HSOT 1.2: {this.state.total.heso1}</Col>
-          //     <Col span={3}> HSOT 1.3: {this.state.total.heso1}</Col>
-          //     <Col span={3}> Tổng: {this.state.total.tong_cong}</Col>
-          //   </Row>
-            
-          // }
         /> }
       </React.Fragment>
     );
