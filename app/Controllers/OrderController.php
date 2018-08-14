@@ -17,18 +17,24 @@ class OrderController extends BaseController
 		);
 		// Columns to select.
 		$columns = [
-				'id',
-				'ma_order',
-				'ma_kh',
-				'product_id',
-				'qty',
-				'date_delive',
-				'status',
-				'create_on'
+				'lotus_orders.id',
+				'lotus_orders.ma_order',
+				'lotus_orders.ma_kh',
+				'lotus_orders.product_id',
+				'lotus_orders.qty',
+				'lotus_orders.note',
+				'lotus_orders.date_delive',
+				'lotus_orders.status',
+				'lotus_orders.create_on',
+				'lotus_khachhang.name(kh_name)',
+				'products.name(product_name)',
 		];
-		$collection = $this->db->select($this->tableName, $columns, [
+		$collection = $this->db->select($this->tableName,[
+			"[>]lotus_khachhang" => ["ma_kh" => "ma_kh"],
+			"[>]products" => ["product_id" => "product_id"],
+		] ,$columns, [
+			//"lotus_orders.status" => 1,
 			"ORDER" => ["id" => "DESC"],
-			//"status" => 1
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -52,6 +58,7 @@ class OrderController extends BaseController
 		$maKh = $request->getParam('ma_kh');
 		$pid = $request->getParam('product_id');
 		$qty = $request->getParam('qty');
+		$note = $request->getParam('note');
 		if(!$id) {
 			//Insert new data to db
 			if(!$maDh) {
@@ -69,6 +76,7 @@ class OrderController extends BaseController
 				'ma_order' => $maDh,
 				'product_id' => $pid,
 				'qty' => $qty,
+				'note' => $note,
 				'date_delive' => $date->format('Y-m-d H:i:s'),
 				'status' => 1,
 				'ma_kh' => $maKh,
@@ -99,6 +107,7 @@ class OrderController extends BaseController
 				'qty' => $qty,
 				'date_delive' => $date->format('Y-m-d H:i:s'),
 				'status' => 1,
+				'note' => $note,
 				'ma_kh' => $maKh,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
