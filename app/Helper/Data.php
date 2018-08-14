@@ -86,7 +86,7 @@ class Data {
      *  sl_thucnhap chinh la so luong ton 
      * sl_thucnhap bang so luong nhap - so luong trong phieu xuat
      * **/
-    $sql = "SELECT `san_pham_theo_phieu`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,(`san_pham_theo_phieu`.`sl_thucnhap` - IFNULL(`san_pham_theo_phieu_xuat`.`sl_thucnhap`,0)) AS 'sl_thucnhap',`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`create_on`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`, products.name,`san_pham_theo_phieu`.`qc_note`,`san_pham_theo_phieu`.`qa_note`,`san_pham_theo_phieu`.`qc_file`,`san_pham_theo_phieu`.`qa_file`,`lotus_kho`.`ma_kho`, `lotus_kho`.`name` AS ten_kho, `products`.`category_id`
+    $sql = "SELECT `san_pham_theo_phieu`.`id`,`san_pham_theo_phieu`.`id` AS `key`,`san_pham_theo_phieu`.`ma_phieu`,`san_pham_theo_phieu`.`product_id`,(`san_pham_theo_phieu`.`sl_thucnhap` - IFNULL(`san_pham_theo_phieu_xuat`.`sl_thucnhap`,0)) AS 'sl_thucnhap',(`san_pham_theo_phieu`.`sl_thucnhap` - IFNULL(`san_pham_theo_phieu_xuat`.`sl_thucnhap`,0)) AS 'sl_ton',`san_pham_theo_phieu`.`qc_check`,`san_pham_theo_phieu`.`qa_check`,`san_pham_theo_phieu`.`vi_tri_kho`,`san_pham_theo_phieu`.`create_on`,`san_pham_theo_phieu`.`ngay_san_xuat`,`san_pham_theo_phieu`.`ngay_het_han`, products.name,`san_pham_theo_phieu`.`qc_note`,`san_pham_theo_phieu`.`qa_note`,`san_pham_theo_phieu`.`qc_file`,`san_pham_theo_phieu`.`qa_file`,`lotus_kho`.`ma_kho`, `lotus_kho`.`name` AS ten_kho, `products`.`category_id`
     FROM `san_pham_theo_phieu` 
     LEFT JOIN `phieu_nhap_xuat_kho` 
       ON `san_pham_theo_phieu`.`ma_phieu` = `phieu_nhap_xuat_kho`.`ma_phieu` 

@@ -80,6 +80,19 @@ class ExportProduct extends React.Component {
         render: (text, record) => {
           return (
             <InputNumber value={text} onChange={(value) => {
+              if(value < 0) return;
+              let sl_ton = 0;
+              if(record.sl_ton) {
+                //Add new product to bill
+               sl_ton = record.sl_ton;
+              } else {
+                //Edit exitst product on bil
+                sl_ton = parseFloat(record.so_luong_nhap) - parseFloat(record.sl_thucnhap);
+              }
+              if(value > sl_ton) {
+                message.error('Nhập quá số lượng tồn');
+                value = sl_ton;
+              }
               this.updateQty(record, 'sl_thucnhap', value);
             }}/>
           )

@@ -71,7 +71,8 @@ class PhieuxuatController extends BaseController
 			'san_pham_theo_phieu.product_id',
 			'products.name',
 			//'item_id',
-			'san_pham_theo_phieu_xuat.sl_thucnhap',
+			'san_pham_theo_phieu_xuat.sl_thucnhap',//So luong xuat
+			'san_pham_theo_phieu.sl_thucnhap(so_luong_nhap)',//So luong trong phieu nhap
 			'san_pham_theo_phieu.ngay_san_xuat',
 			'san_pham_theo_phieu.ngay_het_han',
 		];
