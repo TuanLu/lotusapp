@@ -299,14 +299,6 @@ class EditableTable extends React.Component {
   onInputChange = (e) => {
     this.setState({ searchText: e.target.value }); 
   }
-  onSearch = () => {
-    const { searchText } = this.state;
-    const reg = new RegExp(searchText, 'gi');
-    this.setState({
-      filterDropdownVisible: false,
-      filtered: !!searchText,
-    });
-  }
   componentDidMount() {
     this.fetchData();
   }
@@ -393,7 +385,6 @@ class EditableTable extends React.Component {
                           placeholder="Tìm kiếm"
                           value={this.state.searchText}
                           onChange={this.onInputChange}
-                          onPressEnter={this.onSearch}
                         />
                       </Col>
                     </Row>

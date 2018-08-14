@@ -118,13 +118,6 @@ class VatTuPhieuXuat extends React.Component {
   onInputChange = (e) => {
     this.setState({ searchText: e.target.value });
   }
-  onSearch = () => {
-    const { searchText } = this.state;
-    this.setState({
-      filterDropdownVisible: false,
-      filtered: !!searchText,
-    });
-  }
   handleChange = (pagination, filters, sorter) => {
     //console.log('Various parameters', pagination, filters, sorter);
     this.setState({
@@ -174,20 +167,13 @@ class VatTuPhieuXuat extends React.Component {
     //const reg = new RegExp(searchText, 'gi');
     if(searchText) {
       productsForExport = productsForExport.map((record) => {
-        const match = record.product_id.toLowerCase().indexOf(searchText.toLowerCase());
+        let fullText = `${record.product_id}${record.ma_kho}${record.name}`;
+        const match = fullText.toLowerCase().indexOf(searchText.toLowerCase());
         if (match == -1) {
           return null;
         }
         return {
           ...record,
-          // product_id: (
-          //   <span>
-          //     {record.product_id.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
-          //       text.toLowerCase() === searchText.toLowerCase() ?
-          //         <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
-          //     ))}
-          //   </span>
-          // ),
         };
       }).filter(record => !!record)
     }
@@ -207,6 +193,26 @@ class VatTuPhieuXuat extends React.Component {
           scroll={{ y: 250 }}
           pagination={{ pageSize: 50 }}
           onChange={this.handleChange}
+          title={() => {
+            return (
+              <div className="search-form">
+                <Row>
+                  <Col span={6}>
+                    <label>Tìm kiếm</label>
+                  </Col>
+                  <Col span={12}>
+                    <Input
+                      ref={ele => this.searchInput = ele}
+                      prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder="Tìm kiếm"
+                      value={this.state.searchText}
+                      onChange={this.onInputChange}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            );
+          }}
         />
       </React.Fragment>
     );
