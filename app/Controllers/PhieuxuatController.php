@@ -65,24 +65,21 @@ class PhieuxuatController extends BaseController
 		$maPhieu = isset(	$args['ma_phieu']) ? $args['ma_phieu'] : '';
 		// Columns to select.
 		$columns = [
-			'id',
-			'id(key)',//For unique react item
-			'ma_phieu',
-			'product_id',
-			'ma_lo',
-			'label',
-			'unit',
-			'price',
-			'sl_chungtu',
-			'sl_thucnhap',
-			'qc_check',
-			'qa_check',
-			'ngay_san_xuat',
-			'ngay_het_han'
+			'san_pham_theo_phieu.id',
+			'san_pham_theo_phieu.id(key)',//For unique react item
+			'san_pham_theo_phieu_xuat.ma_phieu',
+			'san_pham_theo_phieu.product_id',
+			//'item_id',
+			'san_pham_theo_phieu_xuat.sl_thucnhap',
+			'san_pham_theo_phieu.ngay_san_xuat',
+			'san_pham_theo_phieu.ngay_het_han',
 		];
-		$collection = $this->db->select('san_pham_theo_phieu_xuat', $columns, [
-			"status" => 1,
-			"ma_phieu" => $maPhieu
+		$collection = $this->db->select('san_pham_theo_phieu_xuat', 
+			[
+				"[>]san_pham_theo_phieu" => ["item_id" => "id"],
+			], $columns, [
+			"san_pham_theo_phieu_xuat.status" => 1,
+			"san_pham_theo_phieu_xuat.ma_phieu" => $maPhieu
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
@@ -124,20 +121,14 @@ class PhieuxuatController extends BaseController
 				$this->db->update('san_pham_theo_phieu_xuat', ['status' => 2], ['id' => $oldIds]);
 			}
 		}
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		foreach($products as $product) {
 			$validProducts[] = array(
 				'ma_phieu' => $maPhieu,
-				'ma_phieu_nhap' => isset($product['ma_phieu']) ?  $product['ma_phieu'] : '',
-				'ma_lo' => isset($product['ma_lo']) ?  $product['ma_lo'] : '',
-				'product_id' => isset($product['product_id']) ?  $product['product_id'] : '',
-				'label' => isset($product['label']) ?  $product['label'] : '',
-				'unit' => isset($product['unit']) ?  $product['unit'] : '',
-				'sl_chungtu' => isset($product['sl_chungtu']) ?  $product['sl_chungtu'] : '',
+				'item_id' => isset($product['id']) ?  $product['id'] : '',
 				'sl_thucnhap' => isset($product['sl_thucnhap']) ?  $product['sl_thucnhap'] : '',
-				'price' => isset($product['price']) ?  $product['price'] : '',
 				'create_on' => $createOn,
-				'ngay_san_xuat' => isset($product['ngay_san_xuat']) ?  $product['ngay_san_xuat'] : '',
-				'ngay_het_han' => isset($product['ngay_het_han']) ?  $product['ngay_het_han'] : '',
+				'create_by' => $userId
 			);
 		}
 		$result = $this->db->insert('san_pham_theo_phieu_xuat', $validProducts);

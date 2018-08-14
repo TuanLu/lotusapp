@@ -47,29 +47,29 @@ class ExportProduct extends React.Component {
         //fixed: 'left',
         width: 150,
       },
+      // {
+      //   title: 'Quy cách',
+      //   dataIndex: 'label',
+      //   width: 200,
+      // },
+      // {
+      //   title: 'Đơn vị tính',
+      //   dataIndex: 'unit',
+      //   width: 100,
+      // },
+      // {
+      //   title: 'SL theo chứng từ',
+      //   dataIndex: 'sl_chungtu',
+      //   render: (text, record) => {
+      //     return (
+      //       <InputNumber value={text} onChange={(value) => {
+      //         this.updateQty(record, 'sl_chungtu', value);
+      //       }}/>
+      //     )
+      //   }
+      // },
       {
-        title: 'Quy cách',
-        dataIndex: 'label',
-        width: 200,
-      },
-      {
-        title: 'Đơn vị tính',
-        dataIndex: 'unit',
-        width: 100,
-      },
-      {
-        title: 'SL theo chứng từ',
-        dataIndex: 'sl_chungtu',
-        render: (text, record) => {
-          return (
-            <InputNumber value={text} onChange={(value) => {
-              this.updateQty(record, 'sl_chungtu', value);
-            }}/>
-          )
-        }
-      },
-      {
-        title: 'SL thực xuất',
+        title: 'Số lượng thực xuất',
         dataIndex: 'sl_thucnhap',
         render: (text, record) => {
           return (
@@ -80,8 +80,22 @@ class ExportProduct extends React.Component {
         }
       },
       {
-        title: 'Đơn giá',
-        dataIndex: 'price',
+        title: 'Ngày SX',
+        dataIndex: 'ngay_san_xuat',
+        width: '200px',
+        //width: '40%',
+        editable: false,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
+      },
+      {
+        title: 'Ngày Hết Hạn',
+        dataIndex: 'ngay_het_han',
+        width: '200px',
+        //width: '40%',
+        editable: false,
+        required: true,
+        render: (text, record) => moment(text).format('DD/MM/YYYY')
       },
       {
         title: 'Action',
@@ -99,35 +113,17 @@ class ExportProduct extends React.Component {
           );
         }
       },
-      // {
-      //   title: 'Ngày SX',
-      //   dataIndex: 'ngay_san_xuat',
-      //   width: '200px',
-      //   //width: '40%',
-      //   editable: false,
-      //   required: true,
-      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
-      // },
-      // {
-      //   title: 'Ngày Hết Hạn',
-      //   dataIndex: 'ngay_het_han',
-      //   width: '200px',
-      //   //width: '40%',
-      //   editable: false,
-      //   required: true,
-      //   render: (text, record) => moment(text).format('DD/MM/YYYY')
-      // }
     ];
   }
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   }
   updateQty(record, field, value) {
-    let productId = record.product_id;
+    let itemId = record.id;
     let {phieuxuat} = this.props.mainState;
-    if(productId && phieuxuat.products && phieuxuat.products.length) {
+    if(itemId && phieuxuat.products && phieuxuat.products.length) {
       let newProducts = phieuxuat.products.map((product) => {
-        if(product.product_id == productId) {
+        if(product.id == itemId) {
           product[field] = value;
         }
         return product;
