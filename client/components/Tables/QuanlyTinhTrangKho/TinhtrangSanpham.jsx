@@ -46,6 +46,12 @@ class TinhtrangSanpham extends React.Component {
         //fixed: 'left',
       },
       {
+        title: 'Tên VT',
+        dataIndex: 'name',
+        width: 200,
+        //fixed: 'left',
+      },
+      {
         title: 'Mã Kho',
         dataIndex: 'ma_kho',
         width: 100,
