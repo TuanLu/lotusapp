@@ -18,15 +18,19 @@ class KhoController extends BaseController
 		);
 		// Columns to select.
 		$columns = [
-				'id',
-				'ma_kho',
-				'name',
-				'quanly',
-				'description'
+				'lotus_kho.id',
+				'lotus_kho.ma_kho',
+				'lotus_kho.name',
+				//'quanly',
+				'lotus_kho.description',
+				'users.name(quanly)',
 		];
-		$collection = $this->db->select($this->tableName, $columns, [
+		$collection = $this->db->select($this->tableName,
+		[
+			"[>]users" => ["quanly" => "id"],
+		], $columns, [
 			"ORDER" => ["id" => "DESC"],
-			"status" => 1
+			"lotus_kho.status" => 1
 		]);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;

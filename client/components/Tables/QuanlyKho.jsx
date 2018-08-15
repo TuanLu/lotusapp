@@ -30,7 +30,7 @@ class EditableCell extends React.Component {
             {quanly.map((ql) => {
               return <Select.Option 
               key={ql.id} 
-              value={ql.username}>
+              value={ql.id}>
                 {`${ql.username} - ${ql.name}`}
               </Select.Option>
           })}
