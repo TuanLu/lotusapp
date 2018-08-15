@@ -2,6 +2,7 @@ import React from 'react'
 import {updateStateData} from 'actions'
 import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, Upload, message } from 'antd';
 import {getTokenHeader} from 'ISD_API'
+import UploadFile from './../../UploadFile';
 
 const FormItem = Form.Item;
 const Option = Select.Option;

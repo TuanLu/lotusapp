@@ -143,12 +143,28 @@ class EditableTable extends React.Component {
     .then((response) => response.json())
     .then((json) => {
       if(json.data) {
-        this.setState({
-          userlist: convertArrayObjectToObject(json.data, 'id')
-        });
         //Chi connect den server 1 lan
         this.props.dispatch(updateStateData({
           userlist: convertArrayObjectToObject(json.data, 'id')
+        }));
+      } else {
+        console.warn(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  fetchGroupList() {
+    fetch(ISD_BASE_URL + 'qlpb/fetchPb', {
+      headers: getTokenHeader()
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      if(json.data) {
+        //Chi connect den server 1 lan
+        this.props.dispatch(updateStateData({
+          grouplist: convertArrayObjectToObject(json.data, 'ma_pb')
         }));
       } else {
         console.warn(json.message);
@@ -164,6 +180,10 @@ class EditableTable extends React.Component {
     let userlist = mainState.userlist;
     if(userlist.length == 0){
       this.fetchUserList();
+    }
+    let grouplist = mainState.grouplist || [];
+    if(grouplist.length == 0){
+      this.fetchGroupList();
     }
   }
   render() {
@@ -224,11 +244,9 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
-      newitem: 0,
-      userlist: []
+      newitem: 0
     }; 
     let {ans_language} = this.props.mainState;
-    let {userlist} = this.props.mainState; console.log(userlist);
     this.columns = [
       {
         title: ans_language.ans_date_create || 'ans_date_create',
@@ -262,16 +280,18 @@ class EditableTable extends React.Component {
         render: (text) => {
           let userinfo = text ? text.split(',') : []; 
           let assign_users = '';
+          let {userlist} = this.props.mainState; 
           if(userinfo.indexOf('all') !== -1) {
             assign_users = ans_language.ans_assign_all_ppls || 'ans_assign_all_ppls';
           }else{
-            if((userinfo.length > 1) && ((userlist.length > 1))) {
-              userinfo.map((user) => {
-                assign_users +=  user + ','//userlist[user].username;
-                return {
-                  assign_users
+            if(userinfo.length > 1) {
+              let userinfo_join = userinfo.map((user) => {
+                if(userlist[user]) {
+                  return userlist[user].name || userlist[user].username; 
                 }
+                return ''
               })
+              assign_users = userinfo_join.join(' , ');
             }
           }
           return (
@@ -288,13 +308,20 @@ class EditableTable extends React.Component {
         editable: true,
         required: true,
         render: (text) => {
-          let userinfo = text ? text.split(',') : []; 
+          let groupinfo = text ? text.split(',') : []; 
           let assign_group = '';
-          if(userinfo.indexOf('all') !== -1) {
+          let {grouplist} = this.props.mainState; 
+          if(groupinfo.indexOf('all') !== -1) {
             assign_group = ans_language.ans_assign_all_group || 'ans_assign_all_group';
           }else{
-            if(userinfo.length > 1) {
-              assign_group = userinfo.map((user) => console.log(user) )
+            if(groupinfo.length > 1) {
+              groupinfo = groupinfo.map((group) => {
+                if(grouplist[group]) {
+                  return grouplist[group].name; 
+                }
+                return ''
+              })
+              assign_group = groupinfo.join(' , ');
             }
           }
           return (
