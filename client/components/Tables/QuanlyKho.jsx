@@ -108,7 +108,7 @@ class EditableTable extends React.Component {
         dataIndex: 'quanly',
         width: 120,
         editable: true,
-        required: false
+        required: false,
       },
       {
         title: 'Thông tin',
@@ -305,13 +305,12 @@ class EditableTable extends React.Component {
     .then((json) => {
       if(json.data) {
         if(json.data) {
-          this.props.dispatch(updateStateData({
-            //quanly: json.data
-          }));
+          // this.props.dispatch(updateStateData({
+          //   quanly: json.data
+          // }));
           this.setState({
             quanly: json.data
           });
-          
         }
       } else {
         message.error(json.message);

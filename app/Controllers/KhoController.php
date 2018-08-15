@@ -9,6 +9,30 @@ class KhoController extends BaseController
 	private $tableName = 'lotus_kho';
 	const ERROR_STATUS = 'error';
 	const SUCCESS_STATUS = 'success';
+
+	protected function getInventories($maKho = "") {
+		// Columns to select.
+		$columns = [
+			'lotus_kho.id',
+			'lotus_kho.ma_kho',
+			'lotus_kho.name',
+			//'quanly',
+			'lotus_kho.description',
+			'users.name(quanly)',
+		];
+		$where = [
+			"ORDER" => ["id" => "DESC"],
+			"lotus_kho.status" => 1
+		];
+		if($maKho) {
+			$where["lotus_kho.ma_kho"] = $maKho;
+		}
+		$collection = $this->db->select($this->tableName,
+		[
+			"[>]users" => ["quanly" => "id"],
+		], $columns, $where);
+		return $collection;
+	}
  
 	public function fetchKho($request){
 		//$this->logger->addInfo('Request Npp path');
@@ -17,21 +41,8 @@ class KhoController extends BaseController
 			'message' => 'Chưa có dữ liệu từ hệ thống!'
 		);
 		// Columns to select.
-		$columns = [
-				'lotus_kho.id',
-				'lotus_kho.ma_kho',
-				'lotus_kho.name',
-				//'quanly',
-				'lotus_kho.description',
-				'users.name(quanly)',
-		];
-		$collection = $this->db->select($this->tableName,
-		[
-			"[>]users" => ["quanly" => "id"],
-		], $columns, [
-			"ORDER" => ["id" => "DESC"],
-			"lotus_kho.status" => 1
-		]);
+		
+		$collection = $this->getInventories();
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Dữ liệu đã được load!';
@@ -102,7 +113,7 @@ class KhoController extends BaseController
 			if($result->rowCount()) {
 				$rsData['status'] = 'success';
 				$rsData['message'] = 'Đã thêm kho mới thành công!';
-				$data = $this->db->select($this->tableName, $selectColumns, $where);
+				$data = $this->getInventories($maKho);
 				$rsData['data'] = $data[0];
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào cơ sở dữ liệu! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
@@ -122,6 +133,8 @@ class KhoController extends BaseController
 				$this->superLog('Update Kho', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
+				$data = $this->getInventories($maKho);
+				$rsData['data'] = $data[0];
 			} else {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bạn cập nhật mã kho đã tồn tại: ' . $maKho;
 			}
