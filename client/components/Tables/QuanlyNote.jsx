@@ -144,7 +144,7 @@ class EditableTable extends React.Component {
     .then((json) => {
       if(json.data) {
         this.setState({
-          users: json.data
+          userlist: convertArrayObjectToObject(json.data, 'id')
         });
         //Chi connect den server 1 lan
         this.props.dispatch(updateStateData({
@@ -224,10 +224,11 @@ class EditableTable extends React.Component {
     this.state = { 
       data: [], 
       editingKey: '',
-      newitem: 0
+      newitem: 0,
+      userlist: []
     }; 
     let {ans_language} = this.props.mainState;
-    let {userlist} = this.props.mainState; 
+    let {userlist} = this.props.mainState; console.log(userlist);
     this.columns = [
       {
         title: ans_language.ans_date_create || 'ans_date_create',
@@ -235,7 +236,6 @@ class EditableTable extends React.Component {
         width: '120px',
         editable: false,
         required: true,
-        //render: {} Render phải return về cái gì đó
         render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
@@ -265,11 +265,15 @@ class EditableTable extends React.Component {
           if(userinfo.indexOf('all') !== -1) {
             assign_users = ans_language.ans_assign_all_ppls || 'ans_assign_all_ppls';
           }else{
-            if(userinfo.length > 1) {
-              let assign_users = userinfo.map((user) => console.log(user) )
+            if((userinfo.length > 1) && ((userlist.length > 1))) {
+              userinfo.map((user) => {
+                assign_users +=  user + ','//userlist[user].username;
+                return {
+                  assign_users
+                }
+              })
             }
           }
-          
           return (
             <div>
               {assign_users}
@@ -283,7 +287,22 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: true,
-        //render: {}
+        render: (text) => {
+          let userinfo = text ? text.split(',') : []; 
+          let assign_group = '';
+          if(userinfo.indexOf('all') !== -1) {
+            assign_group = ans_language.ans_assign_all_group || 'ans_assign_all_group';
+          }else{
+            if(userinfo.length > 1) {
+              assign_group = userinfo.map((user) => console.log(user) )
+            }
+          }
+          return (
+            <div>
+              {assign_group}
+            </div>
+          )
+        }
       },
       {
         title: ans_language.ans_actions || 'ans_actions',
@@ -293,14 +312,14 @@ class EditableTable extends React.Component {
           return (
             <div style={{minWidth: 100}}>
               <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
-              {" | "}
+              {/* {" | "}
               <Popconfirm
                 title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
                 okType="danger"
                 onConfirm={() => this.delete(record)}
               >
                 <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
-              </Popconfirm>
+              </Popconfirm> */}
             </div>
           );
         },

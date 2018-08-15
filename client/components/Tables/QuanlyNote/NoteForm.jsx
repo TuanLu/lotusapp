@@ -34,6 +34,13 @@ class NoteForm extends React.Component {
             }
           } else {
             message.success(json.message);
+            this.props.dispatch(updateStateData({ 
+              systemNote: {
+                //...record, 
+                refresh: true,
+                openModal: false
+              }
+            }));
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)

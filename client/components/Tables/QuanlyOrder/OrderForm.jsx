@@ -36,7 +36,15 @@ class OrderForm extends React.Component {
               this.props.dispatch(updateStateData({showLogin: true}));
             }
           } else {
+            //udate table state
             message.success(json.message);
+            this.props.dispatch(updateStateData({ 
+              systemOrder: {
+                //...record, 
+                refresh: true,
+                openModal: false
+              }
+            }));
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
