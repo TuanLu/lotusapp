@@ -143,12 +143,28 @@ class EditableTable extends React.Component {
     .then((response) => response.json())
     .then((json) => {
       if(json.data) {
-        this.setState({
-          users: json.data
-        });
         //Chi connect den server 1 lan
         this.props.dispatch(updateStateData({
           userlist: convertArrayObjectToObject(json.data, 'id')
+        }));
+      } else {
+        console.warn(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  fetchGroupList() {
+    fetch(ISD_BASE_URL + 'qlpb/fetchPb', {
+      headers: getTokenHeader()
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      if(json.data) {
+        //Chi connect den server 1 lan
+        this.props.dispatch(updateStateData({
+          grouplist: convertArrayObjectToObject(json.data, 'ma_pb')
         }));
       } else {
         console.warn(json.message);
@@ -164,6 +180,10 @@ class EditableTable extends React.Component {
     let userlist = mainState.userlist;
     if(userlist.length == 0){
       this.fetchUserList();
+    }
+    let grouplist = mainState.grouplist || [];
+    if(grouplist.length == 0){
+      this.fetchGroupList();
     }
   }
   render() {
@@ -227,7 +247,6 @@ class EditableTable extends React.Component {
       newitem: 0
     }; 
     let {ans_language} = this.props.mainState;
-    let {userlist} = this.props.mainState; 
     this.columns = [
       {
         title: ans_language.ans_date_create || 'ans_date_create',
@@ -235,7 +254,6 @@ class EditableTable extends React.Component {
         width: '120px',
         editable: false,
         required: true,
-        //render: {} Render phải return về cái gì đó
         render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
@@ -262,14 +280,20 @@ class EditableTable extends React.Component {
         render: (text) => {
           let userinfo = text ? text.split(',') : []; 
           let assign_users = '';
+          let {userlist} = this.props.mainState; 
           if(userinfo.indexOf('all') !== -1) {
             assign_users = ans_language.ans_assign_all_ppls || 'ans_assign_all_ppls';
           }else{
             if(userinfo.length > 1) {
-              let assign_users = userinfo.map((user) => console.log(user) )
+              let userinfo_join = userinfo.map((user) => {
+                if(userlist[user]) {
+                  return userlist[user].name || userlist[user].username; 
+                }
+                return ''
+              })
+              assign_users = userinfo_join.join(' , ');
             }
           }
-          
           return (
             <div>
               {assign_users}
@@ -283,7 +307,29 @@ class EditableTable extends React.Component {
         //width: '40%',
         editable: true,
         required: true,
-        //render: {}
+        render: (text) => {
+          let groupinfo = text ? text.split(',') : []; 
+          let assign_group = '';
+          let {grouplist} = this.props.mainState; 
+          if(groupinfo.indexOf('all') !== -1) {
+            assign_group = ans_language.ans_assign_all_group || 'ans_assign_all_group';
+          }else{
+            if(groupinfo.length > 1) {
+              groupinfo = groupinfo.map((group) => {
+                if(grouplist[group]) {
+                  return grouplist[group].name; 
+                }
+                return ''
+              })
+              assign_group = groupinfo.join(' , ');
+            }
+          }
+          return (
+            <div>
+              {assign_group}
+            </div>
+          )
+        }
       },
       {
         title: ans_language.ans_actions || 'ans_actions',
@@ -293,14 +339,14 @@ class EditableTable extends React.Component {
           return (
             <div style={{minWidth: 100}}>
               <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
-              {" | "}
+              {/* {" | "}
               <Popconfirm
                 title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
                 okType="danger"
                 onConfirm={() => this.delete(record)}
               >
                 <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
-              </Popconfirm>
+              </Popconfirm> */}
             </div>
           );
         },

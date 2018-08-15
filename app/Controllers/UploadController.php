@@ -21,7 +21,7 @@ class UploadController extends BaseController {
     $target_file = $target_dir . $filename;
     $uploadOk = 1;
     $fileExt = pathinfo($target_file,PATHINFO_EXTENSION);
-    $allowExts = ["xls", "xlsx", "pdf", "png", "jpg", "jpeg"];
+    $allowExts = ["xls", "xlsx", "pdf", "png", "jpg", "jpeg", "doc", "docx"];
     
     // Allow certain file formats
     if(!in_array($fileExt, $allowExts)) {

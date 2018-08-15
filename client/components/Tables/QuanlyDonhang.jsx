@@ -308,10 +308,10 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_date_delive || 'ans_date_delive',
         dataIndex: 'date_delive',
-        //width: '40%',
+        width: '120px',
         editable: true,
         required: true,
-        //render: {}
+        render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
       },
       {
         title: ans_language.ans_status || 'ans_status',
@@ -322,8 +322,9 @@ class EditableTable extends React.Component {
         render: (text) => {
           let status = ans_language.ans_pending_check || 'ans_pending_check';
           switch (text) {
-            case '1' : status = ans_language.ans_order_checked || 'ans_order_checked'; break;
-            case '2' : status = ans_language.ans_order_doing ||  'ans_order_doing'; break;
+            case '1' : status = ans_language.ans_order_checked  ||  'ans_order_checked';  break;
+            case '2' : status = ans_language.ans_order_doing    ||  'ans_order_doing';    break;
+            case '3' : status = ans_language.ans_order_done     ||  'ans_order_done';     break;
             default : break;
           }
           return (
@@ -336,7 +337,7 @@ class EditableTable extends React.Component {
       {
         title: ans_language.ans_actions || 'ans_actions',
         dataIndex: 'operation',
-        width: '100px',
+        width: '80px',
         render: (text, record) => {
           return (
             <div style={{minWidth: 100}}>
