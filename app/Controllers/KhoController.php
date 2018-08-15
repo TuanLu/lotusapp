@@ -27,6 +27,17 @@ class KhoController extends BaseController
 		if($maKho) {
 			$where["lotus_kho.ma_kho"] = $maKho;
 		}
+		//Filter by admin or by user belong to group thukho
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+		//Validate if user has permission to do this
+		$isSuper = $this->UserController->isSuperAdmin($userId);
+		if(!$isSuper) {
+			//Check if user has edit permission
+			$userGroup = $this->UserController->getUserGroupRolesByUserId($userId);
+			if($userGroup != 'nhom_thu_kho') {
+				$where['quanly'] = $userId;	
+			}
+		}
 		$collection = $this->db->select($this->tableName,
 		[
 			"[>]users" => ["quanly" => "id"],
