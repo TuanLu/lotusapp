@@ -11,6 +11,120 @@ import NoteForm from './QuanlyNote/NoteForm'
 const FormItem = Form.Item;
 
 class EditableTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      data: [], 
+      editingKey: '',
+      newitem: 0
+    }; 
+    let {ans_language} = this.props.mainState;
+    this.columns = [
+      {
+        title: ans_language.ans_date_create || 'ans_date_create',
+        dataIndex: 'create_on',
+        width: '120px',
+        editable: false,
+        required: true,
+        render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
+      },
+      {
+        title: ans_language.ans_create_by || 'ans_create_by',
+        dataIndex: 'name',
+        width: 150,
+        editable: true,
+        required: true,
+        render: (text, record) => record.name || text
+      },
+      {
+        title: ans_language.ans_titles || 'ans_titles',
+        dataIndex: 'titles',
+        width: '20%',
+        editable: true,
+        required: true
+      },
+      {
+        title: ans_language.ans_assign_user || 'ans_assign_user',
+        dataIndex: 'assign_users',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text) => {
+          let userinfo = text ? text.split(',') : []; 
+          let assign_users = '';
+          let {userlist} = this.props.mainState; 
+          if(userinfo.indexOf('all') !== -1) {
+            assign_users = ans_language.ans_assign_all_ppls || 'ans_assign_all_ppls';
+          }else{
+            if(userinfo.length > 1) {
+              let userinfo_join = userinfo.map((user) => {
+                if(userlist[user]) {
+                  return userlist[user].name || userlist[user].username; 
+                }
+                return ''
+              })
+              assign_users = userinfo_join.join(' , ');
+            }
+          }
+          return (
+            <div>
+              {assign_users}
+            </div>
+          )
+        }
+      },
+      {
+        title: ans_language.ans_assign_group || 'ans_assign_group',
+        dataIndex: 'assign_group',
+        //width: '40%',
+        editable: true,
+        required: true,
+        render: (text) => {
+          let groupinfo = text ? text.split(',') : []; 
+          let assign_group = '';
+          let {grouplist} = this.props.mainState; 
+          if(groupinfo.indexOf('all') !== -1) {
+            assign_group = ans_language.ans_assign_all_group || 'ans_assign_all_group';
+          }else{
+            if(groupinfo.length > 1) {
+              groupinfo = groupinfo.map((group) => {
+                if(grouplist[group]) {
+                  return grouplist[group].name; 
+                }
+                return ''
+              })
+              assign_group = groupinfo.join(' , ');
+            }
+          }
+          return (
+            <div>
+              {assign_group}
+            </div>
+          )
+        }
+      },
+      {
+        title: ans_language.ans_actions || 'ans_actions',
+        dataIndex: 'operation',
+        width: '150px',
+        render: (text, record) => {
+          return (
+            <div style={{minWidth: 100}}>
+              <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
+              {/* {" | "}
+              <Popconfirm
+                title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
+                okType="danger"
+                onConfirm={() => this.delete(record)}
+              >
+                <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
+              </Popconfirm> */}
+            </div>
+          );
+        },
+      },
+    ];
+  }
   addNewRow() {
     let rowItem = this.getDefaultFields();
     this.edit(rowItem);
@@ -29,60 +143,6 @@ class EditableTable extends React.Component {
         openModal: true
       }
     }));
-  }
-  save(form, key) {
-    form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        //console.log(item, row);//update to server here
-        let newItemData = {
-          ...item,
-          ...row,
-        };
-        fetch(ISD_BASE_URL + 'note/updateNote', {
-          method: 'POST',
-          headers: getTokenHeader(),
-          body: JSON.stringify(newItemData)
-        })
-        .then((response) => {
-          return response.json()
-        }).then((json) => {
-          if(json.status == 'error') {
-            message.error(json.message, 3);
-          } else {
-            //udate table state
-            newData.splice(index, 1, {
-              ...newItemData,
-              ...json.data
-            });
-            this.setState({ data: newData, editingKey: '' });
-            message.success(json.message);
-            this.state.newitem = 0;
-            this.props.dispatch(updateStateData({ // Thay đổi mainState cần action
-              systemNote: {
-                ...record, // Tách object thành các thuộc tính của systemNote (ES6) 
-                openModal: false
-              }
-            }));
-          }
-        }).catch((ex) => {
-          console.log('parsing failed', ex)
-          message.error(ans_language.ans_save_error || 'ans_save_error');
-        });
-        //End up data to server
-      } else {
-        newData.push(data);
-        this.setState({ data: newData, editingKey: '' });
-      }
-    });
-  }
-  cancel = (record) => {
-    
   }
   delete = (record) => {
     if(record.id) {
@@ -227,7 +287,7 @@ class EditableTable extends React.Component {
             footer={null}
             >
             {/* Call form Create or Edit Note */}
-            <NoteForm mainState={this.props.mainState} dispatch={this.props.dispatch} />
+            <NoteForm onDone={() => this.fetchData()} mainState={this.props.mainState} dispatch={this.props.dispatch} />
           </Modal>  
         : null}
         <Table
@@ -238,120 +298,6 @@ class EditableTable extends React.Component {
         />
       </React.Fragment>
     );
-  }
-  constructor(props) {
-    super(props);
-    this.state = { 
-      data: [], 
-      editingKey: '',
-      newitem: 0
-    }; 
-    let {ans_language} = this.props.mainState;
-    this.columns = [
-      {
-        title: ans_language.ans_date_create || 'ans_date_create',
-        dataIndex: 'create_on',
-        width: '120px',
-        editable: false,
-        required: true,
-        render: (text) => text ? moment(text).format('DD/MM/YYYY') : ''
-      },
-      {
-        title: ans_language.ans_create_by || 'ans_create_by',
-        dataIndex: 'name',
-        width: 150,
-        editable: true,
-        required: true,
-        render: (text, record) => record.name || text
-      },
-      {
-        title: ans_language.ans_titles || 'ans_titles',
-        dataIndex: 'titles',
-        width: '20%',
-        editable: true,
-        required: true
-      },
-      {
-        title: ans_language.ans_assign_user || 'ans_assign_user',
-        dataIndex: 'assign_users',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text) => {
-          let userinfo = text ? text.split(',') : []; 
-          let assign_users = '';
-          let {userlist} = this.props.mainState; 
-          if(userinfo.indexOf('all') !== -1) {
-            assign_users = ans_language.ans_assign_all_ppls || 'ans_assign_all_ppls';
-          }else{
-            if(userinfo.length > 1) {
-              let userinfo_join = userinfo.map((user) => {
-                if(userlist[user]) {
-                  return userlist[user].name || userlist[user].username; 
-                }
-                return ''
-              })
-              assign_users = userinfo_join.join(' , ');
-            }
-          }
-          return (
-            <div>
-              {assign_users}
-            </div>
-          )
-        }
-      },
-      {
-        title: ans_language.ans_assign_group || 'ans_assign_group',
-        dataIndex: 'assign_group',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text) => {
-          let groupinfo = text ? text.split(',') : []; 
-          let assign_group = '';
-          let {grouplist} = this.props.mainState; 
-          if(groupinfo.indexOf('all') !== -1) {
-            assign_group = ans_language.ans_assign_all_group || 'ans_assign_all_group';
-          }else{
-            if(groupinfo.length > 1) {
-              groupinfo = groupinfo.map((group) => {
-                if(grouplist[group]) {
-                  return grouplist[group].name; 
-                }
-                return ''
-              })
-              assign_group = groupinfo.join(' , ');
-            }
-          }
-          return (
-            <div>
-              {assign_group}
-            </div>
-          )
-        }
-      },
-      {
-        title: ans_language.ans_actions || 'ans_actions',
-        dataIndex: 'operation',
-        width: '150px',
-        render: (text, record) => {
-          return (
-            <div style={{minWidth: 100}}>
-              <a href="javascript:;" onClick={() => this.edit(record)}><Icon type="edit" />{ans_language.ans_edit || 'ans_edit'}</a>  
-              {/* {" | "}
-              <Popconfirm
-                title= {ans_language.ans_confirm_delete_alert || "ans_confirm_delete_alert" } 
-                okType="danger"
-                onConfirm={() => this.delete(record)}
-              >
-                <a href="javascript:;"><Icon type="delete" />{ans_language.ans_delete || 'ans_delete'}</a>  
-              </Popconfirm> */}
-            </div>
-          );
-        },
-      },
-    ];
   }
 }
 

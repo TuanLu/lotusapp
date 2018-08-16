@@ -42,6 +42,7 @@ class NoteForm extends React.Component {
                 openModal: false
               }
             }));
+            this.props.onDone();
           }
         }).catch((ex) => {
           console.log('parsing failed', ex)
