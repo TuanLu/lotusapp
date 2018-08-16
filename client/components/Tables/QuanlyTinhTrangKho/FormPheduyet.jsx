@@ -34,20 +34,24 @@ class FormPheduyet extends React.Component {
         qaFile;
     if(pheduyet.id) {
       if(pheduyet.qc_file != "") {
-        qcFile = [{
-          uid: -1,
-          name: pheduyet.qc_file,
-          status: 'done',
-          url: ISD_BASE_URL + 'upload/' + pheduyet.qc_file,
-        }];
+        qcFile = pheduyet.qc_file.split(',').map((file) => {
+          return {
+            uid: file,
+            name: file,
+            status: 'done',
+            url: ISD_BASE_URL + 'upload/' + file,
+          }
+        });
       }
       if(pheduyet.qa_file != "") {
-        qaFile = [{
-          uid: -1,
-          name: pheduyet.qa_file,
-          status: 'done',
-          url: ISD_BASE_URL + 'upload/' + pheduyet.qa_file,
-        }];
+        qaFile = pheduyet.qa_file.split(',').map((file) => {
+          return {
+            uid: file,
+            name: file,
+            status: 'done',
+            url: ISD_BASE_URL + 'upload/' + file,
+          }
+        });
       }
     }
     return (
@@ -76,12 +80,34 @@ class FormPheduyet extends React.Component {
             <UploadFile
               fileList={qcFile ? qcFile : []}
               onDone={(filename) => {
+                let files = this.props.mainState.phieunhap.pheduyet.qc_file;
+                if(files != '') {
+                  files += `,${filename}`;
+                } else {
+                  files = filename;
+                }
                 this.props.dispatch(updateStateData({
                   phieunhap: {
                     ...this.props.mainState.phieunhap,
                     pheduyet: {
                       ...this.props.mainState.phieunhap.pheduyet,
-                      qc_file: filename
+                      qc_file: files
+                    }
+                  }
+                }));
+              }}
+              onRemove={(filename) => {
+                let files = this.props.mainState.phieunhap.pheduyet.qc_file;
+                if(files != '') {
+                  files = files.split(',').filter((file) => file != filename);
+                  files = files.join(',');
+                }
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      qc_file: files
                     }
                   }
                 }));
@@ -114,12 +140,34 @@ class FormPheduyet extends React.Component {
             <UploadFile
               fileList={qaFile ? qaFile : []}
               onDone={(filename) => {
+                let files = this.props.mainState.phieunhap.pheduyet.qa_file;
+                if(files != '') {
+                  files += `,${filename}`;
+                } else {
+                  files = filename;
+                }
                 this.props.dispatch(updateStateData({
                   phieunhap: {
                     ...this.props.mainState.phieunhap,
                     pheduyet: {
                       ...this.props.mainState.phieunhap.pheduyet,
-                      qa_file: filename
+                      qa_file: files
+                    }
+                  }
+                }));
+              }}
+              onRemove={(filename) => {
+                let files = this.props.mainState.phieunhap.pheduyet.qa_file;
+                if(files != '') {
+                  files = files.split(',').filter((file) => file != filename);
+                  files = files.join(',');
+                }
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    pheduyet: {
+                      ...this.props.mainState.phieunhap.pheduyet,
+                      qa_file: files
                     }
                   }
                 }));

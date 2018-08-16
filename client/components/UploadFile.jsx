@@ -17,6 +17,11 @@ class FormUpload extends React.Component {
       //message.error(`${info.file.name} file upload failed.`);
     }
   }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      fileList: nextProps.fileList
+    }
+  }
 
   render() {
     const props = {
@@ -33,17 +38,13 @@ class FormUpload extends React.Component {
         let fileUrl = ISD_BASE_URL + 'upload/' + response.data.filename;
         this.setState({
           loading: false,
-          fileList: [
-            {
-              uid: -1,
-              name: response.data.filename,
-              status: 'done',
-              url: fileUrl,
-            }
-          ]
+          fileList: this.state.fileList
         });
         message.success(response.message);
         this.props.onDone(response.data.filename);
+      },
+      onRemove: (file) => {
+        this.props.onRemove(file.name);
       },
       onError: (err) => {
         message.error(error.message || 'Không upload được file!');
