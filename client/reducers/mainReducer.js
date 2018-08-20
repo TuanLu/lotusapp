@@ -4,7 +4,7 @@ import {cloneDeep} from 'lodash'
 
 let _designDefault = {
     showLogin: true,
-    defaultRouter: 'tinhtrangkho',
+    defaultRouter: 'quy_trinh_sx',
     customers: [],
     userRoles: [],
     userlist: [],

@@ -5,12 +5,11 @@
  * Thay doi cac bieu do bang cach reset lai event, reset lai data
  */
 import React, { Component } from 'react';
-import 'dhtmlx-gantt';
-//import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip.js';
-//import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_undo.js';
-import './locale_vn.js';
-//import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
-import './Theme.css';
+import './lib/dhtmlxgantt';
+import './lib/locale_vn.js';
+import './lib/dhtmlxgantt_marker.js'
+import './lib/Theme.css';
+//import {demo_tasks, users_data, projects_with_milestones, projects_milestones_critical} from './lib/test_data.js'
 //import {connect} from 'react-redux'
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
@@ -175,11 +174,22 @@ class Gantt extends Component {
       this.setState({loading: false});
     }); 
   }
+  renderTodayMarker() {
+    var date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+    var today = new Date();
+    gantt.addMarker({
+      start_date: today,
+      css: "today",
+      text: "Hôm nay",
+      title: "Hôm nay: " + date_to_str(today)
+    });
+  }
   renderGantt(data) {
     let {mainState} = this.props;
     let {ganttData} = mainState;
     ganttData = ganttData || {};
     gantt.clearAll();
+    this.renderTodayMarker();
     gantt.parse(ganttData);   
     gantt.render();
   }
@@ -446,6 +456,7 @@ class Gantt extends Component {
   componentDidMount() {
     let {mainState} = this.props;
     let {ganttData} = mainState;
+    gantt.config.fit_tasks = true;
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
     gantt.config.grid_width = 450;
@@ -453,13 +464,35 @@ class Gantt extends Component {
     // gantt.templates.task_class = function (st, end, item) {
     //   return item.$level == 0 ? "gantt_project" : ""
     // };
+    // gantt.templates.rightside_text = function (start, end, task) {
+    //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+    // };
     gantt.templates.rightside_text = function (start, end, task) {
-      return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+      let deadline = new Date();
+      if (parseFloat(task.progress) < 1 && end < deadline) {
+        var overdue = Math.ceil(Math.abs((end.getTime() - deadline.getTime()) / (24 * 60 * 60 * 1000)));
+        var text = "<div>Quá hạn: " + overdue + " ngày</div>";
+        return text;
+      }
     };
     gantt.config.columns = [
-      {name: "text", hide: true, tree: true},
-      {name: "start_date", hide: true, align: "center"},
-      {name: "duration", hide: false, align: "center"},
+      {
+        name: "overdue", width: 47, hide: false, template: function (obj) {
+          if (obj.end_date) {
+            var deadline = gantt.date.parseDate(obj.end_date, "xml_date");
+            var today = new Date();
+            if (deadline && deadline <= today && parseFloat(obj.progress) < 1) {
+              return '<div class="overdue-indicator">!</div>';
+            } else {
+              return '<div class="doing-progress">'+ Math.round(obj.progress * 100) +'%</div>';
+            }
+          }
+          return '<div></div>';
+        }
+      },
+      {name: "text", width: 150, hide: false, tree: true},
+      {name: "start_date", hide: false, align: "center"},
+      {name: "duration", width: 38, hide: false, align: "center"},
       {name: "add", hide: false, align: "center"}
     ];
     //gantt.config.show_grid = true;
@@ -467,6 +500,23 @@ class Gantt extends Component {
     //gantt.config.show_progress = true;
     gantt.config.readonly = false;
     gantt.config.drag_move = true;
+
+
+    gantt.addTaskLayer(function draw_deadline(task) {
+      // if (task.deadline) {
+      //     var el = document.createElement('div');
+      //     el.className = 'deadline';
+      //     var sizes = gantt.getTaskPosition(task, task.deadline);
+  
+      //     el.style.left = sizes.left + 'px';
+      //     el.style.top = sizes.top + 'px';
+  
+      //     el.setAttribute('title', gantt.templates.task_date(task.deadline));
+      //     return el;
+      // }
+      return false;
+    });
+
     if(this.props.type == "allPlan") {
       gantt.config.drag_move = false;
       gantt.config.readonly = true;
@@ -493,26 +543,7 @@ class Gantt extends Component {
     this.addControlToLightBox();
     this.taskClass();
     gantt.parse(ganttData);
-
-    //console.log(gantt.posFromDate(new Date("2018-08-08")));
-
-
-
-    // gantt.attachEvent("onGanttReady",  () => {
-    //     this.todayMarker = document.createElement("div");
-    //     this.todayMarker.className = "today_marker";
-    //     gantt.$task_data.appendChild(this.todayMarker);
-    //     this.todayMarker.style.left = gantt.posFromDate(new Date("2018-08-08")) + "px";
-    // });
-    // window.onresize = () => {
-    //     setTimeout( () => {
-    //       this.todayMarker.style.left = gantt.posFromDate(new Date()) + "px";
-    //     }, 500);
-    // };
     this.fetchTasks();
-  }
-  setPosition() {
-    this.todayMarker.style.left = gantt.posFromDate(new Date("2018-08-08")) + "px";
   }
   addControlToLightBox() {
     let {worker_and_users} = this.props.mainState;
@@ -595,9 +626,3 @@ class Gantt extends Component {
 }
 
 export default Gantt
-
-// export default connect((state) => {
-//   return {
-//     mainState: state.main.present,
-//   }
-// })(Gantt)

@@ -36,6 +36,8 @@ import QuanlyCanhan from './Tables/QuanlyCanhan'
 import QuanlyOptions from './Tables/QuanlyOptions'
 import QuanlyRnd from './Tables/QuanlyRnd'
 
+//import Gantt from './Tables/QuanlyQuytrinhSanxuat/Gantt'
+
 class MainComponent extends React.Component {
   state = {
     collapsed: false,
@@ -119,6 +121,11 @@ class MainComponent extends React.Component {
   }
   renderContent(router) {
     let {dispatch, mainState} = this.props;
+    // return (
+    //   <div className="wrap-gantt-chart">
+    //     <Gantt mainState={mainState} dispatch={dispatch} />
+    //   </div>
+    // )
     switch (router) {
       case 'qldh':
         return <QuanlyDonhang dispatch={dispatch} mainState={mainState}/>
