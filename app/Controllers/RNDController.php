@@ -15,7 +15,6 @@ class RNDController extends BaseController
 			'ma_rnd',
 			'ma_nc',
 			'cong_doan',
-			'orderid',
 			'co_lo',
 			'so_lo',
 			'ma_sp',
