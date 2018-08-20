@@ -98,7 +98,7 @@ class EditableTable extends React.Component {
         dataIndex: 'sanluong',
         width: '15%',
         editable: true,
-        required: true
+        required: false
       },
       {
         title: 'Ghi chú',
