@@ -111,6 +111,7 @@ $app->get('/quytrinhsx/delete/{id}', 'QuytrinhSxController:delete')->setName(Rol
 //Gantt router
 $app->post('/gantt/update', 'GanttController:update');
 $app->post('/gantt/updateLink', 'GanttController:updateLink');
+$app->post('/gantt/updateTaskOrder', 'GanttController:updateTaskOrder');
 $app->get('/gantt/deleteLink/{id}', 'GanttController:deleteLink');
 $app->get('/gantt/fetchTasks/{quy_trinh_id}', 'GanttController:fetchTasks');
 $app->get('/gantt/fetchTasksByMaSx/{ma_sx}', 'GanttController:fetchTasksByMaSx');

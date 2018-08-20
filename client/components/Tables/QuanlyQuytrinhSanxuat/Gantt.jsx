@@ -29,7 +29,7 @@ class Gantt extends Component {
     this.expandAllTask = this.expandAllTask.bind(this);
     this.addControlToLightBox = this.addControlToLightBox.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
-    this.todayMarker = null;
+    this.updateOrder = this.updateOrder.bind(this);
     this.state = {
       loading: false,
       resetEvents: false,
@@ -329,6 +329,41 @@ class Gantt extends Component {
     }
     this.saveLink(linkData);
   }
+  updateOrder(id, target) {
+    let data = {
+      id,
+      target
+    }
+    if(this.props.type == "theo_lenh_sx") {
+      let maSX = this.getMaSx();
+      data.ma_sx = maSX;
+    } else {
+      let quyTrinhId = this.getQuyTrinhId();
+      data.quy_trinh_id = quyTrinhId;
+    }
+    fetch(ISD_BASE_URL + 'gantt/updateTaskOrder', {
+      method: 'POST',
+      headers: getTokenHeader(),
+      body: JSON.stringify(data)
+    })
+    .then((response) => {
+      return response.json()
+    }).then((json) => {
+      if(json.status == 'error') {
+        message.error(json.message, 3);
+      } else {
+        if(json.data) {
+          this.updateGanttDataToState(json.data);
+          message.success(json.message);
+        }
+      }
+      this.renderGantt();
+    }).catch((ex) => {
+      this.fetchTasks();
+      console.log('parsing failed', ex)
+      message.error('Có lỗi xảy ra trong quá trình update link!');
+    });
+  }
   deleteTask = (id) => {
     if(id) {
       fetch(ISD_BASE_URL + `gantt/delete/${id}`, {
@@ -429,6 +464,25 @@ class Gantt extends Component {
         return true;
       })
     );
+    eventsList.push(
+      gantt.attachEvent("onRowDragEnd", (id, target) => {
+        if(!target) return false;
+        this.updateOrder(id, target);
+        // if (task.$index == 0){
+        //     gantt.message("No previous task")
+        //     gantt.message("Next task:" + gantt.getTaskByIndex(task.$index + 1).id)
+        // } else {
+        //     if (isNaN(target+1)){
+        //         gantt.message("Previous task:" + gantt.getTaskByIndex(task.$index - 1).id)
+        //         gantt.message("No next task")   
+        //     }
+        //     else {
+        //         gantt.message("Previous task:" + gantt.getTaskByIndex(task.$index - 1).id)
+        //         gantt.message("Next task:" + gantt.getTaskByIndex(task.$index + 1).id)
+        //     }
+        // }
+      })
+    );
     this.props.dispatch(updateStateData({
       ganttEvents: eventsList,
       refreshGantt: false
@@ -484,7 +538,7 @@ class Gantt extends Component {
             if (deadline && deadline <= today && parseFloat(obj.progress) < 1) {
               return '<div class="overdue-indicator">!</div>';
             } else {
-              return '<div class="doing-progress">'+ Math.round(obj.progress * 100) +'%</div>';
+              return '<div class="doing-progress">'+ Math.round((obj.progress || 0) * 100) +'%</div>';
             }
           }
           return '<div></div>';
@@ -538,7 +592,7 @@ class Gantt extends Component {
     //gantt.config.task_date = "%d-%m-%Y";
     //this.initGanttEvents();
     gantt.config.order_branch = true;
-    gantt.config.order_branch_free = true;
+    //gantt.config.order_branch_free = true;
     gantt.init(this.ganttContainer);
     this.addControlToLightBox();
     this.taskClass();

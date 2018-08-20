@@ -5,6 +5,7 @@ use \App\Helper\Data;
 use App\Helper\Roles;
 use Ramsey\Uuid\Uuid;
 use Firebase\JWT\JWT;
+use \Medoo\Medoo;
 //use Tuupola\Base62;
 
 class GanttController extends BaseController {
@@ -30,11 +31,15 @@ class GanttController extends BaseController {
 				'user',
 				'check_user',
 				'group_user',
-				'note'
+				'note',
+				'sortorder'
 			];
 			//Will not filter by group user or user for sample tasks
 			$where = [
-				"ORDER" => ["create_on" => "ASC"],
+				"ORDER" => [
+					"sortorder" => "ASC",
+					"create_on" => "ASC",
+				],
 				"status" => 1,
 				"quy_trinh_id" => $quyTrinhId
 			];
@@ -85,10 +90,14 @@ class GanttController extends BaseController {
 				'user',
 				'check_user',
 				'group_user',
-				'note'
+				'note',
+				'sortorder'
 			];
 			$where = [
-				"ORDER" => ["create_on" => "ASC"],
+				"ORDER" => [
+					"sortorder" => "ASC",
+					"create_on" => "ASC",
+				],
 				"status" => 1,
 				"ma_sx" => $maSx
 			];
@@ -354,7 +363,14 @@ class GanttController extends BaseController {
       $uuid = $uuid1->toString();
       $itemData['id'] = $uuid;
       $itemData['create_by'] = $userId;
-      $itemData['create_on'] = $createOn;
+			$itemData['create_on'] = $createOn;
+			//Update max order for new item 
+			$maxOrderData = $this->db->select($this->tableName, ['sortorder' => Medoo::raw('MAX(sortorder)')]);
+			if(!empty($maxOrderData)) {
+				$itemData['sortorder'] = $maxOrderData[0]['sortorder'] + 1;
+			} else {
+				$itemData['sortorder'] = 0;
+			}
 			$result = $this->db->insert($this->tableName, $itemData);
 			$selectColumns = ['id','text'];
 			$where = ['id' => $itemData['id']];
@@ -483,6 +499,52 @@ class GanttController extends BaseController {
 				$rsData['message'] = 'Dữ liệu chưa được cập nhật vào hệ thống!';
 			}
 			
+		}
+		//Load data after added or updated
+		if($quyTrinhId) {
+			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
+			$rsData['data'] = $collection;
+		} elseif($maSx) {
+			$collection = $this->getTasksByMaSx($maSx);
+			$rsData['data'] = $collection;
+		}
+		echo json_encode($rsData);
+	}
+	public function updateTaskOrder($request, $response){
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Xin lỗi! Dữ liệu chưa được cập nhật thành công!'
+		);
+		// Get params and validate them here.
+		//$params = $request->getParams();
+		$id = $request->getParam('id');
+		$targetId = $request->getParam('target');
+		$quyTrinhId = $request->getParam('quy_trinh_id');
+		$maSx = $request->getParam('ma_sx');
+		$nextTask = false;
+		if(strpos($targetId, "next:") === 0){
+			$targetId = substr($targetId, strlen("next:"));
+			$nextTask = true;
+		}
+		if($targetId) {
+			$orderData = $this->db->select($this->tableName, ['sortorder'], ['id' => $targetId]);
+			$targetOrder = $orderData[0]['sortorder'];
+			if($nextTask) $targetOrder++;
+
+			$extraWhere = "WHERE sortorder >= $targetOrder ";
+			if($quyTrinhId) {
+				$extraWhere .= "AND quy_trinh_id = $quyTrinhId";
+			}
+			if($maSx) {
+				$extraWhere .= "AND ma_sx = $maSx";
+			}
+			$this->db->update($this->tableName, [
+				'sortorder' => Medoo::raw('sortorder + 1')
+			], Medoo::raw("$extraWhere"));
+
+			$this->db->update($this->tableName, ['sortorder' => $targetOrder], ['id' => $id]);
+
+			$rsData['status'] = 'success';
 		}
 		//Load data after added or updated
 		if($quyTrinhId) {
