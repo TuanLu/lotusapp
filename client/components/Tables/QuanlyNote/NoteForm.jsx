@@ -300,7 +300,7 @@ class NoteForm extends React.Component {
           <Col span={24}>
             <FormItem
             {...formItemLayout}
-            label="Upload"
+            label="File đính kèm"
             extra=""
             >
             <UploadFile

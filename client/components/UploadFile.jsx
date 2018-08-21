@@ -54,7 +54,7 @@ class FormUpload extends React.Component {
     return (
       <Upload {...props} fileList={this.state.fileList}>
         <Button loading={this.state.loading}>
-          <Icon type="upload" /> Upload
+          <Icon type="upload" /> Tải lên
         </Button>
       </Upload>
     );
