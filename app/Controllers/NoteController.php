@@ -23,6 +23,7 @@ class NoteController extends BaseController
 				'lotus_notes.titles',
 				'lotus_notes.assign_users',
 				'lotus_notes.assign_group',
+				'lotus_notes.filename',
 				'lotus_notes.create_by',
 				'lotus_notes.create_on',
 				'lotus_notes.status',
@@ -54,6 +55,7 @@ class NoteController extends BaseController
 		$titles = $request->getParam('titles') | "";
 		$assign_group = $request->getParam('assign_group');
 		$assign_users = $request->getParam('assign_users');
+		$filename = $request->getParam('filename');
 		if(is_array($assign_group)) {
       $assign_group = implode(',', $assign_group);
 		}else{
@@ -72,6 +74,7 @@ class NoteController extends BaseController
 			'titles' => $titles,
 			'assign_users' => $assign_users,
 			'assign_group' => $assign_group,
+			'filename' => $filename,
 			'status' => 1
 		];
 		if(!$id) {

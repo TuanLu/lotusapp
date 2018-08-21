@@ -20,6 +20,7 @@ class NoteForm extends React.Component {
         //Get USER ID from mainstate
         let {systemNote} = this.props.mainState;
         values.id = systemNote.id ? systemNote.id : '';
+        values.filename = systemNote.filename ? systemNote.filename : '';
         fetch(ISD_BASE_URL + 'note/updateNote', {
           method: 'POST',
           headers: getTokenHeader(),
@@ -186,6 +187,18 @@ class NoteForm extends React.Component {
           selected_group = systemNote.assign_group;
         }
     }
+    //File upload
+    let attachFile;
+    if(systemNote.filename && systemNote.filename != "") {
+      attachFile = systemNote.filename.split(',').map((file) => {
+        return {
+          uid: file,
+          name: file,
+          status: 'done',
+          url: ISD_BASE_URL + 'upload/' + file,
+        }
+      });
+    }
     return (
       <Form onSubmit={this.handleSubmit}>
         <Row>
@@ -266,7 +279,7 @@ class NoteForm extends React.Component {
                 )}
               </FormItem>
           </Col>
-          <Col span={24}>
+          {/* <Col span={24}>
             <FormItem
             {...formItemLayout}
             label="Upload"
@@ -282,6 +295,45 @@ class NoteForm extends React.Component {
                 </Button>
               </Upload>
             )}
+          </FormItem>
+          </Col> */}
+          <Col span={24}>
+            <FormItem
+            {...formItemLayout}
+            label="Upload"
+            extra=""
+            >
+            <UploadFile
+              fileList={attachFile ? attachFile : []}
+              onDone={(filename) => {
+                let files = this.props.mainState.systemNote.filename || '';
+                if(files != '') {
+                  files += `,${filename}`;
+                } else {
+                  files = filename;
+                }
+                this.props.dispatch(updateStateData({
+                  systemNote: {
+                    ...this.props.mainState.systemNote,
+                    filename: files
+                  }
+                }));
+              }}
+              onRemove={(filename) => {
+                let files = this.props.mainState.systemNote.filename || '';
+                if(files != '') {
+                  files = files.split(',').filter((file) => file != filename);
+                  files = files.join(',');
+                }
+                this.props.dispatch(updateStateData({
+                  systemNote: {
+                    ...this.props.mainState.systemNote,
+                    filename: files
+                  }
+                }));
+              }}
+              mainState={this.props.mainState}
+              dispatch={this.props.dispatch}/>
           </FormItem>
           </Col>
         </Row>
