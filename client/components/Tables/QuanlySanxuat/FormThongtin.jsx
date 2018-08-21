@@ -84,18 +84,18 @@ class FormThongtin extends React.Component {
     //   sx.so = '01.082018/LSX';
     // }
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
-     //File upload
-     let attachFile;
-     if(sx.filename && sx.filename != "") {
-       attachFile = sx.filename.split(',').map((file) => {
-         return {
-           uid: file,
-           name: file,
-           status: 'done',
-           url: ISD_BASE_URL + 'upload/' + file,
-         }
-       });
-     }
+    //File upload
+    let attachFile;
+    if(sx.filename && sx.filename != "") {
+      attachFile = sx.filename.split(',').map((file) => {
+        return {
+          uid: file,
+          name: file,
+          status: 'done',
+          url: ISD_BASE_URL + 'upload/' + file,
+        }
+      });
+    }
     return (
       <Form>
         <Row>
@@ -358,7 +358,7 @@ class FormThongtin extends React.Component {
               </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col span={12}>
               <FormItem
                 label={ans_language.ans_attach_file_label || 'File đính kèm'}
                 labelCol={{ span: 5 }}

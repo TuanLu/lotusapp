@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Form, Select, Input, Row, Col, DatePicker, Radio, Button,Popconfirm,message } from 'antd';
 import {updateStateData} from 'actions'
 import {getTokenHeader, trangThaiPhieu} from 'ISD_API'
+import UploadFile from './../../UploadFile'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const dateFormat = 'YYYY/MM/DD';
@@ -101,6 +102,18 @@ class FormThongtin extends React.Component {
         nsx = null;// Might 	0000-00-00
     }
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
+    //File upload
+    let attachFile;
+    if(rnd.filename && rnd.filename != "") {
+      attachFile = rnd.filename.split(',').map((file) => {
+        return {
+          uid: file,
+          name: file,
+          status: 'done',
+          url: ISD_BASE_URL + 'upload/' + file,
+        }
+      });
+    }
     return (
       <Form>
         <Row>
@@ -287,6 +300,46 @@ class FormThongtin extends React.Component {
               </FormItem>
               </Col>
             </Row>
+            <Row>
+            <Col span={12}>
+              <FormItem
+                label={ans_language.ans_attach_file_label || 'File đính kèm'}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 12 }}>
+                <UploadFile
+                  fileList={attachFile ? attachFile : []}
+                  onDone={(filename) => {
+                    let files = this.props.mainState.rnd.filename || '';
+                    if(files != '') {
+                      files += `,${filename}`;
+                    } else {
+                      files = filename;
+                    }
+                    this.props.dispatch(updateStateData({
+                      rnd: {
+                        ...this.props.mainState.rnd,
+                        filename: files
+                      }
+                    }));
+                  }}
+                  onRemove={(filename) => {
+                    let files = this.props.mainState.rnd.filename || '';
+                    if(files != '') {
+                      files = files.split(',').filter((file) => file != filename);
+                      files = files.join(',');
+                    }
+                    this.props.dispatch(updateStateData({
+                      rnd: {
+                        ...this.props.mainState.rnd,
+                        filename: files
+                      }
+                    }));
+                  }}
+                  mainState={this.props.mainState}
+                  dispatch={this.props.dispatch}/>
+              </FormItem>
+            </Col>
+          </Row>
       </Form>
     );
   }

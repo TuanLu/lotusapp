@@ -25,6 +25,7 @@ class RNDController extends BaseController
 			'dh',
 			'tttb_kltb',
 			'note',
+			'filename',
 			'pkhsx',
 			'pdbcl',
 			'gd',
@@ -111,6 +112,7 @@ class RNDController extends BaseController
 		$dh = isset($params['dh']) ? $params['dh'] : '';
 		$tttb_kltb = isset($params['tttb_kltb']) ? $params['tttb_kltb'] : '';
 		$note = isset($params['note']) ? $params['note'] : '';
+		$filename = isset($params['filename']) ? $params['filename'] : '';
 		$products = (isset($params['products']) && !empty($params['products'])) ? $params['products'] : [];
 		//Some validation 
 		if(empty($products)) {
@@ -144,6 +146,7 @@ class RNDController extends BaseController
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
+				'filename' => $filename,
 				'status' => 1,
 				'create_on' => $createOn,
 				'create_by' => $userId,
@@ -209,6 +212,7 @@ class RNDController extends BaseController
 				'dh' => $dh,
 				'tttb_kltb' => $tttb_kltb,
 				'note' => $note,
+				'filename' => $filename,
 				'status' => 1,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 				'update_by' => $userId

@@ -280,8 +280,8 @@ class EditableTable extends React.Component {
           });
           //Stop after fetching data
           this.props.dispatch(updateStateData({
-            sx: {
-              ...this.props.mainState.sx,
+            rnd: {
+              ...this.props.mainState.rnd,
               refresh: false
             }
           }));
@@ -374,7 +374,7 @@ class EditableTable extends React.Component {
     });
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    let {refresh} = nextProps.mainState.sx;
+    let {refresh} = nextProps.mainState.rnd;
     if(refresh) {
       return {
         dataUpToDate: null
