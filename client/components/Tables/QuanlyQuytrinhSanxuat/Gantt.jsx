@@ -19,7 +19,7 @@ import {
   Spin
 } from 'antd';
 
-class Gantt extends Component {
+class GanttComponent extends Component {
   constructor(props) {
     super(props);
     this.saveData = this.saveData.bind(this);
@@ -510,6 +510,10 @@ class Gantt extends Component {
   componentDidMount() {
     let {mainState} = this.props;
     let {ganttData} = mainState;
+
+    console.log(Gantt);
+    var gantt2 = Gantt.getGanttInstance();
+
     gantt.config.fit_tasks = true;
     gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
     gantt.config.date_grid = "%d-%m-%Y";
@@ -556,20 +560,20 @@ class Gantt extends Component {
     gantt.config.drag_move = true;
 
 
-    gantt.addTaskLayer(function draw_deadline(task) {
-      // if (task.deadline) {
-      //     var el = document.createElement('div');
-      //     el.className = 'deadline';
-      //     var sizes = gantt.getTaskPosition(task, task.deadline);
+    // gantt.addTaskLayer(function draw_deadline(task) {
+    //   // if (task.deadline) {
+    //   //     var el = document.createElement('div');
+    //   //     el.className = 'deadline';
+    //   //     var sizes = gantt.getTaskPosition(task, task.deadline);
   
-      //     el.style.left = sizes.left + 'px';
-      //     el.style.top = sizes.top + 'px';
+    //   //     el.style.left = sizes.left + 'px';
+    //   //     el.style.top = sizes.top + 'px';
   
-      //     el.setAttribute('title', gantt.templates.task_date(task.deadline));
-      //     return el;
-      // }
-      return false;
-    });
+    //   //     el.setAttribute('title', gantt.templates.task_date(task.deadline));
+    //   //     return el;
+    //   // }
+    //   return false;
+    // });
 
     if(this.props.type == "allPlan") {
       gantt.config.drag_move = false;
@@ -679,4 +683,4 @@ class Gantt extends Component {
   }
 }
 
-export default Gantt
+export default GanttComponent

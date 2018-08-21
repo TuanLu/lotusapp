@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Row, Col} from 'antd'
-import Gantt from './QuanlyQuytrinhSanxuat/Gantt'
+import KHDH from './QuanlyQuytrinhSanxuat/KHDH'
 
 class KehoachSanxuatDaihan extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class KehoachSanxuatDaihan extends Component {
             </Col>
           </Row>
         </div>
-       <Gantt mainState={mainState} dispatch={dispatch} type="allPlan" />
+       <KHDH mainState={mainState} dispatch={dispatch} type="allPlan" />
      </div>
     );
   }
