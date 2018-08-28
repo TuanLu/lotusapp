@@ -129,6 +129,64 @@ class GanttController extends BaseController {
 		}
 		return $tasks;
 	}
+	protected function getTasksByMaRnd($maRnd) {
+		$tasks = [
+			'data' => [],
+			'links' => []
+		];
+		if($maRnd) {
+			// Columns to select.
+			$columns = [
+				'id',
+				'text',
+				'start_date',
+				'duration',
+				'status',
+				'progress',
+				'parent',
+				'ma_rnd',
+				'user',
+				'check_user',
+				'group_user',
+				'note',
+				'sortorder'
+			];
+			$where = [
+				"ORDER" => [
+					"sortorder" => "ASC",
+					"create_on" => "ASC",
+				],
+				"status" => 1,
+				"ma_rnd" => $maRnd
+			];
+			$userId = isset($this->jwt->id) ? $this->jwt->id : '';
+			$userInfo = $this->UserController->getUserById($userId);
+			//var_dump($userInfo);
+			//Skip if admin
+			$isSuper = $this->UserController->isSuperAdmin($userId);
+			if(!$isSuper) {
+				$where["OR"] = [
+					"user" => [$userId],
+					"group_user" => [$userInfo[0]['group_user'], 'ALL_PB'],
+					"create_by" => [$userId],
+				];
+			}
+			
+			$collection = $this->db->select($this->tableName, $columns, $where);
+			//Get links
+      $links = $this->db->select($this->linkTable, ['id', 'source', 'target', 'type'], [
+				"status" => 1,
+				"ma_rnd" => $maRnd
+			]);
+			if(!empty($collection)) {
+				$tasks['data'] = $collection;
+			}
+			if(!empty($links)) {
+				$tasks['links'] = $links;
+			}
+		}
+		return $tasks;
+	}
 	private function checkUser() {
 		//Filter task by user or user group 
 		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
@@ -180,6 +238,30 @@ class GanttController extends BaseController {
 		};
 		
 		$collection = $this->getTasksByMaSx($maSx);
+		if(!empty($collection['data'])) {
+			$rsData['status'] = self::SUCCESS_STATUS;
+      $rsData['message'] = 'Dữ liệu đã được load!';
+			$rsData['data'] = $collection;
+		} else {
+			$rsData = $this->getEmptyGanttChart();
+		}
+		echo json_encode($rsData);
+	}
+	public function fetchTasksByMaRnd($request, $response, $args){
+		$this->checkUser();
+    //$this->logger->addInfo('Request Npp path');
+		$rsData = array(
+			'status' => self::ERROR_STATUS,
+			'message' => 'Chưa có dữ liệu từ hệ thống!'
+    );
+    $maRnd = isset(	$args['ma_rnd']) ? $args['ma_rnd'] : '';
+    if($maRnd == "") {
+      $rsData['message'] = 'Không tìm thấy mã RND!';
+      echo json_encode($rsData);
+      die;
+		};
+		
+		$collection = $this->getTasksByMaRnd($maRnd);
 		if(!empty($collection['data'])) {
 			$rsData['status'] = self::SUCCESS_STATUS;
       $rsData['message'] = 'Dữ liệu đã được load!';
@@ -320,6 +402,7 @@ class GanttController extends BaseController {
     $parent = $request->getParam('parent');
 		$quyTrinhId = $request->getParam('quy_trinh_id');
 		$maSx = $request->getParam('ma_sx');
+		$maRnd = $request->getParam('ma_rnd');
 		$worker = $request->getParam('user');
 		//$check_user = $request->getParam('check_user');
 		$group_user = $request->getParam('group_user');
@@ -333,6 +416,7 @@ class GanttController extends BaseController {
       'start_date' => $start_date,
 			'quy_trinh_id' => $quyTrinhId,
 			'ma_sx' => $maSx,
+			'ma_rnd' => $maRnd,
 			'progress' => $progress,
 			'parent' => $parent,
 			'user' => $worker,
@@ -407,14 +491,21 @@ class GanttController extends BaseController {
 			}
 		}
 		//Load data after added or updated
+		$rsData['data'] = $this->getTaskByType($quyTrinhId, $maSx, $maRnd);
+		echo json_encode($rsData);
+	}
+	/**
+	 * Type: Quy trinh ID, Ma Sx or Ma Rnd
+	 */
+	protected function getTaskByType($quyTrinhId = '', $maSx = '', $maRnd = '') {
 		if($quyTrinhId) {
 			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
-			$rsData['data'] = $collection;
 		} elseif($maSx) {
 			$collection = $this->getTasksByMaSx($maSx);
-			$rsData['data'] = $collection;
+		} elseif($maRnd) {
+			$collection = $this->getTasksByMaRnd($maRnd);
 		}
-		echo json_encode($rsData);
+		return $collection;
 	}
 	public function updateLink($request, $response){
 		$rsData = array(
@@ -429,6 +520,7 @@ class GanttController extends BaseController {
 		$type = $request->getParam('type');
 		$quyTrinhId = $request->getParam('quy_trinh_id');
 		$maSx = $request->getParam('ma_sx');
+		$maRnd = $request->getParam('ma_rnd');
     
     $date = new \DateTime();
     $createOn = $date->format('Y-m-d H:i:s');
@@ -438,7 +530,8 @@ class GanttController extends BaseController {
       'target' => $target,
 			'type' => $type,
 			'quy_trinh_id' => $quyTrinhId,
-			'ma_sx' => $maSx
+			'ma_sx' => $maSx,
+			'ma_rnd' => $maRnd,
 			
 		];
 		//Kiem tra lien ket da ton tai hay chua
@@ -501,13 +594,7 @@ class GanttController extends BaseController {
 			
 		}
 		//Load data after added or updated
-		if($quyTrinhId) {
-			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
-			$rsData['data'] = $collection;
-		} elseif($maSx) {
-			$collection = $this->getTasksByMaSx($maSx);
-			$rsData['data'] = $collection;
-		}
+		$rsData['data'] = $this->getTaskByType($quyTrinhId, $maSx, $maRnd);
 		echo json_encode($rsData);
 	}
 	public function updateTaskOrder($request, $response){
@@ -521,6 +608,7 @@ class GanttController extends BaseController {
 		$targetId = $request->getParam('target');
 		$quyTrinhId = $request->getParam('quy_trinh_id');
 		$maSx = $request->getParam('ma_sx');
+		$maRnd = $request->getParam('ma_rnd');
 		$nextTask = false;
 		if(strpos($targetId, "next:") === 0){
 			$targetId = substr($targetId, strlen("next:"));
@@ -536,7 +624,10 @@ class GanttController extends BaseController {
 				$extraWhere .= "AND quy_trinh_id = $quyTrinhId";
 			}
 			if($maSx) {
-				$extraWhere .= "AND ma_sx = $maSx";
+				$extraWhere .= "AND ma_sx = '$maSx'";
+			}
+			if($maRnd) {
+				$extraWhere .= "AND ma_rnd = '$maRnd'";
 			}
 			$this->db->update($this->tableName, [
 				'sortorder' => Medoo::raw('sortorder + 1')
@@ -547,13 +638,7 @@ class GanttController extends BaseController {
 			$rsData['status'] = 'success';
 		}
 		//Load data after added or updated
-		if($quyTrinhId) {
-			$collection = $this->getTasksByQuytrinhId($quyTrinhId);
-			$rsData['data'] = $collection;
-		} elseif($maSx) {
-			$collection = $this->getTasksByMaSx($maSx);
-			$rsData['data'] = $collection;
-		}
+		$rsData['data'] = $this->getTaskByType($quyTrinhId, $maSx, $maRnd);
 		echo json_encode($rsData);
   }
   public function delete($request, $response, $args){

@@ -1,16 +1,8 @@
-/*global gantt*/
-
-/**
- * Vi gantt la global object, nen toan bo app chi dung 1 doi tuong gantt.
- * Thay doi cac bieu do bang cach reset lai event, reset lai data
- */
 import React, { Component } from 'react';
 import './lib/dhtmlxgantt';
 import './lib/locale_vn.js';
 import './lib/dhtmlxgantt_marker.js'
 import './lib/Theme.css';
-//import {demo_tasks, users_data, projects_with_milestones, projects_milestones_critical} from './lib/test_data.js'
-//import {connect} from 'react-redux'
 import {getTokenHeader} from 'ISD_API'
 import {updateStateData} from 'actions'
 import moment from 'moment'
@@ -19,12 +11,14 @@ import {
   Spin
 } from 'antd';
 
+const ganttRnd = Gantt.getGanttInstance();
+//Translate to vn
+ganttRnd.locale = gantt.locale;
+
 class GanttComponent extends Component {
   constructor(props) {
     super(props);
     this.saveData = this.saveData.bind(this);
-    this.getQuyTrinhId = this.getQuyTrinhId.bind(this);
-    this.getMaSx = this.getMaSx.bind(this);
     this.getMaRnd = this.getMaRnd.bind(this);
     this.clearAllEvents = this.clearAllEvents.bind(this);
     this.expandAllTask = this.expandAllTask.bind(this);
@@ -34,40 +28,6 @@ class GanttComponent extends Component {
     this.state = {
       loading: false,
       resetEvents: false,
-    }
-  }
-  setZoom(value){
-    switch (value){
-      case 'Hours':
-        gantt.config.scale_unit = 'day';
-        gantt.config.date_scale = '%d %M';
-
-        gantt.config.scale_height = 60;
-        gantt.config.min_column_width = 30;
-        gantt.config.subscales = [
-          {unit:'hour', step:1, date:'%H'}
-        ];
-        break;
-      case 'Days':
-        gantt.config.min_column_width = 70;
-        gantt.config.scale_unit = "week";
-        gantt.config.date_scale = "#%W";
-        gantt.config.subscales = [
-          {unit: "day", step: 1, date: "%d %M"}
-        ];
-        gantt.config.scale_height = 60;
-        break;
-      case 'Months':
-        gantt.config.min_column_width = 70;
-        gantt.config.scale_unit = "month";
-        gantt.config.date_scale = "%F";
-        gantt.config.scale_height = 60;
-        gantt.config.subscales = [
-          {unit:"week", step:1, date:"#%W"}
-        ];
-        break;
-      default:
-        break;
     }
   }
   expandAllTask(ganttData) {
@@ -96,24 +56,8 @@ class GanttComponent extends Component {
   }
   fetchTasks() {
     this.setState({loading: true});
-    let fetchUrl;
-    switch (this.props.type) {
-      case 'allPlan':
-        fetchUrl = ISD_BASE_URL + 'gantt/allPlan';
-        break;
-      case 'theo_lenh_sx':
-        let maSX = this.getMaSx();
-        fetchUrl = ISD_BASE_URL + 'gantt/fetchTasksByMaSx/' + maSX;
-        break;
-      case 'theo_nc_sx':
-        let maRnd= this.getMaRnd();
-        fetchUrl = ISD_BASE_URL + 'gantt/fetchTasksByMaRnd/' + maRnd;
-        break;
-      default:
-        let quyTrinhId = this.getQuyTrinhId();
-        fetchUrl = ISD_BASE_URL + 'gantt/fetchTasks/' + quyTrinhId;
-        break;
-    }
+    let maRnd = this.getMaRnd();
+    let fetchUrl = ISD_BASE_URL + 'gantt/fetchTasksByMaRnd/' + maRnd;
     fetch(fetchUrl, {
       headers: getTokenHeader()
     })
@@ -175,9 +119,9 @@ class GanttComponent extends Component {
     }); 
   }
   renderTodayMarker() {
-    var date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+    var date_to_str = ganttRnd.date.date_to_str(ganttRnd.config.task_date);
     var today = new Date();
-    gantt.addMarker({
+    ganttRnd.addMarker({
       start_date: today,
       css: "today",
       text: "Hôm nay",
@@ -188,31 +132,16 @@ class GanttComponent extends Component {
     let {mainState} = this.props;
     let {ganttData} = mainState;
     ganttData = ganttData || {};
-    gantt.clearAll();
+    ganttRnd.clearAll();
     this.renderTodayMarker();
-    gantt.parse(ganttData);   
-    gantt.render();
+    ganttRnd.parse(ganttData);   
+    ganttRnd.render();
   }
-  //Switch tu quy trinh nay sang quy trinh khac, phai cap nhat lai bien gantt
+  //Switch tu quy trinh nay sang quy trinh khac, phai cap nhat lai bien ganttRnd
   static getDerivedStateFromProps(nextProps, prevState) {
-    //Switch theo quy trinh ID
-    if(nextProps.mainState.quyTrinhSx.edit.id && nextProps.mainState.quyTrinhSx.edit.id !== prevState.quyTrinhId) {
-      //console.log('thay doi quy trinh, reset lai event di nao');
-      return {
-        quyTrinhId: nextProps.mainState.quyTrinhSx.edit.id,
-        resetEvents: true
-      }
-    }
-    //Cap nhat khi thay doi ma sx
-    if(nextProps.mainState.sx.ma_sx && nextProps.mainState.sx.ma_sx !== prevState.ma_sx) {
-      //console.log('thay doi ma san xuat kia, reset lai event di nao');
-      return {
-        ma_sx: nextProps.mainState.sx.ma_sx,
-        resetEvents: true
-      }
-    }
     //Cap nhat khi thay doi ma rnd
     if(nextProps.mainState.rnd.ma_rnd && nextProps.mainState.rnd.ma_rnd !== prevState.ma_rnd) {
+      //console.log('thay doi ma san xuat kia, reset lai event di nao');
       return {
         ma_rnd: nextProps.mainState.rnd.ma_rnd,
         resetEvents: true
@@ -227,7 +156,7 @@ class GanttComponent extends Component {
     return null;
   }
   componentDidUpdate() {
-    //Cap nhat lai gantt
+    //Cap nhat lai ganttRnd
     if(this.state.resetEvents) {
       this.clearAllEvents();
       this.initGanttEvents();
@@ -290,12 +219,6 @@ class GanttComponent extends Component {
       message.error('Có lỗi xảy ra trong quá trình update link!');
     });
   }
-  getQuyTrinhId() {
-    return this.props.mainState.quyTrinhSx.edit ? this.props.mainState.quyTrinhSx.edit.id : '';
-  }
-  getMaSx() {
-    return this.props.mainState.sx.ma_sx ? this.props.mainState.sx.ma_sx : '';
-  }
   getMaRnd() {
     return this.props.mainState.rnd.ma_rnd ? this.props.mainState.rnd.ma_rnd : '';
   }
@@ -311,14 +234,7 @@ class GanttComponent extends Component {
       group_user: task.group_user,
       note: task.note
     };
-    //Luu theo quy trinh hoac luu theo lenh san xuat
-    if(this.props.type === "theo_lenh_sx") {
-      taskData.ma_sx = this.getMaSx();
-    } else if(this.props.type === "theo_nc_sx") {
-      taskData.ma_rnd = this.getMaRnd();
-    } else {
-      taskData.quy_trinh_id =  this.getQuyTrinhId();
-    }
+    taskData.ma_rnd = this.getMaRnd();
     if(mode == "updated") {
       taskData.id = id;
     }
@@ -330,13 +246,7 @@ class GanttComponent extends Component {
       target: link.target,
       type: link.type
     }
-    if(this.props.type === "theo_lenh_sx") {
-      linkData.ma_sx = this.getMaSx();
-    } else if(this.props.type === "theo_nc_sx") {
-      linkData.ma_rnd = this.getMaRnd();
-    } else {
-      linkData.quy_trinh_id =  this.getQuyTrinhId();
-    }
+    linkData.ma_rnd = this.getMaRnd();
     this.saveLink(linkData);
   }
   updateOrder(id, target) {
@@ -344,13 +254,7 @@ class GanttComponent extends Component {
       id,
       target
     }
-    if(this.props.type === "theo_lenh_sx") {
-      data.ma_sx = this.getMaSx();
-    } else if(this.props.type === "theo_nc_sx") {
-      data.ma_rnd = this.getMaRnd();
-    } else {
-      data.quy_trinh_id =  this.getQuyTrinhId();
-    }
+    data.ma_rnd = this.getMaRnd();
     fetch(ISD_BASE_URL + 'gantt/updateTaskOrder', {
       method: 'POST',
       headers: getTokenHeader(),
@@ -417,78 +321,79 @@ class GanttComponent extends Component {
   clearAllEvents() {
     //Reset lai toan bo events cua gantt, de khong su dung du lieu cu
     let {mainState} = this.props;
-    if(mainState && mainState.ganttEvents) {
+    console.log('clear ganttRnd.ganttEventsInitialized', ganttRnd.ganttEventsInitialized);
+    if(ganttRnd.ganttEventsInitialized && mainState && mainState.ganttEvents) {
       mainState.ganttEvents.forEach((event) => {
-        gantt.detachEvent(event);
+        ganttRnd.detachEvent(event);
       });
-      gantt.ganttEventsInitialized = false;
+      ganttRnd.ganttEventsInitialized = false;
     }
   }
 
   initGanttEvents() {
-    if(gantt.ganttEventsInitialized){
+    if(ganttRnd.ganttEventsInitialized){
       return;
     }
-    gantt.ganttEventsInitialized = true;
+    ganttRnd.ganttEventsInitialized = true;
     //Cho tat ca cac su kien vao mainState de co the reset ve sau
     let eventsList = [];
     eventsList.push(
-      gantt.attachEvent('onAfterTaskAdd', (id, task) => {
+      ganttRnd.attachEvent('onAfterTaskAdd', (id, task) => {
         this.updateTask(id, 'inserted', task);
       })
     );
     eventsList.push(
-      gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
+      ganttRnd.attachEvent('onAfterTaskUpdate', (id, task) => {
         this.updateTask(id, 'updated', task);
       })
     );
     eventsList.push(
-      gantt.attachEvent('onAfterTaskDelete', (id) => {
+      ganttRnd.attachEvent('onAfterTaskDelete', (id) => {
         this.deleteTask(id);
       })
     );
     eventsList.push(
-      gantt.attachEvent('onAfterLinkAdd', (id, link) => {
+      ganttRnd.attachEvent('onAfterLinkAdd', (id, link) => {
         this.updateLink(id, 'inserted', link);
       })
     );
     eventsList.push(
-      gantt.attachEvent('onAfterLinkDelete', (id, link) => {
+      ganttRnd.attachEvent('onAfterLinkDelete', (id, link) => {
         this.deleteLink(id);
       })
     );
     eventsList.push(
-      gantt.attachEvent("onLightboxSave", function (id, item) {
+      ganttRnd.attachEvent("onLightboxSave", function (id, item) {
         if (!item.text) {
-          gantt.message({type: "error", text: "Hãy nhập mô tả công việc!"});
+          ganttRnd.message({type: "error", text: "Hãy nhập mô tả công việc!"});
           return false;
         }
         // if (!item.user) {
-        //   gantt.message({type: "error", text: "Hãy chọn người thực hiện!"});
+        //   ganttRnd.message({type: "error", text: "Hãy chọn người thực hiện!"});
         //   return false;
         // }
         // if (!item.check_user) {
-        //   gantt.message({type: "error", text: "Hãy chọn người phê duyệt!"});
+        //   ganttRnd.message({type: "error", text: "Hãy chọn người phê duyệt!"});
         //   return false;
         // }
         return true;
       })
     );
     eventsList.push(
-      gantt.attachEvent("onRowDragEnd", (id, target) => {
+      ganttRnd.attachEvent("onRowDragEnd", (id, target) => {
         if(!target) return false;
         this.updateOrder(id, target);
         // if (task.$index == 0){
-        //     gantt.message("No previous task")
-        //     gantt.message("Next task:" + gantt.getTaskByIndex(task.$index + 1).id)
+        //     ganttRnd.message("No previous task")
+        //     ganttRnd.message("Next task:" + ganttRnd.getTaskByIndex(task.$index + 1).id)
         // } else {
         //     if (isNaN(target+1)){
-        //         gantt.message("Previous task:" + gantt.getTaskByIndex(task.$index - 1).id)
-        //         gantt.message("No next task")   
+        //         ganttRnd.message("Previous task:" + ganttRnd.getTaskByIndex(task.$index - 1).id)
+        //         ganttRnd.message("No next task")   
         //     }
         //     else {
-        //         gantt.message("Previous task:" + gantt.getTaskByIndex(task.$index - 1).id)
-        //         gantt.message("Next task:" + gantt.getTaskByIndex(task.$index + 1).id)
+        //         ganttRnd.message("Previous task:" + ganttRnd.getTaskByIndex(task.$index - 1).id)
+        //         ganttRnd.message("Next task:" + ganttRnd.getTaskByIndex(task.$index + 1).id)
         //     }
         // }
       })
@@ -499,7 +404,7 @@ class GanttComponent extends Component {
     }));
   }
   taskClass() {
-    gantt.templates.task_class = function (start, end, task) {
+    ganttRnd.templates.task_class = function (start, end, task) {
       let taskClass = "";
       let percentDone = parseFloat(task.progress) || 0;
       if(percentDone == 0) {
@@ -521,18 +426,18 @@ class GanttComponent extends Component {
     let {mainState} = this.props;
     let {ganttData} = mainState;
 
-    gantt.config.fit_tasks = true;
-    gantt.config.xml_date = "%Y-%m-%d %H:%i:%s";
-    gantt.config.date_grid = "%d-%m-%Y";
-    gantt.config.grid_width = 450;
+    ganttRnd.config.fit_tasks = true;
+    ganttRnd.config.xml_date = "%Y-%m-%d %H:%i:%s";
+    ganttRnd.config.date_grid = "%d-%m-%Y";
+    ganttRnd.config.grid_width = 450;
     //Detect Project Level - Level 0
-    // gantt.templates.task_class = function (st, end, item) {
+    // ganttRnd.templates.task_class = function (st, end, item) {
     //   return item.$level == 0 ? "gantt_project" : ""
     // };
-    // gantt.templates.rightside_text = function (start, end, task) {
+    // ganttRnd.templates.rightside_text = function (start, end, task) {
     //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
     // };
-    gantt.templates.rightside_text = function (start, end, task) {
+    ganttRnd.templates.rightside_text = function (start, end, task) {
       let deadline = new Date();
       if (parseFloat(task.progress) < 1 && end < deadline) {
         var overdue = Math.ceil(Math.abs((end.getTime() - deadline.getTime()) / (24 * 60 * 60 * 1000)));
@@ -540,11 +445,11 @@ class GanttComponent extends Component {
         return text;
       }
     };
-    gantt.config.columns = [
+    ganttRnd.config.columns = [
       {
         name: "overdue", width: 47, hide: false, template: function (obj) {
           if (obj.end_date) {
-            var deadline = gantt.date.parseDate(obj.end_date, "xml_date");
+            var deadline = ganttRnd.date.parseDate(obj.end_date, "xml_date");
             var today = new Date();
             if (deadline && deadline <= today && parseFloat(obj.progress) < 1) {
               return '<div class="overdue-indicator">!</div>';
@@ -560,54 +465,25 @@ class GanttComponent extends Component {
       {name: "duration", width: 38, hide: false, align: "center"},
       {name: "add", hide: false, align: "center"}
     ];
-    //gantt.config.show_grid = true;
-    gantt.config.show_links = true;
-    //gantt.config.show_progress = true;
-    gantt.config.readonly = false;
-    gantt.config.drag_move = true;
+    //ganttRnd.config.show_grid = true;
+    ganttRnd.config.show_links = true;
+    //ganttRnd.config.show_progress = true;
+    ganttRnd.config.readonly = false;
+    ganttRnd.config.drag_move = true;
 
-
-    // gantt.addTaskLayer(function draw_deadline(task) {
-    //   // if (task.deadline) {
-    //   //     var el = document.createElement('div');
-    //   //     el.className = 'deadline';
-    //   //     var sizes = gantt.getTaskPosition(task, task.deadline);
-  
-    //   //     el.style.left = sizes.left + 'px';
-    //   //     el.style.top = sizes.top + 'px';
-  
-    //   //     el.setAttribute('title', gantt.templates.task_date(task.deadline));
-    //   //     return el;
-    //   // }
-    //   return false;
-    // });
-
-    if(this.props.type == "allPlan") {
-      gantt.config.drag_move = false;
-      gantt.config.readonly = true;
-      //gantt.config.show_grid = false;
-      gantt.config.show_links = false;
-      //gantt.config.show_progress = false;
-      gantt.config.columns = [
-        {name: "text", hide: true, tree: true},
-        {name: "start_date", hide: true, align: "center"},
-        {name: "duration", hide: true, align: "center"},
-        //{name: "add", hide: true}
-      ];
-    }
-    //gantt.config.start_date = new Date();
-    gantt.config.start_date = gantt.date.day_start(new Date());
-    // gantt.templates.progress_text = function (start, end, task) {
+    //ganttRnd.config.start_date = new Date();
+    ganttRnd.config.start_date = ganttRnd.date.day_start(new Date());
+    // ganttRnd.templates.progress_text = function (start, end, task) {
     //   return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
     // };
-    //gantt.config.task_date = "%d-%m-%Y";
+    //ganttRnd.config.task_date = "%d-%m-%Y";
     //this.initGanttEvents();
-    gantt.config.order_branch = true;
-    //gantt.config.order_branch_free = true;
-    gantt.init(this.ganttContainer);
+    ganttRnd.config.order_branch = true;
+    //ganttRnd.config.order_branch_free = true;
+    ganttRnd.init(this.ganttContainer);
     this.addControlToLightBox();
     this.taskClass();
-    gantt.parse(ganttData);
+    ganttRnd.parse(ganttData);
     this.fetchTasks();
   }
   addControlToLightBox() {
@@ -638,9 +514,9 @@ class GanttComponent extends Component {
           label: group.ma_pb + ' - ' + group.name
         }
       }));
-      gantt.config.lightbox.sections = [
+      ganttRnd.config.lightbox.sections = [
         {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
-        {name: "group_user", height: 25, map_to: "group_user", type: "select", options: groupUserOptions},
+        //{name: "group_user", height: 25, map_to: "group_user", type: "select", options: groupUserOptions},
         {name: "user", height: 25, map_to: "user", type: "select", options: workerOptions},
         //{name: "check_user", height: 25, map_to: "check_user", type: "select", options: checkUserOptions},
         // {
@@ -662,11 +538,11 @@ class GanttComponent extends Component {
         {name: "time", type: "duration", map_to: "auto"},
       ];
     
-      gantt.locale.labels["section_group_user"] = "Phòng ban";
-      gantt.locale.labels["section_user"] = "Người thực hiện";
-      //gantt.locale.labels["section_check_user"] = "Người phê duyệt";
-      gantt.locale.labels["section_progress"] = "Số % hoàn thành";
-      gantt.locale.labels["section_note"] = "Ghi chú";
+      ganttRnd.locale.labels["section_group_user"] = "Phòng ban";
+      ganttRnd.locale.labels["section_user"] = "Người thực hiện";
+      //ganttRnd.locale.labels["section_check_user"] = "Người phê duyệt";
+      ganttRnd.locale.labels["section_progress"] = "Số % hoàn thành";
+      ganttRnd.locale.labels["section_note"] = "Ghi chú";
     } else {
       this.fetchUsers();
     }

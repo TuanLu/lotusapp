@@ -148,7 +148,7 @@ class FormRnd extends React.Component {
               </Row>
             </div>
             <Gantt
-              type="theo_lenh_sx"
+              type="theo_nc_sx"
               dispatch={this.props.dispatch} 
               mainState={this.props.mainState}
             />
