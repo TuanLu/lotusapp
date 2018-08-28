@@ -13,6 +13,7 @@ class SXController extends BaseController
 		$columns = [
 			'id',
 			'ma_sx',
+			'ma_rnd',
 			'so',
 			'cong_doan',
 			'ma_sp',
@@ -100,6 +101,7 @@ class SXController extends BaseController
 		$id = $request->getParam('id');
 		$params = $request->getParams();
 		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';
+		$ma_rnd = isset($params['ma_rnd']) ? $params['ma_rnd'] : '';
 		$ma = isset($params['ma']) ? $params['ma'] : '';
 		$so = isset($params['so']) ? $params['so'] : '';
 		$cong_doan = isset($params['cong_doan']) ? $params['cong_doan'] : '';
@@ -141,6 +143,7 @@ class SXController extends BaseController
 			//Tao phieu 
 			$duLieuPhieu = array(
 				'ma_sx' => $ma_sx,
+				'ma_rnd' => $ma_rnd,
 				'so' => $so,
 				'ma' => $ma,
 				'ma_sp' => $ma_sp,
@@ -206,6 +209,7 @@ class SXController extends BaseController
 			$date = new \DateTime();
 			$itemData = [
 				'ma_sx' => $ma_sx,
+				'ma_rnd' => $ma_rnd,
 				'ma' => $ma,
 				'so' => $so,
 				'cong_doan' => $cong_doan,

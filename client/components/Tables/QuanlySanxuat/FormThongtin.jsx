@@ -66,12 +66,65 @@ class FormThongtin extends React.Component {
       console.log(error);
     });
   }
+  fetchDonhang() {
+    fetch(ISD_BASE_URL + `order/fetchDh`, {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        if(json.data) {
+          // this.props.dispatch(updateStateData({
+          //   orderList: json.data
+          // }));
+          this.setState({
+            orderList: json.data
+          });
+        }
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  fetchRnd() {
+    fetch(ISD_BASE_URL + 'rnd/fetchRnd', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+        if(json.show_login) {
+          this.props.dispatch(updateStateData({showLogin: true}));
+        }
+      } else {
+        if(json.data) {
+          this.setState({
+            rndList: json.data
+          });
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu quy trình sản xuất!', 3);
+      console.log(error);
+    }); 
+  }
   componentDidMount() {
+    this.fetchRnd();
+    this.fetchDonhang();
     this.fetchProductbyCate();
   }
   render() {
     let {sx, phieuAction, ans_language} = this.props.mainState;
     let productListbyCate = this.state.productListbyCateList || [];
+    let orderList = this.state.orderList || [];
+    let rndList = this.state.rndList || [];
     if(!sx.hd) {
       sx.hd = 2;
     }
@@ -101,6 +154,35 @@ class FormThongtin extends React.Component {
         <Row>
             <Col span={12}>
             <FormItem
+              label={ans_language.ans_ma_rnd || 'ans_ma_rnd' }
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 12 }}
+            >
+              <Select 
+                defaultValue={sx.ma_rnd}
+                //showSearch
+                optionFilterProp="children"
+                onChange={(value, option) => {
+                  this.props.dispatch(updateStateData({
+                    sx: {
+                      ...this.props.mainState.sx,
+                      ma_rnd: value
+                    }
+                  }));
+                }}
+                placeholder={ans_language.ans_ma_rnd || 'ans_ma_rnd'}>
+                {rndList.map((rnd) => {
+                  return <Select.Option 
+                  key={rnd.ma_rnd} 
+                  value={rnd.ma_rnd}> 
+                    {`${rnd.ma_nc} - ${rnd.ma_sp}`}
+                </Select.Option>
+              })}
+              </Select>
+            </FormItem>
+            </Col>
+            <Col span={12}>
+            <FormItem
               label={ans_language.ans_number_lsx || 'ans_number_lsx' }
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 12 }}
@@ -116,25 +198,6 @@ class FormThongtin extends React.Component {
                   }));
                 }}
                 value={sx.so} />
-            </FormItem>
-            </Col>
-            <Col span={12}>
-            <FormItem
-              label={ans_language.ans_cong_doan || 'ans_cong_doan'}
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
-            >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
-                  this.props.dispatch(updateStateData({
-                    sx: {
-                      ...this.props.mainState.sx,
-                      cong_doan: e.target.value
-                    }
-                  }));
-                }}
-                value={sx.cong_doan} />
             </FormItem>
             </Col>
         </Row>
@@ -216,17 +279,29 @@ class FormThongtin extends React.Component {
                 labelCol={{ span: 5 }}
                 wrapperCol={{ span: 12 }}
               >
-              <Input 
-                  readOnly={readOnly}
-                  onChange={(e) => {
+                <Select 
+                  defaultValue={sx.dh}
+                  showSearch
+                  optionFilterProp="children"
+                  onChange={(value, option) => {
                     this.props.dispatch(updateStateData({
                       sx: {
                         ...this.props.mainState.sx,
-                        dh: e.target.value
+                        dh: value
                       }
                     }));
                   }}
-                  value={sx.dh} />
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  //style={{ width: 200 }}
+                  placeholder={ans_language.ans_choose_order || 'ans_choose_order'}>
+                  {orderList.map((order) => {
+                    return <Select.Option 
+                    key={order.ma_order} 
+                    value={order.ma_order}> 
+                      {`${order.ma_order} - ${order.ma_kh} - ${order.qty} `}
+                  </Select.Option>
+                })}
+                </Select>
               </FormItem>
             </Col>
         </Row>
@@ -395,6 +470,25 @@ class FormThongtin extends React.Component {
                   mainState={this.props.mainState}
                   dispatch={this.props.dispatch}/>
               </FormItem>
+            </Col>
+            <Col span={12}>
+            <FormItem
+              label={ans_language.ans_cong_doan || 'ans_cong_doan'}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 12 }}
+            >
+            <Input 
+                readOnly={readOnly}
+                onChange={(e) => {
+                  this.props.dispatch(updateStateData({
+                    sx: {
+                      ...this.props.mainState.sx,
+                      cong_doan: e.target.value
+                    }
+                  }));
+                }}
+                value={sx.cong_doan} />
+            </FormItem>
             </Col>
           </Row>
       </Form>
