@@ -102,7 +102,7 @@ class SXController extends BaseController
 		$params = $request->getParams();
 		$ma_sx = isset($params['ma_sx']) ? $params['ma_sx'] : '';
 		$ma_rnd = isset($params['ma_rnd']) ? $params['ma_rnd'] : '';
-		$ma = isset($params['ma']) ? $params['ma'] : '';
+		$ma = isset($params['ma']) ? $params['ma'] : '';//thay = "so"
 		$so = isset($params['so']) ? $params['so'] : '';
 		$cong_doan = isset($params['cong_doan']) ? $params['cong_doan'] : '';
 		$ma_sp = isset($params['ma_sp']) ? $params['ma_sp'] : '';
@@ -145,7 +145,7 @@ class SXController extends BaseController
 				'ma_sx' => $ma_sx,
 				'ma_rnd' => $ma_rnd,
 				'so' => $so,
-				'ma' => $ma,
+				//'ma' => $ma,
 				'ma_sp' => $ma_sp,
 				'co_lo' => $co_lo,
 				'so_lo' => $so_lo,
@@ -210,7 +210,7 @@ class SXController extends BaseController
 			$itemData = [
 				'ma_sx' => $ma_sx,
 				'ma_rnd' => $ma_rnd,
-				'ma' => $ma,
+				//'ma' => $ma,
 				'so' => $so,
 				'cong_doan' => $cong_doan,
 				'ma_sp' => $ma_sp,
@@ -237,7 +237,7 @@ class SXController extends BaseController
 				$rsData['status'] = self::SUCCESS_STATUS;
 				$rsData['message'] = 'Dữ liệu đã được cập nhật vào hệ thống!';
 			} else {
-				//$errors = $result->errorInfo();
+				$errors = $result->errorInfo();
 				$message = 'Dữ liệu chưa được cập nhật vào hệ thống! Có thể do bị trùng Mã phiếu!';
 				// if(is_array($errors)) {
 				// 	$message = implode(', ', $errors);
