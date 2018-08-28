@@ -701,14 +701,31 @@ class GanttController extends BaseController {
 			'status' => self::ERROR_STATUS,
 			'message' => 'Chưa có quy trình nào trong kế hoạch dài hạn!'
 		);
-		$sql = "SELECT lotus_sanxuat.ma_sx, MIN(start_date) as start_date, MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)) as end_date,DATEDIFF( MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)), MIN(start_date)) as duration, CONCAT('Mã SX: ',  lotus_sanxuat.ma, ', Mã SP: ', lotus_sanxuat.ma_sp) as text, progress FROM gantt_tasks, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = gantt_tasks.ma_sx AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' AND lotus_sanxuat.status = 1 GROUP BY ma_sx ORDER BY start_date";
+		$sql = "SELECT lotus_sanxuat.ma_sx, lotus_sanxuat.ma_sx AS id, MIN(start_date) as start_date, MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)) as end_date,DATEDIFF( MAX(DATE_ADD(gantt_tasks.start_date, INTERVAL gantt_tasks.duration DAY)), MIN(start_date)) as duration, CONCAT('Đơn hàng: ',  lotus_sanxuat.dh, ', Mã SP: ', lotus_sanxuat.ma_sp) as text, progress FROM gantt_tasks, lotus_sanxuat WHERE lotus_sanxuat.ma_sx = gantt_tasks.ma_sx AND lotus_sanxuat.pkhsx <> '' AND lotus_sanxuat.pdbcl <> '' AND lotus_sanxuat.gd <> '' AND lotus_sanxuat.status = 1 GROUP BY ma_sx ORDER BY start_date";
 		$collection = $this->db->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+		//echo "<pre>";
+		//print_r($collection);
+		$links = [];
+		foreach ($collection as $maSxIndex => $sx) {
+			$childCollection = $this->getTasksByMaSx($sx['ma_sx']);
+			foreach ($childCollection['data'] as $key => $item) {
+				$childItem = $item;
+				if($item['parent'] == 0) {
+					$childItem['parent'] = $sx['ma_sx'];
+				}
+				$collection[] = $childItem;
+			}
+			foreach ($childCollection['links'] as $key => $item) {
+				$links[] = $item;
+			}
+		}
+		//print_r($collection);
 		if(!empty($collection)) {
 			$rsData['status'] = self::SUCCESS_STATUS;
 			$rsData['message'] = 'Đã load được các quy trình!';
 			$rsData['data'] = array(
 				'data' => $collection,
-				'links' => []
+				'links' => $links
 			);
 		} else {
 			$rsData = $this->getEmptyGanttChart();

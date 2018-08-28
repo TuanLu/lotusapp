@@ -35,6 +35,7 @@ class GanttComponent extends Component {
     }
   }
   expandAllTask(ganttData) {
+    return ganttData;
     if(ganttData) {
       let ganttTasks = [];
       if(ganttData.data) {
@@ -229,10 +230,10 @@ class GanttComponent extends Component {
       gantt2.config.drag_move = false;
       gantt2.config.readonly = true;
       //gantt.config.show_grid = false;
-      gantt2.config.show_links = false;
+      gantt2.config.show_links = true;
       //gantt.config.show_progress = false;
       gantt2.config.columns = [
-        {name: "text", width: 150, hide: false, tree: true},
+        {name: "text", width: 200, hide: false, tree: true},
         {name: "start_date", hide: false, align: "center"},
         {name: "duration", width: 38, hide: false, align: "center"},
         {name: "add", hide: true, align: "center"}
