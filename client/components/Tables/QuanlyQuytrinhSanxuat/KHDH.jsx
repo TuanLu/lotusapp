@@ -226,6 +226,15 @@ class GanttComponent extends Component {
     gantt2.config.date_grid = "%d-%m-%Y";
     gantt2.config.grid_width = 450;
 
+    gantt2.templates.rightside_text = function (start, end, task) {
+      let deadline = new Date();
+      if (parseFloat(task.progress) < 1 && end < deadline) {
+        var overdue = Math.ceil(Math.abs((end.getTime() - deadline.getTime()) / (24 * 60 * 60 * 1000)));
+        var text = "<div>Quá hạn: " + overdue + " ngày</div>";
+        return text;
+      }
+    };
+
     if(this.props.type == "allPlan") {
       gantt2.config.drag_move = false;
       gantt2.config.readonly = true;
@@ -233,6 +242,20 @@ class GanttComponent extends Component {
       gantt2.config.show_links = true;
       //gantt.config.show_progress = false;
       gantt2.config.columns = [
+        {
+          name: "overdue", width: 47, hide: false, template: function (obj) {
+            if (obj.end_date) {
+              var deadline = gantt.date.parseDate(obj.end_date, "xml_date");
+              var today = new Date();
+              if (deadline && deadline <= today && parseFloat(obj.progress) < 1) {
+                return '<div class="overdue-indicator">!</div>';
+              } else {
+                return '<div class="doing-progress">'+ Math.round((obj.progress || 0) * 100) +'%</div>';
+              }
+            }
+            return '<div></div>';
+          }
+        },
         {name: "text", width: 200, hide: false, tree: true},
         {name: "start_date", hide: false, align: "center"},
         {name: "duration", width: 38, hide: false, align: "center"},
