@@ -380,7 +380,7 @@ class RNDController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Ma SX', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá mã nghiên cứukhỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá nghiên cứu khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {

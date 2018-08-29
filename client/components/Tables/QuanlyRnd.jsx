@@ -187,16 +187,16 @@ class EditableTable extends React.Component {
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}><Icon type="profile" />{ans_language.ans_detail || 'ans_detail'}</a> 
                   {
-                    // <React.Fragment>
-                    //   {" | "}
-                    //   <Popconfirm
-                    //     title="Bạn thật sự muốn xoá?"
-                    //     okType="danger"
-                    //     onConfirm={() => this.delete(record)}
-                    //   >
-                    //     <a href="javascript:;">Xoá</a>  
-                    //   </Popconfirm>
-                    // </React.Fragment>
+                    <React.Fragment>
+                      {" | "}
+                      <Popconfirm
+                        title="Bạn thật sự muốn xoá?"
+                        okType="danger"
+                        onConfirm={() => this.delete(record)}
+                      >
+                        <a href="javascript:;">Xoá</a>  
+                      </Popconfirm>
+                    </React.Fragment>
                     } 
                 </React.Fragment>
                 
