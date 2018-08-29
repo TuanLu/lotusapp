@@ -154,7 +154,7 @@ class EditableTable extends React.Component {
         dataIndex: 'ma_maquet',
         width: 200,
         editable: true,
-        required: true
+        required: false
       },
       {
         title: 'Mã NL',
@@ -184,14 +184,14 @@ class EditableTable extends React.Component {
         editable: true,
         render: (text, record) => `${text}%`
       },
-      {
-        title: 'SL NVL cần',
-        dataIndex: 'sl_nvl',
-        //width: '40%',
-        editable: true,
-        required: true,
-        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      },
+      // {
+      //   title: 'SL NVL cần',
+      //   dataIndex: 'sl_nvl',
+      //   //width: '40%',
+      //   editable: true,
+      //   required: true,
+      //   render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      // },
       {
         title: 'Actions',
         dataIndex: 'operation',

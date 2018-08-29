@@ -170,7 +170,7 @@ class SanphamPhieunhap extends React.Component {
         dataIndex: 'label',
         width: 100,
         editable: true,
-        required: true
+        required: false
       },
       {
         title: 'Đv',
@@ -192,14 +192,14 @@ class SanphamPhieunhap extends React.Component {
         editable: true,
         render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       },
-      {
-        title: 'Đơn giá',
-        dataIndex: 'price',
-        width: 150,
-        editable: true,
-        required: true,
-        render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      },
+      // {
+      //   title: 'Đơn giá',
+      //   dataIndex: 'price',
+      //   width: 150,
+      //   editable: true,
+      //   required: true,
+      //   render: (text, record) => `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      // },
       {
         title: 'Ngày SX',
         dataIndex: 'ngay_san_xuat',
@@ -216,7 +216,7 @@ class SanphamPhieunhap extends React.Component {
         //width: '40%',
         editable: true,
         required: false,
-        render: (text, record) => text? moment(text).format('DD/MM/YYYY') : ''
+        render: (text, record) => text? moment(text).format('DD/MM/YYYY') : 'ans_do_not_enter'
       },
       // {
       //   title: 'QC Duyệt',

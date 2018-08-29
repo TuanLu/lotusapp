@@ -98,7 +98,7 @@ class Data {
     	ON san_pham_theo_phieu.id = san_pham_theo_phieu_xuat.item_id AND san_pham_theo_phieu_xuat.status = 1
     WHERE `san_pham_theo_phieu`.`status` = 1 AND `phieu_nhap_xuat_kho`.`status` = 1 AND `phieu_nhap_xuat_kho`.`tinh_trang` = 1 $verifySQL $where
     HAVING sl_thucnhap > 0
-    ORDER BY ngay_het_han, create_on DESC";
+    ORDER BY create_on DESC";
     return $sql;
   }
 }

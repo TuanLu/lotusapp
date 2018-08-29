@@ -305,13 +305,13 @@ class Roles {
         'parent' => 'qluser_group',
         'permission' => Roles::roleAndRouter()['qlpb']
       ],
-      'kkvt' => [
-        'label' => 'Kiểm kê vật tư', 
-        'icon' => 'schedule',
-        'path' => 'kkvt',
-        'parent' => 'vattu_group',
-        'permission' => Roles::roleAndRouter()['kkvt']
-      ],
+      // 'kkvt' => [
+      //   'label' => 'Kiểm kê vật tư', 
+      //   'icon' => 'schedule',
+      //   'path' => 'kkvt',
+      //   'parent' => 'vattu_group',
+      //   'permission' => Roles::roleAndRouter()['kkvt']
+      // ],
       'lang' => [
         'label' => 'Ngôn ngữ', 
         'icon' => 'schedule',

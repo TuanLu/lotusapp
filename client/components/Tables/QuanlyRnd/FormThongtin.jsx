@@ -189,7 +189,7 @@ class FormThongtin extends React.Component {
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem
+              {/* <FormItem
                   label={ans_language.ans_co_lo || 'ans_co_lo'}
                   labelCol={{ span: 5 }}
                   wrapperCol={{ span: 12 }}
@@ -205,6 +205,23 @@ class FormThongtin extends React.Component {
                       }));
                     }}
                     value={rnd.co_lo} />
+                </FormItem> */}
+                <FormItem
+                  label={ans_language.ans_dang_bao_che || 'ans_dang_bao_che'}
+                  labelCol={{ span: 5 }}
+                  wrapperCol={{ span: 12 }}
+                >
+                <Input 
+                    readOnly={readOnly}
+                    onChange={(e) => {
+                      this.props.dispatch(updateStateData({
+                        rnd: {
+                          ...this.props.mainState.rnd,
+                          dang_bao_che: e.target.value
+                        }
+                      }));
+                    }}
+                    value={rnd.dang_bao_che} />
                 </FormItem>
             </Col>
             <Col span={12}>
@@ -282,27 +299,6 @@ class FormThongtin extends React.Component {
             </Col>
             <Col span={12}>
               <FormItem
-                label={ans_language.ans_dang_bao_che || 'ans_dang_bao_che'}
-                labelCol={{ span: 5 }}
-                wrapperCol={{ span: 12 }}
-              >
-              <Input 
-                  readOnly={readOnly}
-                  onChange={(e) => {
-                    this.props.dispatch(updateStateData({
-                      rnd: {
-                        ...this.props.mainState.rnd,
-                        dang_bao_che: e.target.value
-                      }
-                    }));
-                  }}
-                  value={rnd.dang_bao_che} />
-              </FormItem>
-              </Col>
-            </Row>
-            <Row>
-            <Col span={12}>
-              <FormItem
                 label={ans_language.ans_attach_file_label || 'File đính kèm'}
                 labelCol={{ span: 5 }}
                 wrapperCol={{ span: 12 }}>
@@ -338,8 +334,8 @@ class FormThongtin extends React.Component {
                   mainState={this.props.mainState}
                   dispatch={this.props.dispatch}/>
               </FormItem>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
       </Form>
     );
   }

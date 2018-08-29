@@ -36,20 +36,80 @@ class FormThongtin extends React.Component {
       console.log(error);
     }); 
   }
+  fetchNhacc() {
+    fetch(ISD_BASE_URL + 'npp/fetchNpp', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({nhacc: json.data}));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      console.log(error);
+    }); 
+  }
+  fetchOrders() {
+    fetch(ISD_BASE_URL + 'order/fetchDh', {
+      headers: getTokenHeader()
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      if(json.status == 'error') {
+        message.warning(json.message, 3);
+      } else {
+        if(json.data) {
+          this.props.dispatch(updateStateData({order: json.data}));
+        }
+      }
+    })
+    .catch((error) => {
+      message.error('Có lỗi khi tải dữ liệu dữ liệu kho!', 3);
+      console.log(error);
+    }); 
+  }
   componentDidMount() {
     let {kho} = this.props.mainState;
     if(!kho.length) {
       this.fetchData();
+    }
+    let {nhacc} = this.props.mainState;
+    if(!nhacc.length) {
+      this.fetchNhacc();
+    }
+    let {order} = this.props.mainState;
+    if(!order.length) {
+      this.fetchOrders();
     }
   }
   render() {
     let {phieunhap, phieuAction} = this.props.mainState;
     let readOnly = phieuAction && phieuAction.action == 'view' ? true : false;
     let tinh_trang = phieunhap.tinh_trang == 1 ? true : false;
-    let options = '';
+    let options = ''; 
+    let optionsnhacc = '';
+    let orderlist = '';
     let {kho} = this.props.mainState;
+    let {nhacc} = this.props.mainState;
+    let {order} = this.props.mainState;
+    if(nhacc.length) {
+      optionsnhacc = nhacc.map((nhacc) => <Option key={nhacc.id} value={nhacc.ma_npp}>{nhacc.name}</Option>);
+    }
     if(kho.length) {
       options = kho.map((kho) => <Option key={kho.id} value={kho.ma_kho}>{kho.name}</Option>);
+    }
+    if(order.length) {
+      orderlist = order.map((order) => <Option key={order.id} value={order.ma_order}>{order.ma_order} - {order.ma_kh} - {order.product_id}</Option>);
     }
     return (
       <Form>
@@ -75,21 +135,23 @@ class FormThongtin extends React.Component {
           </Col>
           <Col span={12}>
             <FormItem
-              label={formInfo.person}
+              label={'Nhà cung cấp'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 16 }}
             >
-            <Input 
-                readOnly={readOnly}
-                onChange={(e) => {
+              <Select 
+                disabled={readOnly}
+                onChange={(nguoi_giao_dich) => {
                   this.props.dispatch(updateStateData({
                     phieunhap: {
                       ...this.props.mainState.phieunhap,
-                      nguoi_giao_dich: e.target.value
+                      nguoi_giao_dich
                     }
                   }));
                 }}
-                value={phieunhap.nguoi_giao_dich} />
+                defaultValue={phieunhap.nguoi_giao_dich} placeholder="Chọn nhà cung cấp">
+                {optionsnhacc}
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -117,21 +179,23 @@ class FormThongtin extends React.Component {
           </Col>
           <Col span={12}>
             <FormItem
-              label={'Ngày tạo'}
+              label={'Đơn hàng'}
               labelCol={{ span: 5 }}
               wrapperCol={{ span: 16 }}
             >
-            <Input 
-              readOnly={true}
-              onChange={(e) => {
-                // this.props.dispatch(updateStateData({
-                //   phieunhap: {
-                //     ...this.props.mainState.phieunhap,
-                //     nguoi_giao_dich: e.target.value
-                //   }
-                // }));
+            <Select 
+              disabled={readOnly}
+              onChange={(orderid) => {
+                this.props.dispatch(updateStateData({
+                  phieunhap: {
+                    ...this.props.mainState.phieunhap,
+                    orderid
+                  }
+                }));
               }}
-              value={phieunhap.create_on || moment(new Date()).format("DD/MM/YYYY")} />
+              defaultValue={phieunhap.orderid} placeholder="Chọn đơn hàng">
+              {orderlist}
+            </Select>
           </FormItem>
           </Col>
         </Row>

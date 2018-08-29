@@ -92,7 +92,7 @@ class EditableTable extends React.Component {
         editable: false,
       },
       {
-        title: 'Người giao hàng',
+        title: 'Nhà cung cấp',
         dataIndex: 'nguoi_giao_dich',
         //width: '40%',
         editable: false,

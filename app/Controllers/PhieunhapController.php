@@ -17,6 +17,7 @@ class PhieunhapController extends BaseController
 			'phieu_nhap_xuat_kho.id',
 			'phieu_nhap_xuat_kho.ma_phieu',
 			'phieu_nhap_xuat_kho.ma_kho',
+			'phieu_nhap_xuat_kho.orderid',
 			'phieu_nhap_xuat_kho.note',
 			'phieu_nhap_xuat_kho.type',
 			'phieu_nhap_xuat_kho.nguoi_giao_dich',
@@ -104,6 +105,7 @@ class PhieunhapController extends BaseController
 		$id = $request->getParam('id');
 		$params = $request->getParams();
 		$maKho = isset($params['ma_kho']) ? $params['ma_kho'] : '';
+		$orderid = isset($params['orderid']) ? $params['orderid'] : '';
 		$maPhieu = isset($params['ma_phieu']) ? $params['ma_phieu'] : '';
 		$nguoiGiaoDich = isset($params['nguoi_giao_dich']) ? $params['nguoi_giao_dich'] : '';
 		$editNote = isset($params['editNote']) ? $params['editNote'] : '';
@@ -142,6 +144,7 @@ class PhieunhapController extends BaseController
 			$duLieuPhieu = array(
 				'ma_phieu' => $maPhieu,
 				'ma_kho' => $maKho,
+				'orderid' => $orderid,
 				'type' => 1, // 1 => Nhập
 				'create_on' => $createOn,
 				'create_by' => $userId,
@@ -196,6 +199,7 @@ class PhieunhapController extends BaseController
 			$itemData = [
 				'ma_phieu' => $maPhieu,
 				'ma_kho' => $maKho,
+				'orderid' => $orderid,
 				'type' => 1, // 1 => Nhập
 				'create_on' => $date->format('Y-m-d H:i:s'),
 				'create_by' => $userId,
