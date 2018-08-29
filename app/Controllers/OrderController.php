@@ -76,7 +76,7 @@ class OrderController extends BaseController
 				'ma_order' => $maDh,
 				'product_id' => $pid,
 				'qty' => $qty,
-				'note' => $note,
+				'note' => $note ?  $note : '',
 				'date_delive' => $date->format('Y-m-d H:i:s'),
 				'status' => 1,
 				'ma_kh' => $maKh,

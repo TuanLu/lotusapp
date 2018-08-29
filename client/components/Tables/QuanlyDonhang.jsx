@@ -180,6 +180,20 @@ class EditableTable extends React.Component {
       console.log(error);
     });
   }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let {refresh} = nextProps.mainState.systemOrder;
+    if(refresh) {
+      return {
+        dataUpToDate: null
+      }
+    }
+    return null;
+  }
+  componentDidUpdate() {
+    if(this.state.dataUpToDate === null) {
+      this.fetchData();
+    }
+  }
   componentDidMount() {
     let {mainState} = this.props;
     this.fetchData();
