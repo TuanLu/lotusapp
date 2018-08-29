@@ -21,6 +21,26 @@
 .ans_input_80 {
   width: 80%;
 }
+.gantt_cal_light {
+  height: auto!important;
+}
+.gantt_cal_light .gantt_btn_set {
+  margin: 25px 10px!important;
+  border: 1px solid;
+}
+.gantt_add, .gantt_grid_head_add {
+  background-color: midnightblue;
+}
+.gantt_cal_ltext {
+  height: auto!important;
+}
+.gantt_cal_ltext textarea {
+  padding: 10px;
+  border-radius: 5px;
+}
+.gantt_cal_ltext select{
+  height: 35px;
+}
 .ans_row_margin_10 .ant-form-item {
   margin: 0 0 10px 0;
 }
