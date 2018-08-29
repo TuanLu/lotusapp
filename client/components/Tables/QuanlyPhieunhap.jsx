@@ -158,7 +158,6 @@ class EditableTable extends React.Component {
               ) : (
                 <React.Fragment>
                   <a href="javascript:;" onClick={() => this.view(record)}>Xem chi tiết</a> 
-                  {/* {(!this.isQA() && !this.isQC()) ? 
                     <React.Fragment>
                       {" | "}
                       <Popconfirm
@@ -169,7 +168,6 @@ class EditableTable extends React.Component {
                         <a href="javascript:;">Xoá</a>  
                       </Popconfirm>
                     </React.Fragment>
-                    : null}  */}
                 </React.Fragment>
                 
               )}
@@ -273,8 +271,9 @@ class EditableTable extends React.Component {
       console.log(error);
     }); 
   }
-  delete = () => {
+  delete = (record) => {
     let {id} = this.props.mainState.phieunhap;
+    id = id || record.id;
     if(id) {
       fetch(ISD_BASE_URL + fetchConfig.delete + id, {
         headers: getTokenHeader()
