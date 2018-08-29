@@ -167,7 +167,7 @@ class SXController extends BaseController
 				'update_by' => $userId,
 			);
 			$selectColumns = ['id', 'so'];
-			$where = ['so' => $itemData['so']];
+			$where = ['so' => $duLieuPhieu['so']];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
 				$rsData['message'] = "Mã sản xuất [". $itemData['so'] ."] đã tồn tại: ";
