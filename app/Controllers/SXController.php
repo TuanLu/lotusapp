@@ -389,7 +389,7 @@ class SXController extends BaseController
 			if($result->rowCount()) {
 				$this->superLog('Delete Ma SX', $id);
 				$rsData['status'] = self::SUCCESS_STATUS;
-				$rsData['message'] = 'Đã xoá mã sản xuất khỏi hệ thống!';
+				$rsData['message'] = 'Đã xoá lệnh sản xuất khỏi hệ thống!';
 				$rsData['data'] = $id;
 			}
 		} else {
