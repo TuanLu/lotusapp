@@ -76,14 +76,14 @@ class EditableTable extends React.Component {
         title: ans_language.ans_config_title || 'ans_config_title',
         dataIndex: 'ma_opt',
         width: '15%',
-        editable: false,
+        editable: true,
         required: true
       },
       {
         title: ans_language.ans_config_default_title || 'ans_config_default_title',
         dataIndex: 'defaultconfig',
         //width: '40%',
-        editable: false,
+        editable: true,
         required: true
       },
       {

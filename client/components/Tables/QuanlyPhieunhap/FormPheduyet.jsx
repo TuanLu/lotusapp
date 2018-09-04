@@ -70,7 +70,7 @@ class FormPheduyet extends React.Component {
             </Button>
           </Popconfirm>
           <Popconfirm
-            title={ans_language.ans_confirm_approval || 'ans_confirm_approval'}
+            title={ans_language.ans_confirm_not_approval || 'ans_confirm_not_approval'}
             onConfirm={() => this.verifyProduct(0)}>
               <Button type="danger" ghost>
                 <Icon type="exclamation-circle" />{ans_language.ans_not_approval || 'ans_not_approval'}        
