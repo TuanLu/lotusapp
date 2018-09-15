@@ -11,7 +11,8 @@ class OptionsController extends BaseController
 	const SUCCESS_STATUS = 'success';
 
 	private function getAllOpts(){
-		// Columns to select.
+		// Columns to select.\
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		$columns = [
 				'id',
 				'ma_opt',
@@ -24,9 +25,26 @@ class OptionsController extends BaseController
 		];
 		$collection = $this->db->select($this->tableName, $columns, [
 			"ORDER" => ["id" => "DESC"],
-			"status" => 1
+			"status" => 1,
+			'userid' => ["48a3de74-69f4-11e8-8eb5-acbc32834b7d"]
 		]);
-		return $collection;
+		$collection_user = $this->db->select($this->tableName, $columns, [
+			"ORDER" => ["id" => "DESC"],
+			"status" => 1,
+			'userid' => $userId
+		]);
+		$new_collect = [];
+		if(!empty($collection_user)){
+			foreach($collection as $collect) {
+				foreach($collection_user as $userkey) {
+					if($collect['ma_opt'] == $userkey['ma_opt']) {
+						$collect = $userkey; 
+					}
+				}
+				$new_collect[] = $collect;
+			}
+		}	
+		return $new_collect;
 	}
 	public function fetchOpts($request){
 		$rsData = array(
@@ -52,6 +70,7 @@ class OptionsController extends BaseController
 		$ma_opt = $request->getParam('ma_opt');
 		$defaultconfig = $request->getParam('defaultconfig');
 		$config = $request->getParam('config');
+		$userId = isset($this->jwt->id) ? $this->jwt->id : '';
 		if(!$ma_opt) {
 			$rsData['message'] = 'Mã cấu hình không được để trống!';
 			echo json_encode($rsData);
@@ -69,7 +88,7 @@ class OptionsController extends BaseController
 				'ma_opt' => $ma_opt
 			];
 			$selectColumns = ['id', 'ma_opt'];
-			$where = ['ma_opt' => $itemData['ma_opt']];
+			$where = ['ma_opt' => $itemData['ma_opt'],'userid'=>$userId];
 			$data = $this->db->select($this->tableName, $selectColumns, $where);
 			if(!empty($data)) {
 				$rsData['message'] = "Mã cấu hình [". $itemData['ma_opt'] ."] đã tồn tại: ";
@@ -80,6 +99,7 @@ class OptionsController extends BaseController
 				'defaultconfig' => $defaultconfig,
 				'config' => $config,
 				'status' => 1,
+				'userid' => $userId,
 				'create_on' => $date->format('Y-m-d H:i:s'),
 			];
 			$result = $this->db->insert($this->tableName, $itemData);
@@ -100,9 +120,17 @@ class OptionsController extends BaseController
 				'defaultconfig' => $defaultconfig,
 				'config' => $config,
 				'status' => 1,
+				'userid' => $userId,
 				'update_on' => $date->format('Y-m-d H:i:s'),
 			];
-			$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+			$selectColumns = ['id', 'ma_opt', 'userid'];
+			$where = ['ma_opt' => $itemData['ma_opt'],'userid'=>$userId];
+			$data = $this->db->select($this->tableName, $selectColumns, $where); 
+			if(!empty($data)) {
+				$result = $this->db->insert($this->tableName, $itemData);
+			}else{
+				$result = $this->db->update($this->tableName, $itemData, ['id' => $id]);
+			}
 			if($result->rowCount()) {
 				$this->superLog('Update Cate', $itemData);
 				$rsData['status'] = self::SUCCESS_STATUS;

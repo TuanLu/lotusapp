@@ -152,14 +152,14 @@ class UserController extends BaseController {
         ],
       ]
     ];
-    if($this->isSuperAdmin($userId)) {
+    //if($this->isSuperAdmin($userId)) {
       $menus[] = [
         'label' => 'Cài đặt', 
         'icon' => 'tool',
         'path' => 'other_group',
         'children' => []
       ];
-    }
+    //}
     return $menus;
 
   }

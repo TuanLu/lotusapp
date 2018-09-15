@@ -352,14 +352,41 @@ class TinhtrangSanpham extends React.Component {
       message.error('Không có dữ liệu để export!');
     }
   }
+  fetchConfig() {
+    fetch(ISD_BASE_URL + `opts/fetchOpts`, {
+      headers: getTokenHeader()
+    })
+    .then((resopnse) => resopnse.json())
+    .then((json) => {
+      if(json.data) {
+        this.setState({
+          config: json.data
+        });
+        //Chi connect den server 1 lan
+        this.props.dispatch(updateStateData({
+          config: convertArrayObjectToObject(json.data, 'id')
+        }));   
+      } else {
+        message.error(json.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   componentDidMount() {
-    //let {products, phieunhap} = this.props.mainState;
+    let {config} = this.props.mainState;
     this.fetchAllProduct();
+    if(!config.length) {
+      this.fetchConfig();
+    }
   }
   render() {
-    let {products, phieunhap} = this.props.mainState;
+    let {products, phieunhap, config} = this.props.mainState;
     let pheduyet = phieunhap.pheduyet || {};
     let columns = this.columns;
+
+    console.log(config);
     //Add filter 
     let {filteredInfo, searchText} = this.state;
     filteredInfo = filteredInfo || {};
@@ -472,6 +499,7 @@ class TinhtrangSanpham extends React.Component {
           </Modal>  
         : null}
         <Table
+          className="ans_table"
           //rowSelection={rowSelection}
           //components={components}
           bordered

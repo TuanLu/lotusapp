@@ -3,6 +3,7 @@ import {cloneDeep} from 'lodash'
 
 
 let _designDefault = {
+    config: [],
     showLogin: true,
     defaultRouter: 'tinhtrangkho',
     customers: [],
